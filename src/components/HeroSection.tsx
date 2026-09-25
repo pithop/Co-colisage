@@ -49,9 +49,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [origin, setOrigin] = useState('Marseille (MRS)');
   // Multi-city selection for destinations: default contains Alger
   const [selectedDestinations, setSelectedDestinations] = useState<string[]>(['Alger']);
+  // Real travel date with Day, Month, Year: default to 28 septembre 2026
+  const [travelDate, setTravelDate] = useState('2026-09-28');
   const [customDestInput, setCustomDestInput] = useState('');
-  const [date, setDate] = useState('Octobre 2026');
   const [weight, setWeight] = useState('Tous les formats');
+
+  // Format date helper: returns "28 septembre 2026" (Jour / Mois / Année)
+  const formatFullDate = (isoStr: string) => {
+    if (!isoStr) return '';
+    try {
+      const [y, m, d] = isoStr.split('-');
+      const dt = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+      return dt.toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+    } catch {
+      return isoStr;
+    }
+  };
 
   // Quick preset destinations
   const presetCities = [
@@ -308,19 +325,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </div>
               </div>
 
-              {/* Date */}
+              {/* Date exacte (Jour / Mois / Année) */}
               <div className="flex flex-col bg-slate-50 hover:bg-slate-100/80 p-2.5 rounded-xl border border-slate-200/70 transition-colors">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                  <Calendar className="w-3 h-3 text-cyan-500" />
-                  Date(s) de voyage
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                  <span className="flex items-center gap-1 text-cyan-600">
+                    <Calendar className="w-3 h-3" />
+                    Date de voyage
+                  </span>
+                  <span className="text-[9px] text-slate-400 font-semibold">Jour/Mois/Année</span>
                 </span>
                 <input 
-                  type="text" 
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="bg-transparent text-xs font-semibold text-slate-800 focus:outline-none mt-0.5"
-                  placeholder="Période"
+                  type="date" 
+                  value={travelDate}
+                  min="2026-09-25"
+                  onChange={(e) => setTravelDate(e.target.value)}
+                  className="bg-transparent text-xs font-extrabold text-slate-800 focus:outline-none mt-1 cursor-pointer w-full"
                 />
+                <span className="text-[10px] text-blue-600 font-bold truncate mt-0.5">
+                  📅 {formatFullDate(travelDate)}
+                </span>
               </div>
 
               {/* Action Button */}

@@ -219,7 +219,7 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
                   </div>
                   <div>
                     <h5 className="font-bold text-xs text-slate-900">Marseille (Port) ➔ Alger (Port)</h5>
-                    <p className="text-[11px] text-slate-500">Départ le 14 Oct. • Ferry Corsica Linea • Tarif : 60€/kg</p>
+                    <p className="text-[11px] text-slate-500">Départ le 14 octobre 2026 • Ferry Corsica Linea • Tarif : 60€/kg</p>
                   </div>
                 </div>
 
