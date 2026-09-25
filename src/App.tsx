@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { PlatformMode, ProductItem, FreightItem, TransportType } from './types';
 import { products, freightOffers, notifications } from './data/mockData';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 import { CategoriesBar } from './components/CategoriesBar';
@@ -24,7 +25,14 @@ import { LuggageVisualHelperModal } from './components/Modals/LuggageVisualHelpe
 import { DepartureInspectionModal } from './components/Modals/DepartureInspectionModal';
 import { GpsTrackingModal } from './components/Modals/GpsTrackingModal';
 
-export default function App() {
+// Auth & Dashboards
+import { AuthModal } from './components/Auth/AuthModal';
+import { VoyageurDashboard } from './components/Dashboards/VoyageurDashboard';
+import { CarrierDashboard } from './components/Dashboards/CarrierDashboard';
+import { ExpediteurDashboard } from './components/Dashboards/ExpediteurDashboard';
+
+function MainAppContent() {
+  const { activeDashboard, setActiveDashboard } = useAuth();
   const [mode, setMode] = useState<PlatformMode>('shop');
   const [isPhoneFrame, setIsPhoneFrame] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -42,7 +50,7 @@ export default function App() {
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false);
   
-  // New Modals from BagVoyage & Colis-Voiturage
+  // New Modals from BagVoyage / Colis-Voiturage
   const [isMessagingOpen, setIsMessagingOpen] = useState(false);
   const [isLuggageHelperOpen, setIsLuggageHelperOpen] = useState(false);
   const [isInspectionOpen, setIsInspectionOpen] = useState(false);
@@ -121,11 +129,10 @@ export default function App() {
     setPinDeliveryProduct(null);
   };
 
-  // Main Page Contents
-  const mainContent = (
+  const mainLayout = (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans selection:bg-blue-600 selection:text-white pb-20 sm:pb-0">
       
-      {/* Header */}
+      {/* Header with Auth state & Dashboard navigation */}
       <Header
         mode={mode}
         onModeChange={(newMode) => {
@@ -280,6 +287,7 @@ export default function App() {
         onTabChange={(tab) => {
           setMobileTab(tab);
           if (tab === 'messages') setIsMessagingOpen(true);
+          if (tab === 'profile') setActiveDashboard('voyageur');
         }}
         onOpenPublishModal={() => setIsPublishModalOpen(true)}
       />
@@ -343,16 +351,70 @@ export default function App() {
         onClose={() => setIsGpsTrackingOpen(false)}
       />
 
+      {/* AUTH & DEDICATED DASHBOARDS */}
+      <AuthModal />
+
+      <VoyageurDashboard
+        isOpen={activeDashboard === 'voyageur'}
+        onClose={() => setActiveDashboard('none')}
+        onOpenUploadProof={() => {
+          setActiveDashboard('none');
+          setProofProduct(products[0]);
+        }}
+        onOpenPinModal={() => {
+          setActiveDashboard('none');
+          setPinDeliveryProduct(products[0]);
+        }}
+        onOpenInspection={() => {
+          setActiveDashboard('none');
+          setIsInspectionOpen(true);
+        }}
+        onOpenPublish={() => {
+          setActiveDashboard('none');
+          setIsPublishModalOpen(true);
+        }}
+      />
+
+      <CarrierDashboard
+        isOpen={activeDashboard === 'transporteur'}
+        onClose={() => setActiveDashboard('none')}
+        onOpenPublish={() => {
+          setActiveDashboard('none');
+          setIsPublishModalOpen(true);
+        }}
+      />
+
+      <ExpediteurDashboard
+        isOpen={activeDashboard === 'expediteur'}
+        onClose={() => setActiveDashboard('none')}
+        onOpenGps={() => {
+          setActiveDashboard('none');
+          setIsGpsTrackingOpen(true);
+        }}
+        onOpenMessaging={() => {
+          setActiveDashboard('none');
+          setIsMessagingOpen(true);
+        }}
+      />
+
     </div>
   );
 
   if (isPhoneFrame) {
     return (
       <PhoneSimulator onClose={() => setIsPhoneFrame(false)}>
-        {mainContent}
+        {mainLayout}
       </PhoneSimulator>
     );
   }
 
-  return mainContent;
+  return mainLayout;
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <MainAppContent />
+    </AuthProvider>
+  );
 }
