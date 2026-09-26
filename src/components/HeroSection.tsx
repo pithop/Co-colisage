@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { MainPillar, FreightItem } from '../types';
 import { useAuth } from '../context/AuthContext';
+import './HeroSection.css';
 
 interface HeroSectionProps {
   activePillar: MainPillar;
@@ -134,487 +135,111 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     }
   };
 
+  const cities = [
+    { name: 'Marseille', value: 'Marseille (MRS)' },
+    { name: 'Alger', value: 'Alger (ALG)' },
+    { name: 'Oran', value: 'Oran (ORN)' }
+  ];
+
   return (
-    <section id="hero" className="relative pt-2 pb-8 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto">
-        
-        {/* Main Card with Immersive Gradient & Background */}
-        <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-slate-900 p-6 sm:p-10 text-white">
-          
-          {/* Subtle Background Ambience */}
-          <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
-            <img 
-              src="https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=1600&q=80" 
-              alt="Voyage et bagages"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900 to-transparent" />
+    <section id="hero" className="premium-hero" aria-label="Voyages et livraisons entre particuliers">
+      <div className="hero-shell">
+        <div className="hero-ambient" aria-hidden="true" />
+        <div className="hero-content">
+          <div className="hero-authority">
+            <span><span className="hero-star">★</span> <strong>4.9/5</strong> sur +14 000 trajets</span>
+            <span className="hero-featured"><span className="hero-live-dot" /> Ligne phare : Marseille (MRS) ➔ Alger (ALG)</span>
+            <span><ShieldCheck size={14} /> Séquestre Stripe 100% Garanti</span>
           </div>
 
-          <div className="relative z-10">
-            {/* Top Badge */}
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-semibold">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Ligne Principale Active : <strong>Marseille (MRS) ➔ Alger (ALG)</strong></span>
+          <div className="hero-intro">
+            <div>
+              <div className="hero-eyebrow"><span /> PLUS PROCHE, MÊME À DES MILLIERS DE KILOMÈTRES</div>
+              <h1>
+                {activePillar === 'voyageur' && <>Votre voyage.<br /><span>Bien plus qu’un trajet.</span></>}
+                {activePillar === 'expediteur' && <>Un colis à envoyer.<br /><span>Un lien à préserver.</span></>}
+                {activePillar === 'destinataire' && <>Vos envies d’ailleurs.<br /><span>À portée de main.</span></>}
+              </h1>
+              <p className="hero-description">
+                {activePillar === 'voyageur' && 'Rentabilisez votre valise. Transportez un colis, faites un achat pour quelqu’un, ou les deux. Vous choisissez.'}
+                {activePillar === 'expediteur' && 'Documents, cadeaux, petites attentions. Confiez votre colis à un voyageur qui prend la même direction.'}
+                {activePillar === 'destinataire' && 'Un parfum, une paire de sneakers, un article introuvable. Un voyageur l’achète en Europe et vous le remet en main propre.'}
+              </p>
+              <button type="button" className="hero-how" onClick={onOpenHowItWorks}><HelpCircle size={16} /> Comment ça marche ? <ArrowRight size={14} /></button>
+            </div>
+            <div className="hero-route" aria-hidden="true">
+              <div className="hero-route-top"><span>LA MÉDITERRANÉE NOUS RELIE</span><Plane size={16} /></div>
+              <div className="hero-route-cities"><div><strong>MRS</strong><span>Marseille</span></div><div className="hero-flight-line"><span /><Plane size={22} /><span /></div><div><strong>ALG</strong><span>Alger</span></div></div>
+              <div className="hero-route-bottom"><span>Un voyage. Deux rives.</span><span><ShieldCheck size={13} /> En confiance</span></div>
+            </div>
+          </div>
+
+          {publishSuccess && (
+            <div className="hero-success" role="status"><CheckCircle2 size={22} /><div><strong>Votre voyage a été publié avec succès !</strong><p>Les expéditeurs et personnes intéressées peuvent maintenant vous contacter.</p></div></div>
+          )}
+
+          <div className="hero-glass">
+            <div className="hero-form-card">
+              <div className="hero-card-heading">
+                <div className="hero-heading-group"><div className={`hero-heading-icon ${activePillar}`}>
+                  {activePillar === 'voyageur' ? <Plane size={22} /> : activePillar === 'expediteur' ? <Package size={22} /> : <ShoppingBag size={22} />}
+                </div><div><h2>{activePillar === 'voyageur' ? 'Votre prochain départ' : activePillar === 'expediteur' ? 'Votre colis prend le large' : 'L’Europe dans votre panier'}</h2><p>{activePillar === 'voyageur' ? 'Un peu de place. De belles possibilités.' : activePillar === 'expediteur' ? 'Trouvez le voyageur qui fait le bon trajet.' : 'Dites-nous ce qui vous ferait plaisir.'}</p></div></div>
+                <span className="hero-time-badge"><Sparkles size={14} /> {activePillar === 'voyageur' ? 'FORMULAIRE EXPRESS · 30 S' : 'SIMPLE & SÉCURISÉ'}</span>
               </div>
 
-              <button
-                onClick={onOpenHowItWorks}
-                className="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white transition-colors"
-              >
-                <HelpCircle className="w-4 h-4 text-blue-400" />
-                <span>Comment ça marche ?</span>
-              </button>
-            </div>
-
-            {/* Dynamic Title based on Active Pillar */}
-            <div className="max-w-3xl mb-6">
               {activePillar === 'voyageur' && (
-                <>
-                  <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                    Vous voyagez ? <br />
-                    <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-emerald-400 bg-clip-text text-transparent">
-                      Rentabilisez votre valise en toute simplicité
-                    </span>
-                  </h1>
-                  <p className="mt-2 text-xs sm:text-sm text-slate-300">
-                    Indiquez votre départ, votre arrivée, l'espace dans votre valise et choisissez si vous voulez transporter un colis, acheter une marchandise, ou les deux.
-                  </p>
-                </>
+                <form onSubmit={handlePublishTripSubmit} className="hero-trip-form">
+                  <div className="hero-section-label"><span>01</span> Votre itinéraire</div>
+                  <div className="hero-city-grid">
+                    <div className="hero-field"><label htmlFor="voyage-origin"><MapPin size={15} /> VILLE DE DÉPART</label><input id="voyage-origin" required value={voyageOrigin} onChange={e => setVoyageOrigin(e.target.value)} placeholder="Ville ou aéroport" /><div className="hero-suggestions">{cities.map(city => <button key={city.name} type="button" onClick={() => setVoyageOrigin(city.value)}>{city.name}</button>)}</div></div>
+                    <button type="button" className="hero-swap" aria-label="Inverser les villes de départ et d’arrivée" onClick={() => { setVoyageOrigin(voyageDestination); setVoyageDestination(voyageOrigin); }}>⇄</button>
+                    <div className="hero-field"><label htmlFor="voyage-destination"><MapPin size={15} /> VILLE D’ARRIVÉE</label><input id="voyage-destination" required value={voyageDestination} onChange={e => setVoyageDestination(e.target.value)} placeholder="Ville ou aéroport" /><div className="hero-suggestions">{cities.map(city => <button key={city.name} type="button" onClick={() => setVoyageDestination(city.value)}>{city.name}</button>)}</div></div>
+                  </div>
+                  <div className="hero-schedule-grid">
+                    <div className="hero-field"><label htmlFor="voyage-date"><Calendar size={15} /> DATE DU VOYAGE</label><input id="voyage-date" type="date" required value={voyageDate} onChange={e => setVoyageDate(e.target.value)} /><span className="hero-field-note">{formatFullDate(voyageDate)}</span></div>
+                    <div className="hero-field"><label htmlFor="voyage-time"><Clock size={15} /> HEURE DE DÉPART</label><input id="voyage-time" type="time" required value={voyageTime} onChange={e => setVoyageTime(e.target.value)} /><span className="hero-field-note">Départ prévu à {voyageTime}</span></div>
+                    <div className="hero-field hero-capacity"><div className="hero-capacity-heading"><label htmlFor="voyage-kg"><Weight size={15} /> PLACE DISPONIBLE</label><output htmlFor="voyage-kg">{voyageKg}<small> kg</small></output></div><div className="hero-capacity-bars" aria-hidden="true">{Array.from({ length: 20 }, (_, index) => <span key={index} className={index < Math.ceil(voyageKg / 35 * 20) ? 'is-filled' : ''} />)}</div><input id="voyage-kg" type="range" min="1" max="35" value={voyageKg} aria-valuetext={`${voyageKg} kilos disponibles`} onChange={e => setVoyageKg(parseInt(e.target.value))} style={{ '--range-progress': `${(voyageKg - 1) / 34 * 100}%` } as React.CSSProperties} /><div className="hero-range-labels"><span>1 kg · Léger</span><span>35 kg · Généreux</span></div></div>
+                  </div>
+                  <div className="hero-section-label hero-service-label"><div><span>02</span> Rentabilisez votre voyage</div><small>Une option, ou les deux.</small></div>
+                  <div className="hero-services">
+                    <div className={`hero-service hero-service-blue ${canCarryParcel ? 'is-selected' : ''}`}>
+                      <label className="hero-service-select"><span className="hero-service-icon"><Package size={22} /></span><span className="hero-service-copy"><strong>Transporter le colis d’un tiers</strong><span>Un peu de place pour un colis ou des documents.</span></span><input type="checkbox" checked={canCarryParcel} onChange={e => setCanCarryParcel(e.target.checked)} /><span className="hero-toggle" aria-hidden="true"><span>{canCarryParcel && <Check size={10} />}</span></span></label>
+                      {canCarryParcel && <div className="hero-service-price"><label htmlFor="price-per-kg">Votre tarif au kilo</label><div><input id="price-per-kg" type="number" min="5" max="50" value={pricePerKg} onChange={e => setPricePerKg(Math.max(1, parseInt(e.target.value) || 0))} /><span>€ / kg</span></div></div>}
+                    </div>
+                    <div className={`hero-service hero-service-green ${canBuyProduct ? 'is-selected' : ''}`}>
+                      <label className="hero-service-select"><span className="hero-service-icon"><ShoppingBag size={22} /></span><span className="hero-service-copy"><strong>Acheter une marchandise</strong><span>Un achat en magasin ou au Duty Free, livré à l’arrivée.</span></span><input type="checkbox" checked={canBuyProduct} onChange={e => setCanBuyProduct(e.target.checked)} /><span className="hero-toggle" aria-hidden="true"><span>{canBuyProduct && <Check size={10} />}</span></span></label>
+                      {canBuyProduct && <div className="hero-service-price"><label htmlFor="shopping-commission">Votre commission par achat</label><div><input id="shopping-commission" type="number" min="10" max="200" value={shoppingCommission} onChange={e => setShoppingCommission(Math.max(1, parseInt(e.target.value) || 0))} /><span>€</span></div></div>}
+                    </div>
+                  </div>
+                  <div className="hero-form-footer"><div className="hero-security"><ShieldCheck size={21} /><span><strong>Voyagez l’esprit tranquille</strong><span>Fonds sous séquestre Stripe & remise sécurisée.</span></span></div><button type="submit" className="hero-cta"><span>Publier mon voyage en 30 secondes</span><ArrowRight size={18} /></button></div>
+                </form>
               )}
 
               {activePillar === 'expediteur' && (
-                <>
-                  <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                    Besoin d'expédier un colis ? <br />
-                    <span className="bg-gradient-to-r from-amber-400 via-orange-300 to-yellow-200 bg-clip-text text-transparent">
-                      Confiez-le à un voyageur qui part bientôt
-                    </span>
-                  </h1>
-                  <p className="mt-2 text-xs sm:text-sm text-slate-300">
-                    Trouvez un voyageur de confiance faisant le trajet Marseille ➔ Alger pour acheminer vos paquets, documents ou cadeaux rapidement et à prix réduit.
-                  </p>
-                </>
+                <div className="hero-secondary-panel">
+                  <form onSubmit={handleSenderSearch} className="hero-search-grid">
+                    <div className="hero-field"><label htmlFor="sender-origin"><MapPin size={15} /> VILLE DE DÉPART</label><input id="sender-origin" value={senderOrigin} onChange={e => setSenderOrigin(e.target.value)} placeholder="Marseille" /></div>
+                    <div className="hero-field"><label htmlFor="sender-destination"><MapPin size={15} /> VILLE D’ARRIVÉE</label><input id="sender-destination" value={senderDestination} onChange={e => setSenderDestination(e.target.value)} placeholder="Alger" /></div>
+                    <button type="submit" className="hero-cta"><Search size={18} /><span>Trouver les voyageurs disponibles</span></button>
+                  </form>
+                  <div className="hero-secondary-footer"><div className="hero-security"><ShieldCheck size={22} /><span><strong>Un trajet partagé, une remise en confiance.</strong><span>Marseille, Alger, Oran et le Maghreb.</span></span></div><button type="button" className="hero-outline-button" onClick={onOpenPublishParcel}><PlusCircle size={17} /> Déposer un colis <ArrowRight size={16} /></button></div>
+                </div>
               )}
 
               {activePillar === 'destinataire' && (
-                <>
-                  <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                    Vous souhaitez recevoir une marchandise ? <br />
-                    <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-200 bg-clip-text text-transparent">
-                      Faites-vous livrer des articles d'Europe
-                    </span>
-                  </h1>
-                  <p className="mt-2 text-xs sm:text-sm text-slate-300">
-                    Parfums Sephora, Nike, produits Apple, Duty Free... Un voyageur achète pour vous en magasin et vous le rapporte en main propre.
-                  </p>
-                </>
+                <div className="hero-secondary-panel">
+                  <div className="hero-search-grid hero-receiver-grid">
+                    <div className="hero-field"><label htmlFor="receiver-city"><MapPin size={15} /> VILLE DE RÉCEPTION</label><input id="receiver-city" value={receiverCity} onChange={e => setReceiverCity(e.target.value)} placeholder="Alger, Oran…" /></div>
+                    <div className="hero-field"><label htmlFor="product-search"><ShoppingBag size={15} /> VOTRE PROCHAINE ENVIE</label><input id="product-search" value={productSearch} onChange={e => setProductSearch(e.target.value)} placeholder="Parfum, iPhone, sneakers…" /></div>
+                    <button type="button" className="hero-cta hero-cta-green" onClick={() => { const offres = document.getElementById('section-resultats'); if (offres) offres.scrollIntoView({ behavior: 'smooth' }); }}><Search size={18} /><span>Explorer le catalogue</span></button>
+                  </div>
+                  <div className="hero-secondary-footer"><div className="hero-security"><ShoppingBag size={22} /><span><strong>La boutique inversée, pensée pour vous.</strong><span>Un voyageur achète votre article et vous le rapporte.</span></span></div><button type="button" className="hero-outline-button" onClick={onOpenPublishProduct}><PlusCircle size={17} /> Demander un article <ArrowRight size={16} /></button></div>
+                </div>
               )}
             </div>
-
-            {/* Notification de succès publication */}
-            {publishSuccess && (
-              <div className="mb-4 p-4 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-200 flex items-center gap-3 animate-in fade-in duration-300">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                <div className="text-xs">
-                  <p className="font-bold text-white">Votre voyage a été publié avec succès !</p>
-                  <p className="text-emerald-200/90">Les expéditeurs et personnes intéressées peuvent maintenant vous contacter.</p>
-                </div>
-              </div>
-            )}
-
-            {/* ========================================================= */}
-            {/* PILLAR 1: LE FORMULAIRE VOYAGEUR EXPRESS                  */}
-            {/* ========================================================= */}
-            {activePillar === 'voyageur' && (
-              <div className="bg-white rounded-2xl p-4 sm:p-6 text-slate-900 shadow-xl border border-slate-100">
-                <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold">
-                      <Plane className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <h3 className="font-extrabold text-sm sm:text-base text-slate-900">
-                        Déclarez votre voyage en 30 secondes
-                      </h3>
-                      <p className="text-[11px] text-slate-500">
-                        Choisissez votre trajet, votre horaire et vos 2 options de rentabilisation.
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-[10px] bg-blue-50 text-blue-700 font-bold px-2.5 py-1 rounded-full border border-blue-200">
-                    Profil Voyageur
-                  </span>
-                </div>
-
-                <form onSubmit={handlePublishTripSubmit} className="space-y-4">
-                  {/* Ligne 1 : Départ & Arrivée */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-blue-400 transition-colors">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 mb-1">
-                        <MapPin className="w-3 h-3 text-blue-600" />
-                        Ville de Départ
-                      </label>
-                      <input 
-                        type="text"
-                        required
-                        value={voyageOrigin}
-                        onChange={(e) => setVoyageOrigin(e.target.value)}
-                        placeholder="Ex: Marseille (MRS), Paris, Lyon..."
-                        className="w-full bg-transparent text-xs sm:text-sm font-bold text-slate-900 focus:outline-none"
-                      />
-                    </div>
-
-                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-blue-400 transition-colors">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 mb-1">
-                        <MapPin className="w-3 h-3 text-emerald-600" />
-                        Ville d'Arrivée
-                      </label>
-                      <input 
-                        type="text"
-                        required
-                        value={voyageDestination}
-                        onChange={(e) => setVoyageDestination(e.target.value)}
-                        placeholder="Ex: Alger (ALG), Oran, Constantine..."
-                        className="w-full bg-transparent text-xs sm:text-sm font-bold text-slate-900 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Ligne 2 : Date, Horaire et Kilos disponibles */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {/* Date Jour / Mois / Année */}
-                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between mb-1">
-                        <span className="flex items-center gap-1 text-cyan-700">
-                          <Calendar className="w-3 h-3" />
-                          Date de voyage
-                        </span>
-                        <span className="text-[9px] text-slate-400">Jour/Mois/Année</span>
-                      </label>
-                      <input 
-                        type="date"
-                        required
-                        value={voyageDate}
-                        onChange={(e) => setVoyageDate(e.target.value)}
-                        className="w-full bg-transparent text-xs font-bold text-slate-900 focus:outline-none cursor-pointer"
-                      />
-                      <span className="block text-[11px] text-blue-600 font-extrabold mt-0.5">
-                        📅 {formatFullDate(voyageDate)}
-                      </span>
-                    </div>
-
-                    {/* Horaire de départ */}
-                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 mb-1 text-amber-700">
-                        <Clock className="w-3 h-3" />
-                        Horaire de Départ
-                      </label>
-                      <input 
-                        type="time"
-                        required
-                        value={voyageTime}
-                        onChange={(e) => setVoyageTime(e.target.value)}
-                        className="w-full bg-transparent text-xs sm:text-sm font-bold text-slate-900 focus:outline-none cursor-pointer mt-1"
-                      />
-                      <span className="block text-[10px] text-slate-500 font-semibold mt-0.5">
-                        Départ prévu à {voyageTime}
-                      </span>
-                    </div>
-
-                    {/* Espace disponible dans la valise (Kilos) */}
-                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between mb-1 text-indigo-700">
-                        <span className="flex items-center gap-1">
-                          <Weight className="w-3 h-3" />
-                          Espace dans la valise
-                        </span>
-                        <span className="text-xs font-black text-blue-600">{voyageKg} kg</span>
-                      </label>
-                      <div className="flex items-center gap-2 mt-1">
-                        <input 
-                          type="range"
-                          min="1"
-                          max="35"
-                          value={voyageKg}
-                          onChange={(e) => setVoyageKg(parseInt(e.target.value))}
-                          className="w-full accent-blue-600 cursor-pointer"
-                        />
-                      </div>
-                      <div className="flex justify-between text-[9px] text-slate-400 font-bold mt-1">
-                        <span>1 kg</span>
-                        <span>15 kg</span>
-                        <span>35 kg</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Ligne 3 : LES 2 OPTIONS CLÉS EXIGÉES PAR LE CLIENT */}
-                  <div className="p-4 bg-slate-50/80 rounded-2xl border-2 border-dashed border-slate-200 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                        <Sparkles className="w-4 h-4 text-amber-500" />
-                        Que souhaitez-vous faire durant ce voyage ?
-                      </span>
-                      <span className="text-[10px] text-slate-500 font-semibold">Cochez 1 ou les 2 options</span>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                      {/* Option A : Transporter le colis d'un tiers */}
-                      <div 
-                        onClick={() => setCanCarryParcel(!canCarryParcel)}
-                        className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all ${
-                          canCarryParcel 
-                            ? 'bg-blue-50/70 border-blue-600 shadow-xs' 
-                            : 'bg-white border-slate-200 opacity-60 hover:opacity-100'
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <input 
-                            type="checkbox"
-                            checked={canCarryParcel}
-                            onChange={(e) => setCanCarryParcel(e.target.checked)}
-                            className="w-4 h-4 mt-0.5 accent-blue-600 rounded cursor-pointer"
-                          />
-                          <div className="flex-1">
-                            <span className="font-extrabold text-xs text-slate-900 block">
-                              📦 Transporter le colis d'un tiers
-                            </span>
-                            <span className="text-[11px] text-slate-500 block leading-tight mt-0.5">
-                              J'accepte de prendre des paquets ou documents dans ma valise.
-                            </span>
-
-                            {canCarryParcel && (
-                              <div className="mt-2.5 pt-2 border-t border-blue-200/80 flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
-                                <span className="text-[10px] font-bold text-slate-600">Mon tarif par kilo :</span>
-                                <div className="flex items-center gap-1">
-                                  <input 
-                                    type="number"
-                                    min="5"
-                                    max="50"
-                                    value={pricePerKg}
-                                    onChange={(e) => setPricePerKg(Math.max(1, parseInt(e.target.value) || 0))}
-                                    className="w-14 px-2 py-1 text-xs font-black text-center bg-white border border-blue-300 rounded-lg focus:outline-none"
-                                  />
-                                  <span className="text-xs font-extrabold text-blue-600">€ / kg</span>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Option B : Acheter une marchandise pour quelqu'un */}
-                      <div 
-                        onClick={() => setCanBuyProduct(!canBuyProduct)}
-                        className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all ${
-                          canBuyProduct 
-                            ? 'bg-emerald-50/70 border-emerald-600 shadow-xs' 
-                            : 'bg-white border-slate-200 opacity-60 hover:opacity-100'
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <input 
-                            type="checkbox"
-                            checked={canBuyProduct}
-                            onChange={(e) => setCanBuyProduct(e.target.checked)}
-                            className="w-4 h-4 mt-0.5 accent-emerald-600 rounded cursor-pointer"
-                          />
-                          <div className="flex-1">
-                            <span className="font-extrabold text-xs text-slate-900 block">
-                              🛍️ Acheter une marchandise pour quelqu'un
-                            </span>
-                            <span className="text-[11px] text-slate-500 block leading-tight mt-0.5">
-                              J'achète en magasin ou Duty Free et je livre à l'arrivée.
-                            </span>
-
-                            {canBuyProduct && (
-                              <div className="mt-2.5 pt-2 border-t border-emerald-200/80 flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
-                                <span className="text-[10px] font-bold text-slate-600">Ma commission souhaitée :</span>
-                                <div className="flex items-center gap-1">
-                                  <input 
-                                    type="number"
-                                    min="10"
-                                    max="200"
-                                    value={shoppingCommission}
-                                    onChange={(e) => setShoppingCommission(Math.max(1, parseInt(e.target.value) || 0))}
-                                    className="w-14 px-2 py-1 text-xs font-black text-center bg-white border border-emerald-300 rounded-lg focus:outline-none"
-                                  />
-                                  <span className="text-xs font-extrabold text-emerald-600">€</span>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bouton de Publication Unique */}
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                    <div className="text-[11px] text-slate-500 flex items-center gap-1.5">
-                      <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                      <span>Fonds garantis sous séquestre Stripe & remise sécurisée.</span>
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="w-full sm:w-auto px-8 py-3.5 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <span>Publier mon voyage en 30 secondes</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </form>
-              </div>
-            )}
-
-            {/* ========================================================= */}
-            {/* PILLAR 2: RECHERCHE & DÉPÔT EXPÉDITEUR                     */}
-            {/* ========================================================= */}
-            {activePillar === 'expediteur' && (
-              <div className="bg-white rounded-2xl p-4 sm:p-6 text-slate-900 shadow-xl border border-slate-100 space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center font-bold">
-                      <Package className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <h3 className="font-extrabold text-sm sm:text-base text-slate-900">
-                        Trouver un voyageur pour acheminer votre colis
-                      </h3>
-                      <p className="text-[11px] text-slate-500">
-                        Voyageurs vérifiés partant de Marseille vers Alger, Oran et le Maghreb.
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={onOpenPublishParcel}
-                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl flex items-center gap-1 shadow-xs"
-                  >
-                    <PlusCircle className="w-3.5 h-3.5" />
-                    <span>Déposer un colis</span>
-                  </button>
-                </div>
-
-                <form onSubmit={handleSenderSearch} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 mb-1">
-                      <MapPin className="w-3 h-3 text-blue-600" />
-                      Ville de Départ
-                    </label>
-                    <input 
-                      type="text"
-                      value={senderOrigin}
-                      onChange={(e) => setSenderOrigin(e.target.value)}
-                      placeholder="Marseille"
-                      className="w-full bg-transparent text-xs sm:text-sm font-bold text-slate-900 focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 mb-1">
-                      <MapPin className="w-3 h-3 text-emerald-600" />
-                      Ville d'Arrivée
-                    </label>
-                    <input 
-                      type="text"
-                      value={senderDestination}
-                      onChange={(e) => setSenderDestination(e.target.value)}
-                      placeholder="Alger"
-                      className="w-full bg-transparent text-xs sm:text-sm font-bold text-slate-900 focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="flex items-center">
-                    <button
-                      type="submit"
-                      className="w-full h-full min-h-[50px] bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 shadow-md"
-                    >
-                      <Search className="w-4 h-4 text-amber-400" />
-                      <span>Trouver les voyageurs disponibles</span>
-                    </button>
-                  </div>
-                </form>
-              </div>
-            )}
-
-            {/* ========================================================= */}
-            {/* PILLAR 3: RECHERCHE & DEMANDE RECEVEUR / ACHETEUR          */}
-            {/* ========================================================= */}
-            {activePillar === 'destinataire' && (
-              <div className="bg-white rounded-2xl p-4 sm:p-6 text-slate-900 shadow-xl border border-slate-100 space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold">
-                      <ShoppingBag className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <h3 className="font-extrabold text-sm sm:text-base text-slate-900">
-                        La Boutique Inversée & Achats d'Europe
-                      </h3>
-                      <p className="text-[11px] text-slate-500">
-                        Commandez un article officiel et un voyageur vous l'achète et vous le rapporte.
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={onOpenPublishProduct}
-                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center gap-1 shadow-xs"
-                  >
-                    <PlusCircle className="w-3.5 h-3.5" />
-                    <span>Demander un article</span>
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 mb-1">
-                      <MapPin className="w-3 h-3 text-emerald-600" />
-                      Votre Ville de Réception
-                    </label>
-                    <input 
-                      type="text"
-                      value={receiverCity}
-                      onChange={(e) => setReceiverCity(e.target.value)}
-                      placeholder="Alger, Oran..."
-                      className="w-full bg-transparent text-xs sm:text-sm font-bold text-slate-900 focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 sm:col-span-2 flex items-center justify-between gap-3">
-                    <div className="flex-1">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 mb-1">
-                        <Search className="w-3 h-3 text-blue-600" />
-                        Article recherché
-                      </label>
-                      <input 
-                        type="text"
-                        value={productSearch}
-                        onChange={(e) => setProductSearch(e.target.value)}
-                        placeholder="Parfums, iPhone, Sneakers Nike, Duty Free..."
-                        className="w-full bg-transparent text-xs sm:text-sm font-bold text-slate-900 focus:outline-none"
-                      />
-                    </div>
-                    <button
-                      onClick={() => {
-                        const offres = document.getElementById('section-resultats');
-                        if (offres) offres.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                      className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shrink-0"
-                    >
-                      Explorer le catalogue
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
           </div>
-
+          <div className="hero-bottom-note"><ShieldCheck size={13} /> Des kilomètres en commun. La confiance en plus.</div>
         </div>
-
       </div>
     </section>
   );
