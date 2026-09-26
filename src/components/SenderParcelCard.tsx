@@ -1,5 +1,5 @@
 import React from 'react';
-import { Package, MapPin, Calendar, Weight, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Package, Calendar, Weight, ArrowRight, ShieldCheck, BadgeCheck } from 'lucide-react';
 import { SenderParcelRequest } from '../types';
 
 interface SenderParcelCardProps {
@@ -7,80 +7,50 @@ interface SenderParcelCardProps {
   onAccept: (request: SenderParcelRequest) => void;
 }
 
-export const SenderParcelCard: React.FC<SenderParcelCardProps> = ({ request, onAccept }) => {
-  return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 hover:border-amber-400 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
-      <div>
-        {/* Top Badges & Budget */}
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1">
-            <Package className="w-3 h-3 text-amber-600" />
-            {request.category}
-          </span>
-          <div className="text-right">
-            <span className="text-xs text-slate-400 font-semibold block">Gain offert :</span>
-            <span className="text-base font-black text-amber-600">+{request.budgetOffer} €</span>
-          </div>
-        </div>
+const cityCode = (city: string) => {
+  const normalized = city.trim().toLowerCase();
+  if (normalized.startsWith('marseille')) return 'MRS';
+  if (normalized.startsWith('alger')) return 'ALG';
+  return city;
+};
 
-        {/* Sender Info */}
-        <div className="flex items-center gap-2.5 mb-3">
-          <img 
-            src={request.senderAvatar} 
-            alt={request.senderName} 
-            className="w-8 h-8 rounded-full object-cover border border-slate-200"
-          />
-          <div>
-            <h4 className="text-xs font-bold text-slate-900">{request.senderName}</h4>
-            <p className="text-[10px] text-slate-500">Expéditeur particulier vérifié</p>
-          </div>
-        </div>
-
-        {/* Route */}
-        <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1.5 mb-3">
-          <div className="flex items-center justify-between text-xs font-extrabold text-slate-900">
-            <span className="flex items-center gap-1 text-blue-600">
-              <MapPin className="w-3.5 h-3.5" />
-              {request.origin}
-            </span>
-            <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-            <span className="flex items-center gap-1 text-emerald-600">
-              <MapPin className="w-3.5 h-3.5" />
-              {request.destination}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-200/50">
-            <span className="flex items-center gap-1">
-              <Calendar className="w-3 h-3 text-cyan-600" />
-              {request.dateDesired}
-            </span>
-            <span className="flex items-center gap-1 font-bold text-slate-700">
-              <Weight className="w-3 h-3 text-amber-600" />
-              {request.weightKg} kg
-            </span>
-          </div>
-        </div>
-
-        {/* Description */}
-        <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-          « {request.itemDescription} »
-        </p>
+export const SenderParcelCard: React.FC<SenderParcelCardProps> = ({ request, onAccept }) => (
+  <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-soft transition duration-300 hover:border-amber-300 hover:shadow-elevated motion-safe:hover:-translate-y-1 motion-reduce:transition-none">
+    <div className="flex-1 p-5 sm:p-6">
+      <div className="flex items-start justify-between gap-3">
+        <span className="inline-flex max-w-[65%] items-center gap-1.5 rounded-lg border border-amber-200/70 bg-amber-50 px-2.5 py-1.5 text-[10px] font-semibold text-amber-800">
+          <Package className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />{request.category}
+        </span>
+        <span className="flex items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600"><Weight className="h-3.5 w-3.5" aria-hidden="true" />{request.weightKg} kg</span>
       </div>
 
-      {/* Action CTA */}
-      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-        <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
-          <ShieldCheck className="w-3.5 h-3.5" />
-          Séquestre garanti
-        </span>
-        <button
-          onClick={() => onAccept(request)}
-          className="px-4 py-2 bg-amber-500 hover:bg-amber-600 active:scale-95 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
-        >
-          <span>Prendre ce colis</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </button>
+      <div className="my-6 flex items-center gap-4" aria-label={`Trajet de ${request.origin} vers ${request.destination}`}>
+        <div className="min-w-0 flex-1">
+          <p className="mb-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-slate-500">Départ</p>
+          <p className="break-words text-3xl font-semibold tracking-tight text-slate-900">{cityCode(request.origin)}</p>
+          <p className="mt-1 break-words text-xs text-slate-500">{request.origin}</p>
+        </div>
+        <div className="flex w-16 shrink-0 items-center gap-1 text-slate-400" aria-hidden="true"><span className="h-1.5 w-1.5 rounded-full border border-slate-300" /><span className="flex-1 border-t border-dashed border-slate-300" /><ArrowRight className="h-4 w-4" /></div>
+        <div className="min-w-0 flex-1 text-right">
+          <p className="mb-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-slate-500">Arrivée</p>
+          <p className="break-words text-3xl font-semibold tracking-tight text-slate-900">{cityCode(request.destination)}</p>
+          <p className="mt-1 break-words text-xs text-slate-500">{request.destination}</p>
+        </div>
+      </div>
+      <div className="flex items-center gap-2 border-y border-slate-100 py-3 text-xs text-slate-600"><Calendar className="h-3.5 w-3.5 text-slate-400" aria-hidden="true" />{request.dateDesired}</div>
+      <p className="mt-4 line-clamp-2 text-sm leading-relaxed text-slate-600">{request.itemDescription}</p>
+      <div className="mt-5 flex items-center gap-3">
+        <div className="relative shrink-0"><img src={request.senderAvatar} alt="" loading="lazy" className="h-9 w-9 rounded-full object-cover ring-1 ring-slate-200 ring-offset-2" /><BadgeCheck className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-white text-blue-600" aria-hidden="true" /></div>
+        <div className="min-w-0"><h3 className="truncate text-xs font-semibold text-slate-900">{request.senderName}</h3><p className="mt-0.5 text-[10px] text-slate-500">Expéditeur vérifié</p></div>
       </div>
     </div>
-  );
-};
+    <div className="relative border-t border-dashed border-slate-300 bg-gradient-to-br from-amber-50/80 to-white p-5 sm:p-6">
+      <span aria-hidden="true" className="absolute -left-2 -top-2 h-4 w-4 rounded-full border border-slate-200 bg-slate-50" /><span aria-hidden="true" className="absolute -right-2 -top-2 h-4 w-4 rounded-full border border-slate-200 bg-slate-50" />
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div><p className="text-[10px] font-medium text-amber-800">Votre récompense</p><p className="mt-1 text-3xl font-semibold tracking-tight text-amber-700">+{request.budgetOffer} <span className="text-xl">€</span></p></div>
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/70 bg-white/80 px-2.5 py-1.5 text-[10px] font-medium text-emerald-700"><ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />Paiement garanti PIN</span>
+      </div>
+      <button type="button" onClick={() => onAccept(request)} className="flex min-h-11 w-full items-center justify-between rounded-xl bg-slate-900 px-4 py-3 text-xs font-semibold text-white shadow-sm transition duration-200 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 motion-safe:active:scale-[0.98] motion-reduce:transition-none">Prendre ce colis<ArrowRight className="h-4 w-4" aria-hidden="true" /></button>
+    </div>
+  </article>
+);

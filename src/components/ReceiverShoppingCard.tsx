@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingBag, Store, MapPin, Calendar, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Store, MapPin, Sparkles, ArrowRight, LockKeyhole } from 'lucide-react';
 import { ReceiverShoppingRequest } from '../types';
 
 interface ReceiverShoppingCardProps {
@@ -7,74 +7,32 @@ interface ReceiverShoppingCardProps {
   onAccept: (request: ReceiverShoppingRequest) => void;
 }
 
-export const ReceiverShoppingCard: React.FC<ReceiverShoppingCardProps> = ({ request, onAccept }) => {
-  return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 hover:border-emerald-400 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
-      <div>
-        {/* Top Badges & Commission */}
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1">
-            <Sparkles className="w-3 h-3 text-emerald-600" />
-            Demande d'achat
-          </span>
-          <div className="text-right">
-            <span className="text-xs text-slate-400 font-semibold block">Commission :</span>
-            <span className="text-base font-black text-emerald-600">+{request.offeredCommission} €</span>
-          </div>
-        </div>
-
-        {/* Product image & title */}
-        <div className="flex items-center gap-3 mb-3">
-          <img 
-            src={request.image} 
-            alt={request.productName} 
-            className="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0"
-          />
-          <div>
-            <h4 className="text-xs font-bold text-slate-900 line-clamp-2 leading-snug">
-              {request.productName}
-            </h4>
-            <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-1">
-              <Store className="w-3 h-3 text-blue-600" />
-              {request.storeName}
-            </p>
-          </div>
-        </div>
-
-        {/* Receiver & Delivery location */}
-        <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1.5 mb-3 text-xs">
-          <div className="flex items-center justify-between text-slate-700">
-            <span className="text-slate-500">Destinataire :</span>
-            <span className="font-bold text-slate-900">{request.receiverName}</span>
-          </div>
-          <div className="flex items-center justify-between text-slate-700">
-            <span className="text-slate-500">Ville de livraison :</span>
-            <span className="font-bold text-emerald-600 flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5" />
-              {request.city}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-slate-700 pt-1 border-t border-slate-200/50">
-            <span className="text-slate-500">Prix magasin :</span>
-            <span className="font-extrabold text-slate-900">{request.estimatedPrice.toFixed(2)} €</span>
-          </div>
-        </div>
+export const ReceiverShoppingCard: React.FC<ReceiverShoppingCardProps> = ({ request, onAccept }) => (
+  <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-soft transition duration-300 hover:border-emerald-200 hover:shadow-elevated motion-safe:hover:-translate-y-1 motion-reduce:transition-none">
+    <div className="relative m-3 mb-0 rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 via-white to-emerald-50/60 p-5">
+      <div className="flex items-center justify-between gap-2">
+        <span className="inline-flex min-w-0 items-center gap-1.5 rounded-lg border border-white bg-white/90 px-2.5 py-1.5 text-[10px] font-semibold text-slate-700 shadow-sm"><Store className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" /><span className="truncate">{request.storeName}</span></span>
+        <Sparkles className="h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true" />
       </div>
-
-      {/* Action CTA */}
-      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-        <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
-          <ShieldCheck className="w-3.5 h-3.5" />
-          Fonds bloqués
-        </span>
-        <button
-          onClick={() => onAccept(request)}
-          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
-        >
-          <span>Acheter & rapporter</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </button>
+      <div className="mx-auto mt-4 flex h-40 w-full items-center justify-center overflow-hidden rounded-xl bg-white p-3 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] ring-1 ring-slate-900/5">
+        <img src={request.image} alt={request.productName} loading="lazy" className="h-full w-full object-contain transition-transform duration-500 motion-safe:group-hover:scale-105 motion-reduce:transition-none" />
+      </div>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+        <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500">Personal shopping</span>
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-semibold tabular-nums text-emerald-800 shadow-[0_0_18px_rgba(16,185,129,0.12)]" aria-label={`Commission : ${request.offeredCommission} euros`}>+{request.offeredCommission} €</span>
       </div>
     </div>
-  );
-};
+    <div className="flex flex-1 flex-col p-5 sm:p-6">
+      <h3 className="line-clamp-2 text-base font-semibold leading-snug tracking-tight text-slate-900">{request.productName}</h3>
+      <p className="mt-2 text-xs text-slate-500">Pour <span className="font-medium text-slate-700">{request.receiverName}</span></p>
+      <div className="mb-5 mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50/70 p-3">
+        <div className="min-w-0"><p className="mb-1 text-[10px] text-slate-500">Livraison à</p><p className="flex items-center gap-1 text-xs font-semibold text-slate-800"><MapPin className="h-3.5 w-3.5 shrink-0 text-emerald-600" aria-hidden="true" />{request.city}</p></div>
+        <div className="text-right"><p className="mb-1 text-[10px] text-slate-500">Prix magasin</p><p className="text-xs font-semibold tabular-nums text-slate-800">{request.estimatedPrice.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}</p></div>
+      </div>
+      <div className="mt-auto">
+        <p className="mb-4 flex items-center justify-center gap-1.5 text-[10px] font-medium text-emerald-700"><LockKeyhole className="h-3.5 w-3.5" aria-hidden="true" />Fonds bloqués · Séquestre garanti</p>
+        <button type="button" onClick={() => onAccept(request)} className="flex min-h-11 w-full items-center justify-between rounded-xl bg-emerald-700 px-4 py-3 text-xs font-semibold text-white shadow-[0_4px_12px_rgba(5,150,105,0.16)] transition duration-200 hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 motion-safe:active:scale-[0.98] motion-reduce:transition-none">Acheter & rapporter<ArrowRight className="h-4 w-4" aria-hidden="true" /></button>
+      </div>
+    </div>
+  </article>
+);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plane, Package, ArrowRight, ShieldCheck, Heart } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Headphones, LockKeyhole, Plane, ShieldCheck } from 'lucide-react';
 import { PlatformMode } from '../types';
 
 interface FooterProps {
@@ -8,142 +8,68 @@ interface FooterProps {
   onOpenPublishModal: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({
-  mode,
-  onOpenHowItWorks,
-  onOpenPublishModal
-}) => {
-  return (
-    <footer id="footer" className="bg-slate-900 text-white border-t border-slate-800">
-      
-      {/* Banner Bottom Hero */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-12 pb-8">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 border border-slate-700 p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="relative z-10 max-w-xl text-center md:text-left">
-            <h4 className="text-2xl sm:text-3xl font-extrabold text-white">
-              Vos envies n'ont plus de frontières
-            </h4>
-            <p className="text-slate-300 text-sm mt-2">
-              Shopping, voyage, économies... tout est possible avec notre communauté internationale.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3 justify-center md:justify-start">
-              <button
-                onClick={onOpenPublishModal}
-                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5"
-              >
-                <span>Explorer maintenant</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={onOpenHowItWorks}
-                className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs rounded-xl transition-all"
-              >
-                Comment ça marche ?
-              </button>
-            </div>
-          </div>
+const routes = ['Marseille ⇄ Alger', 'Paris ⇄ Alger', 'Lyon ⇄ Oran', 'Marseille ⇄ Tunis'];
+const trustBadges = [
+  { icon: LockKeyhole, title: 'Stripe Connect Escrow', description: 'Fonds bloqués jusqu’à validation' },
+  { icon: ShieldCheck, title: 'Assurance partenaire', description: 'Une protection pour vos envois' },
+  { icon: Headphones, title: 'Support 24/7', description: 'À vos côtés, à chaque étape' },
+];
+const focus = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950';
+const linkStyle = `inline-flex min-h-11 items-center rounded-md text-sm text-slate-400 transition-colors hover:text-white ${focus}`;
 
-          <div className="relative z-10 text-center md:text-right">
-            <div className="font-handwritten text-3xl sm:text-4xl text-amber-200 font-bold -rotate-3">
-              Le monde à portée de main ✈
-            </div>
-            <p className="text-xs text-slate-400 mt-2">
-              Plus de 45 000 voyageurs connectés chaque mois.
-            </p>
-          </div>
+export const Footer: React.FC<FooterProps> = ({ mode, onOpenHowItWorks, onOpenPublishModal }) => (
+  <footer id="footer" className="relative isolate overflow-hidden border-t border-indigo-900/70 bg-slate-950 px-4 pb-24 text-white sm:px-6 sm:pb-8">
+    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-96 bg-[radial-gradient(ellipse_at_top_right,rgba(49,46,129,0.3),transparent_65%)]" />
+    <div className="mx-auto max-w-7xl">
+      <div className="flex flex-col justify-between gap-8 border-b border-white/10 py-12 sm:py-16 lg:flex-row lg:items-center">
+        <div>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-300">D’une rive à l’autre</p>
+          <h2 className="max-w-2xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">Le prochain départ<br /><span className="text-slate-400">rapproche vos envies.</span></h2>
+          <p className="mt-4 max-w-lg text-sm leading-7 text-slate-400">Une place dans une valise. Un achat qui vous attend.<br className="hidden sm:block" /> Et toute une communauté pour faire le lien.</p>
         </div>
-
-        {/* Mega Footer Columns */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mt-12 pt-8 border-t border-slate-800 text-xs">
-          
-          {/* Col 1 : Brand & App badges */}
-          <div className="col-span-2">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white shadow-sm">
-                {mode === 'shop' ? <Plane className="w-4 h-4 -rotate-45" /> : <Package className="w-4 h-4" />}
-              </div>
-              <span className="font-extrabold text-lg text-white">
-                Shop&Go <span className="text-blue-400">/ Bag&Go</span>
-              </span>
-            </div>
-            <p className="text-slate-400 mt-3 leading-relaxed max-w-sm">
-              Plateforme pionnière de shopping collaboratif et fret de bagages de confiance. Sécurisée par Stripe Connect et vérifiée par Stripe Identity.
-            </p>
-
-            {/* Mobile App Download Badges */}
-            <div className="flex items-center gap-3 mt-5">
-              {/* App Store button */}
-              <div className="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700 cursor-pointer transition-colors">
-                <span className="text-base"></span>
-                <div className="text-left">
-                  <p className="text-[9px] text-slate-400 leading-none">Télécharger sur</p>
-                  <p className="text-[11px] font-bold text-white leading-tight">App Store</p>
-                </div>
-              </div>
-
-              {/* Google Play button */}
-              <div className="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700 cursor-pointer transition-colors">
-                <span className="text-base">▶</span>
-                <div className="text-left">
-                  <p className="text-[9px] text-slate-400 leading-none">DISPONIBLE SUR</p>
-                  <p className="text-[11px] font-bold text-white leading-tight">Google Play</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Col 2 : Plateforme */}
-          <div>
-            <h5 className="font-bold text-slate-200 uppercase tracking-wider mb-3">Navigation</h5>
-            <ul className="space-y-2 text-slate-400">
-              <li><a href="#hero" className="hover:text-white transition-colors">Accueil</a></li>
-              <li><a href="#offres" className="hover:text-white transition-colors">Explorer les offres</a></li>
-              <li><a href="#comment-ca-marche" className="hover:text-white transition-colors">Comment ça marche</a></li>
-              <li><a href="#securite" className="hover:text-white transition-colors">Sécurité & KYC</a></li>
-              <li><button onClick={onOpenPublishModal} className="hover:text-white transition-colors text-left">Publier une annonce</button></li>
-            </ul>
-          </div>
-
-          {/* Col 3 : Destinations */}
-          <div>
-            <h5 className="font-bold text-slate-200 uppercase tracking-wider mb-3">Destinations Clés</h5>
-            <ul className="space-y-2 text-slate-400">
-              <li>Paris (CDG/ORY) ➔ Abidjan (ABJ)</li>
-              <li>Paris ➔ Dakar (DSS)</li>
-              <li>Lyon ➔ Cotonou (COO)</li>
-              <li>Marseille ➔ Alger (ALG)</li>
-              <li>Bruxelles ➔ Douala (DLA)</li>
-              <li>New York ➔ Paris</li>
-            </ul>
-          </div>
-
-          {/* Col 4 : Sécurité & Légal */}
-          <div>
-            <h5 className="font-bold text-slate-200 uppercase tracking-wider mb-3">Sécurité & Garanties</h5>
-            <ul className="space-y-2 text-slate-400">
-              <li>Stripe Connect Séquestre</li>
-              <li>Vérification KYC (Stripe Identity)</li>
-              <li>Contrôle de ticket de caisse</li>
-              <li>Vérification carte d'embarquement</li>
-              <li>Assurance et litiges</li>
-            </ul>
-          </div>
-
+        <div className="flex shrink-0 flex-col items-start gap-4">
+          <button type="button" onClick={onOpenPublishModal} className={`group inline-flex min-h-12 items-center justify-center gap-6 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 shadow-[0_0_30px_-12px_rgba(165,180,252,0.6)] transition-colors hover:bg-indigo-100 ${focus}`}>Publier une annonce<ArrowUpRight aria-hidden="true" className="h-4 w-4 transition-transform motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5" /></button>
+          <button type="button" onClick={onOpenHowItWorks} className={`inline-flex min-h-11 items-center gap-3 rounded-md px-2 text-sm text-slate-300 transition-colors hover:text-white ${focus}`}>Découvrir le fonctionnement<ArrowRight aria-hidden="true" className="h-4 w-4" /></button>
         </div>
-
-        {/* Bottom copyright & legal bar */}
-        <div className="mt-10 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
-          <p>© 2026 Shop&Go & Bag&Go. Tous droits réservés.</p>
-          <div className="flex items-center gap-4">
-            <span className="hover:text-slate-400 cursor-pointer">CGU</span>
-            <span>•</span>
-            <span className="hover:text-slate-400 cursor-pointer">Politique de confidentialité</span>
-            <span>•</span>
-            <span className="hover:text-slate-400 cursor-pointer">Mentions légales</span>
-          </div>
-        </div>
-
       </div>
-    </footer>
-  );
-};
+
+      <ul aria-label="Confiance et garanties" className="grid gap-3 py-8 md:grid-cols-3">
+        {trustBadges.map(({ icon: Icon, title, description }) => <li key={title} className="flex items-center gap-4 rounded-2xl border border-indigo-300/10 bg-white/[0.025] p-5">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-indigo-300/15 bg-indigo-400/10 text-indigo-200"><Icon aria-hidden="true" className="h-5 w-5" /></span>
+          <div><p className="text-sm font-semibold text-slate-100">{title}</p><p className="mt-1 text-xs leading-5 text-slate-400">{description}</p></div>
+        </li>)}
+      </ul>
+
+      <div className="grid gap-10 pb-12 pt-4 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.8fr_1fr] lg:gap-16">
+        <div className="sm:col-span-2 lg:col-span-1">
+          <a href="#hero" aria-label={`${mode === 'shop' ? 'Shop&Go' : 'BagVoyage'} — Accueil`} className={`inline-flex items-center gap-3 rounded-lg ${focus}`}>
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-blue-400/30 bg-gradient-to-br from-blue-500 to-indigo-700 shadow-lg shadow-indigo-950"><Plane aria-hidden="true" className="h-5 w-5" /></span>
+            <span className="text-xl font-semibold tracking-tight">{mode === 'shop' ? 'Shop&Go' : 'BagVoyage'}<span className="text-blue-400">.</span></span>
+          </a>
+          <p className="mt-5 max-w-sm text-sm leading-7 text-slate-400">BagVoyage & Shop&Go relient voyageurs, expéditeurs et acheteurs. Des échanges plus simples, de part et d’autre de la Méditerranée.</p>
+          <a href="#securite" className={`mt-5 inline-flex min-h-11 items-center gap-2 rounded-md text-xs font-medium text-emerald-300 transition-colors hover:text-emerald-200 ${focus}`}><ShieldCheck aria-hidden="true" className="h-4 w-4" />La confiance à chaque étape<ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" /></a>
+        </div>
+        <nav aria-label="Navigation de pied de page">
+          <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-slate-200">La plateforme</h3>
+          <ul className="space-y-1">
+            <li><a href="#hero" className={linkStyle}>Accueil</a></li>
+            <li><a href="#section-resultats" className={linkStyle}>Explorer les offres</a></li>
+            <li><button type="button" onClick={onOpenHowItWorks} className={linkStyle}>Comment ça marche</button></li>
+            <li><a href="#securite" className={linkStyle}>Sécurité & garanties</a></li>
+            <li><button type="button" onClick={onOpenPublishModal} className={linkStyle}>Publier une annonce</button></li>
+          </ul>
+        </nav>
+        <nav aria-label="Liaisons méditerranéennes">
+          <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-slate-200">La Méditerranée nous relie</h3>
+          <ul className="space-y-1">{routes.map(route => <li key={route}><a href="#section-resultats" className={`group flex min-h-12 items-center justify-between gap-4 rounded-md border-b border-white/5 text-sm text-slate-400 transition-colors hover:text-white ${focus}`}><span>{route}</span><ArrowUpRight aria-hidden="true" className="h-4 w-4 shrink-0 text-slate-500 transition-colors group-hover:text-indigo-300" /></a></li>)}</ul>
+          <p className="mt-4 text-xs leading-5 text-slate-500">Retrouvez les trajets dans nos offres.</p>
+        </nav>
+      </div>
+
+      <div className="flex flex-col justify-between gap-4 border-t border-indigo-900/50 pt-6 text-xs leading-6 text-slate-400 md:flex-row">
+        <p>© {new Date().getFullYear()} BagVoyage & Shop&Go. Tous droits réservés.</p>
+        <p className="flex items-start gap-2"><LockKeyhole aria-hidden="true" className="mt-1 h-3.5 w-3.5 shrink-0 text-indigo-300" /><span>Paiements sécurisés par Stripe Connect · Remise validée par PIN.</span></p>
+      </div>
+    </div>
+  </footer>
+);

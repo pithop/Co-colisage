@@ -140,6 +140,7 @@ function MainAppContent() {
       
       {/* Header avec Navigation principale */}
       <Header
+        pillarCounts={{ voyageur: tripsList.length, expediteur: parcelsList.length, destinataire: shoppingList.length }}
         activePillar={activePillar}
         onSelectPillar={setActivePillar}
         isPhoneFrame={isPhoneFrame}
@@ -175,7 +176,7 @@ function MainAppContent() {
         {/* Algorithme IA de Billetterie & Arbitrage (Voyagez Gratuit & Gagnez de l'Argent) */}
         <SmartFlightArbitrage
           opportunities={arbitrageOpportunities}
-          onSelectOpportunity={(opp) => setSelectedArbitrage(opp)}
+          onSelectDeal={(opp) => setSelectedArbitrage(opp)}
         />
 
         {/* =================================================================== */}

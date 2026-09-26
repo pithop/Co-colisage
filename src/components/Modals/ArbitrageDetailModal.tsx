@@ -62,7 +62,7 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
               <div className="flex items-center gap-2">
                 <h3 className="font-extrabold text-base text-white">Algorithme d'Arbitrage IA</h3>
                 <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full font-extrabold">
-                  Voyage 100% Gratuit
+                  {opportunity.netProfit >= 0 ? 'Voyage 100% financé' : 'Voyage à compléter'}
                 </span>
               </div>
               <p className="text-xs text-slate-300">
@@ -132,11 +132,11 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <img 
+                  {opportunity.clientAvatar && <img
                     src={opportunity.clientAvatar} 
                     alt={opportunity.clientName} 
                     className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-xs"
-                  />
+                  />}
                   <div>
                     <h5 className="font-bold text-xs text-slate-900">{opportunity.ordersDescription}</h5>
                     <p className="text-[11px] text-slate-500 mt-0.5">
@@ -165,11 +165,11 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
                 <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
                   <div>
                     <p className="text-[11px] text-slate-400 font-semibold">Votre Bénéfice Net :</p>
-                    <p className="text-2xl font-black text-emerald-400">+{opportunity.netProfit},00 €</p>
+                    <p className="text-2xl font-black text-emerald-400">{opportunity.netProfit > 0 ? '+' : ''}{opportunity.netProfit},00 €</p>
                   </div>
                   <div className="text-right">
                     <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 px-2.5 py-1 rounded-full font-extrabold uppercase tracking-wide">
-                      Billet 100% Gratuit
+                      {opportunity.netProfit >= 0 ? 'Billet 100% financé' : 'Billet partiellement financé'}
                     </span>
                   </div>
                 </div>
@@ -183,7 +183,7 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
                 </p>
                 <ol className="list-decimal list-inside space-y-1 text-[11px] text-slate-500 pl-1">
                   <li>L'acheteur a déjà bloqué les <strong>{opportunity.totalOrderReward} €</strong> sur Stripe.</li>
-                  <li>Vous achetez les 2 parfums en Duty Free avant d'embarquer.</li>
+                  <li>Vous prenez en charge les missions sélectionnées : {opportunity.ordersDescription}.</li>
                   <li>À l'arrivée à {opportunity.city}, vous remettez les articles et encaissez <strong>{opportunity.totalOrderReward} €</strong> instantanément.</li>
                 </ol>
               </div>
@@ -193,7 +193,7 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
                 onClick={handleConfirm}
                 className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>Accepter la mission & Débloquer mon voyage gratuit</span>
+                <span>Confirmer les missions sélectionnées</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </>

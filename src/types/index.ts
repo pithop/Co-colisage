@@ -44,6 +44,8 @@ export interface FreightItem {
   travelerAvatar: string;
   rating: number;
   reviewsCount: number;
+  isIdentityVerified?: boolean;
+  completedTrips?: number;
   image: string;
   description: string;
   remainingMinutes?: number;
