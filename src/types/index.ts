@@ -93,3 +93,32 @@ export interface ReceiverShoppingRequest {
   image: string;
   urgent?: boolean;
 }
+
+export interface FlightDeal {
+  id: string;
+  origin: string;
+  originCode: string;
+  destination: string;
+  destinationCode: string;
+  departureDate: string;
+  departureTime: string;
+  airline: string;
+  flightNumber: string;
+  flightPrice: number; // e.g. 49
+  carrierType: 'avion' | 'bateau';
+}
+
+export interface ArbitrageOpportunity {
+  id: string;
+  title: string;
+  city: string;
+  flight: FlightDeal;
+  ordersCount: number;
+  ordersDescription: string;
+  totalOrderReward: number; // e.g. 150
+  netProfit: number; // totalOrderReward - flightPrice = +101
+  clientName: string;
+  clientAvatar: string;
+  escrowSecured: boolean;
+  tag: string;
+}

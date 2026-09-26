@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { MainPillar, ProductItem, FreightItem, SenderParcelRequest, ReceiverShoppingRequest } from './types';
-import { products, freightOffers, senderParcelRequests, receiverShoppingRequests, notifications } from './data/mockData';
+import { MainPillar, ProductItem, FreightItem, SenderParcelRequest, ReceiverShoppingRequest, ArbitrageOpportunity } from './types';
+import { products, freightOffers, senderParcelRequests, receiverShoppingRequests, notifications, arbitrageOpportunities } from './data/mockData';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Header } from './components/Header';
 import { ThreePillarsTabs } from './components/ThreePillarsTabs';
 import { HeroSection } from './components/HeroSection';
+import { SmartFlightArbitrage } from './components/SmartFlightArbitrage';
 import { CategoriesBar } from './components/CategoriesBar';
 import { ProductCard } from './components/ProductCard';
 import { FreightCard } from './components/FreightCard';
@@ -16,6 +17,7 @@ import { SecuritySection } from './components/SecuritySection';
 import { Footer } from './components/Footer';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { PhoneSimulator } from './components/PhoneSimulator';
+import { LiveArbitrageToast } from './components/LiveArbitrageToast';
 
 // Modals
 import { ProductDetailModal } from './components/Modals/ProductDetailModal';
@@ -24,6 +26,7 @@ import { PinDeliveryModal } from './components/Modals/PinDeliveryModal';
 import { PublishModal } from './components/Modals/PublishModal';
 import { HowItWorksModal } from './components/Modals/HowItWorksModal';
 import { MessagingModal } from './components/Modals/MessagingModal';
+import { ArbitrageDetailModal } from './components/Modals/ArbitrageDetailModal';
 
 // Auth & Dashboards
 import { AuthModal } from './components/Auth/AuthModal';
@@ -53,6 +56,7 @@ function MainAppContent() {
   const [selectedFreight, setSelectedFreight] = useState<FreightItem | null>(null);
   const [proofProduct, setProofProduct] = useState<ProductItem | null>(null);
   const [pinDeliveryProduct, setPinDeliveryProduct] = useState<ProductItem | null>(null);
+  const [selectedArbitrage, setSelectedArbitrage] = useState<ArbitrageOpportunity | null>(null);
   
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [publishModalTab, setPublishModalTab] = useState<MainPillar>('voyageur');
@@ -166,6 +170,12 @@ function MainAppContent() {
           onOpenPublishParcel={() => handleOpenPublish('expediteur')}
           onOpenPublishProduct={() => handleOpenPublish('destinataire')}
           onOpenHowItWorks={() => setIsHowItWorksOpen(true)}
+        />
+
+        {/* Algorithme IA de Billetterie & Arbitrage (Voyagez Gratuit & Gagnez de l'Argent) */}
+        <SmartFlightArbitrage
+          opportunities={arbitrageOpportunities}
+          onSelectOpportunity={(opp) => setSelectedArbitrage(opp)}
         />
 
         {/* =================================================================== */}
@@ -541,6 +551,21 @@ function MainAppContent() {
           setActiveDashboard('none');
           setIsMessagingOpen(true);
         }}
+      />
+
+      {/* Modal d'Arbitrage Vol Gratuit & Rémunéré */}
+      <ArbitrageDetailModal
+        opportunity={selectedArbitrage}
+        onClose={() => setSelectedArbitrage(null)}
+        onSuccess={(opp) => {
+          alert(`🎉 Bravo ! Mission confirmée pour ${opp.city}. Vos ${opp.totalOrderReward} € sont sous séquestre garanti Stripe.`);
+        }}
+      />
+
+      {/* Alerte Toast Arbitrage Live Push */}
+      <LiveArbitrageToast
+        opportunity={arbitrageOpportunities[0]}
+        onOpen={(opp) => setSelectedArbitrage(opp)}
       />
 
     </div>

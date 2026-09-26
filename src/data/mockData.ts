@@ -1,4 +1,4 @@
-import { ProductItem, FreightItem, CategoryItem, NotificationItem, SenderParcelRequest, ReceiverShoppingRequest } from '../types';
+import { ProductItem, FreightItem, CategoryItem, NotificationItem, SenderParcelRequest, ReceiverShoppingRequest, ArbitrageOpportunity, FlightDeal } from '../types';
 
 export const categories: CategoryItem[] = [
   {
@@ -425,5 +425,87 @@ export const notifications: NotificationItem[] = [
     time: 'Il y a 2h',
     unread: true,
     type: 'chat'
+  }
+];
+
+// Algorithme IA d'arbitrage billetterie & commandes (Spécifié par le client dans ses 3 audios)
+export const arbitrageOpportunities: ArbitrageOpportunity[] = [
+  {
+    id: 'arb-mrs-alg-1',
+    title: 'Marseille ➔ Alger (Vol dans 48h)',
+    city: 'Alger',
+    flight: {
+      id: 'fl-1',
+      origin: 'Marseille Provence (MRS)',
+      originCode: 'MRS',
+      destination: 'Alger Houari Boumédiène (ALG)',
+      destinationCode: 'ALG',
+      departureDate: '29 septembre 2026',
+      departureTime: '09:15',
+      airline: 'Air Algérie / Vueling',
+      flightNumber: 'AH 1005',
+      flightPrice: 49,
+      carrierType: 'avion'
+    },
+    ordersCount: 2,
+    ordersDescription: '2 Coffrets Parfums Dior Sauvage Eau de Parfum (100ml)',
+    totalOrderReward: 150,
+    netProfit: 101, // 150 - 49 = +101€ net
+    clientName: 'Amel Kaci (Alger)',
+    clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    escrowSecured: true,
+    tag: 'Billet 100% Remboursé + 101€ Net'
+  },
+  {
+    id: 'arb-par-mil-2',
+    title: 'Paris ➔ Milan (Vol low-cost 72h)',
+    city: 'Milan',
+    flight: {
+      id: 'fl-2',
+      origin: 'Paris Beauvais (BVA)',
+      originCode: 'PAR',
+      destination: 'Milan Malpensa (MXP)',
+      destinationCode: 'MIL',
+      departureDate: '30 septembre 2026',
+      departureTime: '07:20',
+      airline: 'EasyJet / Ryanair',
+      flightNumber: 'U2 2781',
+      flightPrice: 39,
+      carrierType: 'avion'
+    },
+    ordersCount: 1,
+    ordersDescription: '2 Sacs Maroquinerie Cuir Artisanal de créateur',
+    totalOrderReward: 125,
+    netProfit: 86, // 125 - 39 = +86€ net
+    clientName: 'Marco Bellini (Milan)',
+    clientAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+    escrowSecured: true,
+    tag: 'Billet 100% Remboursé + 86€ Net'
+  },
+  {
+    id: 'arb-mrs-orn-3',
+    title: 'Marseille ➔ Oran (Traversée express)',
+    city: 'Oran',
+    flight: {
+      id: 'fl-3',
+      origin: 'Marseille (MRS)',
+      originCode: 'MRS',
+      destination: 'Oran Ahmed Ben Bella (ORN)',
+      destinationCode: 'ORN',
+      departureDate: '01 octobre 2026',
+      departureTime: '13:40',
+      airline: 'Transavia France',
+      flightNumber: 'TO 7240',
+      flightPrice: 55,
+      carrierType: 'avion'
+    },
+    ordersCount: 2,
+    ordersDescription: 'Smartphone neuf sous blister + Colis textile familial (4 kg)',
+    totalOrderReward: 160,
+    netProfit: 105, // 160 - 55 = +105€ net
+    clientName: 'Samira Belhadj (Oran)',
+    clientAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+    escrowSecured: true,
+    tag: 'Billet 100% Remboursé + 105€ Net'
   }
 ];
