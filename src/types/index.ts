@@ -24,6 +24,24 @@ export interface ProductItem {
   sizeFormat?: 'S' | 'M' | 'L' | 'XL';
 }
 
+export interface TicketScanResult {
+  airline: string;
+  airlineLogo?: string;
+  flightNumber: string;
+  pnr: string;
+  passengerName: string;
+  origin: string;
+  originCode: string;
+  destination: string;
+  destinationCode: string;
+  departureDate: string;
+  departureTime: string;
+  baggageAllowanceKg: number;
+  baggageType: 'cabin' | 'hold';
+  maxAllowedOfferKg: number; // e.g. 10kg ticket -> max 9kg offer (1kg reserved for personal items)
+  ticketVerified: boolean;
+}
+
 export interface FreightItem {
   id: string;
   title: string;
@@ -49,6 +67,8 @@ export interface FreightItem {
   image: string;
   description: string;
   remainingMinutes?: number;
+  isTicketVerified?: boolean;
+  ticketScan?: TicketScanResult;
 }
 
 export interface CategoryItem {

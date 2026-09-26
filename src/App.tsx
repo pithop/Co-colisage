@@ -25,6 +25,8 @@ import { ProofUploadModal } from './components/Modals/ProofUploadModal';
 import { PinDeliveryModal } from './components/Modals/PinDeliveryModal';
 import { PublishModal } from './components/Modals/PublishModal';
 import { HowItWorksModal } from './components/Modals/HowItWorksModal';
+import { TicketScannerModal } from './components/Modals/TicketScannerModal';
+import { DepartureInspectionModal } from './components/Modals/DepartureInspectionModal';
 import { MessagingModal } from './components/Modals/MessagingModal';
 import { ArbitrageDetailModal } from './components/Modals/ArbitrageDetailModal';
 
@@ -37,7 +39,7 @@ import { ExpediteurDashboard } from './components/Dashboards/ExpediteurDashboard
 import { Plane, Package, ShoppingBag, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 
 function MainAppContent() {
-  const { activeDashboard, setActiveDashboard } = useAuth();
+  const { activeDashboard, setActiveDashboard, user, openAuthModal } = useAuth();
   
   // Le pilier actif parmi les 3 piliers demandés par le client :
   const [activePillar, setActivePillar] = useState<MainPillar>('voyageur');
@@ -62,6 +64,9 @@ function MainAppContent() {
   const [publishModalTab, setPublishModalTab] = useState<MainPillar>('voyageur');
   const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false);
   const [isMessagingOpen, setIsMessagingOpen] = useState(false);
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [isInspectionOpen, setIsInspectionOpen] = useState(false);
+  const [unreadMessages, setUnreadMessages] = useState(3);
 
   // Mobile Bottom Tab
   const [mobileTab, setMobileTab] = useState('home');
@@ -74,7 +79,7 @@ function MainAppContent() {
 
   // Add new trip created by traveler
   const handleTripCreated = (newTrip: FreightItem) => {
-    setTripsList([newTrip, ...tripsList]);
+    setTripsList(previous => [newTrip, ...previous]);
   };
 
   // Add new parcel created by sender
@@ -453,9 +458,11 @@ function MainAppContent() {
         onTabChange={(tab) => {
           setMobileTab(tab);
           if (tab === 'messages') setIsMessagingOpen(true);
-          if (tab === 'profile') setActiveDashboard('voyageur');
+          if (tab === 'profile') { if (user) setActiveDashboard('voyageur'); else openAuthModal(); }
+          if (tab === 'explore') setActivePillar('expediteur');
         }}
-        onOpenPublishModal={() => handleOpenPublish(activePillar)}
+        onOpenPublishModal={() => setIsScannerOpen(true)}
+        unreadCount={unreadMessages}
       />
 
       {/* =================================================================== */}
@@ -500,13 +507,18 @@ function MainAppContent() {
         mode={activePillar === 'destinataire' ? 'shop' : 'bag'}
       />
 
+      <TicketScannerModal isOpen={isScannerOpen} onClose={() => setIsScannerOpen(false)} onTripCreated={handleTripCreated} />
+      <DepartureInspectionModal isOpen={isInspectionOpen} onClose={() => setIsInspectionOpen(false)} />
+
       {/* Messagerie sécurisée */}
       <MessagingModal
         isOpen={isMessagingOpen}
-        onClose={() => setIsMessagingOpen(false)}
+        onUnreadCountChange={setUnreadMessages}
+        onClose={() => { setIsMessagingOpen(false); setMobileTab('home'); }}
         onPayCommission={() => {
-          alert("Paiement de la commission de mise en relation (5,00 €) via Stripe Checkout sécurisé. Discussion débloquée !");
           setIsMessagingOpen(false);
+          setMobileTab('explore');
+          setActivePillar('expediteur');
         }}
       />
 
@@ -515,7 +527,8 @@ function MainAppContent() {
 
       <VoyageurDashboard
         isOpen={activeDashboard === 'voyageur'}
-        onClose={() => setActiveDashboard('none')}
+        tickets={tripsList}
+        onClose={() => { setActiveDashboard('none'); setMobileTab('home'); }}
         onOpenUploadProof={() => {
           setActiveDashboard('none');
           setProofProduct(products[0]);
@@ -526,10 +539,11 @@ function MainAppContent() {
         }}
         onOpenInspection={() => {
           setActiveDashboard('none');
+          setIsInspectionOpen(true);
         }}
         onOpenPublish={() => {
           setActiveDashboard('none');
-          handleOpenPublish('voyageur');
+          setIsScannerOpen(true);
         }}
       />
 

@@ -18,3 +18,48 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@keyframes ticket-scan-sweep {
+  0%, 100% { top: 8%; opacity: .4; }
+  50% { top: 92%; opacity: 1; }
+}
+.ticket-scan-laser { animation: ticket-scan-sweep 2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .ticket-scan-laser { animation: none; top: 50%; opacity: .5; }
+}
+
+/* Shared interaction language for the private travel experience. */
+.luxury-surface button:focus-visible,
+.luxury-surface a:focus-visible,
+.luxury-surface input:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
+.luxury-icon {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: #64748b;
+  transition: background-color 180ms, color 180ms;
+}
+.luxury-icon:hover { background: #f1f5f9; color: #0f172a; }
+.luxury-chat-action {
+  flex-shrink: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 10px 12px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #475569;
+  transition: background-color 180ms, border-color 180ms;
+}
+.luxury-chat-action:hover { background: #eff6ff; border-color: #bfdbfe; }
+.luxury-chat-action:disabled { opacity: .4; cursor: not-allowed; }
+@media (max-width: 639px) { body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); } }
+@media (prefers-reduced-motion: reduce) {
+  .luxury-surface *, .luxury-surface *::before, .luxury-surface *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

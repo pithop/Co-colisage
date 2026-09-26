@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
-import { 
-  X, 
-  Plane, 
-  Wallet, 
-  CheckCircle2, 
-  Clock, 
-  ArrowRight, 
-  Ship, 
-  Plus, 
-  CreditCard, 
-  FileText, 
-  ShieldCheck, 
-  Camera, 
-  KeyRound, 
-  Building,
-  AlertCircle
-} from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import React, { useState } from "react";
+import confetti from "canvas-confetti";
+import {
+  X,
+  Plane,
+  ArrowUpRight,
+  ArrowRight,
+  ShieldCheck,
+  ScanLine,
+  LockKeyhole,
+  Star,
+  Check,
+  CheckCircle2,
+  Camera,
+  KeyRound,
+  FileText,
+  Sparkles,
+} from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { useModalFocus } from "../../hooks/useModalFocus";
+import type { FreightItem } from "../../types";
 
 interface VoyageurDashboardProps {
   isOpen: boolean;
@@ -25,7 +27,12 @@ interface VoyageurDashboardProps {
   onOpenPinModal: () => void;
   onOpenInspection: () => void;
   onOpenPublish: () => void;
+  tickets?: FreightItem[];
 }
+const money = (value: number) =>
+  new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(
+    value,
+  );
 
 export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
   isOpen,
@@ -34,208 +41,418 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
   onOpenPinModal,
   onOpenInspection,
   onOpenPublish,
+  tickets = [],
 }) => {
   const { user } = useAuth();
-  const [payoutSuccess, setPayoutSuccess] = useState(false);
-
+  const [paid, setPaid] = useState<Record<string, number>>({});
+  const dialog = useModalFocus(isOpen && !!user, onClose);
   if (!isOpen || !user) return null;
-
+  const payout = paid[user.id];
+  const available = payout === undefined ? user.stripeBalance : 0;
+  const verified = user.kycStatus === "verified";
+  const scanned = tickets.filter(
+    (t) => t.ticketScan && t.travelerName === user.name,
+  );
+  const boardingPasses = scanned.length
+    ? scanned.map((t) => ({
+        id: t.id,
+        airline: t.ticketScan!.airline,
+        flight: t.ticketScan!.flightNumber,
+        origin: t.originCode,
+        destination: t.destinationCode,
+        allowance: t.ticketScan!.baggageAllowanceKg,
+        offer: t.availableKg,
+        date: t.departureDate,
+        demo: t.title.startsWith("[Démo]"),
+      }))
+    : [
+        {
+          id: "demo",
+          airline: "Air Algérie",
+          flight: "AH1021",
+          origin: "MRS",
+          destination: "ALG",
+          allowance: 10,
+          offer: 9,
+          date: "2026-10-02",
+          demo: true,
+        },
+      ];
   const handlePayout = () => {
-    setPayoutSuccess(true);
-    setTimeout(() => setPayoutSuccess(false), 3000);
+    if (available <= 0 || !verified) return;
+    setPaid((old) => ({ ...old, [user.id]: available }));
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      void confetti({
+        particleCount: 90,
+        spread: 75,
+        origin: { y: 0.65 },
+        colors: ["#2563eb", "#93c5fd", "#ffffff", "#10b981"],
+        zIndex: 100,
+        disableForReducedMotion: true,
+      });
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div 
-        className="relative w-full max-w-4xl bg-slate-50 rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 text-slate-900"
-        onClick={(e) => e.stopPropagation()}
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/65 backdrop-blur-md sm:p-5"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        ref={dialog}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="profile-title"
+        className="luxury-surface flex max-h-[100dvh] w-full max-w-5xl flex-col overflow-hidden bg-[#f6f7fa] text-slate-900 shadow-2xl sm:max-h-[92dvh] sm:rounded-[32px] sm:border sm:border-white/40"
       >
-        {/* Header */}
-        <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img 
-              src={user.avatar} 
-              alt={user.name} 
-              className="w-10 h-10 rounded-full object-cover border-2 border-blue-400"
-            />
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-extrabold text-base text-white">{user.name}</h3>
-                <span className="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3" /> KYC Vérifié
+        <header className="flex shrink-0 items-center justify-between border-b border-slate-200/70 bg-white/80 px-5 py-4 sm:px-8">
+          <span className="flex items-center gap-2 text-xs font-semibold">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 text-white">
+              <Plane size={15} />
+            </span>{" "}
+            BagVoyage{" "}
+            <span className="ml-1 text-[9px] font-medium uppercase tracking-[.2em] text-slate-400">
+              Travel club
+            </span>
+          </span>
+          <button
+            onClick={onClose}
+            aria-label="Fermer le profil"
+            className="luxury-icon"
+          >
+            <X size={20} />
+          </button>
+        </header>
+        <div className="overflow-y-auto overscroll-contain px-5 pb-8 pt-6 sm:px-8 sm:pt-8">
+          <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <img
+                  src={user.avatar}
+                  alt=""
+                  className="h-16 w-16 rounded-full object-cover ring-4 ring-white"
+                />
+                {verified && (
+                  <span className="absolute -bottom-1 -right-1 rounded-full bg-blue-600 p-1 text-white ring-2 ring-white">
+                    <Check size={12} />
+                  </span>
+                )}
+              </div>
+              <div>
+                <p className="mb-1 text-[10px] font-semibold uppercase tracking-[.2em] text-slate-500">
+                  Votre espace voyageur
+                </p>
+                <h2
+                  id="profile-title"
+                  className="text-2xl font-semibold tracking-tight sm:text-3xl"
+                >
+                  {user.name}
+                </h2>
+                <p className="mt-1 text-xs text-slate-500">
+                  Chaque voyage vous emmène plus loin.
+                </p>
+              </div>
+            </div>
+            <span className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-2 text-[10px] font-medium text-slate-500">
+              <Sparkles size={12} /> Compte de démonstration
+            </span>
+          </div>
+          <div className="grid gap-5 lg:grid-cols-[1.45fr_1fr]">
+            <section
+              aria-label="Portefeuille Stripe Connect"
+              className="relative overflow-hidden rounded-[26px] bg-[#0A1128] p-6 text-white shadow-xl shadow-slate-900/10 sm:p-7"
+            >
+              <div className="pointer-events-none absolute -right-12 -top-20 h-64 w-64 rounded-full bg-blue-500/20 blur-3xl" />
+              <div className="relative">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-medium uppercase tracking-[.2em] text-slate-300">
+                    Votre portefeuille
+                  </span>
+                  <span className="text-xs font-semibold tracking-tight text-blue-200">
+                    stripe{" "}
+                    <span className="font-normal text-slate-400">Connect</span>
+                  </span>
+                </div>
+                <p className="mt-7 text-xs text-slate-400">Disponible</p>
+                <p className="mt-1 text-4xl font-medium tracking-tight sm:text-5xl">
+                  {money(available)}
+                </p>
+                <div className="mb-6 mt-5 flex items-center gap-2 text-xs text-slate-300">
+                  <LockKeyhole size={14} className="text-blue-300" /> Séquestre
+                  en cours{" "}
+                  <strong className="ml-auto font-medium text-white">
+                    {money(user.pendingEscrow)}
+                  </strong>
+                </div>
+                <button
+                  disabled={available <= 0 || !verified}
+                  onClick={handlePayout}
+                  className="flex min-h-[46px] w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-xs font-semibold text-slate-900 transition hover:bg-blue-50 active:scale-[.99] disabled:cursor-default disabled:bg-white/10 disabled:text-slate-300"
+                >
+                  {payout !== undefined ? (
+                    <>
+                      <CheckCircle2 size={16} /> Virement simulé avec succès
+                    </>
+                  ) : (
+                    <>
+                      <ArrowUpRight size={16} /> Virement instantané{" "}
+                      <span className="ml-auto text-slate-500">•• 4291</span>
+                    </>
+                  )}
+                </button>
+                <p className="mt-3 text-center text-[10px] text-slate-400">
+                  {!verified
+                    ? "Vérification d’identité requise pour les virements."
+                    : "Mode démo · aucun mouvement de fonds réel"}
+                </p>
+              </div>
+            </section>
+            <section className="flex flex-col rounded-[26px] border border-slate-200/80 bg-white p-6 sm:p-7">
+              <div className="flex items-start justify-between">
+                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                  <ShieldCheck size={25} strokeWidth={1.5} />
+                </span>
+                <span
+                  className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${verified ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}
+                >
+                  {verified
+                    ? "Identité vérifiée"
+                    : user.kycStatus === "pending"
+                      ? "En cours"
+                      : "À vérifier"}
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
-                Espace Voyageur • Shopper Certifié (⭐ {user.rating} - {user.completedDeliveries} livraisons)
+              <h3 className="mt-5 text-lg font-semibold tracking-tight">
+                La confiance vous accompagne.
+              </h3>
+              <p className="mt-2 text-xs leading-relaxed text-slate-500">
+                Votre identité et vos livraisons réunies dans un profil de
+                confiance.
               </p>
-            </div>
+              <div className="mt-5 space-y-3">
+                {["Pièce d’identité", "Vérification du visage"].map((label) => (
+                  <div
+                    key={label}
+                    className="flex items-center justify-between text-xs text-slate-600"
+                  >
+                    <span>{label}</span>
+                    {verified ? (
+                      <CheckCircle2 size={15} className="text-emerald-600" />
+                    ) : (
+                      <span className="text-slate-400">En attente</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-auto flex items-center gap-2 border-t border-slate-100 pt-4 text-[10px] text-slate-400">
+                <ShieldCheck size={13} /> Stripe Identity · KYC de démonstration
+              </div>
+            </section>
           </div>
-
-          <button onClick={onClose} className="p-1 rounded-full text-slate-400 hover:text-white">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Dashboard Body */}
-        <div className="p-6 overflow-y-auto space-y-6">
-          
-          {/* Top Wallet & Stripe Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            
-            {/* Stripe Available Balance */}
-            <div className="bg-gradient-to-br from-blue-700 to-indigo-800 text-white p-5 rounded-2xl shadow-md flex flex-col justify-between">
+          {payout !== undefined && (
+            <div
+              role="status"
+              className="mt-4 flex items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800"
+            >
+              <span className="text-xl">✦</span>
               <div>
-                <div className="flex items-center justify-between text-xs text-blue-200 mb-1">
-                  <span className="font-semibold">Portefeuille Stripe Connect</span>
-                  <Wallet className="w-4 h-4" />
-                </div>
-                <p className="text-3xl font-black">{user.stripeBalance.toFixed(2)} €</p>
-                <p className="text-[11px] text-blue-200 mt-1">Disponible immédiatement</p>
+                <strong className="font-semibold">
+                  Bien arrivé, même votre argent.
+                </strong>
+                <p className="mt-1 text-xs">
+                  Virement de {money(payout)} simulé vers votre compte •• 4291.
+                </p>
               </div>
-
-              <button
-                onClick={handlePayout}
-                className="mt-4 py-2 bg-white hover:bg-blue-50 text-blue-800 font-extrabold text-xs rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
-              >
-                <Building className="w-3.5 h-3.5" />
-                <span>Virer vers mon IBAN (••• 4291)</span>
-              </button>
-            </div>
-
-            {/* Escrow Pending */}
-            <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-                  <span className="font-semibold">Fonds Sous Séquestre</span>
-                  <Clock className="w-4 h-4 text-amber-500" />
-                </div>
-                <p className="text-3xl font-black text-amber-600">+{user.pendingEscrow.toFixed(2)} €</p>
-                <p className="text-[11px] text-slate-500 mt-1">En attente de validation PIN</p>
-              </div>
-              <div className="mt-4 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
-                <span>1 mission en cours</span>
-                <span className="font-bold text-emerald-600">100% garanti</span>
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Actions Rapides</span>
-                <h4 className="font-extrabold text-sm text-slate-900 mt-1">Rentabiliser un voyage</h4>
-                <p className="text-xs text-slate-500 mt-1">Publiez vos kilos libres et vos trajets.</p>
-              </div>
-
-              <button
-                onClick={onOpenPublish}
-                className="mt-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Publier un nouveau trajet</span>
-              </button>
-            </div>
-
-          </div>
-
-          {payoutSuccess && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 flex items-center gap-2 animate-in fade-in">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>Virement Stripe de 345,00 € initié vers votre compte bancaire. Arrivée estimée sous 24h.</span>
             </div>
           )}
-
-          {/* Active Missions (Shopping Inversé) */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h4 className="font-extrabold text-sm text-slate-900">Missions de Shopping en Cours</h4>
-                <p className="text-xs text-slate-500">Articles achetés pour le compte des clients</p>
-              </div>
-              <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-bold">
-                1 mission active
-              </span>
+          <div className="mb-4 mt-8 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 className="text-base font-semibold tracking-tight">
+                Mes Billets d’Avion Enregistrés
+              </h3>
+              <p className="mt-1 text-xs text-slate-500">
+                Votre prochain départ, déjà dans votre poche.
+              </p>
             </div>
-
-            <div className="border border-slate-200/70 rounded-2xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-slate-50/50">
-              <div className="flex items-center gap-3">
-                <img 
-                  src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=200&q=80" 
-                  alt="Dior Sauvage" 
-                  className="w-14 h-14 rounded-xl object-cover"
-                />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs text-slate-900">Dior Sauvage Eau de Parfum</span>
-                    <span className="text-[10px] bg-cyan-100 text-cyan-800 px-2 py-0.5 rounded-full font-semibold">
-                      Marseille ➔ Alger
+            <button
+              onClick={onOpenPublish}
+              className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-blue-700 transition hover:border-blue-300"
+            >
+              <ScanLine size={15} /> Scanner un billet
+            </button>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {boardingPasses.map((ticket) => (
+              <article
+                key={ticket.id}
+                className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm"
+              >
+                <div className="flex items-center justify-between bg-slate-900 px-5 py-3.5 text-white">
+                  <span className="flex items-center gap-2 text-xs font-semibold">
+                    <Plane size={16} className="text-slate-300" />
+                    {ticket.airline}
+                  </span>
+                  <span className="text-[9px] uppercase tracking-widest text-slate-300">
+                    {ticket.demo ? "Billet démo" : "Scan OCR"}
+                  </span>
+                </div>
+                <div className="p-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-3xl font-semibold tracking-tight">
+                        {ticket.origin}
+                      </p>
+                      <p className="mt-1 text-[10px] text-slate-500">Départ</p>
+                    </div>
+                    <div className="mx-5 flex flex-1 items-center gap-2 text-slate-300">
+                      <span className="flex-1 border-t border-dashed" />
+                      <Plane size={18} className="text-blue-500" />
+                      <span className="flex-1 border-t border-dashed" />
+                    </div>
+                    <div className="text-right">
+                      <p className="text-3xl font-semibold tracking-tight">
+                        {ticket.destination}
+                      </p>
+                      <p className="mt-1 text-[10px] text-slate-500">Arrivée</p>
+                    </div>
+                  </div>
+                  <div className="mt-5 flex justify-between text-xs">
+                    <span className="font-medium">{ticket.flight}</span>
+                    <span className="text-slate-500">
+                      {new Intl.DateTimeFormat("fr-FR", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                        timeZone: "UTC",
+                      }).format(new Date(`${ticket.date}T12:00:00Z`))}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    Magasin : Duty Free MRS • Destination : Mohamed T. (Alger)
-                  </p>
-                  <p className="text-xs font-bold text-emerald-600 mt-1">
-                    ✦ Votre gain : +25,00 € (Achat remboursé : 99,00 €)
-                  </p>
                 </div>
-              </div>
-
-              {/* Action buttons on this mission */}
-              <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-                <button
-                  onClick={onOpenUploadProof}
-                  className="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl flex items-center gap-1.5"
-                >
-                  <FileText className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Preuves d'achat</span>
-                </button>
-                <button
-                  onClick={onOpenInspection}
-                  className="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl flex items-center gap-1.5"
-                >
-                  <Camera className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Contrôle vidéo 15s</span>
-                </button>
-                <button
-                  onClick={onOpenPinModal}
-                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs flex items-center gap-1.5"
-                >
-                  <KeyRound className="w-3.5 h-3.5" />
-                  <span>Saisir Code PIN</span>
-                </button>
-              </div>
-            </div>
+                <div className="relative flex items-center justify-between border-t border-dashed border-slate-200 bg-slate-50 px-5 py-4">
+                  <span className="text-[11px] text-slate-500">
+                    Franchise{" "}
+                    <strong className="text-slate-700">
+                      {ticket.allowance} kg
+                    </strong>
+                  </span>
+                  <span className="rounded-full bg-blue-100 px-3 py-1 text-[11px] font-semibold text-blue-800">
+                    {ticket.offer} kg offerts
+                  </span>
+                </div>
+              </article>
+            ))}
           </div>
-
-          {/* Active Trips & Capacities */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
-            <h4 className="font-extrabold text-sm text-slate-900 mb-3">Mes Trajets & Kilos Disponibles</h4>
-
-            <div className="space-y-3">
-              <div className="p-4 border border-slate-200/80 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-                    <Ship className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h5 className="font-bold text-xs text-slate-900">Marseille (Port) ➔ Alger (Port)</h5>
-                    <p className="text-[11px] text-slate-500">Départ le 14 octobre 2026 • Ferry Corsica Linea • Tarif : 60€/kg</p>
-                  </div>
+          <section className="mt-6 rounded-[24px] border border-slate-200 bg-white p-5 sm:p-6">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-sm font-semibold">Votre mission en cours</h3>
+              <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[10px] font-semibold text-violet-700">
+                Shopping · démo
+              </span>
+            </div>
+            <div className="mt-4 flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100">
+                <FileText size={22} className="text-slate-500" />
+              </div>
+              <div>
+                <p className="text-sm font-medium">2 Parfums Dior Sauvage</p>
+                <p className="mt-1 text-xs text-slate-500">
+                  Amel Kaci · Duty Free MRS → Alger
+                </p>
+              </div>
+              <span className="ml-auto text-sm font-semibold text-emerald-700">
+                +25 €
+              </span>
+            </div>
+            <div className="mt-5 grid gap-2 sm:grid-cols-3">
+              {[
+                {
+                  label: "Preuve d’achat",
+                  icon: FileText,
+                  action: onOpenUploadProof,
+                },
+                {
+                  label: "Inspection du colis",
+                  icon: Camera,
+                  action: onOpenInspection,
+                },
+                {
+                  label: "Valider le PIN",
+                  icon: KeyRound,
+                  action: onOpenPinModal,
+                },
+              ].map(({ label, icon: Icon, action }) => (
+                <button
+                  key={label}
+                  onClick={action}
+                  className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-3 py-3 text-xs font-medium transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+                >
+                  <Icon size={15} />
+                  {label}
+                </button>
+              ))}
+            </div>
+          </section>
+          <section className="mt-6 rounded-[24px] border border-slate-200 bg-white p-5 sm:p-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold">
+                Une réputation qui voyage
+              </h3>
+              <span className="text-[10px] text-slate-400">
+                Avis de démonstration
+              </span>
+            </div>
+            <div className="mt-5 grid gap-6 sm:grid-cols-[.8fr_1.2fr]">
+              <div>
+                <div className="flex items-baseline gap-1">
+                  <strong className="text-5xl font-medium tracking-tight">
+                    4,98
+                  </strong>
+                  <span className="text-sm text-slate-400">/ 5</span>
                 </div>
-
-                <div className="text-right">
-                  <div className="flex items-center gap-2">
-                    <div className="w-32 bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                      <div className="bg-blue-600 h-full" style={{ width: '65%' }} />
+                <div
+                  className="mt-3 flex gap-1 text-amber-500"
+                  aria-label="5 étoiles"
+                >
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <Star key={i} size={15} fill="currentColor" />
+                  ))}
+                </div>
+                <p className="mt-2 text-xs text-slate-500">
+                  42 avis · la confiance, à chaque livraison
+                </p>
+              </div>
+              <div className="space-y-4">
+                {[
+                  ["Communication", "5,0", 100],
+                  ["Soin des colis", "5,0", 100],
+                  ["Ponctualité", "4,9", 98],
+                ].map(([label, value, percent]) => (
+                  <div key={label}>
+                    <div className="mb-2 flex justify-between text-xs">
+                      <span className="text-slate-500">{label}</span>
+                      <span className="font-semibold">{value}</span>
                     </div>
-                    <span className="text-xs font-bold text-slate-800">12 / 18 kg</span>
+                    <div className="h-1 overflow-hidden rounded-full bg-slate-100">
+                      <div
+                        className="h-full rounded-full bg-blue-600"
+                        style={{ width: `${percent}%` }}
+                      />
+                    </div>
                   </div>
-                  <span className="text-[10px] text-emerald-600 font-semibold">6 kg restants</span>
-                </div>
+                ))}
               </div>
             </div>
-          </div>
-
+            <blockquote className="mt-6 border-t border-slate-100 pt-5">
+              <p className="text-sm leading-relaxed text-slate-600">
+                « Tout était parfait, du premier message à la remise du colis.
+                Une personne attentionnée et ponctuelle. »
+              </p>
+              <footer className="mt-3 text-xs font-medium text-slate-400">
+                Nadia H. <span className="mx-1">·</span> Marseille → Alger
+              </footer>
+            </blockquote>
+          </section>
         </div>
       </div>
     </div>

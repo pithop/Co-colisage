@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   X, 
   Plane, 
@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { MainPillar, FreightItem, SenderParcelRequest, ReceiverShoppingRequest } from '../../types';
 import { useAuth } from '../../context/AuthContext';
+import { TicketScannerModal } from './TicketScannerModal';
 
 interface PublishModalProps {
   isOpen: boolean;
@@ -36,6 +37,12 @@ export const PublishModal: React.FC<PublishModalProps> = ({
   const { user } = useAuth();
   const [tab, setTab] = useState<MainPillar>(initialTab);
   const [submitted, setSubmitted] = useState(false);
+  const [scannerOpen, setScannerOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) setTab(initialTab);
+    else setScannerOpen(false);
+  }, [isOpen, initialTab]);
 
   // --- Voyageur form state ---
   const [travelOrigin, setTravelOrigin] = useState('Marseille (MRS)');
@@ -133,6 +140,18 @@ export const PublishModal: React.FC<PublishModalProps> = ({
     }, 1500);
   };
 
+  if (scannerOpen) return (
+    <TicketScannerModal
+      isOpen={isOpen}
+      onClose={() => setScannerOpen(false)}
+      onTripCreated={onTripCreated ? trip => {
+        onTripCreated(trip);
+        setScannerOpen(false);
+        onClose();
+      } : undefined}
+    />
+  );
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
       <div 
@@ -206,6 +225,19 @@ export const PublishModal: React.FC<PublishModalProps> = ({
               {/* TAB 1 : VOYAGEUR */}
               {tab === 'voyageur' && (
                 <>
+                  <button
+                    type="button"
+                    onClick={() => setScannerOpen(true)}
+                    className="group relative flex w-full items-start gap-4 overflow-hidden rounded-2xl border border-blue-400/20 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 p-5 text-left text-white shadow-lg transition duration-200 hover:shadow-blue-900/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-4 motion-safe:hover:-translate-y-0.5"
+                  >
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/10 text-blue-200"><Sparkles className="h-5 w-5" /></span>
+                    <span className="relative min-w-0 flex-1">
+                      <span className="mb-2 block text-[9px] font-semibold uppercase tracking-[0.2em] text-blue-200">Nouveau · Ticket intelligence</span>
+                      <span className="block text-base font-semibold tracking-tight">Scanner mon billet d'avion</span>
+                      <span className="mt-1 block text-xs leading-relaxed text-slate-300">Auto-remplissage IA &amp; Franchise bagage</span>
+                      <span className="mt-4 flex items-center gap-2 text-[11px] font-medium text-blue-200">Importer un billet ou essayer une démo <ArrowRight className="h-3.5 w-3.5 transition-transform motion-safe:group-hover:translate-x-1" /></span>
+                    </span>
+                  </button>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-[11px] font-bold text-slate-600 mb-1">Ville de départ</label>
