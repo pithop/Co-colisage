@@ -1,5 +1,7 @@
 export type PlatformMode = 'shop' | 'bag';
 
+export type MainPillar = 'voyageur' | 'expediteur' | 'destinataire';
+
 export type TransportType = 'avion' | 'voiture' | 'bateau' | 'camion' | 'dutyfree';
 
 export interface ProductItem {
@@ -34,6 +36,10 @@ export interface FreightItem {
   pricePerKg: number;
   availableKg: number;
   departureDate: string;
+  departureTime?: string;
+  canCarryParcel?: boolean; // Prêt à transporter le colis d'un tiers
+  canBuyProduct?: boolean;  // Prêt à acheter une marchandise pour quelqu'un
+  shoppingCommission?: number; // Commission souhaitée pour l'achat
   travelerName: string;
   travelerAvatar: string;
   rating: number;
@@ -58,4 +64,32 @@ export interface NotificationItem {
   time: string;
   unread: boolean;
   type: 'escrow' | 'mission' | 'kyc' | 'delivery' | 'chat';
+}
+
+export interface SenderParcelRequest {
+  id: string;
+  senderName: string;
+  senderAvatar: string;
+  origin: string;
+  destination: string;
+  dateDesired: string;
+  weightKg: number;
+  itemDescription: string;
+  budgetOffer: number; // Montant proposé au voyageur en €
+  category: string;
+  urgent?: boolean;
+}
+
+export interface ReceiverShoppingRequest {
+  id: string;
+  receiverName: string;
+  receiverAvatar: string;
+  city: string;
+  productName: string;
+  storeName: string;
+  estimatedPrice: number;
+  offeredCommission: number; // Commission offerte au voyageur en €
+  desiredDate: string;
+  image: string;
+  urgent?: boolean;
 }

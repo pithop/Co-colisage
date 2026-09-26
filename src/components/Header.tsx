@@ -16,27 +16,28 @@ import {
   LogOut,
   ChevronDown,
   Layers,
-  Sparkles
+  Sparkles,
+  ShoppingBag
 } from 'lucide-react';
-import { PlatformMode, NotificationItem } from '../types';
+import { PlatformMode, NotificationItem, MainPillar } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types/auth';
 
 interface HeaderProps {
-  mode: PlatformMode;
-  onModeChange: (mode: PlatformMode) => void;
+  activePillar: MainPillar;
+  onSelectPillar: (pillar: MainPillar) => void;
   isPhoneFrame: boolean;
   onTogglePhoneFrame: () => void;
   notifications: NotificationItem[];
-  onOpenPublishModal: () => void;
+  onOpenPublishModal: (initialTab?: MainPillar) => void;
   onOpenHowItWorks: () => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  mode,
-  onModeChange,
+  activePillar,
+  onSelectPillar,
   isPhoneFrame,
   onTogglePhoneFrame,
   notifications,
@@ -124,63 +125,59 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-18 py-3 flex items-center justify-between gap-4">
         {/* Brand Logo & Tagline */}
         <div className="flex items-center gap-4">
-          <button 
-            onClick={() => onModeChange(mode === 'shop' ? 'bag' : 'shop')}
-            className="flex items-center gap-2.5 text-left group focus:outline-none"
-            title="Cliquer pour basculer Shop & Go / Bag & Go"
-          >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white shadow-md transition-transform group-hover:scale-105 ${
-              mode === 'shop' ? 'bg-gradient-to-br from-blue-600 to-blue-700' : 'bg-gradient-to-br from-sky-600 to-blue-800'
-            }`}>
-              {mode === 'shop' ? (
-                <Plane className="w-5 h-5 -rotate-45" />
-              ) : (
-                <Package className="w-5 h-5" />
-              )}
+          <div className="flex items-center gap-2.5 text-left">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white shadow-md bg-gradient-to-br from-blue-600 via-sky-600 to-indigo-700">
+              <Plane className="w-5 h-5 -rotate-45" />
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1">
                 <span className="font-extrabold text-xl tracking-tight text-slate-900">
-                  {mode === 'shop' ? 'Shop' : 'Bag'}
+                  Shop<span className="text-blue-600">&</span>Go
                 </span>
-                <span className="font-extrabold text-xl tracking-tight text-blue-600">
-                  &Go
+                <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200">
+                  Co-Colisage
                 </span>
-                {mode === 'shop' ? (
-                  <Plane className="w-4 h-4 text-blue-600 -rotate-45" />
-                ) : (
-                  <Package className="w-4 h-4 text-blue-600" />
-                )}
               </div>
               <p className="text-[11px] text-slate-500 font-medium tracking-tight">
-                {mode === 'shop' ? 'Le shopping n\'a plus de frontières' : 'Voyagez. Envoyez. Partagez.'}
+                Marseille ➔ Alger • Partage d'espace & Courses
               </p>
             </div>
-          </button>
+          </div>
 
-          {/* Mode Switcher Pill */}
-          <div className="hidden lg:flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200/80">
+          {/* 3 Pillars Quick Switcher Pill */}
+          <div className="hidden lg:flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200/80 shadow-xs">
             <button
-              onClick={() => onModeChange('shop')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                mode === 'shop'
-                  ? 'bg-white text-blue-600 shadow-sm'
+              onClick={() => onSelectPillar('voyageur')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+                activePillar === 'voyageur'
+                  ? 'bg-slate-900 text-white shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Plane className="w-3.5 h-3.5" />
-              Shop & Go ✈️
+              <Plane className="w-3.5 h-3.5 text-blue-400" />
+              1. Je Voyage ✈️
             </button>
             <button
-              onClick={() => onModeChange('bag')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                mode === 'bag'
-                  ? 'bg-white text-blue-600 shadow-sm'
+              onClick={() => onSelectPillar('expediteur')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+                activePillar === 'expediteur'
+                  ? 'bg-slate-900 text-white shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Package className="w-3.5 h-3.5" />
-              Bag & Go 📦
+              <Package className="w-3.5 h-3.5 text-amber-400" />
+              2. J'Expédie 📦
+            </button>
+            <button
+              onClick={() => onSelectPillar('destinataire')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+                activePillar === 'destinataire'
+                  ? 'bg-slate-900 text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <ShoppingBag className="w-3.5 h-3.5 text-emerald-400" />
+              3. Je Reçois 🛍️
             </button>
           </div>
         </div>
@@ -229,10 +226,10 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Post an Ad Button */}
           <button
-            onClick={onOpenPublishModal}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-full shadow-sm hover:shadow transition-all"
+            onClick={() => onOpenPublishModal(activePillar)}
+            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-full shadow-sm hover:shadow transition-all cursor-pointer"
           >
-            <span>+ Publier</span>
+            <span>+ Publier une annonce</span>
           </button>
 
           {/* Notifications Bell */}
@@ -412,24 +409,33 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="xl:hidden border-t border-slate-100 bg-white px-4 py-4 space-y-3">
-          <div className="flex bg-slate-100 p-1 rounded-xl">
+          <div className="flex bg-slate-100 p-1 rounded-xl gap-1">
             <button
-              onClick={() => { onModeChange('shop'); setMobileMenuOpen(false); }}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold ${
-                mode === 'shop' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-600'
+              onClick={() => { onSelectPillar('voyageur'); setMobileMenuOpen(false); }}
+              className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-[11px] font-bold ${
+                activePillar === 'voyageur' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600'
               }`}
             >
-              <Plane className="w-4 h-4" />
-              Shop & Go ✈️
+              <Plane className="w-3.5 h-3.5 text-blue-400" />
+              1. Voyage
             </button>
             <button
-              onClick={() => { onModeChange('bag'); setMobileMenuOpen(false); }}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold ${
-                mode === 'bag' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-600'
+              onClick={() => { onSelectPillar('expediteur'); setMobileMenuOpen(false); }}
+              className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-[11px] font-bold ${
+                activePillar === 'expediteur' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600'
               }`}
             >
-              <Package className="w-4 h-4" />
-              Bag & Go 📦
+              <Package className="w-3.5 h-3.5 text-amber-400" />
+              2. Expédie
+            </button>
+            <button
+              onClick={() => { onSelectPillar('destinataire'); setMobileMenuOpen(false); }}
+              className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-[11px] font-bold ${
+                activePillar === 'destinataire' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600'
+              }`}
+            >
+              <ShoppingBag className="w-3.5 h-3.5 text-emerald-400" />
+              3. Reçois
             </button>
           </div>
 
