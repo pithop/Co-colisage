@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>DEVIS PROFESSIONNEL - BAGVOYAGE / SHOP & GO</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 12mm 15mm 12mm 15mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1e293b;
+      background-color: #ffffff;
+      font-size: 11px;
+      line-height: 1.5;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      page-break-after: always;
+      position: relative;
+      min-height: 270mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .page:last-child {
+      page-break-after: avoid;
+    }
+
+    /* Colors */
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --navy: #0f172a;
+      --slate-dark: #1e293b;
+      --emerald: #059669;
+      --amber: #d97706;
+      --indigo: #4f46e5;
+      --border: #e2e8f0;
+      --bg-soft: #f8fafc;
+    }
+
+    /* Top Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #1d4ed8, #4f46e5);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .brand-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.5px;
+    }
+
+    .brand-subtitle {
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .devis-meta {
+      text-align: right;
+    }
+
+    .devis-tag {
+      display: inline-block;
+      background: #eff6ff;
+      color: var(--primary);
+      border: 1px solid #bfdbfe;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .devis-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .devis-date {
+      font-size: 10px;
+      color: #64748b;
+    }
+
+    /* Parties Section */
+    .parties-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .party-card {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .party-header {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      color: #64748b;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .party-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+
+    .party-details {
+      font-size: 10px;
+      color: #475569;
+      line-height: 1.4;
+    }
+
+    /* Hero Key Commitments */
+    .hero-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.15);
+    }
+
+    .hero-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #93c5fd;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .hero-stat {
+      border-left: 2px solid #3b82f6;
+      padding-left: 8px;
+    }
+
+    .hero-stat-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .hero-stat-label {
+      font-size: 9px;
+      color: #cbd5e1;
+    }
+
+    /* Section titles */
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .section-icon {
+      width: 18px;
+      height: 18px;
+      background: #eff6ff;
+      color: var(--primary);
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    /* Features Grid */
+    .features-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .feature-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #ffffff;
+      border-left: 3px solid var(--primary);
+    }
+
+    .feature-card.gold {
+      border-left-color: var(--amber);
+    }
+
+    .feature-card.emerald {
+      border-left-color: var(--emerald);
+    }
+
+    .feature-card.indigo {
+      border-left-color: var(--indigo);
+    }
+
+    .feature-title {
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--navy);
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .feature-desc {
+      font-size: 9.5px;
+      color: #475569;
+      line-height: 1.4;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+    }
+
+    th {
+      background: var(--bg-soft);
+      color: #475569;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      padding: 8px 10px;
+      text-align: left;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 7px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 10px;
+      vertical-align: top;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .total-box {
+      background: linear-gradient(to right, #f8fafc, #eff6ff);
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .total-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .total-sub {
+      font-size: 9px;
+      color: #64748b;
+    }
+
+    .total-amount {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    /* Timeline Calendar */
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .week-item {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .week-badge {
+      background: var(--navy);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      white-space: nowrap;
+      margin-top: 1px;
+    }
+
+    .week-badge.highlight {
+      background: var(--primary);
+    }
+
+    .week-content {
+      flex: 1;
+    }
+
+    .week-title {
+      font-weight: 700;
+      font-size: 10px;
+      color: var(--navy);
+    }
+
+    .week-desc {
+      font-size: 9px;
+      color: #64748b;
+    }
+
+    /* Payment schedule cards */
+    .payment-schedule {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .payment-card {
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .payment-card.active {
+      border-color: #93c5fd;
+      background: #eff6ff;
+    }
+
+    .payment-percent {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+
+    .payment-amount {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      margin: 2px 0;
+    }
+
+    .payment-timing {
+      font-size: 8.5px;
+      color: #64748b;
+    }
+
+    /* Signatures */
+    .signatures-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .sig-box {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: var(--bg-soft);
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sig-header {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .sig-mention {
+      font-size: 8px;
+      color: #94a3b8;
+      font-style: italic;
+    }
+
+    .sig-line {
+      border-bottom: 1px solid #cbd5e1;
+      margin-top: 24px;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PAGE 1 ==================== -->
+  <div class="page">
+    <div>
+      <!-- Header -->
+      <div class="header">
+        <div class="logo-container">
+          <div class="logo-badge">✈</div>
+          <div>
+            <div class="brand-title">BagVoyage & Shop&Go</div>
+            <div class="brand-subtitle">Application Collaborative Transméditerranéenne</div>
+          </div>
+        </div>
+        <div class="devis-meta">
+          <span class="devis-tag">Proposition Commerciale</span>
+          <div class="devis-number">DEVIS N° DEV-2026-001</div>
+          <div class="devis-date">Date d'émission : 01 Octobre 2026 • Validité : 30 jours</div>
+        </div>
+      </div>
+
+      <!-- Parties -->
+      <div class="parties-grid">
+        <div class="party-card">
+          <div class="party-header">Prestataire (Développeur Lead)</div>
+          <div class="party-name">Idriss Chahraoui</div>
+          <div class="party-details">
+            Architecte Solutions & Développeur Full-Stack Senior<br>
+            Email : chahraouiidriss@gmail.com<br>
+            Statut : Développeur Indépendant / Freelance
+          </div>
+        </div>
+        <div class="party-card">
+          <div class="party-header">Client & Porteur de Projet</div>
+          <div class="party-name">Direction du Projet BagVoyage</div>
+          <div class="party-details">
+            Application Fret de Bagages & Achats Collaboratifs<br>
+            Ligne Initiale : Marseille (France) ⇄ Alger / Oran (Algérie)<br>
+            Contact : Direction Générale
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <div class="hero-title">Engagements Majeurs du Contrat & Modalités Clés</div>
+        <div class="hero-grid">
+          <div class="hero-stat">
+            <div class="hero-stat-value">3 500 €</div>
+            <div class="hero-stat-label">Forfait global net / TTC</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">8 Semaines</div>
+            <div class="hero-stat-label">Délai global de réalisation</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">Semaine 1</div>
+            <div class="hero-stat-label">V1 MVP déployée & testable</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">1 RDV / Semaine</div>
+            <div class="hero-stat-label">Démo, tests & suivi continu</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Périmètre Fonctionnel (Partie 1) -->
+      <div class="section-title">
+        <span class="section-icon">★</span> 1. Périmètre Fonctionnel & Architecture Applicative
+      </div>
+
+      <div class="features-list">
+        <div class="feature-card">
+          <div class="feature-title">
+            <span>1. Inscription Simple & KYC Progressif</span>
+            <span style="color: #2563eb; font-size: 8px;">ONBOARDING</span>
+          </div>
+          <div class="feature-desc">
+            Inscription ultra-rapide au téléchargement (pseudo, nom, prénom, date de naissance, ville, email, tél). Passage à l'action conditionné par un selfie en direct et l'envoi de documents d'identité (CNI / Passeport).
+          </div>
+        </div>
+
+        <div class="feature-card indigo">
+          <div class="feature-title">
+            <span>2. Les 3 Volets Métier Dédiés</span>
+            <span style="color: #4f46e5; font-size: 8px;">EXPÉDITEUR / ACHETEUR / VOYAGEUR</span>
+          </div>
+          <div class="feature-desc">
+            <strong>Expéditeur :</strong> Nature de l'objet, catégorie, taille/poids, fourchette de temps, budget proposé, lieu de RDV.<br>
+            <strong>Acheteur :</strong> Produit exact (photo, quantité, prix magasin), lieu et commission offerte.<br>
+            <strong>Voyageur :</strong> Trajet, date, heure, vol/bateau/voiture, place dispo, tarif au kg.
+          </div>
+        </div>
+
+        <div class="feature-card gold">
+          <div class="feature-title">
+            <span>3. Paramétrage Voyageur & "Acceptation Auto"</span>
+            <span style="color: #d97706; font-size: 8px;">AUTOMATION</span>
+          </div>
+          <div class="feature-desc">
+            Choix des catégories de colis acceptées, budget et distance max pour les courses. <strong>Option « Acceptation Automatique »</strong> si le voyageur accepte tout. Choix du mode de paiement accepté : sur l'app ou en espèces.
+          </div>
+        </div>
+
+        <div class="feature-card emerald">
+          <div class="feature-title">
+            <span>4. Algorithme d'Arbitrage IA & Push Notifs</span>
+            <span style="color: #059669; font-size: 8px;">INNOVATION AUDIOS</span>
+          </div>
+          <div class="feature-desc">
+            Calcul en direct du vol le moins cher sous 48h-72h et matching avec les commandes en attente. Notifications push : <em>« Voyagez gratuitement et gagnez de l'argent »</em> lorsque les commissions couvrent le billet.
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-title">
+            <span>5. Prise de Contact "GO" & Chat Sécurisé</span>
+            <span style="color: #2563eb; font-size: 8px;">MESSAGERIE</span>
+          </div>
+          <div class="feature-desc">
+            Réponse en 1 clic via le bouton d'action <strong>« GO »</strong> ouvrant la messagerie. Filtre anti-contournement des coordonnées personnelles et relance automatique par le bot : <em>« Passer à la réservation »</em>.
+          </div>
+        </div>
+
+        <div class="feature-card emerald">
+          <div class="feature-title">
+            <span>6. Séquestre Stripe & Gestion des Espèces</span>
+            <span style="color: #059669; font-size: 8px;">PAIEMENT SÉCURISÉ</span>
+          </div>
+          <div class="feature-desc">
+            Argent mis sous séquestre dès la réservation, commission plateforme prélevée automatiquement. En cas de paiement en espèces à la remise, le séquestre de garantie est restitué après validation.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>BagVoyage & Shop&Go • Devis N° DEV-2026-001</div>
+      <div>Page 1 sur 2</div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 2 ==================== -->
+  <div class="page">
+    <div>
+      <!-- Header compact page 2 -->
+      <div class="header" style="margin-bottom: 12px; padding-bottom: 10px;">
+        <div class="logo-container">
+          <div class="logo-badge" style="width: 32px; height: 32px; font-size: 15px;">✈</div>
+          <div>
+            <div class="brand-title" style="font-size: 16px;">BagVoyage & Shop&Go</div>
+            <div class="brand-subtitle">Proposition Commerciale • Réf : DEV-2026-001</div>
+          </div>
+        </div>
+        <div class="devis-meta">
+          <div class="devis-number" style="font-size: 13px;">3 500,00 € NET</div>
+          <div class="devis-date">Délai : 8 semaines • V1 en Semaine 1</div>
+        </div>
+      </div>
+
+      <!-- Suite fonctionnalités -->
+      <div class="features-list" style="margin-bottom: 14px;">
+        <div class="feature-card emerald">
+          <div class="feature-title">
+            <span>7. Double Preuve Photo/Vidéo & QR Code</span>
+            <span style="color: #059669; font-size: 8px;">CONTRÔLE INTÉGRAL</span>
+          </div>
+          <div class="feature-desc">
+            • <strong>Départ :</strong> Rencontre expéditeur/voyageur, vérification conjointe, 1er QR Code émis, capture photo/vidéo conjointe et géoloc.<br>
+            • <strong>En vol :</strong> Signalement possible d'un retard de vol.<br>
+            • <strong>Arrivée :</strong> 2ème QR Code scanné par le destinataire qui débloque instantanément le paiement !
+          </div>
+        </div>
+
+        <div class="feature-card gold">
+          <div class="feature-title">
+            <span>8. Notation 4 Critères & "Super Voyageur"</span>
+            <span style="color: #d97706; font-size: 8px;">CONFIANCE 5 ÉTOILES</span>
+          </div>
+          <div class="feature-desc">
+            Évaluation sur 5 étoiles selon 4 critères stricts : <strong>1. Réactivité de réponse</strong>, <strong>2. Échange clair</strong>, <strong>3. Ponctualité</strong>, <strong>4. État marchandise</strong>. Badge d'élite <strong>« Super Voyageur »</strong> pour les meilleurs profils.
+          </div>
+        </div>
+      </div>
+
+      <!-- Planning Hebdomadaire (8 Semaines) -->
+      <div class="section-title">
+        <span class="section-icon">📅</span> 2. Planning d'Exécution & Jalons Hebdomadaires (8 Semaines)
+      </div>
+
+      <div class="timeline-grid">
+        <div class="week-item">
+          <span class="week-badge highlight">Semaine 1</span>
+          <div class="week-content">
+            <div class="week-title">Déploiement V1 MVP en Ligne</div>
+            <div class="week-desc">Socle, onboarding simple, 3 volets métier, mise en ligne accessible. <em>RDV n°1 : Démo & tests V1</em>.</div>
+          </div>
+        </div>
+
+        <div class="week-item">
+          <span class="week-badge">Semaine 2</span>
+          <div class="week-content">
+            <div class="week-title">Module Voyageur & Scan Billet IA</div>
+            <div class="week-desc">Sélecteur transport, lecture OCR billet, limite stricte bagage (10kg=9kg max), acceptation auto. <em>RDV n°2</em>.</div>
+          </div>
+        </div>
+
+        <div class="week-item">
+          <span class="week-badge">Semaine 3</span>
+          <div class="week-content">
+            <div class="week-title">Expéditeur, Acheteur & Bouton "GO"</div>
+            <div class="week-desc">Fiches colis, fourchettes temps/prix, courses Duty Free, bouton d'action directe "GO". <em>RDV n°3</em>.</div>
+          </div>
+        </div>
+
+        <div class="week-item">
+          <span class="week-badge">Semaine 4</span>
+          <div class="week-content">
+            <div class="week-title">Messagerie Sécurisée & Filtres</div>
+            <div class="week-desc">Chat temps réel, filtre anti-contournement, relance automatique "Passer à la réservation". <em>RDV n°4</em>.</div>
+          </div>
+        </div>
+
+        <div class="week-item">
+          <span class="week-badge">Semaine 5</span>
+          <div class="week-content">
+            <div class="week-title">Séquestre Stripe & Gestion Espèces</div>
+            <div class="week-desc">Blocage des fonds, prélèvement commission plateforme, flux espèces à la remise. <em>RDV n°5</em>.</div>
+          </div>
+        </div>
+
+        <div class="week-item">
+          <span class="week-badge">Semaine 6</span>
+          <div class="week-content">
+            <div class="week-title">Double QR Code & Photo/Vidéo</div>
+            <div class="week-desc">QR Code départ avec géoloc, preuve multimédia, alerte retard, QR Code arrivée débloquant les fonds. <em>RDV n°6</em>.</div>
+          </div>
+        </div>
+
+        <div class="week-item">
+          <span class="week-badge">Semaine 7</span>
+          <div class="week-content">
+            <div class="week-title">Arbitrage IA & Avis 4 Critères</div>
+            <div class="week-desc">Moteur d'arbitrage vol/courses, notifs push "Voyage gratuit", avis 4 critères, badge Super Voyageur. <em>RDV n°7</em>.</div>
+          </div>
+        </div>
+
+        <div class="week-item">
+          <span class="week-badge highlight">Semaine 8</span>
+          <div class="week-content">
+            <div class="week-title">Design Mobile XXXXXXL & Recette Finale</div>
+            <div class="week-desc">Dock flottant iOS, tests de charge, recette finale avec le client, mise en production définitive. <em>RDV n°8</em>.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Récapitulatif Financier -->
+      <div class="section-title">
+        <span class="section-icon">💶</span> 3. Forfait & Échéancier de Règlement
+      </div>
+
+      <div class="total-box">
+        <div>
+          <div class="total-label">FORFAIT DÉVELOPPEMENT CLÉ EN MAIN</div>
+          <div class="total-sub">Comprend l'ensemble des 8 modules, la V1 en semaine 1, et les 8 rendez-vous hebdomadaires</div>
+        </div>
+        <div class="text-right">
+          <div class="total-amount">3 500,00 €</div>
+          <div class="total-sub">Montant Net / TTC • Zéro frais caché</div>
+        </div>
+      </div>
+
+      <div class="payment-schedule">
+        <div class="payment-card active">
+          <div class="payment-percent">50% Acompte (Signature)</div>
+          <div class="payment-amount">1 750,00 €</div>
+          <div class="payment-timing">Démarrage immédiat & V1 en Semaine 1</div>
+        </div>
+        <div class="payment-card">
+          <div class="payment-percent">25% Jalon Mi-Parcours</div>
+          <div class="payment-amount">875,00 €</div>
+          <div class="payment-timing">Fin Semaine 4 (Messagerie & Séquestre)</div>
+        </div>
+        <div class="payment-card">
+          <div class="payment-percent">25% Solde Livraison</div>
+          <div class="payment-amount">875,00 €</div>
+          <div class="payment-timing">Semaine 8 après recette & mise en ligne</div>
+        </div>
+      </div>
+
+      <!-- Signatures -->
+      <div class="signatures-grid">
+        <div class="sig-box">
+          <div class="sig-header">Pour le Prestataire : Idriss Chahraoui</div>
+          <div class="sig-mention">« Bon pour accord »</div>
+          <div class="sig-line"></div>
+          <div style="font-size: 8px; color: #64748b; margin-top: 4px;">Email : chahraouiidriss@gmail.com • Date : 01/10/2026</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-header">Pour le Client (BagVoyage / Shop & Go) :</div>
+          <div class="sig-mention">« Bon pour accord et commande »</div>
+          <div class="sig-line"></div>
+          <div style="font-size: 8px; color: #64748b; margin-top: 4px;">Nom et Signature du Client :</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>BagVoyage & Shop&Go • Devis N° DEV-2026-001 • Propriété intellectuelle 100% transférée au client à complet paiement</div>
+      <div>Page 2 sur 2</div>
+    </div>
+  </div>
+
+</body>
+</html>
