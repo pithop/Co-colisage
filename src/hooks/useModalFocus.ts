@@ -13,7 +13,7 @@ export function useModalFocus(open: boolean, onClose: () => void) {
     const elements = () =>
       Array.from(
         node?.querySelectorAll<HTMLElement>(
-          'button:not(:disabled), input:not(:disabled), a[href], textarea, [tabindex="0"]',
+          'button:not(:disabled), input:not(:disabled), a[href], textarea, select:not(:disabled), [tabindex="0"]',
         ) || [],
       ).filter((el) => el.getClientRects().length > 0);
     elements()[0]?.focus();

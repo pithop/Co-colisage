@@ -1,606 +1,575 @@
-import React, { useState, useMemo } from 'react';
-import { MainPillar, ProductItem, FreightItem, SenderParcelRequest, ReceiverShoppingRequest, ArbitrageOpportunity } from './types';
-import { products, freightOffers, senderParcelRequests, receiverShoppingRequests, notifications, arbitrageOpportunities } from './data/mockData';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import { Header } from './components/Header';
-import { ThreePillarsTabs } from './components/ThreePillarsTabs';
-import { HeroSection } from './components/HeroSection';
-import { SmartFlightArbitrage } from './components/SmartFlightArbitrage';
-import { CategoriesBar } from './components/CategoriesBar';
-import { ProductCard } from './components/ProductCard';
-import { FreightCard } from './components/FreightCard';
-import { SenderParcelCard } from './components/SenderParcelCard';
-import { ReceiverShoppingCard } from './components/ReceiverShoppingCard';
-import { ShopperBanner } from './components/ShopperBanner';
-import { HowItWorks } from './components/HowItWorks';
-import { SecuritySection } from './components/SecuritySection';
-import { Footer } from './components/Footer';
-import { MobileBottomNav } from './components/MobileBottomNav';
-import { PhoneSimulator } from './components/PhoneSimulator';
-import { LiveArbitrageToast } from './components/LiveArbitrageToast';
+import { lazy, Suspense, useEffect, useState } from "react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CirclePlus,
+  MessageCircle,
+  Search,
+  Share2,
+  ShieldCheck,
+  Smartphone,
+  Sparkles,
+  UserRound,
+} from "lucide-react";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import {
+  requests as initialRequests,
+  trips as initialTrips,
+  PurchaseRequest,
+  Trip,
+  euro,
+} from "./data/marketplace";
+import { arbitrageOpportunities } from "./data/mockData";
+import { ArbitrageOpportunity, FreightItem } from "./types";
+import { useStoredState } from "./hooks/useStoredState";
+import { Explorer } from "./components/marketplace/Explorer";
+import { RequestDetails, TripDetails } from "./components/marketplace/Details";
+import { Profile, Intention } from "./components/marketplace/Profile";
+import { Publish } from "./components/marketplace/Publish";
+import {
+  Conversation,
+  ConversationData,
+  createMessage,
+} from "./components/marketplace/Conversation";
+import { Dialog } from "./components/marketplace/Dialog";
+import "./marketplace.css";
+const TicketScannerModal = lazy(() =>
+  import("./components/Modals/TicketScannerModal").then((m) => ({
+    default: m.TicketScannerModal,
+  })),
+);
+const SmartFlightArbitrage = lazy(() =>
+  import("./components/SmartFlightArbitrage").then((m) => ({
+    default: m.SmartFlightArbitrage,
+  })),
+);
 
-// Modals
-import { ProductDetailModal } from './components/Modals/ProductDetailModal';
-import { ProofUploadModal } from './components/Modals/ProofUploadModal';
-import { PinDeliveryModal } from './components/Modals/PinDeliveryModal';
-import { PublishModal } from './components/Modals/PublishModal';
-import { HowItWorksModal } from './components/Modals/HowItWorksModal';
-import { TicketScannerModal } from './components/Modals/TicketScannerModal';
-import { DepartureInspectionModal } from './components/Modals/DepartureInspectionModal';
-import { MessagingModal } from './components/Modals/MessagingModal';
-import { ArbitrageDetailModal } from './components/Modals/ArbitrageDetailModal';
-
-// Auth & Dashboards
-import { AuthModal } from './components/Auth/AuthModal';
-import { VoyageurDashboard } from './components/Dashboards/VoyageurDashboard';
-import { CarrierDashboard } from './components/Dashboards/CarrierDashboard';
-import { ExpediteurDashboard } from './components/Dashboards/ExpediteurDashboard';
-
-import { Plane, Package, ShoppingBag, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
-
-function MainAppContent() {
-  const { activeDashboard, setActiveDashboard, user, openAuthModal } = useAuth();
-  
-  // Le pilier actif parmi les 3 piliers demandés par le client :
-  const [activePillar, setActivePillar] = useState<MainPillar>('voyageur');
-
-  const [isPhoneFrame, setIsPhoneFrame] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-
-  // Dynamic datasets allowing real-time publishing
-  const [tripsList, setTripsList] = useState<FreightItem[]>(freightOffers);
-  const [parcelsList, setParcelsList] = useState<SenderParcelRequest[]>(senderParcelRequests);
-  const [shoppingList, setShoppingList] = useState<ReceiverShoppingRequest[]>(receiverShoppingRequests);
-
-  // Modals state
-  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
-  const [selectedFreight, setSelectedFreight] = useState<FreightItem | null>(null);
-  const [proofProduct, setProofProduct] = useState<ProductItem | null>(null);
-  const [pinDeliveryProduct, setPinDeliveryProduct] = useState<ProductItem | null>(null);
-  const [selectedArbitrage, setSelectedArbitrage] = useState<ArbitrageOpportunity | null>(null);
-  
-  const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
-  const [publishModalTab, setPublishModalTab] = useState<MainPillar>('voyageur');
-  const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false);
-  const [isMessagingOpen, setIsMessagingOpen] = useState(false);
-  const [isScannerOpen, setIsScannerOpen] = useState(false);
-  const [isInspectionOpen, setIsInspectionOpen] = useState(false);
-  const [unreadMessages, setUnreadMessages] = useState(3);
-
-  // Mobile Bottom Tab
-  const [mobileTab, setMobileTab] = useState('home');
-
-  // Open publish modal with preset tab
-  const handleOpenPublish = (tab: MainPillar = activePillar) => {
-    setPublishModalTab(tab);
-    setIsPublishModalOpen(true);
+function Marketplace() {
+  const { user, login, logout } = useAuth();
+  const [route, setRoute] = useState(
+    () => window.location.hash.slice(1) || "explore",
+  );
+  const [mode, setMode] = useState<"requests" | "trips">("requests");
+  const [requests, setRequests] = useStoredState<PurchaseRequest[]>(
+    "ep-requests-v1",
+    initialRequests,
+  );
+  const [trips, setTrips] = useStoredState<Trip[]>("ep-trips-v1", initialTrips);
+  const [intentions, setIntentions] = useStoredState<Intention[]>(
+    "ep-intentions-v1",
+    ["request"],
+  );
+  const [conversations, setConversations] = useStoredState<ConversationData[]>(
+    "ep-conversations-v1",
+    [],
+  );
+  const [activeChat, setActiveChat] = useState<string | null>(null);
+  const [publish, setPublish] = useState(false);
+  const [scanner, setScanner] = useState(false);
+  const [auth, setAuth] = useState<"email" | "apple" | null>(null);
+  const [preview, setPreview] = useState(false);
+  const [deal, setDeal] = useState<ArbitrageOpportunity | null>(null);
+  const [notice, setNotice] = useState("");
+  const selectedRequest = route.startsWith("request/")
+    ? requests.find((r) => r.id === route.slice(8))
+    : undefined;
+  const selectedTrip = route.startsWith("trip/")
+    ? trips.find((t) => t.id === route.slice(5))
+    : undefined;
+  const profile = route === "profile";
+  const messages = route === "messages";
+  const arbitrage = route === "arbitrage";
+  const exploring = route === "explore";
+  const navigate = (next: string) => {
+    window.location.hash = next;
+    setRoute(next);
   };
-
-  // Add new trip created by traveler
-  const handleTripCreated = (newTrip: FreightItem) => {
-    setTripsList(previous => [newTrip, ...previous]);
-  };
-
-  // Add new parcel created by sender
-  const handleParcelCreated = (newParcel: SenderParcelRequest) => {
-    setParcelsList([newParcel, ...parcelsList]);
-  };
-
-  // Add new shopping request created by receiver
-  const handleShoppingCreated = (newShop: ReceiverShoppingRequest) => {
-    setShoppingList([newShop, ...shoppingList]);
-  };
-
-  // Search filter for trips (Volet Expéditeur)
-  const [filterOrigin, setFilterOrigin] = useState('');
-  const [filterDest, setFilterDest] = useState('');
-
-  const filteredTrips = useMemo(() => {
-    return tripsList.filter((item) => {
-      const matchSearch = !searchQuery || 
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.origin.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.destination.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.travelerName.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchOrigin = !filterOrigin || item.origin.toLowerCase().includes(filterOrigin.toLowerCase());
-      const matchDest = !filterDest || item.destination.toLowerCase().includes(filterDest.toLowerCase());
-
-      return matchSearch && matchOrigin && matchDest;
+  useEffect(() => {
+    const update = () => setRoute(window.location.hash.slice(1) || "explore");
+    window.addEventListener("hashchange", update);
+    return () => window.removeEventListener("hashchange", update);
+  }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [route]);
+  useEffect(() => {
+    if (!notice) return;
+    const timer = setTimeout(() => setNotice(""), 4500);
+    return () => clearTimeout(timer);
+  }, [notice]);
+  const updateConversation = (conversation: ConversationData) =>
+    setConversations((current) =>
+      current.map((c) => (c.id === conversation.id ? conversation : c)),
+    );
+  const openChat = (
+    id: string,
+    name: string,
+    subject: string,
+    amount: number,
+    offer = false,
+  ) => {
+    setConversations((current) => {
+      const existing = current.find((c) => c.id === id);
+      if (existing) {
+        if (
+          !offer ||
+          existing.messages.some(
+            (m) => m.mine && m.text.includes("je propose d’acheter et livrer"),
+          )
+        )
+          return current;
+        return current.map((c) =>
+          c.id === id
+            ? {
+                ...c,
+                messages: [
+                  ...c.messages,
+                  createMessage(
+                    `Bonjour ${name}, je propose d’acheter et livrer votre article : ${subject}. Pouvons-nous confirmer sa disponibilité et les modalités ?`,
+                  ),
+                ],
+              }
+            : c,
+        );
+      }
+      const codes = crypto.getRandomValues(new Uint32Array(2));
+      const pickupCode = String(1000 + (codes[0] % 9000));
+      let deliveryCode = String(1000 + (codes[1] % 9000));
+      if (deliveryCode === pickupCode)
+        deliveryCode = String(1000 + ((Number(deliveryCode) - 999) % 9000));
+      return [
+        ...current,
+        {
+          id,
+          name,
+          subject,
+          amount,
+          stage: "discussion",
+          pickupCode,
+          deliveryCode,
+          messages: offer
+            ? [
+                createMessage(
+                  `Bonjour ${name}, je propose d’acheter et livrer votre article : ${subject}. Pouvons-nous confirmer sa disponibilité et les modalités ?`,
+                ),
+              ]
+            : [],
+        },
+      ];
     });
-  }, [tripsList, searchQuery, filterOrigin, filterDest]);
-
-  // Filtered Products for Destinataire (Volet 3)
-  const filteredProducts = useMemo(() => {
-    return products.filter((item) => {
-      const matchSearch = !searchQuery ||
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.destination.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchCategory = selectedCategory === 'all' || item.category === selectedCategory;
-      return matchSearch && matchCategory;
-    });
-  }, [searchQuery, selectedCategory]);
-
-  // Handlers for Mission Accept flow
-  const handleAcceptMission = (product: ProductItem) => {
-    setSelectedProduct(null);
-    setProofProduct(product);
+    setActiveChat(id);
+    navigate("messages");
   };
-
-  const handleProceedToDelivery = () => {
-    const currentProd = proofProduct;
-    setProofProduct(null);
-    setPinDeliveryProduct(currentProd);
+  const addTrip = (t: FreightItem) => {
+    setTrips((current) => [t, ...current]);
+    setMode("trips");
+    navigate("explore");
+    setNotice("Votre trajet a été publié.");
   };
-
-  const handleSuccessFinished = () => {
-    setPinDeliveryProduct(null);
+  const share = async () => {
+    const url = window.location.href;
+    try {
+      if (navigator.share)
+        await navigator.share({
+          title: selectedRequest?.title || selectedTrip?.title,
+          url,
+        });
+      else {
+        await navigator.clipboard.writeText(url);
+        setNotice("Lien copié dans le presse-papiers.");
+      }
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === "AbortError"))
+        setNotice(
+          "Le partage est indisponible. Vous pouvez copier l’adresse de cette page.",
+        );
+    }
   };
-
-  const mainLayout = (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans selection:bg-blue-600 selection:text-white pb-20 sm:pb-0">
-      
-      {/* Header avec Navigation principale */}
-      <Header
-        pillarCounts={{ voyageur: tripsList.length, expediteur: parcelsList.length, destinataire: shoppingList.length }}
-        activePillar={activePillar}
-        onSelectPillar={setActivePillar}
-        isPhoneFrame={isPhoneFrame}
-        onTogglePhoneFrame={() => setIsPhoneFrame(!isPhoneFrame)}
-        notifications={notifications}
-        onOpenPublishModal={handleOpenPublish}
-        onOpenHowItWorks={() => setIsHowItWorksOpen(true)}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-      />
-
-      {/* 3 Pillars Tabs Bar */}
-      <ThreePillarsTabs
-        activePillar={activePillar}
-        onSelectPillar={setActivePillar}
-      />
-
-      <main className="flex-1">
-        {/* Hero Section adaptatif */}
-        <HeroSection
-          activePillar={activePillar}
-          onSelectPillar={setActivePillar}
-          onPublishTrip={handleTripCreated}
-          onSearchTrips={(orig, dest) => {
-            setFilterOrigin(orig);
-            setFilterDest(dest);
-          }}
-          onOpenPublishParcel={() => handleOpenPublish('expediteur')}
-          onOpenPublishProduct={() => handleOpenPublish('destinataire')}
-          onOpenHowItWorks={() => setIsHowItWorksOpen(true)}
-        />
-
-        {/* Algorithme IA de Billetterie & Arbitrage (Voyagez Gratuit & Gagnez de l'Argent) */}
-        <SmartFlightArbitrage
-          opportunities={arbitrageOpportunities}
-          onSelectDeal={(opp) => setSelectedArbitrage(opp)}
-        />
-
-        {/* =================================================================== */}
-        {/* VOLET 1 : CONTENU POUR LE VOYAGEUR                                  */}
-        {/* =================================================================== */}
-        {activePillar === 'voyageur' && (
-          <section id="section-resultats" className="py-8 px-4 sm:px-6">
-            <div className="max-w-6xl mx-auto space-y-10">
-              
-              {/* Opportunité A : Colis en attente à transporter */}
-              <div>
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
-                      <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-                        Colis en attente d'un voyageur (Marseille ➔ Alger)
-                      </h3>
-                    </div>
-                    <p className="text-xs sm:text-sm text-slate-500">
-                      Ces expéditeurs sont prêts à payer pour que vous preniez leur colis dans votre valise.
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleOpenPublish('expediteur')}
-                    className="text-xs font-bold text-amber-600 hover:text-amber-700 underline text-left"
-                  >
-                    + Déposer un colis à faire acheminer
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {parcelsList.map((parcel) => (
-                    <SenderParcelCard
-                      key={parcel.id}
-                      request={parcel}
-                      onAccept={(req) => {
-                        alert(`Vous avez accepté de transporter le colis de ${req.senderName} (${req.weightKg} kg) pour ${req.budgetOffer} €. Ouverture de la messagerie...`);
-                        setIsMessagingOpen(true);
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Opportunité B : Achats demandés (Shopper Duty Free & Magasins) */}
-              <div>
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-                        Demandes d'achats à rapporter (Commissions offertes)
-                      </h3>
-                    </div>
-                    <p className="text-xs sm:text-sm text-slate-500">
-                      Achetez en boutique ou en Duty Free à Marseille/Paris et touchez une commission nette à la remise à Alger.
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleOpenPublish('destinataire')}
-                    className="text-xs font-bold text-emerald-600 hover:text-emerald-700 underline text-left"
-                  >
-                    + Faire une demande d'achat
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {shoppingList.map((shop) => (
-                    <ReceiverShoppingCard
-                      key={shop.id}
-                      request={shop}
-                      onAccept={(req) => {
-                        alert(`Mission d'achat acceptée pour ${req.productName} ! Commission garantie : +${req.offeredCommission} €. Les fonds de l'acheteur sont sécurisés sous séquestre.`);
-                        setIsMessagingOpen(true);
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Trajets déjà déclarés par la communauté */}
-              <div>
-                <div className="mb-4">
-                  <h4 className="text-base font-extrabold text-slate-900">
-                    Trajets déjà publiés sur la ligne Marseille ➔ Alger
-                  </h4>
-                  <p className="text-xs text-slate-500">
-                    Vos annonces et celles des autres voyageurs certifiés.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {filteredTrips.slice(0, 3).map((item) => (
-                    <FreightCard
-                      key={item.id}
-                      item={item}
-                      onSelect={(fr) => {
-                        setSelectedFreight(fr);
-                        setIsMessagingOpen(true);
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-            </div>
-          </section>
-        )}
-
-        {/* =================================================================== */}
-        {/* VOLET 2 : CONTENU POUR L'EXPÉDITEUR (QUI ENVOIE UN COLIS)           */}
-        {/* =================================================================== */}
-        {activePillar === 'expediteur' && (
-          <section id="section-resultats" className="py-8 px-4 sm:px-6">
-            <div className="max-w-6xl mx-auto space-y-8">
-              
-              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-2">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse" />
-                    <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-                      Voyageurs disponibles pour transporter votre colis
-                    </h3>
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-500">
-                    Ces voyageurs partent prochainement et ont coché l'option <strong>« Prêt à transporter le colis d'un tiers »</strong>.
-                  </p>
-                </div>
-
+  const navItems = [
+    { id: "explore", label: "Explorer", Icon: Search },
+    { id: "publish", label: "Publier", Icon: CirclePlus },
+    { id: "messages", label: "Messages", Icon: MessageCircle },
+    { id: "profile", label: "Profil", Icon: UserRound },
+  ];
+  const activate = (id: string) =>
+    id === "publish" ? setPublish(true) : navigate(id);
+  return (
+    <div className="marketplace">
+      <a
+        className="skip-link"
+        href="#main-content"
+        onClick={(e) => {
+          e.preventDefault();
+          document.getElementById("main-content")?.focus();
+        }}
+      >
+        Aller au contenu
+      </a>
+      <header className="site-header">
+        <div className="header-inner">
+          <div className="brand-wrap">
+            {!exploring && (
+              <button
+                className="icon-button"
+                aria-label="Retour à Explorer"
+                onClick={() => navigate("explore")}
+              >
+                <ArrowLeft size={22} />
+              </button>
+            )}
+            <button className="brand" onClick={() => navigate("explore")}>
+              {selectedRequest
+                ? "Demande d’achat"
+                : selectedTrip
+                  ? "Offre de transport"
+                  : "Entre particuliers"}
+              <span className="brand-dot">.</span>
+            </button>
+          </div>
+          <nav className="desktop-nav" aria-label="Navigation principale">
+            {navItems.map(({ id, label, Icon }) => (
+              <button
+                key={id}
+                className={route === id ? "active" : ""}
+                onClick={() => activate(id)}
+              >
+                <Icon size={17} />
+                {label}
+              </button>
+            ))}
+          </nav>
+          <div className="header-actions">
+            {selectedRequest || selectedTrip ? (
+              <button
+                className="icon-button"
+                aria-label="Partager l’annonce"
+                onClick={() => void share()}
+              >
+                <Share2 size={20} />
+              </button>
+            ) : (
+              <>
                 <button
-                  onClick={() => handleOpenPublish('expediteur')}
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-xs shrink-0 cursor-pointer"
+                  className="preview-toggle icon-button"
+                  aria-label="Aperçu mobile"
+                  onClick={() => setPreview(true)}
                 >
-                  + Déposer une annonce de colis
+                  <Smartphone size={19} />
                 </button>
-              </div>
-
-              {/* Liste des voyageurs avec kilos disponibles */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {filteredTrips
-                  .filter(trip => trip.canCarryParcel)
-                  .map((item) => (
-                    <FreightCard
-                      key={item.id}
-                      item={item}
-                      onSelect={(fr) => {
-                        setSelectedFreight(fr);
-                        setIsMessagingOpen(true);
-                      }}
-                    />
-                  ))}
-              </div>
-
-              {/* Colis déjà déposés par la communauté */}
-              <div className="pt-6 border-t border-slate-200">
-                <h4 className="text-base font-extrabold text-slate-900 mb-3">
-                  Autres colis déposés par des particuliers
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {parcelsList.map((parcel) => (
-                    <SenderParcelCard
-                      key={parcel.id}
-                      request={parcel}
-                      onAccept={(req) => {
-                        setIsMessagingOpen(true);
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-            </div>
-          </section>
-        )}
-
-        {/* =================================================================== */}
-        {/* VOLET 3 : CONTENU POUR LE DESTINATAIRE (QUI REÇOIT UN PRODUIT)      */}
-        {/* =================================================================== */}
-        {activePillar === 'destinataire' && (
-          <section id="section-resultats" className="py-8 px-4 sm:px-6">
-            <div className="max-w-6xl mx-auto space-y-8">
-              
-              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-2">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse" />
-                    <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-                      La Boutique Inversée (Marseille ➔ Alger)
-                    </h3>
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-500">
-                    Sélectionnez un article officiel ci-dessous ou demandez à un voyageur de faire vos courses en magasin ou en Duty Free.
-                  </p>
-                </div>
-
                 <button
-                  onClick={() => handleOpenPublish('destinataire')}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs shrink-0 cursor-pointer"
+                  className="login-button"
+                  onClick={() =>
+                    user ? navigate("profile") : setAuth("email")
+                  }
                 >
-                  + Demander un article sur-mesure
+                  {user ? (
+                    <>
+                      <span className="mini-avatar">{user.name[0]}</span>
+                      <span>Mon profil</span>
+                    </>
+                  ) : (
+                    "Se connecter"
+                  )}
                 </button>
-              </div>
-
-              {/* Catégories de shopping */}
-              <CategoriesBar
-                selectedCategory={selectedCategory}
-                onSelectCategory={setSelectedCategory}
+              </>
+            )}
+          </div>
+        </div>
+      </header>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className={`main-container ${messages ? "messages-container" : ""}`}
+      >
+        {exploring && (
+          <Explorer
+            mode={mode}
+            onMode={setMode}
+            requests={requests}
+            trips={trips}
+            onRequest={(r) => navigate(`request/${r.id}`)}
+            onTrip={(t) => navigate(`trip/${t.id}`)}
+            onArbitrage={() => navigate("arbitrage")}
+            onScan={() => setScanner(true)}
+          />
+        )}
+        {selectedRequest && (
+          <RequestDetails
+            request={selectedRequest}
+            onChat={(offer) =>
+              openChat(
+                selectedRequest.id,
+                selectedRequest.buyer,
+                selectedRequest.title,
+                selectedRequest.budget + selectedRequest.reward,
+                offer,
+              )
+            }
+          />
+        )}
+        {selectedTrip && (
+          <TripDetails
+            trip={selectedTrip}
+            onChat={() =>
+              openChat(
+                selectedTrip.id,
+                selectedTrip.travelerName,
+                selectedTrip.title,
+                selectedTrip.startingPrice ||
+                  selectedTrip.pricePerKg * selectedTrip.availableKg,
+              )
+            }
+            onScan={() => setScanner(true)}
+          />
+        )}
+        {profile && (
+          <Profile
+            selected={intentions}
+            onSelect={setIntentions}
+            onContinue={() => {
+              setMode(
+                intentions.includes("request") || intentions.includes("shop")
+                  ? "requests"
+                  : "trips",
+              );
+              navigate("explore");
+              setNotice("Vos préférences ont été enregistrées.");
+            }}
+            onLogin={() => setAuth("email")}
+            onApple={() => setAuth("apple")}
+            userName={user?.name}
+            onLogout={logout}
+          />
+        )}
+        {messages && (
+          <Conversation
+            conversations={conversations}
+            activeId={activeChat}
+            onSelect={setActiveChat}
+            onUpdate={updateConversation}
+          />
+        )}
+        {arbitrage && (
+          <div className="arbitrage-page">
+            <div className="page-intro">
+              <span className="eyebrow">
+                <Sparkles size={15} /> ARBITRAGE IA
+              </span>
+              <h1>
+                Voyager gratuit ou
+                <br />
+                gagner de l’argent.
+              </h1>
+              <p>Vos commissions peuvent financer votre prochain départ.</p>
+            </div>
+            <Suspense fallback={<p role="status">Chargement du simulateur…</p>}>
+              <SmartFlightArbitrage
+                opportunities={arbitrageOpportunities}
+                onSelectDeal={setDeal}
               />
-
-              {/* Grille des articles du catalogue */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredProducts.map((prod) => (
-                  <ProductCard
-                    key={prod.id}
-                    product={prod}
-                    onSelect={(p) => setSelectedProduct(p)}
-                  />
-                ))}
-              </div>
-
-              {/* Voyageurs qui achètent en magasin */}
-              <div className="pt-6 border-t border-slate-200">
-                <h4 className="text-base font-extrabold text-slate-900 mb-3">
-                  Voyageurs prêts à acheter pour vous en magasin
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {filteredTrips
-                    .filter(trip => trip.canBuyProduct)
-                    .map((item) => (
-                      <FreightCard
-                        key={item.id}
-                        item={item}
-                        onSelect={(fr) => {
-                          setSelectedFreight(fr);
-                          setIsMessagingOpen(true);
-                        }}
-                      />
-                    ))}
-                </div>
-              </div>
-
-            </div>
-          </section>
+            </Suspense>
+          </div>
         )}
-
-        {/* Pedagogical Banner */}
-        <ShopperBanner
-          mode={activePillar === 'destinataire' ? 'shop' : 'bag'}
-          onOpenPublishModal={() => handleOpenPublish(activePillar)}
-        />
-
-        {/* How It Works */}
-        <HowItWorks
-          mode={activePillar === 'destinataire' ? 'shop' : 'bag'}
-          onOpenDetails={() => setIsHowItWorksOpen(true)}
-        />
-
-        {/* Sécurité simplifiée et claire */}
-        <SecuritySection />
+        {!exploring &&
+          !selectedRequest &&
+          !selectedTrip &&
+          !profile &&
+          !messages &&
+          !arbitrage && (
+            <div className="empty-state">
+              <h1>Cette annonce n’est pas disponible</h1>
+              <p>
+                Les annonces de démonstration publiées restent sur l’appareil
+                qui les a créées.
+              </p>
+              <button
+                className="primary-button"
+                onClick={() => navigate("explore")}
+              >
+                Explorer les annonces
+              </button>
+            </div>
+          )}
       </main>
-
-      {/* Footer */}
-      <Footer
-        mode={activePillar === 'destinataire' ? 'shop' : 'bag'}
-        onOpenHowItWorks={() => setIsHowItWorksOpen(true)}
-        onOpenPublishModal={() => handleOpenPublish(activePillar)}
-      />
-
-      {/* Mobile Bottom Navigation */}
-      <MobileBottomNav
-        mode={activePillar === 'destinataire' ? 'shop' : 'bag'}
-        activeTab={mobileTab}
-        onTabChange={(tab) => {
-          setMobileTab(tab);
-          if (tab === 'messages') setIsMessagingOpen(true);
-          if (tab === 'profile') { if (user) setActiveDashboard('voyageur'); else openAuthModal(); }
-          if (tab === 'explore') setActivePillar('expediteur');
-        }}
-        onOpenPublishModal={() => setIsScannerOpen(true)}
-        unreadCount={unreadMessages}
-      />
-
-      {/* =================================================================== */}
-      {/* MODALS INTERACTIVES                                                 */}
-      {/* =================================================================== */}
-      
-      {/* Fiche Produit (Boutique Inversée) */}
-      <ProductDetailModal
-        product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-        onAcceptMission={handleAcceptMission}
-      />
-
-      {/* Téléversement Preuve d'achat (pour le Shopper) */}
-      <ProofUploadModal
-        product={proofProduct}
-        onClose={() => setProofProduct(null)}
-        onProceedToDelivery={handleProceedToDelivery}
-      />
-
-      {/* Clôture par code PIN (remise en main propre) */}
-      <PinDeliveryModal
-        product={pinDeliveryProduct}
-        onClose={() => setPinDeliveryProduct(null)}
-        onSuccessFinished={handleSuccessFinished}
-      />
-
-      {/* Modal de Publication à 3 Onglets (Voyageur / Expéditeur / Destinataire) */}
-      <PublishModal
-        isOpen={isPublishModalOpen}
-        onClose={() => setIsPublishModalOpen(false)}
-        initialTab={publishModalTab}
-        onTripCreated={handleTripCreated}
-        onParcelCreated={handleParcelCreated}
-        onShoppingCreated={handleShoppingCreated}
-      />
-
-      {/* Comment ça marche */}
-      <HowItWorksModal
-        isOpen={isHowItWorksOpen}
-        onClose={() => setIsHowItWorksOpen(false)}
-        mode={activePillar === 'destinataire' ? 'shop' : 'bag'}
-      />
-
-      <TicketScannerModal isOpen={isScannerOpen} onClose={() => setIsScannerOpen(false)} onTripCreated={handleTripCreated} />
-      <DepartureInspectionModal isOpen={isInspectionOpen} onClose={() => setIsInspectionOpen(false)} />
-
-      {/* Messagerie sécurisée */}
-      <MessagingModal
-        isOpen={isMessagingOpen}
-        onUnreadCountChange={setUnreadMessages}
-        onClose={() => { setIsMessagingOpen(false); setMobileTab('home'); }}
-        onPayCommission={() => {
-          setIsMessagingOpen(false);
-          setMobileTab('explore');
-          setActivePillar('expediteur');
-        }}
-      />
-
-      {/* Authentification & Dashboards */}
-      <AuthModal />
-
-      <VoyageurDashboard
-        isOpen={activeDashboard === 'voyageur'}
-        tickets={tripsList}
-        onClose={() => { setActiveDashboard('none'); setMobileTab('home'); }}
-        onOpenUploadProof={() => {
-          setActiveDashboard('none');
-          setProofProduct(products[0]);
-        }}
-        onOpenPinModal={() => {
-          setActiveDashboard('none');
-          setPinDeliveryProduct(products[0]);
-        }}
-        onOpenInspection={() => {
-          setActiveDashboard('none');
-          setIsInspectionOpen(true);
-        }}
-        onOpenPublish={() => {
-          setActiveDashboard('none');
-          setIsScannerOpen(true);
-        }}
-      />
-
-      <CarrierDashboard
-        isOpen={activeDashboard === 'transporteur'}
-        onClose={() => setActiveDashboard('none')}
-        onOpenPublish={() => {
-          setActiveDashboard('none');
-          handleOpenPublish('voyageur');
-        }}
-      />
-
-      <ExpediteurDashboard
-        isOpen={activeDashboard === 'expediteur'}
-        onClose={() => setActiveDashboard('none')}
-        onOpenGps={() => {
-          setActiveDashboard('none');
-        }}
-        onOpenMessaging={() => {
-          setActiveDashboard('none');
-          setIsMessagingOpen(true);
-        }}
-      />
-
-      {/* Modal d'Arbitrage Vol Gratuit & Rémunéré */}
-      <ArbitrageDetailModal
-        opportunity={selectedArbitrage}
-        onClose={() => setSelectedArbitrage(null)}
-        onSuccess={(opp) => {
-          alert(`🎉 Bravo ! Mission confirmée pour ${opp.city}. Vos ${opp.totalOrderReward} € sont sous séquestre garanti Stripe.`);
-        }}
-      />
-
-      {/* Alerte Toast Arbitrage Live Push */}
-      <LiveArbitrageToast
-        opportunity={arbitrageOpportunities[0]}
-        onOpen={(opp) => setSelectedArbitrage(opp)}
-      />
-
+      {exploring && (
+        <div className="publish-dock">
+          <div>
+            <span>
+              <ShieldCheck size={18} />
+              Un besoin, un trajet, une rencontre.
+            </span>
+            <button className="primary-button" onClick={() => setPublish(true)}>
+              <CirclePlus size={19} />
+              {mode === "requests"
+                ? "Publier une demande"
+                : "Proposer mon trajet"}
+            </button>
+          </div>
+        </div>
+      )}
+      <nav className="mobile-nav" aria-label="Navigation mobile">
+        {navItems.map(({ id, label, Icon }) => (
+          <button
+            key={id}
+            aria-current={route === id ? "page" : undefined}
+            className={route === id ? "active" : ""}
+            onClick={() => activate(id)}
+          >
+            <Icon size={23} strokeWidth={route === id ? 2.3 : 1.7} />
+            <span>{label}</span>
+          </button>
+        ))}
+      </nav>
+      {notice && (
+        <div className="toast" role="status">
+          {notice}
+        </div>
+      )}
+      {publish && (
+        <Publish
+          mode={mode}
+          name={user?.name || "Camille"}
+          onClose={() => setPublish(false)}
+          onRequest={(r) => {
+            setRequests((current) => [r, ...current]);
+            setMode("requests");
+            navigate("explore");
+            setNotice("Votre demande a été publiée.");
+          }}
+          onTrip={addTrip}
+          onScan={() => {
+            setPublish(false);
+            setScanner(true);
+          }}
+        />
+      )}
+      {scanner && (
+        <Suspense
+          fallback={
+            <div className="toast" role="status">
+              Chargement du scanner…
+            </div>
+          }
+        >
+          <TicketScannerModal
+            isOpen
+            onClose={() => setScanner(false)}
+            onTripCreated={addTrip}
+          />
+        </Suspense>
+      )}
+      {auth && (
+        <Dialog
+          title={auth === "apple" ? "Continuer avec Apple" : "Se connecter"}
+          onClose={() => setAuth(null)}
+        >
+          <p className="info-box">
+            <ShieldCheck size={18} />
+            {auth === "apple"
+              ? "La connexion Apple sera disponible lorsque le service d’authentification sera connecté. Vous pouvez explorer le parcours avec un compte de démonstration."
+              : "Accès de démonstration. Aucun mot de passe ni compte réel n’est nécessaire."}
+          </p>
+          <form
+            className="publish-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const email = new FormData(e.currentTarget).get(
+                "email",
+              ) as string;
+              login(email);
+              setAuth(null);
+              setNotice("Vous êtes connecté au compte de démonstration.");
+            }}
+          >
+            <label>
+              Adresse e-mail
+              <input
+                name="email"
+                type="email"
+                placeholder="vous@exemple.fr"
+                required
+              />
+            </label>
+            <button className="primary-button">
+              Continuer en démonstration
+              <ArrowRight size={18} />
+            </button>
+          </form>
+        </Dialog>
+      )}
+      {deal && (
+        <Dialog
+          title="Votre voyage, vos possibilités"
+          onClose={() => setDeal(null)}
+        >
+          <span className="purchase-badge">Simulation d’arbitrage</span>
+          <h3 className="deal-title">
+            {deal.flight.origin} ➔ {deal.flight.destination}
+          </h3>
+          <dl className="deal-summary">
+            <div>
+              <dt>Billet estimé</dt>
+              <dd>{euro(deal.flight.flightPrice)}</dd>
+            </div>
+            <div>
+              <dt>Commissions des missions</dt>
+              <dd>{euro(deal.totalOrderReward)}</dd>
+            </div>
+            <div>
+              <dt>
+                {deal.netProfit >= 0
+                  ? "Gain après le billet"
+                  : "Reste à financer"}
+              </dt>
+              <dd>{euro(Math.abs(deal.netProfit))}</dd>
+            </div>
+          </dl>
+          <p className="muted">{deal.ordersDescription}</p>
+          <p className="info-box">
+            <InfoIcon />
+            Estimation hors achats, bagages et frais éventuels. Confirmez les
+            missions avant toute réservation.
+          </p>
+          <button
+            className="primary-button"
+            onClick={() => {
+              openChat(
+                deal.id,
+                deal.clientName,
+                deal.ordersDescription,
+                deal.totalOrderReward,
+                true,
+              );
+              setDeal(null);
+            }}
+          >
+            Discuter des missions
+            <ArrowRight size={18} />
+          </button>
+        </Dialog>
+      )}
+      {preview && (
+        <Dialog
+          title="Aperçu mobile · 390 px"
+          onClose={() => setPreview(false)}
+        >
+          <iframe
+            title="Application en format mobile"
+            className="phone-preview"
+            src={`${window.location.pathname}?preview=mobile#${route}`}
+          />
+        </Dialog>
+      )}
     </div>
   );
-
-  if (isPhoneFrame) {
-    return (
-      <PhoneSimulator onClose={() => setIsPhoneFrame(false)}>
-        {mainLayout}
-      </PhoneSimulator>
-    );
-  }
-
-  return mainLayout;
 }
-
+function InfoIcon() {
+  return <ShieldCheck size={18} />;
+}
 export default function App() {
   return (
     <AuthProvider>
-      <MainAppContent />
+      <Marketplace />
     </AuthProvider>
   );
 }

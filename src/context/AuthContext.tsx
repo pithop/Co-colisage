@@ -18,28 +18,23 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Default logged in with Karim Bouzid (Voyageur) so user immediately enjoys a rich experience
+  // Start signed out; the demo account is entered explicitly.
   const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('bagvoyage_user');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return demoUsers.voyageur;
-      }
-    }
-    return demoUsers.voyageur;
+    try {
+      const saved = localStorage.getItem('bagvoyage_user');
+      const parsed = saved ? JSON.parse(saved) : null;
+      return parsed && typeof parsed.name === 'string' ? parsed : null;
+    } catch { return null; }
   });
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [activeDashboard, setActiveDashboard] = useState<'none' | 'voyageur' | 'transporteur' | 'expediteur'>('none');
 
   useEffect(() => {
-    if (user) {
-      localStorage.setItem('bagvoyage_user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('bagvoyage_user');
-    }
+    try {
+      if (user) localStorage.setItem('bagvoyage_user', JSON.stringify(user));
+      else localStorage.removeItem('bagvoyage_user');
+    } catch { /* Keep the session usable if browser storage is unavailable. */ }
   }, [user]);
 
   const login = (email: string, role: UserRole = 'voyageur') => {

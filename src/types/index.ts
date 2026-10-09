@@ -99,6 +99,11 @@ export interface SenderParcelRequest {
   itemDescription: string;
   budgetOffer: number; // Montant proposé au voyageur en €
   category: string;
+  natureObject?: string; // Nature de l'objet (Vêtements, High-Tech, Parfums, etc.)
+  sizeFormat?: 'S' | 'M' | 'L' | 'XL';
+  timeWindow?: string;   // Fourchette pour quand il le voudrait
+  canTravelToMeet?: boolean; // Accepte de se déplacer
+  meetingLocation?: string;  // Lieu convenu de rencontre
   urgent?: boolean;
 }
 
@@ -113,6 +118,8 @@ export interface ReceiverShoppingRequest {
   offeredCommission: number; // Commission offerte au voyageur en €
   desiredDate: string;
   image: string;
+  quantity?: number;
+  deliveryLocation?: string;
   urgent?: boolean;
 }
 
@@ -138,9 +145,9 @@ export interface ArbitrageOpportunity {
   ordersCount: number;
   ordersDescription: string;
   totalOrderReward: number; // e.g. 150
-  netProfit: number; // totalOrderReward - flightPrice = +101
+  netProfit: number;        // e.g. +101
   clientName: string;
   clientAvatar: string;
-  escrowSecured: boolean;
-  tag: string;
+  escrowSecured?: boolean;
+  tag?: string;
 }

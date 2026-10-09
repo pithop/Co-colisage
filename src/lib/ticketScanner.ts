@@ -7,10 +7,10 @@ export const maxBaggageOffer = (allowance: number) =>
 
 const airports: Record<string, string> = { MRS: 'Marseille', ORY: 'Paris Orly', CDG: 'Paris Charles de Gaulle', ALG: 'Alger', BCN: 'Barcelone' };
 export const demoTickets: TicketScanResult[] = [
-  { airline: 'Air Algérie', flightNumber: 'AH1021', originCode: 'MRS', destinationCode: 'ALG', departureDate: '2026-09-28', departureTime: '08:30', baggageAllowanceKg: 10, baggageType: 'cabin' },
-  { airline: 'Transavia', flightNumber: 'TO7260', originCode: 'ORY', destinationCode: 'ALG', departureDate: '2026-09-29', departureTime: '10:15', baggageAllowanceKg: 20, baggageType: 'hold' },
-  { airline: 'Air France', flightNumber: 'AF1854', originCode: 'CDG', destinationCode: 'ALG', departureDate: '2026-09-30', departureTime: '14:20', baggageAllowanceKg: 23, baggageType: 'hold' },
-  { airline: 'Vueling', flightNumber: 'VY1509', originCode: 'MRS', destinationCode: 'BCN', departureDate: '2026-10-01', departureTime: '17:45', baggageAllowanceKg: 10, baggageType: 'cabin' },
+  { airline: 'Air Algérie', flightNumber: 'AH1021', originCode: 'MRS', destinationCode: 'ALG', departureDate: '2026-10-14', departureTime: '08:30', baggageAllowanceKg: 10, baggageType: 'cabin' },
+  { airline: 'Transavia', flightNumber: 'TO7260', originCode: 'ORY', destinationCode: 'ALG', departureDate: '2026-10-15', departureTime: '10:15', baggageAllowanceKg: 20, baggageType: 'hold' },
+  { airline: 'Air France', flightNumber: 'AF1854', originCode: 'CDG', destinationCode: 'ALG', departureDate: '2026-10-16', departureTime: '14:20', baggageAllowanceKg: 23, baggageType: 'hold' },
+  { airline: 'Vueling', flightNumber: 'VY1509', originCode: 'MRS', destinationCode: 'BCN', departureDate: '2026-10-17', departureTime: '17:45', baggageAllowanceKg: 10, baggageType: 'cabin' },
 ].map((ticket, index) => ({ ...ticket, baggageType: ticket.baggageType as 'cabin' | 'hold', origin: airports[ticket.originCode], destination: airports[ticket.destinationCode], pnr: `DEMO0${index + 1}`, passengerName: 'Camille Martin', maxAllowedOfferKg: maxBaggageOffer(ticket.baggageAllowanceKg), ticketVerified: true }));
 
 export function parseTicketText(raw: string): TicketScanResult {

@@ -69,7 +69,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
     setIsVerifying(true);
     setTimeout(() => {
       setIsVerifying(false);
-      if (enteredPin === correctPin || enteredPin.length === 4) {
+      if (enteredPin === correctPin) {
         setIsSuccess(true);
         // Trigger elite confetti explosion
         confetti({
