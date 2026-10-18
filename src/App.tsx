@@ -91,6 +91,7 @@ function Marketplace() {
   }, []);
   useEffect(() => {
     window.scrollTo(0, 0);
+    document.getElementById("main-content")?.scrollTo(0, 0);
   }, [route]);
   useEffect(() => {
     if (!notice) return;

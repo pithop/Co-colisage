@@ -5,6 +5,11 @@ import {
   Package,
   ShoppingBag,
   Truck,
+  ShieldCheck,
+  Award,
+  Clock3,
+  MessageCircle,
+  Zap,
 } from "lucide-react";
 export type Intention = "request" | "shop" | "carry";
 export function Profile({
@@ -54,13 +59,16 @@ export function Profile({
             className={`intention-card ${selected.includes(id) ? "is-selected" : ""}`}
             key={id}
           >
-            <Icon size={25} strokeWidth={1.5} />
+            <span className="intention-icon">
+              <Icon size={25} strokeWidth={1.5} />
+            </span>
             <span>
               <strong>{title}</strong>
               <small>{description}</small>
             </span>
             <input
               type="checkbox"
+              aria-label={title}
               checked={selected.includes(id)}
               onChange={() =>
                 onSelect(
@@ -80,6 +88,48 @@ export function Profile({
         <Info size={17} />
         Vous pourrez changer de rôle à tout moment.
       </p>
+      <section
+        className="verification-panel"
+        aria-labelledby="verification-title"
+      >
+        <div className="verification-heading">
+          <h2 id="verification-title">Statut & Vérification</h2>
+          <span>Profil de démonstration</span>
+        </div>
+        <div className="kyc-status">
+          <span className="verification-icon">
+            <ShieldCheck size={24} />
+          </span>
+          <div>
+            <strong>Identité vérifiée</strong>
+            <p>Selfie et pièce d’identité validés</p>
+          </div>
+          <Check size={18} />
+        </div>
+        <div className="traveler-status">
+          <div className="traveler-status-heading">
+            <Award size={24} />
+            <div>
+              <h3>Super Voyageur</h3>
+              <p>La confiance se construit à chaque trajet.</p>
+            </div>
+          </div>
+          <ul className="trust-criteria">
+            {[
+              { Icon: Zap, label: "Réactivité" },
+              { Icon: Clock3, label: "Ponctualité" },
+              { Icon: MessageCircle, label: "Échange clair" },
+              { Icon: Package, label: "Marchandise intacte" },
+            ].map(({ Icon, label }) => (
+              <li key={label}>
+                <Icon size={16} />
+                <span>{label}</span>
+                <Check size={14} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
       <button
         className="primary-button"
         disabled={!selected.length}

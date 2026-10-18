@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 70" fill="none">
+  <defs>
+    <linearGradient id="planeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8FAFC" />
+      <stop offset="100%" stop-color="#CBD5E1" />
+    </linearGradient>
+  </defs>
+  <!-- Fuselage -->
+  <path d="M112 34 C104 31 82 28 48 29 L20 18 L14 18 L24 30 L10 30 L6 26 L2 26 L5 34 L2 42 L6 42 L10 38 L24 38 L20 50 L14 50 L48 39 C82 40 104 37 112 34 Z" fill="url(#planeGrad)" stroke="#94A3B8" stroke-width="1" />
+  <!-- Wing -->
+  <path d="M58 35 L42 56 L36 56 L48 35 Z" fill="#2563EB" fill-opacity="0.85" />
+  <!-- Cockpit Windows -->
+  <path d="M104 33 L98 32 L98 34 L102 35 Z" fill="#0F172A" />
+</svg>

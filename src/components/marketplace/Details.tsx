@@ -19,6 +19,7 @@ import {
   timeLabel,
   vehicleLabel,
 } from "../../data/marketplace";
+import { Avatar } from "./Avatar";
 
 export function RequestDetails({
   request: r,
@@ -37,11 +38,16 @@ export function RequestDetails({
         <span className="purchase-badge">À acheter et livrer</span>
         <h1>{r.title}</h1>
         <button className="buyer-row" onClick={() => onChat(false)}>
-          <span className="avatar avatar-rose">{r.buyer[0]}</span>
+          <Avatar name={r.buyer} src={r.buyerAvatar} />
           <span>
             <strong>{r.buyer}</strong>
             <small>Demande publiée par</small>
           </span>
+          {r.buyerAvatar && (
+            <span className="verified-badge">
+              <ShieldCheck size={14} /> Profil vérifié · démo
+            </span>
+          )}
           <ChevronRight size={19} />
         </button>
         <dl className="spec-list">
@@ -70,10 +76,20 @@ export function RequestDetails({
           </div>
         </dl>
         <p className="info-box">
-          <Info size={18} />
-          Confirmez la disponibilité avec {r.buyer} avant l’achat.
+          <ShieldCheck size={20} />
+          <span>
+            <strong>Un échange en toute confiance</strong>
+            <br />
+            Confirmez la disponibilité avec {r.buyer} avant l’achat.
+          </span>
         </p>
-        <div className="detail-actions">
+      </div>
+      <div className="detail-actions">
+        <div className="action-reward">
+          <span>Rémunération du service</span>
+          <strong>{euro(r.reward)}</strong>
+        </div>
+        <div className="detail-action-buttons">
           <button className="primary-button" onClick={() => onChat(true)}>
             Proposer d’acheter et livrer
             <ArrowRight size={18} />
@@ -98,6 +114,13 @@ export function TripDetails({
   return (
     <article className="trip-detail">
       <div className="trip-detail-banner">
+        {t.image && (
+          <img
+            className="trip-hero-vehicle"
+            src={t.image}
+            alt={vehicleLabel(t)}
+          />
+        )}
         <span>
           {vehicleLabel(t)} · {t.transportLabel}
         </span>
@@ -112,15 +135,23 @@ export function TripDetails({
       </div>
       <div className="detail-content">
         <div className="buyer-row">
-          <span className="avatar avatar-blue">{t.travelerName[0]}</span>
+          <Avatar name={t.travelerName} src={t.travelerAvatar} />
           <strong>{t.travelerName}</strong>
           <span className="rating">
-            <Star size={15} />
+            <Star size={15} fill="currentColor" />
             {t.rating ? t.rating.toFixed(1) : "Nouveau"}
+            {t.reviewsCount > 0 && <span> · {t.reviewsCount} avis</span>}
           </span>
         </div>
         <p className="trip-description">{t.description}</p>
         <dl className="spec-list">
+          <div>
+            <Info />
+            <dt>Véhicule</dt>
+            <dd>
+              {vehicleLabel(t)} · {t.transportLabel}
+            </dd>
+          </div>
           <div>
             <Package />
             <dt>Place disponible</dt>

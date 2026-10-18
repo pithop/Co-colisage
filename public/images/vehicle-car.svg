@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 70" fill="none">
+  <defs>
+    <linearGradient id="carBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <linearGradient id="carGlass" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#93C5FD" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#3B82F6" stop-opacity="0.4" />
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="60" cy="62" rx="50" ry="5" fill="#0F172A" fill-opacity="0.15" />
+  <!-- Body Main -->
+  <path d="M12 46 C12 42 16 38 24 37 L38 36 L52 20 C55 16 62 15 72 15 L88 18 C94 19 98 24 102 32 L108 38 C112 41 114 44 114 48 L114 53 C114 55 112 56 110 56 L100 56 C99 50 94 46 88 46 C82 46 77 50 76 56 L44 56 C43 50 38 46 32 46 C26 46 21 50 20 56 L14 56 C12 56 12 54 12 52 Z" fill="url(#carBody)" />
+  <!-- Windows -->
+  <path d="M54 22 L70 20 L86 22 C90 23 93 26 95 32 L68 32 L53 32 C51 28 52 24 54 22 Z" fill="url(#carGlass)" />
+  <path d="M40 34 L50 24 L50 34 Z" fill="url(#carGlass)" />
+  <!-- Lights -->
+  <path d="M106 39 L112 41 C113 43 113 45 111 46 L105 45 Z" fill="#FDE047" />
+  <path d="M13 44 L16 43 L16 47 L13 47 Z" fill="#EF4444" />
+  <!-- Wheels -->
+  <circle cx="32" cy="55" r="9" fill="#0F172A" />
+  <circle cx="32" cy="55" r="5" fill="#94A3B8" />
+  <circle cx="32" cy="55" r="2" fill="#0F172A" />
+  <circle cx="88" cy="55" r="9" fill="#0F172A" />
+  <circle cx="88" cy="55" r="5" fill="#94A3B8" />
+  <circle cx="88" cy="55" r="2" fill="#0F172A" />
+</svg>

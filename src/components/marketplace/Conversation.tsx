@@ -14,6 +14,7 @@ import {
 import QRCode from "qrcode";
 import { euro } from "../../data/marketplace";
 import { Dialog } from "./Dialog";
+import { Avatar } from "./Avatar";
 
 export interface ChatMessage {
   id: string;
@@ -150,11 +151,15 @@ export function Delivery({
       }
       onClose={onClose}
     >
-      <div className="delivery-steps">
-        <span className={c.stage !== "secured" ? "complete" : "current"}>
+      <div className="delivery-steps" aria-label="Étapes de validation">
+        <span
+          aria-current={pickup ? "step" : undefined}
+          className={c.stage !== "secured" ? "complete" : "current"}
+        >
           1. Prise en charge
         </span>
         <span
+          aria-current={c.stage === "collected" ? "step" : undefined}
           className={
             c.stage === "delivered"
               ? "complete"
@@ -365,7 +370,7 @@ export function Conversation({
             key={t.id}
             onClick={() => onSelect(t.id)}
           >
-            <span className="avatar avatar-blue">{t.name[0]}</span>
+            <Avatar name={t.name} />
             <span>
               <strong>{t.name}</strong>
               <small>{t.subject}</small>
@@ -387,7 +392,7 @@ export function Conversation({
             >
               <ArrowLeft size={20} />
             </button>
-            <span className="avatar avatar-rose">{c.name[0]}</span>
+            <Avatar name={c.name} />
             <div>
               <h2>{c.name}</h2>
               <p>{c.subject}</p>
@@ -426,6 +431,13 @@ export function Conversation({
                   : "Valider la remise"}
               </button>
             )}
+          </div>
+          <div className="chat-safety-note">
+            <ShieldCheck size={17} />
+            <p>
+              Gardez vos échanges et paiements ici. Ne partagez jamais votre
+              code avant la remise de l’article.
+            </p>
           </div>
           <div
             className="message-feed"

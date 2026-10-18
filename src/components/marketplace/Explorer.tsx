@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Avatar } from "./Avatar";
 import {
   ArrowRight,
   CalendarDays,
@@ -171,6 +172,9 @@ export function Explorer({
                 key={f.label}
                 className={`filter-pill ${f.value ? "selected" : ""}`}
                 aria-expanded={filter === f.label}
+                aria-controls={
+                  filter === f.label ? "listing-filter-panel" : undefined
+                }
                 onClick={() => setFilter(filter === f.label ? "" : f.label)}
               >
                 {f.label}
@@ -181,7 +185,7 @@ export function Explorer({
             <SlidersHorizontal size={17} className="filter-decoration" />
           </div>
           {filter && (
-            <div className="filter-panel">
+            <div className="filter-panel" id="listing-filter-panel">
               <label htmlFor="filter-value">
                 {filter === "Date"
                   ? isRequests
@@ -285,15 +289,23 @@ export function Explorer({
                         </p>
                       </div>
                     </div>
-                    <p className="card-date">
-                      <CalendarDays size={15} /> Avant le {dateLabel(r.date)}
-                    </p>
+                    <div className="request-meta">
+                      <span className="card-author">
+                        <Avatar name={r.buyer} src={r.buyerAvatar} />
+                        <span>
+                          Demandé par <strong>{r.buyer}</strong>
+                        </span>
+                      </span>
+                      <p className="card-date">
+                        <CalendarDays size={15} /> Avant le {dateLabel(r.date)}
+                      </p>
+                    </div>
                     <div className="request-bottom">
                       <div>
                         <span>
                           Article : <strong>{euro(r.budget)} max</strong>
                         </span>
-                        <span>
+                        <span className="service-reward">
                           Service : <strong>{euro(r.reward)}</strong>
                         </span>
                       </div>
@@ -315,11 +327,7 @@ export function Explorer({
                   return (
                     <article className="trip-card" key={t.id}>
                       <div className="trip-person">
-                        <div
-                          className={`avatar avatar-${t.id === "emma" || t.id === "ines-mrs" ? "rose" : "blue"}`}
-                        >
-                          {t.travelerName[0]}
-                        </div>
+                        <Avatar name={t.travelerName} src={t.travelerAvatar} />
                         <div>
                           <h2>
                             {t.travelerName}
@@ -330,11 +338,19 @@ export function Explorer({
                           </h2>
                           <p>{t.transportLabel}</p>
                         </div>
-                        <Icon
-                          className="vehicle-illustration"
-                          size={36}
-                          strokeWidth={1.3}
-                        />
+                        {t.image ? (
+                          <img
+                            className="vehicle-illustration"
+                            src={t.image}
+                            alt={vehicleLabel(t)}
+                          />
+                        ) : (
+                          <Icon
+                            className="vehicle-illustration"
+                            size={36}
+                            strokeWidth={1.3}
+                          />
+                        )}
                       </div>
                       <h3 className="trip-route">
                         {t.origin}

@@ -10,6 +10,7 @@ export interface PurchaseRequest {
   reward: number;
   image: string;
   buyer: string;
+  buyerAvatar?: string;
   specifications: string;
   location: string;
 }
@@ -29,6 +30,7 @@ export const requests: PurchaseRequest[] = [
     reward: 25,
     image: "/images/nike.jpg",
     buyer: "Sarah",
+    buyerAvatar: "/images/avatar-sarah.svg",
     specifications: "Neuves · Noires · Pointure 42",
     location: "Lyon, Part-Dieu",
   },
@@ -42,6 +44,7 @@ export const requests: PurchaseRequest[] = [
     reward: 20,
     image: "/images/perfume.jpg",
     buyer: "Julie",
+    buyerAvatar: "/images/avatar-emma.svg",
     specifications: "Neuf · Eau de parfum · 100 ml",
     location: "Marseille, Saint-Charles",
   },
@@ -72,9 +75,16 @@ const trip = (
   rating,
   availableKg: 5,
   pricePerKg: 9,
-  travelerAvatar: "",
+  travelerAvatar: `/images/avatar-${id.split("-")[0]}.svg`,
   reviewsCount: 12,
-  image: "",
+  image:
+    type === "voiture"
+      ? "/images/vehicle-car.svg"
+      : type === "camion"
+        ? "/images/vehicle-van.svg"
+        : type === "avion" && id === "emma"
+          ? "/images/vehicle-luggage.svg"
+          : "/images/vehicle-plane.svg",
   description:
     "Un peu de place sur mon trajet pour vos affaires. Échangeons pour convenir du point de rendez-vous.",
   canCarryParcel: true,
