@@ -219,12 +219,41 @@ export function Publish({
   return (
     <Dialog title="Publier une annonce" onClose={onClose} wide>
       <div className="publish-intro">
-        <span className="eyebrow">BAGVOYAGE / À VOUS DE JOUER</span>
+        <span className="eyebrow">
+          {kind === "requests"
+            ? "SHOPPING INVERSÉ SHOP & GO"
+            : kind === "parcel"
+              ? "EXPÉDITION DE COLIS SÉCURISÉE"
+              : "VOYAGEUR & TRANSPORTEUR"}
+        </span>
         <h3>
-          Votre prochain départ
-          <br />a de la valeur.
+          {kind === "requests" ? (
+            <>
+              Faites-vous livrer
+              <br />
+              vos trouvailles.
+            </>
+          ) : kind === "parcel" ? (
+            <>
+              Envoyez votre colis
+              <br />
+              en toute sérénité.
+            </>
+          ) : (
+            <>
+              Votre prochain départ
+              <br />
+              a de la valeur.
+            </>
+          )}
         </h3>
-        <p>Un itinéraire. Un peu de place. De nouvelles possibilités.</p>
+        <p>
+          {kind === "requests"
+            ? "Renseignez vos articles et convenez d’une commission avec un voyageur."
+            : kind === "parcel"
+              ? "Un colis pour vos proches, confié en main propre à un voyageur vérifié."
+              : "Un itinéraire. Un peu de place. De nouvelles possibilités."}
+        </p>
       </div>
       <div className="segment publish-universes">
         <button

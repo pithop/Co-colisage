@@ -207,11 +207,15 @@ export function Profile({
                 : application?.status === "approved"
                   ? application.companyName
                   : "Entreprise, documents et flotte en un seul dossier."}
-          </p>
+            </p>
+          </div>
+          {(!application || application.status === "rejected") && (
+            <button onClick={onPro}>Devenir transporteur pro</button>
+          )}
         </div>
-        {(!application || application.status === "rejected") && (
-          <button onClick={onPro}>Devenir transporteur pro</button>
-        )}
+      <div className="profile-preferences-header">
+        <h3>Préférences de recherche dans Explorer</h3>
+        <p>Sélectionnez les catégories d’annonces à afficher en priorité lors de votre navigation.</p>
       </div>
       <div className="intention-list">
         {[
