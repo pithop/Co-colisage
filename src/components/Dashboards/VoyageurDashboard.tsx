@@ -255,7 +255,7 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
               role="status"
               className="mt-4 flex items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800"
             >
-              <span className="text-xl">✦</span>
+              <span className="text-xl"></span>
               <div>
                 <strong className="font-semibold">
                   Bien arrivé, même votre argent.

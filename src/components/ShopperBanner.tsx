@@ -69,7 +69,7 @@ export const ShopperBanner: React.FC<ShopperBannerProps> = ({
               <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md text-slate-900 p-2.5 rounded-xl shadow-md text-xs flex items-center justify-between">
                 <div>
                   <p className="text-[10px] text-slate-400 font-bold uppercase">Carte d'embarquement</p>
-                  <p className="font-bold text-slate-800">PARIS CDG ➔ ABIDJAN</p>
+                  <p className="font-bold text-slate-800">PARIS CDG → ABIDJAN</p>
                 </div>
                 <div className="text-right">
                   <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">

@@ -117,7 +117,7 @@ export const CarrierDashboard: React.FC<CarrierDashboardProps> = ({
                     <Truck className="w-5 h-5" />
                   </div>
                   <div>
-                    <h5 className="font-bold text-xs text-slate-900">Marseille ➔ Alger & Oran (Groupage Hebdomadaire)</h5>
+                    <h5 className="font-bold text-xs text-slate-900">Marseille → Alger & Oran (Groupage Hebdomadaire)</h5>
                     <p className="text-[11px] text-slate-500">Volume restant : 450 kg / 4 m³ • Tarif dégressif professionnel</p>
                   </div>
                 </div>

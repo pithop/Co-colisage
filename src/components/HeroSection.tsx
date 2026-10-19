@@ -92,7 +92,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
     const newTrip: FreightItem = {
       id: `trip-${Date.now()}`,
-      title: `Trajet ${voyageOrigin} ➔ ${voyageDestination}`,
+      title: `Trajet ${voyageOrigin} → ${voyageDestination}`,
       transportType: 'avion',
       transportLabel: 'Vol / Traversée',
       origin: voyageOrigin,
@@ -149,7 +149,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="hero-content">
           <div className="hero-authority">
             <span><Star className="hero-star inline-block" size={14} fill="currentColor" aria-hidden="true" /> <strong>4.9/5</strong> sur +14 000 trajets</span>
-            <span className="hero-featured"><span className="hero-live-dot" /> Ligne phare : Marseille (MRS) ➔ Alger (ALG)</span>
+            <span className="hero-featured"><span className="hero-live-dot" /> Ligne phare : Marseille (MRS) → Alger (ALG)</span>
             <span><ShieldCheck size={14} /> Séquestre Stripe 100% Garanti</span>
           </div>
 

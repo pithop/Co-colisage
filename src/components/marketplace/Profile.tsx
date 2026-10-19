@@ -1,5 +1,6 @@
 import {
   Check,
+  Wallet,
   ChevronRight,
   Info,
   Package,
@@ -13,6 +14,8 @@ import {
 } from "lucide-react";
 export type Intention = "request" | "shop" | "carry";
 export function Profile({
+  onWallet,
+  walletBalance,
   selected,
   onSelect,
   onContinue,
@@ -23,6 +26,8 @@ export function Profile({
   kycStatus,
   onLogout,
 }: {
+  onWallet: () => void;
+  walletBalance: string;
   selected: Intention[];
   onSelect: (roles: Intention[]) => void;
   onContinue: () => void;
@@ -38,6 +43,16 @@ export function Profile({
       <span className="eyebrow">VOTRE PROFIL, VOS ENVIES</span>
       <h1>Que souhaitez-vous faire ?</h1>
       <p className="profile-subtitle">Un compte, plusieurs possibilités.</p>
+      <button className="profile-wallet" onClick={onWallet}>
+        <span className="finance-icon">
+          <Wallet size={22} />
+        </span>
+        <span>
+          <strong>Mon portefeuille</strong>
+          <small>Solde disponible · {walletBalance}</small>
+        </span>
+        <ChevronRight size={20} />
+      </button>
       <div className="intention-list">
         {[
           {

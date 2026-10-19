@@ -78,7 +78,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
     if (tab === 'voyageur') {
       const newTrip: FreightItem = {
         id: `trip-${Date.now()}`,
-        title: `Trajet ${travelOrigin} ➔ ${travelDestination}`,
+        title: `Trajet ${travelOrigin} → ${travelDestination}`,
         transportType: 'avion',
         transportLabel: 'Vol / Traversée',
         origin: travelOrigin,

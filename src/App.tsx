@@ -1,6 +1,8 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
+  Bell,
+  Wallet,
   ArrowRight,
   CirclePlus,
   MessageCircle,
@@ -22,6 +24,18 @@ import {
 import { arbitrageOpportunities } from "./data/mockData";
 import { ArbitrageOpportunity, FreightItem } from "./types";
 import { useStoredState } from "./hooks/useStoredState";
+import { WalletView } from "./components/marketplace/WalletView";
+import {
+  NotificationsDrawer,
+  platformNotifications,
+  type NotificationTarget,
+} from "./components/marketplace/NotificationsDrawer";
+import {
+  money,
+  walletBalances,
+  walletTransactions,
+  type WalletTransaction,
+} from "./data/wallet";
 import { Explorer } from "./components/marketplace/Explorer";
 import { RequestDetails, TripDetails } from "./components/marketplace/Details";
 import { Profile, Intention } from "./components/marketplace/Profile";
@@ -39,6 +53,7 @@ import {
   simulatedReply,
 } from "./data/conversations";
 import "./marketplace.css";
+import "./finance.css";
 const TicketScannerModal = lazy(() =>
   import("./components/Modals/TicketScannerModal").then((m) => ({
     default: m.TicketScannerModal,
@@ -69,6 +84,24 @@ function Marketplace() {
     "ep-conversations-v1",
     initialConversations,
   );
+  const [transfers, setTransfers] = useStoredState<WalletTransaction[]>(
+    "ep-wallet-transfers-v1",
+    [],
+  );
+  const [readNotifications, setReadNotifications] = useStoredState<string[]>(
+    "ep-notifications-read-v1",
+    [],
+  );
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const transactions = walletTransactions(conversations, transfers);
+  const balance = walletBalances(transactions);
+  const unreadCount = platformNotifications.filter(
+    (item) => !readNotifications.includes(item.id),
+  ).length;
+  const readNotification = (id: string) =>
+    setReadNotifications((current) =>
+      current.includes(id) ? current : [...current, id],
+    );
   const replyTimers = useRef(new Set<ReturnType<typeof setTimeout>>());
   const [pendingReplies, setPendingReplies] = useState<string[]>([]);
   useEffect(() => {
@@ -134,9 +167,11 @@ function Marketplace() {
   const selectedTrip = route.startsWith("trip/")
     ? trips.find((t) => t.id === route.slice(5))
     : undefined;
+  const wallet = route === "wallet";
   const profile = route === "profile";
   const messages = route === "messages";
-  const arbitrage = route === "arbitrage";
+  const arbitrage = route === "arbitrage" || route.startsWith("arbitrage/");
+  const arbitrageRoute = route.split("/")[1];
   const exploring = route === "explore";
   const navigate = (next: string) => {
     window.location.hash = next;
@@ -257,6 +292,17 @@ function Marketplace() {
         );
     }
   };
+  const openArbitrage = (routeId?: string) =>
+    navigate(routeId ? `arbitrage/${routeId}` : "arbitrage");
+  const followNotification = (target: NotificationTarget) => {
+    setNotificationsOpen(false);
+    if (target === "arbitrage") openArbitrage("mrs-alg");
+    else if (target === "profile") navigate("profile");
+    else {
+      setActiveChat(target === "sarah" ? "nike-air-max" : "karim-mrs");
+      navigate("messages");
+    }
+  };
   const navItems = [
     { id: "explore", label: "Explorer", Icon: Search },
     { id: "publish", label: "Publier", Icon: CirclePlus },
@@ -311,6 +357,32 @@ function Marketplace() {
             ))}
           </nav>
           <div className="header-actions">
+            <button
+              className={`wallet-pill ${wallet ? "active" : ""}`}
+              aria-label={`Mon portefeuille, solde disponible ${money(balance.available)}`}
+              aria-current={wallet ? "page" : undefined}
+              onClick={() => navigate("wallet")}
+            >
+              <Wallet size={18} />
+              <span>{money(balance.available)}</span>
+            </button>
+            <button
+              className="icon-button notification-bell"
+              aria-label={`Notifications, ${unreadCount} non lues`}
+              aria-expanded={notificationsOpen}
+              aria-haspopup="dialog"
+              aria-controls={
+                notificationsOpen ? "notifications-drawer" : undefined
+              }
+              onClick={() => setNotificationsOpen(true)}
+            >
+              <Bell size={20} />
+              {unreadCount > 0 && (
+                <span className="notification-count" aria-hidden="true">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
             {selectedRequest || selectedTrip ? (
               <button
                 className="icon-button"
@@ -361,7 +433,7 @@ function Marketplace() {
             trips={trips}
             onRequest={(r) => navigate(`request/${r.id}`)}
             onTrip={(t) => navigate(`trip/${t.id}`)}
-            onArbitrage={() => navigate("arbitrage")}
+            onArbitrage={openArbitrage}
             onScan={() => setScanner(true)}
           />
         )}
@@ -394,8 +466,22 @@ function Marketplace() {
             onScan={() => setScanner(true)}
           />
         )}
+        {wallet && (
+          <WalletView
+            transactions={transactions}
+            onTransfer={(transaction) =>
+              setTransfers((current) =>
+                current.some((t) => t.id === transaction.id)
+                  ? current
+                  : [transaction, ...current],
+              )
+            }
+          />
+        )}
         {profile && (
           <Profile
+            onWallet={() => navigate("wallet")}
+            walletBalance={money(balance.available)}
             selected={intentions}
             onSelect={setIntentions}
             onContinue={() => {
@@ -441,6 +527,8 @@ function Marketplace() {
             </div>
             <Suspense fallback={<p role="status">Chargement du simulateur…</p>}>
               <SmartFlightArbitrage
+                key={arbitrageRoute || "default"}
+                initialRouteId={arbitrageRoute}
                 opportunities={arbitrageOpportunities}
                 onSelectDeal={setDeal}
               />
@@ -450,6 +538,7 @@ function Marketplace() {
         {!exploring &&
           !selectedRequest &&
           !selectedTrip &&
+          !wallet &&
           !profile &&
           !messages &&
           !arbitrage && (
@@ -497,6 +586,17 @@ function Marketplace() {
           </button>
         ))}
       </nav>
+      {notificationsOpen && (
+        <NotificationsDrawer
+          readIds={readNotifications}
+          onRead={readNotification}
+          onReadAll={() =>
+            setReadNotifications(platformNotifications.map((item) => item.id))
+          }
+          onNavigate={followNotification}
+          onClose={() => setNotificationsOpen(false)}
+        />
+      )}
       {notice && (
         <div className="toast" role="status">
           {notice}
@@ -553,7 +653,7 @@ function Marketplace() {
         >
           <span className="purchase-badge">Simulation d’arbitrage</span>
           <h3 className="deal-title">
-            {deal.flight.origin} ➔ {deal.flight.destination}
+            {deal.flight.origin} → {deal.flight.destination}
           </h3>
           <dl className="deal-summary">
             <div>

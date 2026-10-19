@@ -4,33 +4,17 @@ import {
   Package, Plane, ShieldCheck, ShoppingBag, Smartphone, Sparkles, TrendingUp,
 } from 'lucide-react';
 import type { ArbitrageOpportunity } from '../types';
+import { flightRoutes as ROUTES, demoCommission } from '../data/flightSimulation';
 
 interface SmartFlightArbitrageProps {
   opportunities: ArbitrageOpportunity[];
+  initialRouteId?: string;
   onSelectDeal: (opportunity: ArbitrageOpportunity) => void;
 }
 
-type Route = {
-  id: string;
-  origin: string;
-  originCode: string;
-  destination: string;
-  destinationCode: string;
-  prices: [number, number, number];
-  airlines: [string, string, string];
-};
-
-// Illustrative inventory: replace with bookable fares and route-specific missions.
-const ROUTES: Route[] = [
-  { id: 'mrs-alg', origin: 'Marseille', originCode: 'MRS', destination: 'Alger', destinationCode: 'ALG', prices: [65, 49, 79], airlines: ['Air Algérie', 'Vueling', 'Transavia'] },
-  { id: 'par-alg', origin: 'Paris', originCode: 'ORY', destination: 'Alger', destinationCode: 'ALG', prices: [89, 59, 75], airlines: ['Air Algérie', 'Transavia', 'Vueling'] },
-  { id: 'lys-orn', origin: 'Lyon', originCode: 'LYS', destination: 'Oran', destinationCode: 'ORN', prices: [69, 85, 55], airlines: ['Transavia', 'Air Algérie', 'Transavia'] },
-  { id: 'mrs-tun', origin: 'Marseille', originCode: 'MRS', destination: 'Tunis', destinationCode: 'TUN', prices: [45, 62, 79], airlines: ['Transavia', 'Transavia', 'Transavia'] },
-  { id: 'tls-cmn', origin: 'Toulouse', originCode: 'TLS', destination: 'Casablanca', destinationCode: 'CMN', prices: [95, 69, 89], airlines: ['Vueling', 'Vueling', 'Vueling'] },
-];
 
 const ERRANDS = [
-  { id: 'dior', name: '2 Parfums Dior Sauvage', detail: 'Shopping · 2 articles · 0,8 kg', reward: 150, weight: 0.8, Icon: Gift, color: 'bg-violet-400/10 text-violet-300' },
+  { id: 'dior', name: '2 Parfums Dior Sauvage', detail: 'Shopping · 2 articles · 0,8 kg', reward: demoCommission, weight: 0.8, Icon: Gift, color: 'bg-violet-400/10 text-violet-300' },
   { id: 'iphone', name: 'iPhone 16 Pro', detail: 'Shopping · 1 article · 0,4 kg', reward: 180, weight: 0.4, Icon: Smartphone, color: 'bg-sky-400/10 text-sky-300' },
   { id: 'parcel', name: 'Colis express 10 kg', detail: 'Transport · colis prêt à emporter', reward: 80, weight: 10, Icon: Package, color: 'bg-amber-400/10 text-amber-300' },
   { id: 'beauty', name: 'Chocolats & Cosmétiques', detail: 'Shopping · 1 lot · 1,5 kg', reward: 75, weight: 1.5, Icon: ShoppingBag, color: 'bg-rose-400/10 text-rose-300' },
@@ -40,10 +24,13 @@ const DAY_LABELS = ["Aujourd’hui", 'Demain', 'J+2'];
 const euro = (amount: number) => `${new Intl.NumberFormat('fr-FR').format(amount)} €`;
 const focus = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950';
 
-export const SmartFlightArbitrage: React.FC<SmartFlightArbitrageProps> = ({ opportunities, onSelectDeal }) => {
+export const SmartFlightArbitrage: React.FC<SmartFlightArbitrageProps> = ({ opportunities, onSelectDeal, initialRouteId }) => {
   const id = useId();
-  const [routeId, setRouteId] = useState(ROUTES[0].id);
-  const [dayIndex, setDayIndex] = useState(1);
+  const [routeId, setRouteId] = useState(() => ROUTES.find(item => item.id === initialRouteId)?.id ?? ROUTES[0].id);
+  const [dayIndex, setDayIndex] = useState(() => {
+    const initial = ROUTES.find(item => item.id === initialRouteId) ?? ROUTES[0];
+    return initial.prices.indexOf(Math.min(...initial.prices));
+  });
   const [selectedIds, setSelectedIds] = useState<string[]>(['dior']);
   const [today] = useState(() => new Date());
   const route = ROUTES.find(item => item.id === routeId) ?? ROUTES[0];
@@ -75,7 +62,7 @@ export const SmartFlightArbitrage: React.FC<SmartFlightArbitrageProps> = ({ oppo
     const source = opportunities.find(item => item.flight.originCode === route.originCode && item.flight.destinationCode === route.destinationCode);
     onSelectDeal({
       id: `simulation-${route.id}-${dayIndex}-${selectedIds.join('-')}`,
-      title: `${route.origin} ➔ ${route.destination}`,
+      title: `${route.origin} → ${route.destination}`,
       city: route.destination,
       flight: {
         id: `simulation-${route.id}-${dayIndex}`, origin: route.origin, originCode: route.originCode,
@@ -119,7 +106,7 @@ export const SmartFlightArbitrage: React.FC<SmartFlightArbitrageProps> = ({ oppo
               <div className="relative">
                 <Plane aria-hidden="true" className="pointer-events-none absolute left-4 top-4 h-5 w-5 text-indigo-300" />
                 <select id={`${id}-route`} value={routeId} onChange={event => changeRoute(event.target.value)} className={`w-full appearance-none rounded-xl border border-white/15 bg-slate-900 py-4 pl-12 pr-10 text-sm font-semibold text-white ${focus}`}>
-                  {ROUTES.map(item => <option key={item.id} value={item.id}>{item.origin} ➔ {item.destination}</option>)}
+                  {ROUTES.map(item => <option key={item.id} value={item.id}>{item.origin} → {item.destination}</option>)}
                 </select>
                 <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-4 top-4 h-5 w-5 text-slate-400" />
               </div>

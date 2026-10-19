@@ -83,7 +83,7 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({ isOpen, 
     published.current = true;
     try {
       onTripCreated({
-        id: `trip-${crypto.randomUUID()}`, title: `${isDemo ? '[Démo] ' : ''}Trajet ${ticket.origin} ➔ ${ticket.destination}`,
+        id: `trip-${crypto.randomUUID()}`, title: `${isDemo ? '[Démo] ' : ''}Trajet ${ticket.origin} → ${ticket.destination}`,
         transportType: 'avion', transportLabel: ticket.airline, origin: ticket.origin, originCode: ticket.originCode,
         destination: ticket.destination, destinationCode: ticket.destinationCode, departureDate: ticket.departureDate, departureTime: ticket.departureTime,
         availableKg: offer, pricePerKg: price, shoppingCommission: commission, canCarryParcel: true, canBuyProduct: true,
@@ -133,7 +133,7 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({ isOpen, 
             <div className="mb-3 mt-7 flex items-center justify-between gap-2"><h3 className="text-sm font-semibold">Essayez avec un billet démo</h3><span className="text-[10px] uppercase tracking-widest text-slate-500">Méditerranée</span></div>
             <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">{demoTickets.map((demo, index) => <button key={demo.airline} type="button" onClick={() => void scan(demo)} className={`group rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition duration-200 hover:border-blue-300 hover:shadow-md motion-safe:hover:-translate-y-0.5 ${focus}`}>
               <div className="flex items-center gap-2"><span className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold ${['bg-red-50 text-red-700', 'bg-emerald-50 text-emerald-700', 'bg-blue-50 text-blue-800', 'bg-yellow-50 text-yellow-800'][index]}`}>{demo.flightNumber.slice(0, 2)}</span><span className="text-sm font-semibold">{demo.airline}</span><ArrowRight className="ml-auto h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600" /></div>
-              <div className="mt-4 flex items-center gap-2 text-lg font-semibold tracking-tight">{demo.originCode}<span className="text-slate-400">➔</span>{demo.destinationCode}</div>
+              <div className="mt-4 flex items-center gap-2 text-lg font-semibold tracking-tight">{demo.originCode}<span className="text-slate-400">→</span>{demo.destinationCode}</div>
               <div className="mt-1 text-xs text-slate-500">{dateLabel(demo.departureDate)}</div>
               <div className="mt-3 border-t border-slate-100 pt-3 text-[11px] text-slate-600">{demo.baggageAllowanceKg} kg {demo.baggageType === 'cabin' ? 'cabine' : 'soute'} <span className="float-right font-semibold text-blue-700">Offre ≤ {demo.maxAllowedOfferKg} kg</span></div>
             </button>)}</div>

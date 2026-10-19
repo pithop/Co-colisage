@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { flightRoutes, demoCommission } from "../../data/flightSimulation";
 import { Avatar } from "./Avatar";
 import {
   ArrowRight,
@@ -42,9 +43,13 @@ export function Explorer({
   trips: Trip[];
   onRequest: (request: PurchaseRequest) => void;
   onTrip: (trip: Trip) => void;
-  onArbitrage: () => void;
+  onArbitrage: (routeId?: string) => void;
   onScan: () => void;
 }) {
+  const [flightRouteId, setFlightRouteId] = useState(flightRoutes[0].id);
+  const flightRoute =
+    flightRoutes.find((item) => item.id === flightRouteId) ?? flightRoutes[0];
+  const flightPrice = Math.min(...flightRoute.prices);
   const [query, setQuery] = useState("");
   const [destination, setDestination] = useState("");
   const [date, setDate] = useState("");
@@ -63,7 +68,7 @@ export function Explorer({
     setFilter("");
   };
   const words = normalize(query)
-    .split(/[\s➔→]+/)
+    .split(/[\s→→]+/)
     .filter(Boolean);
   const matches = (text: string) =>
     words.every((word) => normalize(text).includes(word));
@@ -123,6 +128,56 @@ export function Explorer({
             : "Consultez les offres ou proposez la vôtre."}
         </p>
       </section>
+      <section className="express-arbitrage" aria-labelledby="express-title">
+        <div className="express-heading">
+          <span className="finance-icon">
+            <Plane size={22} />
+          </span>
+          <div>
+            <span className="eyebrow">ARBITRAGE EXPRESS</span>
+            <h2 id="express-title">Calculateur de vol gratuit</h2>
+            <p>Une destination. Des missions. Votre billet financé.</p>
+          </div>
+        </div>
+        <div className="express-controls">
+          <label htmlFor="express-destination">Votre destination</label>
+          <select
+            id="express-destination"
+            value={flightRouteId}
+            onChange={(e) => setFlightRouteId(e.target.value)}
+          >
+            {flightRoutes
+              .filter((item) => item.id !== "par-alg")
+              .map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.destination} · depuis {item.origin}
+                </option>
+              ))}
+          </select>
+        </div>
+        <div
+          className="express-result"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <span>Gain net estimé</span>
+          <strong>+{euro(demoCommission - flightPrice)}</strong>
+          <small>
+            {euro(demoCommission)} de commissions − {euro(flightPrice)} de vol
+          </small>
+        </div>
+        <button
+          className="primary-button"
+          onClick={() => onArbitrage(flightRouteId)}
+        >
+          Simuler ce voyage <ArrowRight size={17} />
+        </button>
+        <p className="express-disclaimer">
+          Commandes en attente fictives · tarifs indicatifs · estimation hors
+          achats, bagages et frais.
+        </p>
+      </section>
       <div className="explore-layout">
         <section className="listing-column" aria-label="Explorer les annonces">
           <div className="segment" aria-label="Type d’annonces">
@@ -152,7 +207,7 @@ export function Explorer({
               placeholder={
                 isRequests
                   ? "Article, ville ou destination"
-                  : "Départ ➔ Arrivée"
+                  : "Départ → Arrivée"
               }
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -421,7 +476,7 @@ export function Explorer({
           </div>
         </section>
         <aside className="discovery-column">
-          <button className="arbitrage-teaser" onClick={onArbitrage}>
+          <button className="arbitrage-teaser" onClick={() => onArbitrage()}>
             <span className="teaser-tag">
               <Sparkles size={14} /> L’INTELLIGENCE QUI VOUS RAPPROCHE
             </span>

@@ -153,7 +153,7 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
             </div>
 
             <p className="text-[11px] text-slate-500 mb-3">
-              Vol correspondant aux dates de l'annonce : <strong>{product.originCity} ➔ {product.destination}</strong>.
+              Vol correspondant aux dates de l'annonce : <strong>{product.originCity} → {product.destination}</strong>.
             </p>
 
             {ticketUploaded ? (

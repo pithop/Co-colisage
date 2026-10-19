@@ -34,7 +34,7 @@ const threads = [
     name: "Nadia Hamidi",
     initials: "NH",
     color: "bg-rose-100 text-rose-700",
-    subject: "Colis Marseille ➔ Alger",
+    subject: "Colis Marseille → Alger",
     detail: "4,5 kg · 45 €",
     amount: "45 €",
     status: "Réservation confirmée",

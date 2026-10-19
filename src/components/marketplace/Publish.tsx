@@ -40,7 +40,7 @@ export function Publish({
     else
       onTrip({
         id: crypto.randomUUID(),
-        title: `${str("origin")} ➔ ${str("destination")}`,
+        title: `${str("origin")} → ${str("destination")}`,
         travelerName: name,
         travelerAvatar: "",
         rating: 0,

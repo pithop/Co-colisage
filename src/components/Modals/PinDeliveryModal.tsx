@@ -171,7 +171,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
                   onClick={handleBackspace}
                   className="h-12 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-sm transition-all"
                 >
-                  ⌫
+                  DEL
                 </button>
               </div>
             </>

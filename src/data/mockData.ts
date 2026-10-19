@@ -214,7 +214,7 @@ export const freightOffers: FreightItem[] = [
     rating: 4.9,
     reviewsCount: 54,
     image: 'https://images.unsplash.com/photo-1565026057447-bc90a3dceb87?auto=format&fit=crop&w=800&q=80',
-    description: 'Traversée Marseille ➔ Alger. Disponible pour transporter vos colis (10€/kg) et acheter vos produits en Duty Free ou boutiques à Marseille (commission 25€).',
+    description: 'Traversée Marseille → Alger. Disponible pour transporter vos colis (10€/kg) et acheter vos produits en Duty Free ou boutiques à Marseille (commission 25€).',
     remainingMinutes: 28
   },
   {
@@ -238,12 +238,12 @@ export const freightOffers: FreightItem[] = [
     rating: 5.0,
     reviewsCount: 38,
     image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80',
-    description: 'Vol direct Marseille ➔ Alger. Bagage cabine disponible pour colis légers, parfums ou matériel électronique neuf.',
+    description: 'Vol direct Marseille → Alger. Bagage cabine disponible pour colis légers, parfums ou matériel électronique neuf.',
     remainingMinutes: 19
   },
   {
     id: 'freight-mrs-orn',
-    title: 'Traversée Marseille ➔ Oran',
+    title: 'Traversée Marseille → Oran',
     transportType: 'bateau',
     transportLabel: 'Bateau / Ferry',
     origin: 'Marseille (Port)',
@@ -267,7 +267,7 @@ export const freightOffers: FreightItem[] = [
   },
   {
     id: 'freight-1',
-    title: 'Vol Paris CDG ➔ Abidjan',
+    title: 'Vol Paris CDG → Abidjan',
     transportType: 'avion',
     transportLabel: 'Avion',
     origin: 'Paris (CDG)',
@@ -291,7 +291,7 @@ export const freightOffers: FreightItem[] = [
   },
   {
     id: 'freight-2',
-    title: 'Vol Lyon ➔ Dakar',
+    title: 'Vol Lyon → Dakar',
     transportType: 'avion',
     transportLabel: 'Avion',
     origin: 'Lyon (LYS)',
@@ -405,7 +405,7 @@ export const notifications: NotificationItem[] = [
   {
     id: 'notif-1',
     title: 'Fonds sous séquestre Stripe validés',
-    description: 'L\'acheteur a versé 154,99 € pour la mission Marseille ➔ Alger. Vos fonds sont garantis.',
+    description: 'L\'acheteur a versé 154,99 € pour la mission Marseille → Alger. Vos fonds sont garantis.',
     time: 'Il y a 10 min',
     unread: true,
     type: 'escrow'
@@ -432,7 +432,7 @@ export const notifications: NotificationItem[] = [
 export const arbitrageOpportunities: ArbitrageOpportunity[] = [
   {
     id: 'arb-mrs-alg-1',
-    title: 'Marseille ➔ Alger (Vol dans 48h)',
+    title: 'Marseille → Alger (Vol dans 48h)',
     city: 'Alger',
     flight: {
       id: 'fl-1',
@@ -458,7 +458,7 @@ export const arbitrageOpportunities: ArbitrageOpportunity[] = [
   },
   {
     id: 'arb-par-mil-2',
-    title: 'Paris ➔ Milan (Vol low-cost 72h)',
+    title: 'Paris → Milan (Vol low-cost 72h)',
     city: 'Milan',
     flight: {
       id: 'fl-2',
@@ -484,7 +484,7 @@ export const arbitrageOpportunities: ArbitrageOpportunity[] = [
   },
   {
     id: 'arb-mrs-orn-3',
-    title: 'Marseille ➔ Oran (Traversée express)',
+    title: 'Marseille → Oran (Traversée express)',
     city: 'Oran',
     flight: {
       id: 'fl-3',

@@ -81,7 +81,7 @@ export const ExpediteurDashboard: React.FC<ExpediteurDashboardProps> = ({
                 <p className="text-xs text-slate-500">Trajet :</p>
                 <p className="text-sm font-bold text-slate-900 flex items-center gap-1.5 mt-0.5">
                   <MapPin className="w-4 h-4 text-blue-600" />
-                  Marseille ➔ Alger (Port)
+                  Marseille → Alger (Port)
                 </p>
                 <p className="text-xs text-slate-500 mt-2">Voyageur en charge :</p>
                 <p className="text-xs font-semibold text-slate-800 flex items-center gap-1.5 mt-0.5">

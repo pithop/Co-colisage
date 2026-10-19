@@ -63,7 +63,7 @@ const trip = (
 ): Trip => ({
   id,
   travelerName: name,
-  title: `${origin} ➔ ${destination}`,
+  title: `${origin} → ${destination}`,
   origin,
   destination,
   originCode: origin.slice(0, 3).toUpperCase(),
@@ -141,7 +141,7 @@ export const trips: Trip[] = [
       availableKg: 9,
       capacity: "9 kg disponibles",
       description:
-        "Vol Marseille ➔ Alger. Franchise de 10 kg, dont 1 kg réservé aux effets personnels. Je peux également acheter un article pour vous.",
+        "Vol Marseille → Alger. Franchise de 10 kg, dont 1 kg réservé aux effets personnels. Je peux également acheter un article pour vous.",
       canBuyProduct: true,
     },
   ),
