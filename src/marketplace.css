@@ -1324,6 +1324,7 @@ img.vehicle-illustration {
   min-height: 44px;
 }
 .toast {
+  pointer-events: none;
   position: fixed;
   left: 50%;
   bottom: 110px;
@@ -2570,5 +2571,105 @@ img.vehicle-illustration {
     scroll-behavior: auto !important;
     transition: none !important;
     animation: none !important;
+  }
+}
+
+/* Detail buttons keep their keyboard access; the whole card also accepts clicks. */
+.request-card,
+.trip-card {
+  cursor: pointer;
+}
+.request-card:focus-within,
+.trip-card:focus-within {
+  outline: 2px solid var(--blue, #2563eb);
+  outline-offset: 4px;
+}
+.escrow-strip > .agreement-button {
+  background: #2563eb;
+  color: #fff;
+  border-color: #1d4ed8;
+  box-shadow: 0 4px 12px #2563eb26;
+  font-weight: 700;
+  min-height: 44px;
+}
+.escrow-strip > .agreement-button:hover {
+  background: #1d4ed8;
+}
+.typing-indicator {
+  color: #64748b;
+  font-size: 12px;
+  padding: 0 0 8px;
+}
+.profile-register {
+  display: block;
+  margin-top: 12px;
+}
+.auth-tabs {
+  margin-bottom: 16px;
+}
+.demo-accounts {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+}
+.demo-accounts h3 {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+.demo-accounts .outline-button {
+  justify-content: space-between;
+}
+.auth-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  list-style: none;
+  padding: 0;
+  color: #64748b;
+  font-size: 12px;
+}
+.auth-steps [aria-current="step"] {
+  color: #1d4ed8;
+  font-weight: 700;
+}
+.identity-upload {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 0;
+}
+.identity-upload label > span,
+.upload-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.identity-upload img {
+  display: block;
+  max-height: 140px;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+.upload-status {
+  color: #047857;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  margin-top: 12px;
+}
+.upload-status svg {
+  flex-shrink: 0;
+}
+.auth-form > .muted {
+  font-size: 13px;
+}
+.auth-form h3 {
+  font-weight: 700;
+}
+@media (prefers-reduced-motion: reduce) {
+  .request-card,
+  .trip-card {
+    transition: none;
   }
 }

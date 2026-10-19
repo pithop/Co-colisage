@@ -412,7 +412,7 @@ export const notifications: NotificationItem[] = [
   },
   {
     id: 'notif-2',
-    title: 'Preuve d\'achat vérifiée ✅',
+    title: 'Preuve d\'achat vérifiée',
     description: 'Votre ticket de caisse Duty Free MRS a été authentifié par le système KYC.',
     time: 'Il y a 45 min',
     unread: true,

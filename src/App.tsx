@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -32,6 +32,12 @@ import {
   createMessage,
 } from "./components/marketplace/Conversation";
 import { Dialog } from "./components/marketplace/Dialog";
+import { AuthModal } from "./components/Auth/AuthModal";
+import {
+  createCodes,
+  initialConversations,
+  simulatedReply,
+} from "./data/conversations";
 import "./marketplace.css";
 const TicketScannerModal = lazy(() =>
   import("./components/Modals/TicketScannerModal").then((m) => ({
@@ -45,7 +51,7 @@ const SmartFlightArbitrage = lazy(() =>
 );
 
 function Marketplace() {
-  const { user, login, logout } = useAuth();
+  const { user, logout } = useAuth();
   const [route, setRoute] = useState(
     () => window.location.hash.slice(1) || "explore",
   );
@@ -61,12 +67,64 @@ function Marketplace() {
   );
   const [conversations, setConversations] = useStoredState<ConversationData[]>(
     "ep-conversations-v1",
-    [],
+    initialConversations,
   );
+  const replyTimers = useRef(new Set<ReturnType<typeof setTimeout>>());
+  const [pendingReplies, setPendingReplies] = useState<string[]>([]);
+  useEffect(() => {
+    // Existing local conversations remain intact when adding the demo threads.
+    setConversations((current) => {
+      const missing = initialConversations.filter(
+        (seed) => !current.some((c) => c.id === seed.id),
+      );
+      return missing.length ? [...current, ...missing] : current;
+    });
+    const timers = replyTimers.current;
+    return () => {
+      timers.forEach(clearTimeout);
+      timers.clear();
+    };
+  }, [setConversations]);
+  const sendMessage = (id: string, text: string, qr?: string) => {
+    if (!text.trim()) return;
+    setConversations((current) =>
+      current.map((c) =>
+        c.id === id
+          ? {
+              ...c,
+              messages: [...c.messages, createMessage(text.trim(), true, qr)],
+            }
+          : c,
+      ),
+    );
+    if (qr) return;
+    setPendingReplies((current) => [...current, id]);
+    const timer = setTimeout(() => {
+      setConversations((current) =>
+        current.map((c) =>
+          c.id === id
+            ? {
+                ...c,
+                messages: [
+                  ...c.messages,
+                  createMessage(simulatedReply(c, text), false),
+                ],
+              }
+            : c,
+        ),
+      );
+      setPendingReplies((current) => {
+        const index = current.indexOf(id);
+        return current.filter((_, i) => i !== index);
+      });
+      replyTimers.current.delete(timer);
+    }, 800);
+    replyTimers.current.add(timer);
+  };
   const [activeChat, setActiveChat] = useState<string | null>(null);
   const [publish, setPublish] = useState(false);
   const [scanner, setScanner] = useState(false);
-  const [auth, setAuth] = useState<"email" | "apple" | null>(null);
+  const [auth, setAuth] = useState<"email" | "apple" | "register" | null>(null);
   const [preview, setPreview] = useState(false);
   const [deal, setDeal] = useState<ArbitrageOpportunity | null>(null);
   const [notice, setNotice] = useState("");
@@ -100,7 +158,19 @@ function Marketplace() {
   }, [notice]);
   const updateConversation = (conversation: ConversationData) =>
     setConversations((current) =>
-      current.map((c) => (c.id === conversation.id ? conversation : c)),
+      current.map((c) =>
+        c.id === conversation.id
+          ? {
+              ...conversation,
+              messages: [
+                ...c.messages,
+                ...conversation.messages.filter(
+                  (m) => !c.messages.some((existing) => existing.id === m.id),
+                ),
+              ],
+            }
+          : c,
+      ),
     );
   const openChat = (
     id: string,
@@ -133,11 +203,7 @@ function Marketplace() {
             : c,
         );
       }
-      const codes = crypto.getRandomValues(new Uint32Array(2));
-      const pickupCode = String(1000 + (codes[0] % 9000));
-      let deliveryCode = String(1000 + (codes[1] % 9000));
-      if (deliveryCode === pickupCode)
-        deliveryCode = String(1000 + ((Number(deliveryCode) - 999) % 9000));
+      const { pickupCode, deliveryCode } = createCodes();
       return [
         ...current,
         {
@@ -154,7 +220,12 @@ function Marketplace() {
                   `Bonjour ${name}, je propose d’acheter et livrer votre article : ${subject}. Pouvons-nous confirmer sa disponibilité et les modalités ?`,
                 ),
               ]
-            : [],
+            : [
+                createMessage(
+                  `Bonjour ! Merci de votre intérêt pour « ${subject} ». Quels sont vos besoins et vos disponibilités ?`,
+                  false,
+                ),
+              ],
         },
       ];
     });
@@ -338,7 +409,9 @@ function Marketplace() {
             }}
             onLogin={() => setAuth("email")}
             onApple={() => setAuth("apple")}
+            onRegister={() => setAuth("register")}
             userName={user?.name}
+            kycStatus={user?.kycStatus}
             onLogout={logout}
           />
         )}
@@ -348,6 +421,9 @@ function Marketplace() {
             activeId={activeChat}
             onSelect={setActiveChat}
             onUpdate={updateConversation}
+            onSend={sendMessage}
+            pendingReplies={pendingReplies}
+            onNotice={setNotice}
           />
         )}
         {arbitrage && (
@@ -460,43 +536,15 @@ function Marketplace() {
         </Suspense>
       )}
       {auth && (
-        <Dialog
-          title={auth === "apple" ? "Continuer avec Apple" : "Se connecter"}
+        <AuthModal
+          initialTab={auth === "register" ? "register" : "login"}
+          apple={auth === "apple"}
           onClose={() => setAuth(null)}
-        >
-          <p className="info-box">
-            <ShieldCheck size={18} />
-            {auth === "apple"
-              ? "La connexion Apple sera disponible lorsque le service d’authentification sera connecté. Vous pouvez explorer le parcours avec un compte de démonstration."
-              : "Accès de démonstration. Aucun mot de passe ni compte réel n’est nécessaire."}
-          </p>
-          <form
-            className="publish-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const email = new FormData(e.currentTarget).get(
-                "email",
-              ) as string;
-              login(email);
-              setAuth(null);
-              setNotice("Vous êtes connecté au compte de démonstration.");
-            }}
-          >
-            <label>
-              Adresse e-mail
-              <input
-                name="email"
-                type="email"
-                placeholder="vous@exemple.fr"
-                required
-              />
-            </label>
-            <button className="primary-button">
-              Continuer en démonstration
-              <ArrowRight size={18} />
-            </button>
-          </form>
-        </Dialog>
+          onSuccess={(message) => {
+            setAuth(null);
+            setNotice(message);
+          }}
+        />
       )}
       {deal && (
         <Dialog

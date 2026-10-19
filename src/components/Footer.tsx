@@ -67,7 +67,7 @@ export const Footer: React.FC<FooterProps> = ({ mode, onOpenHowItWorks, onOpenPu
       </div>
 
       <div className="flex flex-col justify-between gap-4 border-t border-indigo-900/50 pt-6 text-xs leading-6 text-slate-400 md:flex-row">
-        <p>© {new Date().getFullYear()} BagVoyage & Shop&Go. Tous droits réservés.</p>
+        <p>Copyright {new Date().getFullYear()} BagVoyage & Shop&Go. Tous droits réservés.</p>
         <p className="flex items-start gap-2"><LockKeyhole aria-hidden="true" className="mt-1 h-3.5 w-3.5 shrink-0 text-indigo-300" /><span>Paiements sécurisés par Stripe Connect · Remise validée par PIN.</span></p>
       </div>
     </div>

@@ -1,230 +1,476 @@
-import React, { useState } from 'react';
-import { 
-  X, 
-  Mail, 
-  Lock, 
-  User, 
-  Building2, 
-  Plane, 
-  ArrowRight, 
-  CheckCircle2, 
+import { FormEvent, useEffect, useRef, useState } from "react";
+import {
+  ArrowRight,
+  Camera,
+  Check,
+  FileCheck,
   ShieldCheck,
-  Sparkles
-} from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import { UserRole } from '../../types/auth';
+} from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { demoUsers, UserRole } from "../../types/auth";
+import { Registration } from "../../lib/localAuth";
+import { Dialog } from "../marketplace/Dialog";
 
-export const AuthModal: React.FC = () => {
-  const { isAuthModalOpen, closeAuthModal, login, loginWithGoogle } = useAuth();
-  const [tab, setTab] = useState<'login' | 'register'>('login');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [selectedRole, setSelectedRole] = useState<UserRole>('voyageur');
-  const [loadingGoogle, setLoadingGoogle] = useState(false);
+const emptyProfile: Registration = {
+  username: "",
+  firstName: "",
+  lastName: "",
+  birthDate: "",
+  city: "",
+  phone: "",
+  email: "",
+  password: "",
+  role: "voyageur",
+};
+const roles: { role: UserRole; label: string }[] = [
+  { role: "voyageur", label: "Karim (Voyageur)" },
+  { role: "transporteur_pro", label: "TransMed (Pro)" },
+  { role: "expediteur", label: "Mohamed (Client)" },
+];
 
-  if (!isAuthModalOpen) return null;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    login(email || 'utilisateur@demo.fr', selectedRole);
-  };
-
-  const handleGoogleClick = () => {
-    setLoadingGoogle(true);
-    setTimeout(() => {
-      setLoadingGoogle(false);
-      loginWithGoogle();
-    }, 800);
-  };
-
+function IdentityUpload({
+  label,
+  selfie,
+  file,
+  onChange,
+}: {
+  label: string;
+  selfie?: boolean;
+  file: File | null;
+  onChange: (file: File | null) => void;
+}) {
+  const [preview, setPreview] = useState("");
+  const [error, setError] = useState("");
+  useEffect(() => {
+    if (!file || !file.type.startsWith("image/")) {
+      setPreview("");
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
-      <div 
-        className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
-              <Plane className="w-4 h-4 -rotate-45" />
-            </div>
-            <div>
-              <h3 className="font-extrabold text-sm text-slate-900">
-                {tab === 'login' ? 'Connexion à votre compte' : 'Création de compte sécurisé'}
-              </h3>
-              <p className="text-[10px] text-slate-500">
-                Shop&Go / Bag&Go • Accès certifié
-              </p>
-            </div>
-          </div>
-          <button onClick={closeAuthModal} className="p-1 rounded-full text-slate-400 hover:text-slate-600">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Tab switch */}
-        <div className="flex border-b border-slate-100 bg-slate-50 p-1">
-          <button
-            onClick={() => setTab('login')}
-            className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
-              tab === 'login' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            Se connecter
-          </button>
-          <button
-            onClick={() => setTab('register')}
-            className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
-              tab === 'register' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            Créer un compte
-          </button>
-        </div>
-
-        {/* Modal Body */}
-        <div className="p-6 space-y-4">
-          
-          {/* Google Auth Button */}
-          <button
-            onClick={handleGoogleClick}
-            disabled={loadingGoogle}
-            className="w-full py-2.5 px-4 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl flex items-center justify-center gap-2.5 text-xs font-bold text-slate-700 shadow-xs transition-all cursor-pointer"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.65v3.03h3.88c2.27-2.09 3.66-5.17 3.66-9.12z"/>
-              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.03c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.27v3.13C3.26 21.36 7.35 24 12 24z"/>
-              <path fill="#FBBC05" d="M5.28 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.58H1.27C.46 8.2.01 10.04.01 12s.45 3.8 1.26 5.42l4.01-3.13z"/>
-              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.26 2.64 1.27 6.58l4.01 3.13c.95-2.83 3.6-4.96 6.72-4.96z"/>
-            </svg>
-            <span>{loadingGoogle ? 'Connexion Google en cours...' : 'Continuer avec Google'}</span>
-          </button>
-
-          <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-slate-200" />
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">ou par email</span>
-            <div className="flex-1 h-px bg-slate-200" />
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-3">
-            {tab === 'register' && (
-              <div>
-                <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                  Je souhaite m'inscrire comme :
-                </label>
-                <div className="grid grid-cols-3 gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedRole('expediteur')}
-                    className={`p-2 rounded-xl border text-[10px] font-bold flex flex-col items-center gap-1 transition-all ${
-                      selectedRole === 'expediteur' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-600'
-                    }`}
-                  >
-                    <User className="w-3.5 h-3.5" />
-                    <span>Expéditeur</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedRole('voyageur')}
-                    className={`p-2 rounded-xl border text-[10px] font-bold flex flex-col items-center gap-1 transition-all ${
-                      selectedRole === 'voyageur' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-600'
-                    }`}
-                  >
-                    <Plane className="w-3.5 h-3.5 -rotate-45" />
-                    <span>Voyageur</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedRole('transporteur_pro')}
-                    className={`p-2 rounded-xl border text-[10px] font-bold flex flex-col items-center gap-1 transition-all ${
-                      selectedRole === 'transporteur_pro' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-600'
-                    }`}
-                  >
-                    <Building2 className="w-3.5 h-3.5" />
-                    <span>Transporteur Pro</span>
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div>
-              <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                Adresse email
-              </label>
-              <div className="relative">
-                <Mail className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
-                <input
-                  type="email"
-                  required
-                  placeholder="votre.email@exemple.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                Mot de passe
-              </label>
-              <div className="relative">
-                <Lock className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
-                <input
-                  type="password"
-                  required
-                  placeholder="••••••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 mt-2"
-            >
-              <span>{tab === 'login' ? 'Se connecter' : 'Valider mon inscription'}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </form>
-
-          {/* Quick Demo Switcher helper */}
-          <div className="pt-3 border-t border-slate-100">
-            <p className="text-[10px] text-slate-400 font-semibold mb-2 text-center uppercase tracking-wider">
-              Comptes Démo Pré-Configurés (Test Immédiat)
-            </p>
-            <div className="grid grid-cols-3 gap-1.5">
-              <button
-                type="button"
-                onClick={() => login('karim.bouzid@voyageur.fr', 'voyageur')}
-                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold text-center"
-              >
-                Karim (Voyageur)
-              </button>
-              <button
-                type="button"
-                onClick={() => login('direction@transmed-fret.com', 'transporteur_pro')}
-                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold text-center"
-              >
-                TransMed (Pro)
-              </button>
-              <button
-                type="button"
-                onClick={() => login('mohamed.t@gmail.com', 'expediteur')}
-                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold text-center"
-              >
-                Mohamed (Client)
-              </button>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
+    <div className="identity-upload">
+      <label>
+        <span>
+          {selfie ? <Camera size={20} /> : <FileCheck size={20} />}
+          {label}
+        </span>
+        <input
+          type="file"
+          accept={
+            selfie
+              ? "image/jpeg,image/png,image/webp"
+              : "image/jpeg,image/png,image/webp,application/pdf"
+          }
+          capture={selfie ? "user" : undefined}
+          onChange={(event) => {
+            const next = event.target.files?.[0];
+            if (!next) return;
+            const allowed = [
+              "image/jpeg",
+              "image/png",
+              "image/webp",
+              ...(!selfie ? ["application/pdf"] : []),
+            ];
+            if (
+              !allowed.includes(next.type) ||
+              next.size > 10 * 1024 * 1024 ||
+              next.size === 0
+            ) {
+              setError(
+                "Choisissez un fichier JPG, PNG ou WebP" +
+                  (!selfie ? " ou PDF" : "") +
+                  " de moins de 10 Mo.",
+              );
+              onChange(null);
+              event.target.value = "";
+              return;
+            }
+            setError("");
+            onChange(next);
+          }}
+        />
+      </label>
+      {preview && <img src={preview} alt={`Aperçu : ${label}`} />}
+      {file && (
+        <p className="upload-status">
+          <Check size={16} />
+          {file.name}
+        </p>
+      )}
+      {error && (
+        <p role="alert" className="error-message">
+          {error}
+        </p>
+      )}
     </div>
   );
-};
+}
+
+export function AuthModal({
+  initialTab = "login",
+  apple = false,
+  onClose,
+  onSuccess,
+}: {
+  initialTab?: "login" | "register";
+  apple?: boolean;
+  onClose: () => void;
+  onSuccess: (message: string) => void;
+}) {
+  const { login, signIn, register } = useAuth();
+  const [tab, setTab] = useState(initialTab);
+  const [step, setStep] = useState<"profile" | "identity">("profile");
+  const [profile, setProfile] = useState(emptyProfile);
+  const [selfie, setSelfie] = useState<File | null>(null);
+  const [identity, setIdentity] = useState<File | null>(null);
+  const [demoIdentity, setDemoIdentity] = useState(false);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const mounted = useRef(true);
+  const stepHeading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  useEffect(() => {
+    if (step === "identity") stepHeading.current?.focus();
+  }, [step]);
+  const change = (field: keyof Registration, value: string) => {
+    setProfile((current) => ({ ...current, [field]: value }));
+    setError("");
+  };
+  const submit = async (event: FormEvent) => {
+    event.preventDefault();
+    if (busy) return;
+    setError("");
+    if (tab === "register" && step === "profile") {
+      setStep("identity");
+      return;
+    }
+    if (tab === "register" && !demoIdentity && (!selfie || !identity)) {
+      setError("Ajoutez un selfie et une pièce d’identité pour continuer.");
+      return;
+    }
+    setBusy(true);
+    try {
+      if (tab === "login") await signIn(profile.email, profile.password);
+      else await register(profile);
+      if (mounted.current)
+        onSuccess(
+          tab === "login"
+            ? "Vous êtes connecté à votre compte local."
+            : "Votre compte local a été créé. Le contrôle d’identité reste en attente en mode démo.",
+        );
+    } catch (cause) {
+      if (mounted.current)
+        setError(
+          cause instanceof Error
+            ? cause.message
+            : "Connexion indisponible. Réessayez.",
+        );
+    } finally {
+      if (mounted.current) setBusy(false);
+    }
+  };
+  return (
+    <Dialog
+      title={
+        apple
+          ? "Continuer avec Apple"
+          : tab === "login"
+            ? "Se connecter"
+            : "Créer un compte"
+      }
+      onClose={onClose}
+    >
+      {apple && (
+        <p className="info-box">
+          <ShieldCheck size={18} />
+          La connexion Apple sera disponible lorsque le service
+          d’authentification sera connecté. Vous pouvez explorer le parcours
+          avec un compte de démonstration.
+        </p>
+      )}
+      <div className="segment auth-tabs" aria-label="Authentification">
+        <button
+          aria-pressed={tab === "login"}
+          disabled={busy}
+          onClick={() => {
+            setTab("login");
+            setError("");
+          }}
+        >
+          Connexion
+        </button>
+        <button
+          aria-pressed={tab === "register"}
+          disabled={busy}
+          onClick={() => {
+            setTab("register");
+            setError("");
+          }}
+        >
+          Inscription
+        </button>
+      </div>
+      <p className="demo-note">
+        Démonstration locale : le compte est enregistré sur cet appareil. Aucun
+        service d’authentification ou de vérification d’identité externe n’est
+        connecté.
+      </p>
+      {tab === "login" && (
+        <section
+          className="demo-accounts"
+          aria-label="Comptes de démonstration"
+        >
+          <h3>Tester en un clic</h3>
+          {roles.map(({ role, label }) => (
+            <button
+              key={role}
+              className="outline-button"
+              disabled={busy}
+              onClick={() => {
+                login(demoUsers[role].email, role);
+                onSuccess(
+                  `Vous êtes connecté au compte de démonstration de ${demoUsers[role].name}.`,
+                );
+              }}
+            >
+              {label}
+              <ArrowRight size={17} />
+            </button>
+          ))}
+          <button
+            className="text-button"
+            disabled={busy}
+            onClick={() => {
+              login(demoUsers.voyageur.email, "voyageur");
+              onSuccess("Vous êtes connecté au compte de démonstration.");
+            }}
+          >
+            Continuer en démonstration
+          </button>
+        </section>
+      )}
+      <form className="publish-form auth-form" onSubmit={submit}>
+        {tab === "register" && (
+          <ol className="auth-steps" aria-label="Étapes de l’inscription">
+            <li aria-current={step === "profile" ? "step" : undefined}>
+              1. Votre profil
+            </li>
+            <li aria-current={step === "identity" ? "step" : undefined}>
+              2. Vérification d’identité
+            </li>
+          </ol>
+        )}
+        {tab === "login" || step === "profile" ? (
+          <>
+            {tab === "register" && (
+              <>
+                <label>
+                  Nom d’utilisateur
+                  <input
+                    required
+                    minLength={3}
+                    maxLength={40}
+                    autoComplete="username"
+                    value={profile.username}
+                    onChange={(e) => change("username", e.target.value)}
+                  />
+                </label>
+                <div className="form-grid">
+                  <label>
+                    Prénom
+                    <input
+                      required
+                      maxLength={80}
+                      autoComplete="given-name"
+                      value={profile.firstName}
+                      onChange={(e) => change("firstName", e.target.value)}
+                    />
+                  </label>
+                  <label>
+                    Nom
+                    <input
+                      required
+                      maxLength={80}
+                      autoComplete="family-name"
+                      value={profile.lastName}
+                      onChange={(e) => change("lastName", e.target.value)}
+                    />
+                  </label>
+                  <label>
+                    Date de naissance
+                    <input
+                      required
+                      type="date"
+                      autoComplete="bday"
+                      max={new Date().toLocaleDateString("en-CA")}
+                      value={profile.birthDate}
+                      onChange={(e) => change("birthDate", e.target.value)}
+                    />
+                  </label>
+                  <label>
+                    Ville
+                    <input
+                      required
+                      maxLength={100}
+                      autoComplete="address-level2"
+                      value={profile.city}
+                      onChange={(e) => change("city", e.target.value)}
+                    />
+                  </label>
+                </div>
+                <label>
+                  Téléphone
+                  <input
+                    required
+                    type="tel"
+                    autoComplete="tel"
+                    minLength={6}
+                    maxLength={25}
+                    value={profile.phone}
+                    onChange={(e) => change("phone", e.target.value)}
+                  />
+                </label>
+              </>
+            )}
+            <label>
+              Adresse e-mail
+              <input
+                required
+                name="email"
+                placeholder="vous@exemple.fr"
+                type="email"
+                autoComplete="email"
+                value={profile.email}
+                onChange={(e) => change("email", e.target.value)}
+              />
+            </label>
+            <label>
+              Mot de passe
+              <input
+                required
+                type="password"
+                minLength={tab === "register" ? 8 : undefined}
+                autoComplete={
+                  tab === "register" ? "new-password" : "current-password"
+                }
+                value={profile.password}
+                onChange={(e) => change("password", e.target.value)}
+              />
+              {tab === "register" && <small>Au moins 8 caractères.</small>}
+            </label>
+            {tab === "register" && (
+              <label>
+                Je souhaite m’inscrire comme
+                <select
+                  value={profile.role}
+                  onChange={(e) => change("role", e.target.value)}
+                >
+                  <option value="voyageur">Voyageur</option>
+                  <option value="expediteur">Expéditeur</option>
+                  <option value="transporteur_pro">
+                    Transporteur professionnel
+                  </option>
+                </select>
+              </label>
+            )}
+          </>
+        ) : (
+          <>
+            <h3 ref={stepHeading} tabIndex={-1}>
+              Vérification d’identité KYC
+            </h3>
+            <p className="muted">
+              Ajoutez un selfie et une pièce d’identité, ou utilisez les
+              justificatifs de démonstration. Les fichiers restent en mémoire
+              pendant cette étape ; ils ne sont ni transmis ni conservés après
+              fermeture.
+            </p>
+            <IdentityUpload
+              label="Selfie"
+              selfie
+              file={selfie}
+              onChange={(file) => {
+                setSelfie(file);
+                setDemoIdentity(false);
+              }}
+            />
+            <IdentityUpload
+              label="Pièce d’identité"
+              file={identity}
+              onChange={(file) => {
+                setIdentity(file);
+                setDemoIdentity(false);
+              }}
+            />
+            <button
+              type="button"
+              className="outline-button"
+              onClick={() => {
+                setDemoIdentity(true);
+                setError("");
+              }}
+            >
+              Utiliser des justificatifs de démonstration
+            </button>
+            {demoIdentity && (
+              <p role="status" className="info-box">
+                <Check size={18} />
+                Selfie et pièce d’identité de démonstration sélectionnés.
+              </p>
+            )}
+            <p className="demo-note">
+              Le dépôt simule un dossier KYC. L’identité reste en attente de
+              vérification ; aucune validation réelle n’est effectuée.
+            </p>
+          </>
+        )}
+        {error && (
+          <p role="alert" className="error-message">
+            {error}
+          </p>
+        )}
+        <button
+          className="primary-button"
+          type="submit"
+          disabled={
+            busy ||
+            (tab === "register" &&
+              step === "identity" &&
+              !demoIdentity &&
+              (!selfie || !identity))
+          }
+        >
+          {busy
+            ? "Veuillez patienter…"
+            : tab === "login"
+              ? "Se connecter"
+              : step === "profile"
+                ? "Continuer vers la vérification"
+                : "Valider mon inscription"}
+          <ArrowRight size={18} />
+        </button>
+        {tab === "register" && step === "identity" && (
+          <button
+            type="button"
+            className="text-button"
+            disabled={busy}
+            onClick={() => {
+              setStep("profile");
+              setError("");
+            }}
+          >
+            Retour au profil
+          </button>
+        )}
+      </form>
+    </Dialog>
+  );
+}

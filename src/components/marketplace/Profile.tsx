@@ -18,7 +18,9 @@ export function Profile({
   onContinue,
   onLogin,
   onApple,
+  onRegister,
   userName,
+  kycStatus,
   onLogout,
 }: {
   selected: Intention[];
@@ -26,7 +28,9 @@ export function Profile({
   onContinue: () => void;
   onLogin: () => void;
   onApple: () => void;
+  onRegister: () => void;
   userName?: string;
+  kycStatus?: "verified" | "pending" | "unverified";
   onLogout: () => void;
 }) {
   return (
@@ -101,10 +105,22 @@ export function Profile({
             <ShieldCheck size={24} />
           </span>
           <div>
-            <strong>Identité vérifiée</strong>
-            <p>Selfie et pièce d’identité validés</p>
+            <strong>
+              {kycStatus === "pending"
+                ? "Identité en attente de vérification"
+                : kycStatus === "unverified"
+                  ? "Identité non vérifiée"
+                  : "Identité vérifiée"}
+            </strong>
+            <p>
+              {kycStatus === "pending"
+                ? "Dossier KYC simulé · aucun contrôle réel effectué"
+                : kycStatus === "unverified"
+                  ? "Selfie et pièce d’identité à fournir"
+                  : "Selfie et pièce d’identité validés"}
+            </p>
           </div>
-          <Check size={18} />
+          {kycStatus === "pending" ? <Clock3 size={18} /> : <Check size={18} />}
         </div>
         <div className="traveler-status">
           <div className="traveler-status-heading">
@@ -158,6 +174,9 @@ export function Profile({
       ) : (
         <p className="profile-login">
           Déjà inscrit ? <button onClick={onLogin}>Se connecter</button>
+          <span className="profile-register">
+            Nouveau ici ? <button onClick={onRegister}>Créer un compte</button>
+          </span>
         </p>
       )}
     </section>

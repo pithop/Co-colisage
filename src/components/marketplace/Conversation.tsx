@@ -12,6 +12,7 @@ import {
   Star,
 } from "lucide-react";
 import QRCode from "qrcode";
+import confetti from "canvas-confetti";
 import { euro } from "../../data/marketplace";
 import { Dialog } from "./Dialog";
 import { Avatar } from "./Avatar";
@@ -207,6 +208,16 @@ export function Delivery({
                 required
               />
             </label>
+            <button
+              type="button"
+              className="outline-button demo-fill-button"
+              onClick={() => {
+                setCode(expected);
+                setError("");
+              }}
+            >
+              Remplir le code (démo)
+            </button>
             {error && (
               <p role="alert" className="error-message">
                 {error}
@@ -316,11 +327,17 @@ export function Conversation({
   activeId,
   onSelect,
   onUpdate,
+  onSend,
+  pendingReplies,
+  onNotice,
 }: {
   conversations: ConversationData[];
   activeId: string | null;
   onSelect: (id: string | null) => void;
   onUpdate: (c: ConversationData) => void;
+  onSend: (id: string, text: string, qr?: string) => void;
+  pendingReplies: string[];
+  onNotice: (message: string) => void;
 }) {
   const [draft, setDraft] = useState("");
   const [delivery, setDelivery] = useState(false);
@@ -335,10 +352,7 @@ export function Conversation({
   }, [c?.messages.length]);
   const send = (text: string, qr?: string) => {
     if (c && text.trim()) {
-      onUpdate({
-        ...c,
-        messages: [...c.messages, createMessage(text.trim(), true, qr)],
-      });
+      onSend(c.id, text.trim(), qr);
       setDraft("");
     }
   };
@@ -408,7 +422,8 @@ export function Conversation({
             </div>
             {c.stage === "discussion" ? (
               <button
-                onClick={() =>
+                className="agreement-button"
+                onClick={() => {
                   onUpdate({
                     ...c,
                     stage: "secured",
@@ -419,8 +434,18 @@ export function Conversation({
                         false,
                       ),
                     ],
-                  })
-                }
+                  });
+                  onNotice(
+                    "Accord simulé : les fonds sont placés sous séquestre. Vous pouvez maintenant tester la remise.",
+                  );
+                  void confetti({
+                    particleCount: 90,
+                    spread: 65,
+                    origin: { y: 0.7 },
+                    colors: ["#2563eb", "#10b981", "#fbbf24"],
+                    disableForReducedMotion: true,
+                  });
+                }}
               >
                 Simuler l’accord
               </button>
@@ -461,6 +486,11 @@ export function Conversation({
             ))}
           </div>
           <footer>
+            {pendingReplies.includes(c.id) && (
+              <p className="typing-indicator" role="status">
+                {c.name} écrit…
+              </p>
+            )}
             <div className="chat-tools">
               <button
                 disabled={c.stage === "discussion" || c.stage === "delivered"}
@@ -501,7 +531,8 @@ export function Conversation({
             </form>
             <p className="demo-note">
               <Info size={12} />
-              Messages enregistrés sur cet appareil · mode démo.
+              Messages enregistrés sur cet appareil · réponses automatiques
+              simulées.
             </p>
           </footer>
         </div>

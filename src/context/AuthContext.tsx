@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole, demoUsers } from '../types/auth';
+import { authenticateLocalAccount, registerLocalAccount, Registration } from '../lib/localAuth';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   login: (email: string, role?: UserRole) => void;
+  signIn: (email: string, password: string) => Promise<void>;
+  register: (input: Registration) => Promise<void>;
   loginWithGoogle: () => void;
   logout: () => void;
   switchRole: (role: UserRole) => void;
@@ -75,6 +78,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         isAuthenticated: !!user,
         login,
+        signIn: async (email, password) => {
+          setUser(await authenticateLocalAccount(email, password));
+          setIsAuthModalOpen(false);
+        },
+        register: async (input) => {
+          setUser(await registerLocalAccount(input));
+          setIsAuthModalOpen(false);
+        },
         loginWithGoogle,
         logout,
         switchRole,

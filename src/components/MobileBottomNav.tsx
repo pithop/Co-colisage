@@ -65,7 +65,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
         {tabs.slice(0, 2).map(tab)}
         <button
           onClick={onOpenPublishModal}
-          aria-label="🎫 Scanner Billet"
+          aria-label="Scanner Billet"
           className="group -mt-7 flex min-h-[76px] flex-col items-center justify-center gap-1.5 rounded-2xl"
         >
           <span className="rounded-full bg-gradient-to-tr from-blue-600 via-indigo-400 to-cyan-200 p-[3px] shadow-[0_4px_24px_rgba(59,130,246,0.4)] transition duration-200 group-hover:scale-105 group-active:scale-95">

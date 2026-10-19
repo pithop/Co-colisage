@@ -58,7 +58,7 @@ const threads = [
     status: "Achat en cours",
     preview: "Pouvez-vous garder le ticket de caisse ?",
     reply:
-      "Merci beaucoup ! Je confirme les deux Dior Sauvage. Pensez à garder le ticket de caisse, on vérifiera ensemble à la remise. ✨",
+      "Merci beaucoup ! Je confirme les deux Dior Sauvage. Pensez à garder le ticket de caisse, on vérifiera ensemble à la remise.",
     messages: [
       "Bonjour ! Je souhaite commander 2 parfums Dior Sauvage au Duty Free de Marseille.",
       "Bien reçu Amel. Les 150 € sont sous séquestre, je vous envoie une photo avant le départ.",
@@ -490,7 +490,7 @@ export const MessagingModal: React.FC<MessagingModalProps> = ({
                 onClick={() => send("Code PIN de livraison", "pin")}
                 className="luxury-chat-action"
               >
-                Transmettre le code PIN de livraison 🔑
+                Transmettre le code PIN de livraison
               </button>
               <button
                 disabled={typing[active]}
@@ -500,7 +500,7 @@ export const MessagingModal: React.FC<MessagingModalProps> = ({
                 }}
                 className="luxury-chat-action"
               >
-                Photo du colis / ticket de caisse 📸
+                Photo du colis / ticket de caisse
               </button>
               <button
                 disabled={typing[active]}
@@ -512,7 +512,7 @@ export const MessagingModal: React.FC<MessagingModalProps> = ({
                 }
                 className="luxury-chat-action"
               >
-                Point de rencontre Aéroport Houari Boumédiène 📍
+                Point de rencontre Aéroport Houari Boumédiène
               </button>
             </div>
             <input

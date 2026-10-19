@@ -269,7 +269,11 @@ export function Explorer({
           <div className="listing-stack">
             {isRequests
               ? visibleRequests.map((r) => (
-                  <article className="request-card" key={r.id}>
+                  <article
+                    className="request-card"
+                    key={r.id}
+                    onClick={() => onRequest(r)}
+                  >
                     <div className="request-top">
                       <img
                         src={r.image}
@@ -309,7 +313,12 @@ export function Explorer({
                           Service : <strong>{euro(r.reward)}</strong>
                         </span>
                       </div>
-                      <button onClick={() => onRequest(r)}>
+                      <button
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          onRequest(r);
+                        }}
+                      >
                         Voir la demande <ArrowRight size={17} />
                       </button>
                     </div>
@@ -325,7 +334,11 @@ export function Explorer({
                           ? Ship
                           : Plane;
                   return (
-                    <article className="trip-card" key={t.id}>
+                    <article
+                      className="trip-card"
+                      key={t.id}
+                      onClick={() => onTrip(t)}
+                    >
                       <div className="trip-person">
                         <Avatar name={t.travelerName} src={t.travelerAvatar} />
                         <div>
@@ -384,7 +397,10 @@ export function Explorer({
                         </div>
                         <button
                           className="outline-button small"
-                          onClick={() => onTrip(t)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            onTrip(t);
+                          }}
                         >
                           Voir le trajet <ArrowRight size={14} />
                         </button>

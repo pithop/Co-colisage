@@ -120,7 +120,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
 
                 {/* Demonstration helper note */}
                 <div className="mt-2.5 py-1.5 px-3 bg-amber-50 border border-amber-200/80 rounded-xl text-[11px] text-amber-800 font-semibold inline-block">
-                  💡 Code PIN de démo : <span className="font-extrabold text-amber-950">4 8 2 1</span>
+                  Code PIN de démo : <span className="font-extrabold text-amber-950">4 8 2 1</span>
                 </div>
               </div>
 

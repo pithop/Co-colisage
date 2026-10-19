@@ -81,7 +81,7 @@ export const ShopperBanner: React.FC<ShopperBannerProps> = ({
 
             {/* Handwritten note with arrow */}
             <div className="mt-3 font-handwritten text-2xl text-amber-200 font-bold -rotate-2">
-              Votre voyage peut rapporter plus ! ✈
+              Votre voyage peut rapporter plus !
             </div>
           </div>
 

@@ -4,6 +4,11 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+  birthDate?: string;
+  city?: string;
   avatar: string;
   role: UserRole;
   kycStatus: 'verified' | 'pending' | 'unverified';

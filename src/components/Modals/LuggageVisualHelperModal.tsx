@@ -154,10 +154,10 @@ export const LuggageVisualHelperModal: React.FC<LuggageVisualHelperModalProps> =
               Le voyageur endosse l'entière responsabilité légale du contenu vis-à-vis des douanes dès la prise en charge. Sont strictement interdits :
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] text-slate-700 font-medium">
-              <span className="flex items-center gap-1">❌ Devises non déclarées (&gt; 1 000€)</span>
-              <span className="flex items-center gap-1">❌ Médicaments sans ordonnance valide</span>
-              <span className="flex items-center gap-1">❌ Tabac (&gt; 1 cartouche autorisée)</span>
-              <span className="flex items-center gap-1">❌ Marchandises contrefaites ou interdites</span>
+              <span className="flex items-center gap-1">Devises non déclarées (&gt; 1 000€)</span>
+              <span className="flex items-center gap-1">Médicaments sans ordonnance valide</span>
+              <span className="flex items-center gap-1">Tabac (&gt; 1 cartouche autorisée)</span>
+              <span className="flex items-center gap-1">Marchandises contrefaites ou interdites</span>
             </div>
           </div>
         </div>

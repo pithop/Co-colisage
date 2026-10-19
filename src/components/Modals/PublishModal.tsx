@@ -304,7 +304,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                         onChange={(e) => setCanCarryParcel(e.target.checked)}
                         className="accent-blue-600 w-4 h-4 rounded"
                       />
-                      <span className="text-xs font-bold text-slate-800">📦 Prêt à transporter le colis d'un tiers</span>
+                      <span className="text-xs font-bold text-slate-800">Prêt à transporter le colis d'un tiers</span>
                     </label>
                     {canCarryParcel && (
                       <div className="pl-6 flex items-center gap-2">
@@ -326,7 +326,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                         onChange={(e) => setCanBuyProduct(e.target.checked)}
                         className="accent-emerald-600 w-4 h-4 rounded"
                       />
-                      <span className="text-xs font-bold text-slate-800">🛍️ Prêt à acheter une marchandise</span>
+                      <span className="text-xs font-bold text-slate-800">Prêt à acheter une marchandise</span>
                     </label>
                     {canBuyProduct && (
                       <div className="pl-6 flex items-center gap-2">
