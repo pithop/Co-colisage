@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { ArrowRight, ScanLine } from "lucide-react";
-import { PurchaseRequest, Trip } from "../../data/marketplace";
+import {
+  acceptedCategories,
+  PurchaseRequest,
+  Trip,
+} from "../../data/marketplace";
 import { Dialog } from "./Dialog";
 export function Publish({
   mode,
@@ -9,6 +13,7 @@ export function Publish({
   onRequest,
   onTrip,
   onScan,
+  defaultAutoAccept = false,
 }: {
   mode: "requests" | "trips";
   name: string;
@@ -16,6 +21,7 @@ export function Publish({
   onRequest: (r: PurchaseRequest) => void;
   onTrip: (t: Trip) => void;
   onScan: () => void;
+  defaultAutoAccept?: boolean;
 }) {
   const [kind, setKind] = useState(mode);
   const [vehicle, setVehicle] = useState<Trip["transportType"]>("voiture");
@@ -36,6 +42,7 @@ export function Publish({
         budget: num("budget"),
         reward: num("reward"),
         image: "/images/parcel.svg",
+        weightKg: str("weightKg") ? num("weightKg") : undefined,
       });
     else
       onTrip({
@@ -60,6 +67,13 @@ export function Publish({
         canCarryParcel: true,
         capacity: `${num("weight")} kg disponibles`,
         dimensions: str("dimensions"),
+        flightNumber:
+          vehicle === "avion" ? str("flightNumber").toUpperCase() : undefined,
+        autoAccept: data.has("autoAccept"),
+        canBuyProduct: data.has("canBuyProduct"),
+        acceptedCategories: acceptedCategories.filter((category) =>
+          data.getAll("categories").includes(category),
+        ),
       });
     onClose();
   };
@@ -135,6 +149,21 @@ export function Publish({
               Modèle ou compagnie
               <input required name="label" placeholder="Ex. Peugeot 208" />
             </label>
+            {vehicle === "avion" && (
+              <label>
+                Numéro de vol
+                <input
+                  name="flightNumber"
+                  placeholder="Ex. AH1001, AF1384"
+                  maxLength={10}
+                  autoCapitalize="characters"
+                  aria-describedby="flight-number-hint"
+                />
+                <small id="flight-number-hint">
+                  Optionnel, recommandé pour retrouver votre vol.
+                </small>
+              </label>
+            )}
           </>
         )}
         <div className="form-grid">
@@ -172,6 +201,21 @@ export function Publish({
                 placeholder="Ex. Lyon, Part-Dieu"
                 maxLength={150}
               />
+            </label>
+            <label>
+              Poids estimé du colis (kg)
+              <input
+                name="weightKg"
+                type="number"
+                min="0.1"
+                max="1000"
+                step="0.1"
+                placeholder="Ex. 2"
+              />
+              <small>
+                Optionnel. Permet aux voyageurs de retrouver votre demande selon
+                la place disponible.
+              </small>
             </label>
             <div className="form-grid">
               <label>
@@ -241,6 +285,47 @@ export function Publish({
                 placeholder="Point de rendez-vous, objets acceptés…"
               />
             </label>
+            <fieldset className="trip-options">
+              <legend>Un trajet à votre façon</legend>
+              <label className="trip-option">
+                <input
+                  type="checkbox"
+                  name="autoAccept"
+                  defaultChecked={defaultAutoAccept}
+                />
+                <span>
+                  <strong>Acceptation automatique des réservations</strong>
+                  <small>
+                    Accepter instantanément les réservations des profils
+                    vérifiés
+                  </small>
+                </span>
+              </label>
+              <label className="trip-option">
+                <input type="checkbox" name="canBuyProduct" />
+                <span>
+                  <strong>Service d’achat en magasin</strong>
+                  <small>
+                    J’accepte d’aller acheter la marchandise sur place
+                  </small>
+                </span>
+              </label>
+            </fieldset>
+            <fieldset className="accepted-categories">
+              <legend>Catégories acceptées</legend>
+              <p>
+                Choisissez une ou plusieurs catégories. Sans sélection : à
+                convenir ensemble.
+              </p>
+              <div>
+                {acceptedCategories.map((category) => (
+                  <label key={category}>
+                    <input type="checkbox" name="categories" value={category} />
+                    <span>{category}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
           </>
         )}
         <button className="primary-button" type="submit">

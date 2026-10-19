@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { flightRoutes, demoCommission } from "../../data/flightSimulation";
 import { Avatar } from "./Avatar";
+import { LuggageVisualizer } from "./LuggageVisualizer";
 import {
   ArrowRight,
+  Award,
   CalendarDays,
   Car,
   ChevronDown,
@@ -10,12 +12,15 @@ import {
   Package,
   Plane,
   Search,
+  ScanLine,
+  ShieldCheck,
   Ship,
   SlidersHorizontal,
   Sparkles,
   Star,
   Truck,
   X,
+  Zap,
 } from "lucide-react";
 import {
   PurchaseRequest,
@@ -57,6 +62,7 @@ export function Explorer({
   const [vehicle, setVehicle] = useState("");
   const [size, setSize] = useState("");
   const [filter, setFilter] = useState("");
+  const [capacity, setCapacity] = useState<number | null>(null);
   const isRequests = mode === "requests";
   const reset = () => {
     setQuery("");
@@ -66,6 +72,7 @@ export function Explorer({
     setVehicle("");
     setSize("");
     setFilter("");
+    setCapacity(null);
   };
   const words = normalize(query)
     .split(/[\s→→]+/)
@@ -77,7 +84,9 @@ export function Explorer({
       matches(`${r.title} ${r.origin} ${r.destination}`) &&
       (!destination || r.destination === destination) &&
       (!date || r.date <= date) &&
-      (!budget || r.budget <= Number(budget)),
+      (!budget || r.budget <= Number(budget)) &&
+      (capacity === null ||
+        (r.weightKg !== undefined && r.weightKg <= capacity)),
   );
   const visibleTrips = trips.filter(
     (t) =>
@@ -86,6 +95,7 @@ export function Explorer({
       ) &&
       (!date || t.departureDate === date) &&
       (!vehicle || vehicleLabel(t) === vehicle) &&
+      (capacity === null || t.availableKg >= capacity) &&
       (!size ||
         (size === "small"
           ? t.availableKg >= 5
@@ -178,6 +188,67 @@ export function Explorer({
           achats, bagages et frais.
         </p>
       </section>
+      <div className="discovery-bento">
+        <LuggageVisualizer
+          parcelWeights={requests.flatMap((r) =>
+            r.weightKg === undefined ? [] : [r.weightKg],
+          )}
+          onSelectCapacity={(kg) => {
+            onMode("requests");
+            reset();
+            setCapacity(kg);
+            document
+              .getElementById("capacity-results")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+            document
+              .getElementById("capacity-results")
+              ?.focus({ preventScroll: true });
+          }}
+        />
+        <section
+          className="express-scan-card"
+          aria-labelledby="express-scan-title"
+        >
+          <span className="express-scan-icon">
+            <ScanLine size={28} strokeWidth={1.5} />
+          </span>
+          <span className="eyebrow">VOTRE VOYAGE COMMENCE ICI</span>
+          <h2 id="express-scan-title">Scanner mon billet d’avion express</h2>
+          <p>
+            Votre vol, votre franchise, votre prochaine mission. Retrouvez les
+            informations de votre billet en un scan.
+          </p>
+          <button className="primary-button" onClick={onScan}>
+            Lancer le scan express <ArrowRight size={17} />
+          </button>
+        </section>
+        <section
+          className="market-guarantees"
+          aria-labelledby="market-guarantees-title"
+        >
+          <h2 id="market-guarantees-title">
+            <ShieldCheck size={20} /> Garantie & Chiffres clés
+          </h2>
+          <dl>
+            <div>
+              <dt>Sous séquestre</dt>
+              <dd>145 000 €</dd>
+            </div>
+            <div>
+              <dt>Livraisons réussies</dt>
+              <dd>99.4%</dd>
+            </div>
+            <div>
+              <dt>Frais cachés</dt>
+              <dd>0 €</dd>
+            </div>
+          </dl>
+          <p>
+            Chiffres de démonstration · Garantie jusqu’à 1 500 € et séquestre
+            Stripe simulés.
+          </p>
+        </section>
+      </div>
       <div className="explore-layout">
         <section className="listing-column" aria-label="Explorer les annonces">
           <div className="segment" aria-label="Type d’annonces">
@@ -222,6 +293,18 @@ export function Explorer({
             )}
           </div>
           <div className="filter-row">
+            {capacity !== null && (
+              <button
+                className="filter-pill selected"
+                aria-label="Retirer le filtre de capacité"
+                onClick={() => setCapacity(null)}
+              >
+                {isRequests
+                  ? `Colis jusqu’à ${capacity} kg`
+                  : `Au moins ${capacity} kg`}{" "}
+                <X size={14} />
+              </button>
+            )}
             {filters.map((f) => (
               <button
                 key={f.label}
@@ -310,12 +393,18 @@ export function Explorer({
               </button>
             </div>
           )}
-          <div className="results-heading">
+          <div className="results-heading" id="capacity-results" tabIndex={-1}>
             <span aria-live="polite">
               {count}{" "}
               {isRequests ? "demandes à découvrir" : "trajets disponibles"}
             </span>
-            {query || destination || date || budget || vehicle || size ? (
+            {query ||
+            destination ||
+            date ||
+            budget ||
+            vehicle ||
+            size ||
+            capacity !== null ? (
               <button onClick={reset}>Tout effacer</button>
             ) : (
               <span>Entre vous, tout simplement.</span>
@@ -376,6 +465,15 @@ export function Explorer({
                       >
                         Voir la demande <ArrowRight size={17} />
                       </button>
+                      <button
+                        className="go-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onRequest(r);
+                        }}
+                      >
+                        Go ! <ArrowRight size={15} />
+                      </button>
                     </div>
                   </article>
                 ))
@@ -418,6 +516,18 @@ export function Explorer({
                             size={36}
                             strokeWidth={1.3}
                           />
+                        )}
+                      </div>
+                      <div className="trip-status-badges">
+                        {t.autoAccept && (
+                          <span className="instant-badge">
+                            <Zap size={13} /> Acceptation automatique
+                          </span>
+                        )}
+                        {t.isSuperTraveler && (
+                          <span className="super-traveler-badge">
+                            <Award size={13} /> Super Voyageur
+                          </span>
                         )}
                       </div>
                       <h3 className="trip-route">

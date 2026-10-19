@@ -25,6 +25,8 @@ export function Profile({
   userName,
   kycStatus,
   onLogout,
+  autoAccept,
+  onAutoAcceptChange,
 }: {
   onWallet: () => void;
   walletBalance: string;
@@ -37,6 +39,8 @@ export function Profile({
   userName?: string;
   kycStatus?: "verified" | "pending" | "unverified";
   onLogout: () => void;
+  autoAccept: boolean;
+  onAutoAcceptChange: (enabled: boolean) => void;
 }) {
   return (
     <section className="profile-page">
@@ -141,26 +145,102 @@ export function Profile({
           <div className="traveler-status-heading">
             <Award size={24} />
             <div>
-              <h3>Super Voyageur</h3>
+              <h3>Statut Super Voyageur</h3>
               <p>La confiance se construit à chaque trajet.</p>
             </div>
           </div>
           <ul className="trust-criteria">
             {[
-              { Icon: Zap, label: "Réactivité" },
-              { Icon: Clock3, label: "Ponctualité" },
-              { Icon: MessageCircle, label: "Échange clair" },
-              { Icon: Package, label: "Marchandise intacte" },
-            ].map(({ Icon, label }) => (
+              {
+                Icon: Zap,
+                label: "Réactivité de réponse",
+                value: 98,
+                max: 100,
+                display: "98%",
+                detail: "Réponse en moins de 15 min pour 98% des échanges.",
+              },
+              {
+                Icon: Clock3,
+                label: "Ponctualité",
+                value: 99,
+                max: 100,
+                display: "99%",
+                detail: "99% des rendez-vous honorés à l’heure convenue.",
+              },
+              {
+                Icon: MessageCircle,
+                label: "Échange clair",
+                value: 4.9,
+                max: 5,
+                display: "4.9 / 5",
+                detail:
+                  "Une note de 4.9 sur 5 pour la clarté des échanges et des instructions.",
+              },
+              {
+                Icon: Package,
+                label: "Marchandise intacte",
+                value: 100,
+                max: 100,
+                display: "100%",
+                detail: "100% des marchandises remises en bon état.",
+              },
+            ].map(({ Icon, label, value, max, display, detail }, index) => (
               <li key={label}>
-                <Icon size={16} />
-                <span>{label}</span>
-                <Check size={14} />
+                <details className="reputation-criterion">
+                  <summary>
+                    <span>
+                      <Icon size={16} />
+                      <span>{label}</span>
+                      <strong>{display}</strong>
+                      <ChevronRight size={14} />
+                    </span>
+                    <span
+                      className="reputation-track"
+                      role="progressbar"
+                      aria-label={label}
+                      aria-valuemin={0}
+                      aria-valuemax={max}
+                      aria-valuenow={value}
+                      aria-valuetext={display}
+                      aria-describedby={`reputation-detail-${index}`}
+                    >
+                      <span style={{ width: `${(value / max) * 100}%` }} />
+                    </span>
+                  </summary>
+                  <p id={`reputation-detail-${index}`}>{detail}</p>
+                </details>
               </li>
             ))}
           </ul>
+          <p className="reputation-note">
+            Indicateurs de démonstration. Sélectionnez un critère pour découvrir
+            son détail.
+          </p>
         </div>
       </section>
+      <div className="instant-preference">
+        <span className="instant-preference-icon">
+          <Zap size={20} />
+        </span>
+        <div>
+          <label htmlFor="profile-auto-accept">
+            Acceptation automatique instantanée
+          </label>
+          <p id="auto-accept-hint">
+            Profils vérifiés uniquement. Réglage par défaut de vos nouveaux
+            trajets.
+          </p>
+        </div>
+        <input
+          id="profile-auto-accept"
+          className="preference-switch"
+          type="checkbox"
+          role="switch"
+          checked={autoAccept}
+          onChange={(event) => onAutoAcceptChange(event.target.checked)}
+          aria-describedby="auto-accept-hint"
+        />
+      </div>
       <button
         className="primary-button"
         disabled={!selected.length}

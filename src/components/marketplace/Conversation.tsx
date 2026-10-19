@@ -91,6 +91,39 @@ export function Conversation({
       setDraft("");
     }
   };
+  const hasOffPlatformRisk =
+    /whatsapp|06\d|paypal|liquide|payer en direct|hors appli|virement perso|iban/i.test(
+      draft,
+    );
+  const secureAgreement = () => {
+    if (!c) return;
+    if (c.stage !== "discussion") {
+      setTracking(true);
+      return;
+    }
+    onUpdate({
+      ...c,
+      stage: "secured",
+      securedAt: new Date().toISOString(),
+      messages: [
+        ...c.messages,
+        createMessage(
+          "Accord simulé : les fonds sont placés sous séquestre de démonstration.",
+          false,
+        ),
+      ],
+    });
+    onNotice(
+      "Accord simulé : les fonds sont placés sous séquestre. Vous pouvez maintenant tester la remise.",
+    );
+    void confetti({
+      particleCount: 90,
+      spread: 65,
+      origin: { y: 0.7 },
+      colors: ["#2563eb", "#10b981", "#fbbf24"],
+      disableForReducedMotion: true,
+    });
+  };
   const stageText =
     c?.stage === "discussion"
       ? "En attente d’accord"
@@ -159,28 +192,7 @@ export function Conversation({
               <button
                 className="agreement-button"
                 onClick={() => {
-                  onUpdate({
-                    ...c,
-                    stage: "secured",
-                    securedAt: new Date().toISOString(),
-                    messages: [
-                      ...c.messages,
-                      createMessage(
-                        "Accord simulé : les fonds sont placés sous séquestre de démonstration.",
-                        false,
-                      ),
-                    ],
-                  });
-                  onNotice(
-                    "Accord simulé : les fonds sont placés sous séquestre. Vous pouvez maintenant tester la remise.",
-                  );
-                  void confetti({
-                    particleCount: 90,
-                    spread: 65,
-                    origin: { y: 0.7 },
-                    colors: ["#2563eb", "#10b981", "#fbbf24"],
-                    disableForReducedMotion: true,
-                  });
+                  secureAgreement();
                 }}
               >
                 Simuler l’accord
@@ -258,6 +270,35 @@ export function Conversation({
                 Envoyer le PIN / QR code
               </button>
             </div>
+            <div
+              className="quick-replies"
+              role="group"
+              aria-label="Réponses rapides"
+            >
+              {[
+                "Colis récupéré et conforme",
+                "Vol à l’heure",
+                "Je suis au point de rendez-vous",
+                "Code PIN transmis",
+              ].map((reply) => (
+                <button type="button" key={reply} onClick={() => send(reply)}>
+                  {reply}
+                </button>
+              ))}
+            </div>
+            {hasOffPlatformRisk && (
+              <div className="antifraud-warning">
+                <ShieldCheck size={20} aria-hidden="true" />
+                <p role="alert">
+                  Bouclier Séquestre BagVoyage : Ne communiquez pas hors
+                  plateforme afin de garantir le séquestre et l’assurance de 1
+                  500 €.
+                </p>
+                <button type="button" onClick={secureAgreement}>
+                  Sécuriser l’accord
+                </button>
+              </div>
+            )}
             <form
               className="message-composer"
               onSubmit={(e) => {

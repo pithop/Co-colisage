@@ -76,6 +76,10 @@ function Marketplace() {
     initialRequests,
   );
   const [trips, setTrips] = useStoredState<Trip[]>("ep-trips-v1", initialTrips);
+  const [autoAccept, setAutoAccept] = useStoredState(
+    "ep-auto-accept-v1",
+    false,
+  );
   const [intentions, setIntentions] = useStoredState<Intention[]>(
     "ep-intentions-v1",
     ["request"],
@@ -480,6 +484,8 @@ function Marketplace() {
         )}
         {profile && (
           <Profile
+            autoAccept={autoAccept}
+            onAutoAcceptChange={setAutoAccept}
             onWallet={() => navigate("wallet")}
             walletBalance={money(balance.available)}
             selected={intentions}
@@ -604,6 +610,7 @@ function Marketplace() {
       )}
       {publish && (
         <Publish
+          defaultAutoAccept={autoAccept}
           mode={mode}
           name={user?.name || "Camille"}
           onClose={() => setPublish(false)}

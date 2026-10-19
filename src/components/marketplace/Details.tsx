@@ -144,6 +144,37 @@ export function TripDetails({
           </span>
         </div>
         <p className="trip-description">{t.description}</p>
+        {(t.autoAccept ||
+          t.canBuyProduct ||
+          t.acceptedCategories?.length ||
+          t.flightNumber) && (
+          <dl className="trip-published-options">
+            {t.flightNumber && (
+              <div>
+                <dt>Numéro de vol</dt>
+                <dd>{t.flightNumber}</dd>
+              </div>
+            )}
+            {t.autoAccept && (
+              <div>
+                <dt>Acceptation automatique</dt>
+                <dd>Réservations des profils vérifiés</dd>
+              </div>
+            )}
+            {t.canBuyProduct && (
+              <div>
+                <dt>Service d’achat en magasin</dt>
+                <dd>Le voyageur peut acheter la marchandise sur place.</dd>
+              </div>
+            )}
+            {!!t.acceptedCategories?.length && (
+              <div>
+                <dt>Catégories acceptées</dt>
+                <dd>{t.acceptedCategories.join(", ")}</dd>
+              </div>
+            )}
+          </dl>
+        )}
         <dl className="spec-list">
           <div>
             <Info />

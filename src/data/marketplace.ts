@@ -13,15 +13,29 @@ export interface PurchaseRequest {
   buyerAvatar?: string;
   specifications: string;
   location: string;
+  weightKg?: number;
 }
+export const acceptedCategories = [
+  "Électronique",
+  "Mode",
+  "Cosmétiques",
+  "Documents",
+  "Terroir",
+] as const;
+export type AcceptedCategory = (typeof acceptedCategories)[number];
 export interface Trip extends FreightItem {
   capacity?: string;
   dimensions?: string;
   startingPrice?: number;
+  flightNumber?: string;
+  autoAccept?: boolean;
+  isSuperTraveler?: boolean;
+  acceptedCategories?: AcceptedCategory[];
 }
 export const requests: PurchaseRequest[] = [
   {
     id: "nike-air-max",
+    weightKg: 2,
     title: "Nike Air Max · pointure 42",
     origin: "Paris",
     destination: "Lyon",
@@ -36,6 +50,7 @@ export const requests: PurchaseRequest[] = [
   },
   {
     id: "dior-sauvage",
+    weightKg: 1,
     title: "Parfum Dior Sauvage · 100 ml",
     origin: "Nice",
     destination: "Marseille",
@@ -101,7 +116,12 @@ export const trips: Trip[] = [
     "voiture",
     "Peugeot 208",
     5,
-    { capacity: "2 cartons", dimensions: "80 × 60 × 40 cm" },
+    {
+      capacity: "2 cartons",
+      dimensions: "80 × 60 × 40 cm",
+      autoAccept: true,
+      isSuperTraveler: true,
+    },
   ),
   trip(
     "lucas",
@@ -143,6 +163,9 @@ export const trips: Trip[] = [
       description:
         "Vol Marseille → Alger. Franchise de 10 kg, dont 1 kg réservé aux effets personnels. Je peux également acheter un article pour vous.",
       canBuyProduct: true,
+      autoAccept: true,
+      isSuperTraveler: true,
+      flightNumber: "AH1021",
     },
   ),
   trip(
