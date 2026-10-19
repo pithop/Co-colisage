@@ -6,6 +6,7 @@ import {
   ArrowRight,
   CirclePlus,
   MessageCircle,
+  Radio,
   Search,
   Share2,
   ShieldCheck,
@@ -62,6 +63,9 @@ import "./finance.css";
 import "./expansion.css";
 import { localActorId } from "./services/uploads";
 import { localAdminEnabled } from "./services/adminOperations";
+import { LanguageProvider, LanguageSelector } from "./context/LanguageContext";
+import { LiveRadarModal } from "./components/logistics/LiveRadarModal";
+import { TrustVerificationModal } from "./components/Trust/TrustVerificationModal";
 const AwwwardsLanding = lazy(() =>
   import("./components/LandingPage/AwwwardsLanding").then((module) => ({
     default: module.AwwwardsLanding,
@@ -149,6 +153,8 @@ function Marketplace() {
     [],
   );
   const [currencyOpen, setCurrencyOpen] = useState(false);
+  const [radarOpen, setRadarOpen] = useState(false);
+  const [trustOpen, setTrustOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const transactions = [...ledger].sort((a, b) => b.at.localeCompare(a.at));
   const storageReady =
@@ -572,16 +578,21 @@ function Marketplace() {
           aria-label="Découvrir et administrer"
         >
           <CurrencyRatePill onClick={() => setCurrencyOpen(true)} />
-          <button onClick={() => navigate("landing")}>
+          <button type="button" onClick={() => setRadarOpen(true)}>
+            <Radio size={13} />
+            Radar Méditerranée
+          </button>
+          <button type="button" onClick={() => navigate("landing")}>
             Découvrir BagVoyage
             <ArrowRight size={13} />
           </button>
           {localAdminEnabled && (
-            <button onClick={() => navigate("admin")}>
+            <button type="button" onClick={() => navigate("admin")}>
               <ShieldCheck size={13} />
               Super Admin
             </button>
           )}
+          <LanguageSelector location="header" />
         </nav>
       </header>
       <main
@@ -693,6 +704,7 @@ function Marketplace() {
             userName={user?.name}
             kycStatus={user?.kycStatus}
             onLogout={logout}
+            onTrust={() => setTrustOpen(true)}
           />
         )}
         {messages && (
@@ -791,6 +803,12 @@ function Marketplace() {
       </nav>
       {currencyOpen && (
         <CurrencyConverterModal onClose={() => setCurrencyOpen(false)} />
+      )}
+      {radarOpen && (
+        <LiveRadarModal onClose={() => setRadarOpen(false)} />
+      )}
+      {trustOpen && (
+        <TrustVerificationModal onClose={() => setTrustOpen(false)} />
       )}
       {notificationsOpen && (
         <NotificationsDrawer
@@ -962,8 +980,10 @@ function InfoIcon() {
 }
 export default function App() {
   return (
-    <AuthProvider>
-      <Marketplace />
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <Marketplace />
+      </AuthProvider>
+    </LanguageProvider>
   );
 }

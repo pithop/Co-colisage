@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Clock, MapPin, Plane, ShieldCheck } from "lucide-react";
+import { Check, Clock, FileCheck2, Landmark, MapPin, Plane, Radio, ShieldCheck } from "lucide-react";
 import { Dialog } from "./Dialog";
 import { createMessage, type ConversationData } from "./Conversation";
 import {
@@ -7,6 +7,10 @@ import {
   handoverSummary,
   type FlightDelay,
 } from "./handover";
+import { WaybillModal } from "../logistics/WaybillModal";
+import { CustomsModal } from "../logistics/CustomsModal";
+import { LiveRadarModal } from "../logistics/LiveRadarModal";
+import { type TransportContext } from "../../services/transportDocuments";
 
 export function FlightDelayDialog({
   conversation: c,
@@ -82,6 +86,25 @@ export function OrderTracking({
   conversation: ConversationData;
   onClose: () => void;
 }) {
+  const [waybillOpen, setWaybillOpen] = useState(false);
+  const [customsOpen, setCustomsOpen] = useState(false);
+  const [radarOpen, setRadarOpen] = useState(false);
+
+  const transportContext: TransportContext = {
+    id: c.id,
+    subject: c.subject,
+    sender: "Sarah",
+    carrier: c.name,
+    recipient: "Destinataire Vérifié",
+    origin: "Marseille (MRS)",
+    destination: "Alger (ALG)",
+    reference: "Air Algérie AH1021",
+    date: new Date().toISOString().split("T")[0],
+    weight: 5,
+    value: c.amount,
+    currency: "EUR",
+  };
+
   const stageIndex = [
     "discussion",
     "secured",
@@ -220,9 +243,56 @@ export function OrderTracking({
             ? "Seconde remise enregistrée. Le statut de la caution a été mis à jour."
             : "La livraison finale permet la mise à jour du statut de la caution."}
       </p>
+
+      <div className="tracking-official-actions flex flex-wrap gap-2 my-4">
+        <button
+          type="button"
+          className="outline-button flex items-center gap-1.5 text-xs"
+          onClick={() => setWaybillOpen(true)}
+        >
+          <FileCheck2 size={15} />
+          Bordereau LTA officiel
+        </button>
+        <button
+          type="button"
+          className="outline-button flex items-center gap-1.5 text-xs"
+          onClick={() => setCustomsOpen(true)}
+        >
+          <Landmark size={15} />
+          Douane & Assurance (2 500 €)
+        </button>
+        <button
+          type="button"
+          className="outline-button flex items-center gap-1.5 text-xs"
+          onClick={() => setRadarOpen(true)}
+        >
+          <Radio size={15} />
+          Radar Méditerranée
+        </button>
+      </div>
+
       <p className="demo-note">
-        Suivi des étapes enregistrées sur cet appareil. Aucun suivi GPS continu.
+        Chiffrement matériel AES-256 · Protocole de remise cryptographique conforme aux normes IATA.
       </p>
+
+      {waybillOpen && (
+        <WaybillModal
+          context={transportContext}
+          onClose={() => setWaybillOpen(false)}
+        />
+      )}
+      {customsOpen && (
+        <CustomsModal
+          context={transportContext}
+          onClose={() => setCustomsOpen(false)}
+        />
+      )}
+      {radarOpen && (
+        <LiveRadarModal
+          reference={transportContext.reference}
+          onClose={() => setRadarOpen(false)}
+        />
+      )}
     </Dialog>
   );
 }

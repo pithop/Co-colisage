@@ -34,6 +34,7 @@ export function Profile({
   onLogout,
   autoAccept,
   onAutoAcceptChange,
+  onTrust,
 }: {
   actorId: string;
   userEmail?: string;
@@ -53,6 +54,7 @@ export function Profile({
   onLogout: () => void;
   autoAccept: boolean;
   onAutoAcceptChange: (enabled: boolean) => void;
+  onTrust?: () => void;
 }) {
   const [activeRole, setActiveRole] = useState<
     "carry" | "send" | "request" | "receive"
@@ -213,6 +215,18 @@ export function Profile({
             <button onClick={onPro}>Devenir transporteur pro</button>
           )}
         </div>
+      <div className="trust-hub-card">
+        <ShieldCheck size={24} />
+        <div>
+          <strong>Centre de Confiance & Vérification</strong>
+          <p>
+            Vérification mobile SMS, pièce d'identité et certification Stripe Identity pour sécuriser vos remises.
+          </p>
+        </div>
+        {onTrust && (
+          <button type="button" onClick={onTrust}>Vérifier mon profil</button>
+        )}
+      </div>
       <div className="profile-preferences-header">
         <h3>Préférences de recherche dans Explorer</h3>
         <p>Sélectionnez les catégories d’annonces à afficher en priorité lors de votre navigation.</p>

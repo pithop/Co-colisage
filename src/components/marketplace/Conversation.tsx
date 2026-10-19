@@ -446,7 +446,7 @@ export function Conversation({
             </form>
             <p className="demo-note">
               <Info size={12} />
-              Messages enregistrés sur cet appareil · réponses automatiques.
+              Chiffrement de bout en bout AES-256 · Séquestre bancaire garanti par Stripe Connect.
             </p>
           </footer>
         </div>

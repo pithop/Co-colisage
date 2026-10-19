@@ -2583,3 +2583,510 @@
     flex-shrink: 0;
   }
 }
+
+/* Official Transport Documents, Waybill & Customs Paper Styles */
+.bv-document-intro {
+  margin-bottom: 20px;
+  padding: 14px 18px;
+  background: rgba(241, 245, 249, 0.7);
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+.bv-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #1e3a8a;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.bv-document-intro p {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0;
+}
+.bv-error {
+  padding: 10px 14px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-bottom: 16px;
+}
+.bv-paper {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08);
+  font-family: inherit;
+  color: #0f172a;
+}
+.bv-paper-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 2px solid #0f172a;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+.bv-wordmark {
+  font-size: 20px;
+  font-weight: 850;
+  letter-spacing: -0.04em;
+  color: #0f172a;
+}
+.bv-wordmark span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #2563eb;
+  letter-spacing: 0.1em;
+}
+.bv-paper-heading p {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  margin-top: 4px;
+}
+.bv-document-reference {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-family: monospace;
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+}
+.bv-paper-parties {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.bv-paper-parties section {
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+.bv-paper-parties h3 {
+  font-size: 9px;
+  font-weight: 750;
+  color: #64748b;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.bv-paper-parties strong {
+  display: block;
+  font-size: 13px;
+  color: #0f172a;
+}
+.bv-paper-parties p {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 4px;
+}
+.bv-paper-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 20px;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 14px 0;
+  margin-bottom: 20px;
+}
+.bv-paper-details dt {
+  font-size: 11px;
+  color: #64748b;
+}
+.bv-paper-details dd {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-top: 2px;
+}
+.bv-contents {
+  margin-bottom: 20px;
+}
+.bv-contents h3 {
+  font-size: 10px;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.bv-contents p {
+  font-size: 12px;
+  line-height: 1.6;
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+}
+.bv-document-codes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+.bv-document-codes svg {
+  max-height: 52px;
+}
+.bv-hash {
+  font-size: 9px;
+  font-family: monospace;
+  color: #94a3b8;
+  text-align: center;
+  margin-bottom: 24px;
+}
+.bv-signatures {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.bv-signatures span {
+  display: block;
+  height: 58px;
+  border-bottom: 1px dashed #94a3b8;
+  font-size: 10px;
+  color: #64748b;
+  padding-top: 4px;
+}
+.bv-paper-legal {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 14px;
+  font-size: 10px;
+  color: #64748b;
+  line-height: 1.5;
+}
+.bv-paper-legal strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #334155;
+}
+.bv-paper-legal a {
+  display: inline-block;
+  color: #2563eb;
+  margin-top: 6px;
+  text-decoration: underline;
+}
+.bv-document-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+.bv-form fieldset {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 18px;
+}
+.bv-form legend {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e3a8a;
+  padding: 0 8px;
+}
+.bv-field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.bv-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 11px;
+  color: #475569;
+  margin: 12px 0;
+  cursor: pointer;
+}
+.bv-check input {
+  margin-top: 2px;
+}
+
+/* Radar Flight & Vessel Tracking */
+.radar-selector {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.radar-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  text-align: left;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.radar-tab.active {
+  background: #0f172a;
+  color: #fff;
+  border-color: #0f172a;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+.radar-tab strong {
+  font-size: 13px;
+  margin-top: 4px;
+}
+.radar-tab span {
+  font-size: 10px;
+  opacity: 0.75;
+}
+.radar-display {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 24px;
+}
+.radar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+.radar-airline {
+  font-size: 11px;
+  font-weight: 700;
+  color: #2563eb;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.radar-title {
+  font-size: 18px;
+  font-weight: 750;
+  color: #0f172a;
+  margin-top: 4px;
+}
+.radar-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.radar-metric {
+  background: #f8fafc;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+}
+.radar-metric span {
+  display: block;
+  font-size: 10px;
+  color: #64748b;
+}
+.radar-metric strong {
+  display: block;
+  font-size: 14px;
+  color: #0f172a;
+  margin-top: 2px;
+}
+.radar-progress-wrap {
+  margin-bottom: 20px;
+}
+.radar-progress-bar {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.radar-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2563eb, #10b981);
+  transition: width 0.4s ease;
+}
+.radar-steps {
+  display: flex;
+  justify-content: space-between;
+}
+.radar-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 90px;
+}
+.radar-step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  margin-bottom: 6px;
+}
+.radar-step.done .radar-step-dot {
+  background: #2563eb;
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
+}
+.radar-step-label {
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 500;
+}
+.radar-step.done .radar-step-label {
+  color: #0f172a;
+  font-weight: 600;
+}
+.radar-info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 11px;
+  color: #1e40af;
+  line-height: 1.5;
+}
+
+/* Trust & Biometric Verification Stepper */
+.trust-stepper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.trust-step-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+.trust-step-pill.active {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+.trust-step-pill.done {
+  border-color: #a7f3d0;
+  color: #065f46;
+}
+
+/* Language selector */
+.bv-language {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+}
+.bv-language select {
+  background: transparent;
+  color: inherit;
+  border: none;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+.bv-language select option {
+  background: #0f172a;
+  color: #fff;
+}
+
+/* RTL Arabic typography adjustments */
+[dir="rtl"] {
+  text-align: right;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+[dir="rtl"] .bv-paper-parties,
+[dir="rtl"] .bv-field-grid {
+  direction: rtl;
+}
+[dir="rtl"] .icon-button svg {
+  transform: scaleX(-1);
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .bv-print-root,
+  .bv-print-root * {
+    visibility: visible;
+  }
+  .bv-print-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .bv-paper {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
+
+.trust-hub-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.8), rgba(248, 250, 252, 0.9));
+  border: 1px solid #bfdbfe;
+  border-radius: 20px;
+  padding: 18px 20px;
+  margin: 16px 0;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.06);
+}
+.trust-hub-card strong {
+  display: block;
+  font-size: 14px;
+  color: #0f172a;
+}
+.trust-hub-card p {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 2px;
+}
+.trust-hub-card button {
+  margin-left: auto;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 8px 14px;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.trust-hub-card button:hover {
+  background: #1d4ed8;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
