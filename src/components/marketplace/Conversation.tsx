@@ -2,16 +2,17 @@ import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowUp,
-  Check,
   CheckCheck,
   Info,
   LockKeyhole,
   MessageCircle,
   QrCode,
   ShieldCheck,
-  Star,
 } from "lucide-react";
-import QRCode from "qrcode";
+import { QrImage } from "./QrImage";
+import { DeliveryModal } from "./DeliveryModal";
+import { OrderTracking, FlightDelayDialog } from "./OrderTracking";
+import type { HandoverRecord, FlightDelay } from "./handover";
 import confetti from "canvas-confetti";
 import { euro } from "../../data/marketplace";
 import { Dialog } from "./Dialog";
@@ -34,6 +35,9 @@ export interface ConversationData {
   pickupCode: string;
   deliveryCode: string;
   ratings?: number[];
+  handovers?: HandoverRecord[];
+  delays?: FlightDelay[];
+  securedAt?: string;
 }
 export const createMessage = (
   text: string,
@@ -49,279 +53,6 @@ export const createMessage = (
     minute: "2-digit",
   }),
 });
-export function QrImage({ value }: { value: string }) {
-  const [src, setSrc] = useState("");
-  useEffect(() => {
-    let current = true;
-    QRCode.toDataURL(value, { width: 180, margin: 2 }).then((url) => {
-      if (current) setSrc(url);
-    });
-    return () => {
-      current = false;
-    };
-  }, [value]);
-  return src ? (
-    <img
-      className="qr-image"
-      src={src}
-      alt="QR code de validation de la remise"
-    />
-  ) : (
-    <span>Création du QR code…</span>
-  );
-}
-const criteria = [
-  "Réactivité",
-  "Ponctualité",
-  "Échange clair",
-  "Marchandise intacte",
-];
-export function Delivery({
-  conversation: c,
-  onUpdate,
-  onClose,
-}: {
-  conversation: ConversationData;
-  onUpdate: (c: ConversationData) => void;
-  onClose: () => void;
-}) {
-  const [code, setCode] = useState("");
-  const [error, setError] = useState("");
-  const [ratings, setRatings] = useState(c.ratings || [0, 0, 0, 0]);
-  const pickup = c.stage === "secured";
-  const payload = `entre-particuliers:${c.id}:${pickup ? "pickup" : "delivery"}:${pickup ? c.pickupCode : c.deliveryCode}`;
-  const expected = pickup ? c.pickupCode : c.deliveryCode;
-  const fileRef = useRef<HTMLInputElement>(null);
-  const validate = (value: string) => {
-    if (value.trim() !== expected && value.trim() !== payload) {
-      setError(
-        "Code incorrect. Vérifiez le code de cette étape avec votre interlocuteur.",
-      );
-      return;
-    }
-    if (c.stage !== "secured" && c.stage !== "collected") return;
-    onUpdate({
-      ...c,
-      stage: pickup ? "collected" : "delivered",
-      messages: [
-        ...c.messages,
-        createMessage(
-          pickup
-            ? "Premier QR validé : article pris en charge."
-            : "Second QR validé : livraison confirmée. Fonds libérés en démonstration.",
-          false,
-        ),
-      ],
-    });
-    setCode("");
-    setError("");
-  };
-  const readQr = async (file: File) => {
-    try {
-      const { default: jsQR } = await import("jsqr");
-      const bitmap = await createImageBitmap(file);
-      const canvas = document.createElement("canvas");
-      const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
-      canvas.width = bitmap.width * scale;
-      canvas.height = bitmap.height * scale;
-      const context = canvas.getContext("2d");
-      if (!context) throw new Error();
-      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-      bitmap.close();
-      const pixels = context.getImageData(0, 0, canvas.width, canvas.height);
-      const result = jsQR(pixels.data, pixels.width, pixels.height);
-      if (!result) {
-        setError(
-          "QR code illisible. Essayez une photo nette ou saisissez le PIN.",
-        );
-        return;
-      }
-      validate(result.data);
-    } catch {
-      setError(
-        "Cette image ne peut pas être lue. Utilisez une photo JPG ou PNG.",
-      );
-    }
-  };
-  return (
-    <Dialog
-      title={
-        c.stage === "delivered"
-          ? "Livraison confirmée"
-          : "Validation par double QR code"
-      }
-      onClose={onClose}
-    >
-      <div className="delivery-steps" aria-label="Étapes de validation">
-        <span
-          aria-current={pickup ? "step" : undefined}
-          className={c.stage !== "secured" ? "complete" : "current"}
-        >
-          1. Prise en charge
-        </span>
-        <span
-          aria-current={c.stage === "collected" ? "step" : undefined}
-          className={
-            c.stage === "delivered"
-              ? "complete"
-              : c.stage === "collected"
-                ? "current"
-                : ""
-          }
-        >
-          2. Livraison
-        </span>
-      </div>
-      {c.stage !== "delivered" ? (
-        <>
-          <h3 className="delivery-title">
-            {pickup ? "Confirmer la prise en charge" : "Confirmer la livraison"}
-          </h3>
-          <p className="muted">
-            {pickup
-              ? "Le premier code confirme que le voyageur a récupéré l’article."
-              : "Le second code confirme la remise au destinataire et permet de libérer les fonds."}
-          </p>
-          <div className="demo-code">
-            <QrImage value={payload} />
-            <span>
-              Code PIN de démonstration : <strong>{expected}</strong>
-            </span>
-          </div>
-          <form
-            className="publish-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              validate(code);
-            }}
-          >
-            <label>
-              Code PIN ou contenu du QR code
-              <input
-                value={code}
-                onChange={(e) => {
-                  setCode(e.target.value);
-                  setError("");
-                }}
-                placeholder="Saisir le code de cette étape"
-                autoComplete="off"
-                required
-              />
-            </label>
-            <button
-              type="button"
-              className="outline-button demo-fill-button"
-              onClick={() => {
-                setCode(expected);
-                setError("");
-              }}
-            >
-              Remplir le code (démo)
-            </button>
-            {error && (
-              <p role="alert" className="error-message">
-                {error}
-              </p>
-            )}
-            <button className="primary-button" type="submit">
-              {pickup ? "Valider la prise en charge" : "Valider la livraison"}
-            </button>
-            <input
-              type="file"
-              accept="image/*"
-              capture="environment"
-              ref={fileRef}
-              className="sr-only"
-              tabIndex={-1}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) void readQr(file);
-                e.target.value = "";
-              }}
-            />
-            <button
-              type="button"
-              className="outline-button"
-              onClick={() => fileRef.current?.click()}
-            >
-              <QrCode size={18} />
-              Scanner ou importer un QR code
-            </button>
-          </form>
-        </>
-      ) : (
-        <>
-          <div className="delivery-success">
-            <ShieldCheck size={36} />
-            <h3>Article remis, merci !</h3>
-            <p>{euro(c.amount)} libérés en démonstration.</p>
-          </div>
-          {c.ratings ? (
-            <p className="info-box">
-              <Check size={18} />
-              Votre avis a été enregistré. Merci !
-            </p>
-          ) : (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                onUpdate({ ...c, ratings });
-              }}
-            >
-              <h3 className="delivery-title">
-                Comment s’est passée la livraison ?
-              </h3>
-              <div className="rating-criteria">
-                {criteria.map((criterion, index) => (
-                  <fieldset key={criterion}>
-                    <legend>{criterion}</legend>
-                    <div>
-                      {[1, 2, 3, 4, 5].map((value) => (
-                        <label key={value}>
-                          <input
-                            className="rating-input"
-                            type="radio"
-                            name={`rating-${index}`}
-                            value={value}
-                            checked={ratings[index] === value}
-                            onChange={() =>
-                              setRatings(
-                                ratings.map((r, i) =>
-                                  i === index ? value : r,
-                                ),
-                              )
-                            }
-                            aria-label={`${criterion} : ${value} sur 5`}
-                          />
-                          <Star
-                            size={23}
-                            fill={value <= ratings[index] ? "#e1a32c" : "none"}
-                            color={
-                              value <= ratings[index] ? "#b87c0f" : "#9aa2ad"
-                            }
-                          />
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                ))}
-              </div>
-              <button
-                className="primary-button"
-                disabled={ratings.some((r) => r === 0)}
-              >
-                Envoyer mon avis
-              </button>
-            </form>
-          )}
-        </>
-      )}
-      <p className="demo-note">
-        Parcours de démonstration : aucun paiement réel n’est effectué.
-      </p>
-    </Dialog>
-  );
-}
 export function Conversation({
   conversations,
   activeId,
@@ -341,11 +72,15 @@ export function Conversation({
 }) {
   const [draft, setDraft] = useState("");
   const [delivery, setDelivery] = useState(false);
+  const [tracking, setTracking] = useState(false);
+  const [delay, setDelay] = useState(false);
   const c = conversations.find((c) => c.id === activeId);
   const feed = useRef<HTMLDivElement>(null);
   useEffect(() => {
     setDraft("");
     setDelivery(false);
+    setTracking(false);
+    setDelay(false);
   }, [activeId]);
   useEffect(() => {
     feed.current?.scrollTo({ top: feed.current.scrollHeight });
@@ -427,6 +162,7 @@ export function Conversation({
                   onUpdate({
                     ...c,
                     stage: "secured",
+                    securedAt: new Date().toISOString(),
                     messages: [
                       ...c.messages,
                       createMessage(
@@ -450,7 +186,13 @@ export function Conversation({
                 Simuler l’accord
               </button>
             ) : (
-              <button onClick={() => setDelivery(true)}>
+              <button
+                onClick={() => {
+                  confetti.reset();
+                  onNotice("");
+                  setDelivery(true);
+                }}
+              >
                 {c.stage === "delivered"
                   ? "Voir la remise"
                   : "Valider la remise"}
@@ -492,6 +234,15 @@ export function Conversation({
               </p>
             )}
             <div className="chat-tools">
+              <button onClick={() => setTracking(true)}>
+                Voir le suivi de la commande
+              </button>
+              <button
+                disabled={c.stage === "delivered"}
+                onClick={() => setDelay(true)}
+              >
+                Signaler un retard de vol
+              </button>
               <button
                 disabled={c.stage === "discussion" || c.stage === "delivered"}
                 onClick={() => {
@@ -543,8 +294,18 @@ export function Conversation({
           <p>Sélectionnez une conversation pour la retrouver.</p>
         </div>
       )}
+      {tracking && c && (
+        <OrderTracking conversation={c} onClose={() => setTracking(false)} />
+      )}
+      {delay && c && (
+        <FlightDelayDialog
+          conversation={c}
+          onUpdate={onUpdate}
+          onClose={() => setDelay(false)}
+        />
+      )}
       {delivery && c && (
-        <Delivery
+        <DeliveryModal
           conversation={c}
           onUpdate={onUpdate}
           onClose={() => setDelivery(false)}
