@@ -6,6 +6,7 @@ import {
   Info,
   LockKeyhole,
   MessageCircle,
+  Mic,
   QrCode,
   ShieldCheck,
 } from "lucide-react";
@@ -17,12 +18,14 @@ import confetti from "canvas-confetti";
 import { euro } from "../../data/marketplace";
 import { Dialog } from "./Dialog";
 import { Avatar } from "./Avatar";
+import { AudioMessagePlayer, voiceTime, voiceWave } from "./AudioMessagePlayer";
 
 export interface ChatMessage {
   id: string;
   text: string;
   mine: boolean;
   time: string;
+  audio?: { url?: string; duration: number };
   qr?: string;
   official?: boolean;
 }
@@ -75,6 +78,9 @@ export function Conversation({
   pendingReplies: string[];
   onNotice: (message: string) => void;
 }) {
+  const [recording, setRecording] = useState(false);
+  const [recordedSeconds, setRecordedSeconds] = useState(0);
+  const microphone = useRef<HTMLButtonElement>(null);
   const [draft, setDraft] = useState("");
   const [delivery, setDelivery] = useState(false);
   const [tracking, setTracking] = useState(false);
@@ -82,6 +88,8 @@ export function Conversation({
   const c = conversations.find((c) => c.id === activeId);
   const feed = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    setRecording(false);
+    setRecordedSeconds(0);
     setDraft("");
     setDelivery(false);
     setTracking(false);
@@ -90,6 +98,35 @@ export function Conversation({
   useEffect(() => {
     feed.current?.scrollTo({ top: feed.current.scrollHeight });
   }, [c?.messages.length]);
+  useEffect(() => {
+    if (!recording) return;
+    const started = performance.now();
+    const timer = window.setInterval(
+      () =>
+        setRecordedSeconds(Math.floor((performance.now() - started) / 1000)),
+      250,
+    );
+    return () => window.clearInterval(timer);
+  }, [recording]);
+  const stopRecording = () => {
+    setRecording(false);
+    setRecordedSeconds(0);
+    microphone.current?.focus();
+  };
+  const sendVoice = () => {
+    if (!c || !recording) return;
+    onUpdate({
+      ...c,
+      messages: [
+        ...c.messages,
+        {
+          ...createMessage("Note vocale (0:14)"),
+          audio: { url: "/audio/voice-note-1.ogg", duration: 14 },
+        },
+      ],
+    });
+    stopRecording();
+  };
   const send = (text: string, qr?: string) => {
     if (c && text.trim()) {
       onSend(c.id, text.trim(), qr);
@@ -236,6 +273,13 @@ export function Conversation({
             {c.messages.map((m) => (
               <div key={m.id} className={`message ${m.mine ? "mine" : ""}`}>
                 <div>
+                  {m.audio && (
+                    <AudioMessagePlayer
+                      url={m.audio.url}
+                      duration={m.audio.duration}
+                      mine={m.mine}
+                    />
+                  )}
                   {m.qr && <QrImage value={m.qr} />}
                   <p>
                     {m.official && (
@@ -321,6 +365,50 @@ export function Conversation({
                 </button>
               </div>
             )}
+            {recording && (
+              <div
+                className="voice-recorder"
+                role="region"
+                aria-label="Enregistrement de note vocale"
+              >
+                <div className="voice-recording-status">
+                  <span className="voice-recording-dot" aria-hidden="true" />
+                  <strong>Note vocale</strong>
+                  <time aria-label="Durée de capture">
+                    {voiceTime(recordedSeconds)}
+                  </time>
+                </div>
+                <svg
+                  className="recording-wave"
+                  viewBox="0 0 144 40"
+                  aria-hidden="true"
+                >
+                  {voiceWave.map((height, index) => (
+                    <rect
+                      key={index}
+                      x={index * 6}
+                      y={(40 - height) / 2}
+                      width="3"
+                      height={height}
+                      rx="1.5"
+                      style={{ animationDelay: `${index * 45}ms` }}
+                    />
+                  ))}
+                </svg>
+                <p>
+                  Capture simulée · envoi d’une note de démonstration de 14 s.
+                </p>
+                <div className="voice-recorder-actions">
+                  <button type="button" onClick={stopRecording}>
+                    Annuler
+                  </button>
+                  <button type="button" onClick={sendVoice}>
+                    <ArrowUp size={16} aria-hidden="true" />
+                    Envoyer la note vocale
+                  </button>
+                </div>
+              </div>
+            )}
             <form
               className="message-composer"
               onSubmit={(e) => {
@@ -328,6 +416,19 @@ export function Conversation({
                 send(draft);
               }}
             >
+              <button
+                ref={microphone}
+                type="button"
+                className="voice-microphone"
+                aria-label="Enregistrer une note vocale"
+                aria-expanded={recording}
+                onClick={() => {
+                  setRecordedSeconds(0);
+                  setRecording((current) => !current);
+                }}
+              >
+                <Mic size={19} />
+              </button>
               <input
                 aria-label={`Message à ${c.name}`}
                 placeholder="Votre message…"

@@ -54,10 +54,13 @@ export const initialConversations: ConversationData[] = [
       createMessage(
         "Le colis est un cadeau dans son emballage. Peut-on prévoir la remise à l’aéroport ?",
       ),
-      createMessage(
-        "Bien sûr. Indiquez-moi son poids, ses dimensions et son contenu. Nous conviendrons du rendez-vous à Marseille et du destinataire à Alger avant l’accord.",
-        false,
-      ),
+      {
+        ...createMessage(
+          "Bien sûr. Indiquez-moi son poids, ses dimensions et son contenu. Nous conviendrons du rendez-vous à Marseille et du destinataire à Alger avant l’accord.",
+          false,
+        ),
+        audio: { url: "/audio/voice-note-1.ogg", duration: 14 },
+      },
     ],
   },
   {

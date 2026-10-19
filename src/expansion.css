@@ -1925,3 +1925,661 @@
   margin-top: 4px;
 }
 
+/* Transmediterranean currency, voice and travel surfaces. */
+.bagvoyage-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.bagvoyage-insignia {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 40px;
+  flex-shrink: 0;
+  color: #eff6ff;
+  background: linear-gradient(145deg, #64748b, #0f172a 54%, #334155);
+  clip-path: polygon(50% 0, 100% 24%, 100% 76%, 50% 100%, 0 76%, 0 24%);
+}
+.bagvoyage-wordmark {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: #334155;
+  background: linear-gradient(
+    160deg,
+    #0f172a 20%,
+    #64748b 48%,
+    #1e293b 65%,
+    #475569
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.header-destinations {
+  flex-wrap: wrap;
+}
+.header-destinations .currency-rate-pill,
+.currency-rate-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 7px 14px;
+  border: 1px solid #475569;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #1e293b, #0f172a);
+  color: #f1f5f9;
+  font-size: 11px;
+  font-weight: 550;
+  font-variant-numeric: tabular-nums;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.header-destinations .currency-rate-pill {
+  margin-right: auto;
+}
+.currency-rate-pill svg {
+  flex-shrink: 0;
+  color: #6ee7b7;
+}
+.currency-rate-pill:hover {
+  border-color: #6ee7b7;
+  box-shadow: 0 0 18px #34d39920;
+}
+.legacy-currency-bar {
+  padding: 8px 24px;
+  background: #0f172a;
+}
+.currency-backdrop {
+  z-index: 100;
+  background: #020617a8;
+  backdrop-filter: blur(16px);
+}
+.currency-modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 28px;
+  border: 1px solid #ffffff52;
+  border-radius: 28px;
+  color: #f1f5f9;
+  background:
+    radial-gradient(ellipse at 100% 0, #164e635e, transparent 48%),
+    linear-gradient(140deg, #1e293bf5, #0a1128f5);
+  box-shadow:
+    0 32px 100px #02061788,
+    inset 0 1px #ffffff26;
+  animation: currency-reveal 0.25s ease-out;
+}
+.currency-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.currency-heading .icon-button {
+  color: #cbd5e1;
+  border: 1px solid #ffffff26;
+}
+.currency-heading .icon-button:hover {
+  background: #ffffff14;
+}
+.currency-emblem {
+  display: grid;
+  place-items: center;
+  height: 48px;
+  width: 48px;
+  border: 1px solid #67e8f940;
+  border-radius: 16px;
+  color: #a5f3fc;
+  background: #67e8f90d;
+}
+.currency-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  font-weight: 650;
+  color: #a5f3fc;
+}
+.currency-modal h2 {
+  margin: 12px 0;
+  font-size: clamp(28px, 5vw, 38px);
+  letter-spacing: -1.4px;
+  font-weight: 650;
+  line-height: 1.15;
+}
+.currency-modal h2 span {
+  color: #94a3b8;
+}
+.currency-reference {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #cbd5e1;
+  margin-bottom: 24px;
+}
+.currency-mode {
+  display: grid;
+  gap: 8px;
+  font-size: 11px;
+  color: #cbd5e1;
+}
+.currency-mode select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid #64748b;
+  border-radius: 12px;
+  background: #0f172a;
+  color: #f1f5f9;
+  font-size: 12px;
+}
+.currency-fields {
+  margin-top: 16px;
+  position: relative;
+  display: grid;
+  gap: 12px;
+}
+.currency-fields > div {
+  position: relative;
+}
+.currency-amount {
+  display: block;
+  padding: 16px 20px;
+  border: 1px solid #ffffff29;
+  border-radius: 16px;
+  background: #ffffff06;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.currency-amount:focus-within {
+  background: #ffffff0c;
+  border-color: #67e8f9;
+}
+.currency-amount > span {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #94a3b8;
+}
+.currency-amount strong {
+  letter-spacing: 0.08em;
+  color: #e2e8f0;
+}
+.currency-amount input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #fff;
+  font-size: clamp(24px, 5vw, 32px);
+  font-weight: 550;
+  font-variant-numeric: tabular-nums;
+}
+.currency-swap {
+  position: absolute;
+  top: -24px;
+  left: calc(50% - 18px);
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  z-index: 1;
+  background: #1e293b;
+  color: #a5f3fc;
+  border: 1px solid #64748b;
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+.currency-swap:hover {
+  transform: rotate(180deg);
+}
+.currency-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 16px 0;
+}
+.currency-presets button {
+  flex: 1 1 75px;
+  display: grid;
+  gap: 3px;
+  padding: 10px 6px;
+  border-radius: 10px;
+  border: 1px solid #ffffff24;
+  background: #ffffff05;
+  color: #e2e8f0;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.currency-presets button:hover {
+  background: #ffffff10;
+  border-color: #67e8f9;
+}
+.currency-presets strong {
+  font-size: 11px;
+  font-weight: 650;
+}
+.currency-presets span {
+  font-size: 9px;
+  color: #cbd5e1;
+}
+.currency-comparison {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #34d3993d;
+  border-radius: 14px;
+  background: #10b9810d;
+  color: #6ee7b7;
+}
+.currency-comparison > svg,
+.currency-escrow > svg {
+  flex-shrink: 0;
+}
+.currency-comparison strong {
+  font-size: 14px;
+  font-weight: 650;
+}
+.currency-comparison p {
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+.currency-escrow {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  color: #94a3b8;
+}
+.currency-escrow h3 {
+  font-size: 12px;
+  font-weight: 650;
+  color: #e2e8f0;
+  margin-bottom: 6px;
+}
+.currency-escrow p {
+  font-size: 11px;
+  line-height: 1.8;
+}
+.currency-footnote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding-top: 20px;
+  font-size: 10px;
+  color: #94a3b8;
+}
+.currency-modal :is(button, input, select):focus-visible,
+.currency-rate-pill:focus-visible {
+  outline: 2px solid #67e8f9;
+  outline-offset: 3px;
+}
+.voice-player {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 260px;
+  max-width: 100%;
+  color: #2563eb;
+  white-space: normal;
+  padding: 4px 0;
+}
+.voice-player audio {
+  display: none;
+}
+.voice-player .voice-play {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  height: 44px;
+  width: 44px;
+  border-radius: 50%;
+  color: #fff;
+  background: #2563eb;
+  box-shadow: 0 4px 12px #2563eb20;
+}
+.voice-track {
+  flex: 1;
+  min-width: 60px;
+}
+.voice-wave {
+  display: block;
+  width: 100%;
+  height: 40px;
+}
+.voice-wave rect {
+  fill: #bfdbfe;
+  transition: fill 0.15s;
+}
+.voice-wave rect.played {
+  fill: #2563eb;
+}
+.voice-time {
+  display: block;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: #475569;
+  line-height: 1.4;
+}
+.voice-player .voice-speed {
+  flex-shrink: 0;
+  min-height: 44px;
+  min-width: 40px;
+  padding: 6px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+.voice-player-mine .voice-play {
+  background: #fff;
+  color: #1d4ed8;
+}
+.voice-player-mine .voice-speed {
+  background: #ffffff20;
+  color: #fff;
+}
+.voice-player-mine .voice-time,
+.voice-player-mine .voice-fallback {
+  color: #eff6ff;
+}
+.voice-player-mine .voice-wave rect {
+  fill: #ffffff50;
+}
+.voice-player-mine .voice-wave rect.played {
+  fill: #fff;
+}
+.voice-fallback {
+  width: 100%;
+  font-size: 10px;
+  color: #475569;
+  line-height: 1.5;
+}
+.message-composer .voice-microphone {
+  background: transparent;
+  color: #475569;
+}
+.message-composer .voice-microphone:hover,
+.message-composer .voice-microphone[aria-expanded="true"] {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.voice-recorder {
+  display: grid;
+  grid-template-columns: 1fr 100px;
+  gap: 8px 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid #fecaca;
+  border-radius: 18px;
+  background: linear-gradient(130deg, #fff, #fff1f2);
+  animation: currency-reveal 0.2s ease-out;
+}
+.voice-recording-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  color: #881337;
+}
+.voice-recording-status time {
+  font-variant-numeric: tabular-nums;
+}
+.voice-recording-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #dc2626;
+  animation: voice-pulse 1s ease-in-out infinite;
+}
+.recording-wave {
+  height: 32px;
+  width: 100%;
+  fill: #e11d48;
+}
+.recording-wave rect {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: voice-wave 0.7s ease-in-out infinite alternate;
+}
+.voice-recorder p {
+  grid-column: 1 / -1;
+  font-size: 10px;
+  color: #9f1239;
+}
+.voice-recorder-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.voice-recorder-actions button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #fecaca;
+  font-size: 11px;
+  color: #881337;
+}
+.voice-recorder-actions button:last-child {
+  background: #0f172a;
+  color: #fff;
+  border-color: #0f172a;
+}
+.shopping-suggestions {
+  padding: 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  background: linear-gradient(130deg, #f8fafc, #eff6ff);
+}
+.shopping-suggestions legend {
+  padding: 0 6px;
+  font-size: 12px;
+  color: #334155;
+  font-weight: 650;
+}
+.shopping-suggestions > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.shopping-suggestions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 11px;
+  color: #334155;
+  text-align: left;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+.shopping-suggestions button svg {
+  flex-shrink: 0;
+  color: #2563eb;
+}
+.shopping-suggestions button:hover {
+  border-color: #60a5fa;
+  box-shadow: 0 4px 12px #2563eb10;
+  transform: translateY(-1px);
+}
+.shopping-suggestions small {
+  display: block;
+  margin-top: 12px;
+  color: #64748b;
+  font-size: 10px;
+}
+.luggage-compartments {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0 0 18px;
+}
+.luggage-compartments button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+  color: #475569;
+  text-align: left;
+  font-size: 11px;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.luggage-compartments button[aria-pressed="true"] {
+  border-color: #60a5fa;
+  color: #1d4ed8;
+  background: #eff6ff;
+  box-shadow: inset 0 1px #fff;
+}
+.luggage-compartments small {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  color: #64748b;
+}
+.voice-player button:focus-visible,
+.voice-recorder button:focus-visible,
+.shopping-suggestions button:focus-visible,
+.luggage-compartments button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
+.voice-player-mine button:focus-visible {
+  outline-color: #fff;
+}
+@keyframes currency-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes voice-pulse {
+  50% {
+    opacity: 0.35;
+    box-shadow: 0 0 0 5px #ef444418;
+  }
+}
+@keyframes voice-wave {
+  from {
+    transform: scaleY(0.4);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@media (max-width: 640px) {
+  .header-destinations {
+    padding: 8px 16px;
+    gap: 6px;
+  }
+  .header-destinations .currency-rate-pill {
+    flex-basis: 100%;
+    font-size: 10px;
+    min-height: 32px;
+  }
+  .bagvoyage-brand {
+    gap: 7px;
+  }
+  .bagvoyage-wordmark {
+    font-size: 19px;
+  }
+  .bagvoyage-insignia {
+    width: 28px;
+    height: 32px;
+  }
+  .currency-backdrop {
+    padding: 12px;
+  }
+  .currency-modal {
+    padding: 20px;
+    border-radius: 24px;
+    max-height: calc(100dvh - 24px);
+  }
+  .currency-comparison strong {
+    font-size: 12px;
+  }
+  .voice-player {
+    width: 230px;
+    gap: 8px;
+  }
+  .voice-recorder {
+    grid-template-columns: 1fr 70px;
+    padding: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .currency-modal,
+  .voice-recorder,
+  .voice-recording-dot,
+  .recording-wave rect {
+    animation: none;
+  }
+  .currency-rate-pill,
+  .currency-amount,
+  .currency-swap,
+  .currency-presets button,
+  .voice-wave rect,
+  .shopping-suggestions button,
+  .luggage-compartments button {
+    transition: none;
+  }
+  .currency-swap:hover,
+  .shopping-suggestions button:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .main-container.messages-container {
+    padding: 0;
+  }
+  .messages-container .messages-page {
+    height: 100%;
+    min-height: 0;
+  }
+  .conversation-detail > header,
+  .conversation-detail > .escrow-strip,
+  .conversation-detail > .chat-safety-note {
+    flex-shrink: 0;
+  }
+}

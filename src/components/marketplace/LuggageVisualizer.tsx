@@ -47,6 +47,25 @@ export function LuggageVisualizer({
             aria-hidden="true"
           >
             <defs>
+              <linearGradient id={`${id}-metal`} x1="0" y1="0" x2="1" y2=".8">
+                <stop stopColor="#475569" />
+                <stop offset=".35" stopColor="#f8fafc" />
+                <stop offset=".6" stopColor="#94a3b8" />
+                <stop offset="1" stopColor="#334155" />
+              </linearGradient>
+              <pattern
+                id={`${id}-texture`}
+                width="4"
+                height="4"
+                patternUnits="userSpaceOnUse"
+              >
+                <path
+                  d="M0 4L4 0"
+                  stroke="#64748b"
+                  strokeWidth=".5"
+                  opacity=".2"
+                />
+              </pattern>
               <linearGradient id={`${id}-shell`} x1="0" y1="0" x2="1" y2="1">
                 <stop stopColor="#ecfeff" stopOpacity=".9" />
                 <stop offset="1" stopColor="#dbeafe" stopOpacity=".3" />
@@ -71,7 +90,7 @@ export function LuggageVisualizer({
             <path
               d="M78 43V22a8 8 0 0 1 8-8h28a8 8 0 0 1 8 8v21"
               fill="none"
-              stroke="#64748b"
+              stroke={`url(#${id}-metal)`}
               strokeWidth="5"
             />
             <path
@@ -80,6 +99,14 @@ export function LuggageVisualizer({
               strokeWidth="7"
               strokeLinecap="round"
             />
+            <rect x="76" y="13" width="48" height="10" rx="5" fill="#0f172a" />
+            <path
+              d="M86 17h28"
+              stroke="#94a3b8"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <path d="M78 30v12m44-12v12" stroke="#cbd5e1" strokeWidth="2" />
             <rect
               x="35"
               y="45"
@@ -107,17 +134,53 @@ export function LuggageVisualizer({
                 strokeWidth="3"
                 strokeLinecap="round"
               />
+              <rect
+                x="39"
+                y="49"
+                width="122"
+                height="160"
+                fill={`url(#${id}-texture)`}
+              />
               <path d="M41 51h116L41 185Z" fill="#fff" opacity=".16" />
             </g>
-            <rect x="57" y="212" width="14" height="13" rx="5" fill="#334155" />
+            <g fill={`url(#${id}-metal)`} stroke="#64748b" strokeWidth=".6">
+              <path d="M36 72V69a24 24 0 0 1 24-24h7v8h-7a16 16 0 0 0-16 16v3Z" />
+              <path d="M133 45h7a24 24 0 0 1 24 24v3h-8v-3a16 16 0 0 0-16-16h-7Z" />
+              <path d="M36 186v3a24 24 0 0 0 24 24h7v-8h-7a16 16 0 0 1-16-16v-3Z" />
+              <path d="M133 213h7a24 24 0 0 0 24-24v-3h-8v3a16 16 0 0 1-16 16h-7Z" />
+            </g>
+            {[63, 137].map((x) => (
+              <g key={x}>
+                <rect
+                  x={x - 4}
+                  y="210"
+                  width="8"
+                  height="8"
+                  rx="2"
+                  fill={`url(#${id}-metal)`}
+                />
+                <rect
+                  x={x - 10}
+                  y="216"
+                  width="20"
+                  height="12"
+                  rx="5"
+                  fill="#0f172a"
+                />
+                <circle cx={x} cy="222" r="5" fill={`url(#${id}-metal)`} />
+                <circle cx={x} cy="222" r="2" fill="#334155" />
+                <path d={`M${x - 7} 218v8m14-8v8`} stroke="#475569" />
+              </g>
+            ))}
             <rect
-              x="129"
-              y="212"
-              width="14"
-              height="13"
-              rx="5"
-              fill="#334155"
+              x="86"
+              y="79"
+              width="28"
+              height="12"
+              rx="3"
+              fill={`url(#${id}-metal)`}
             />
+            <path d="M94 85h12" stroke="#475569" strokeWidth="2" />
             <rect x="150" y="82" width="8" height="24" rx="4" fill="#0f172a" />
           </svg>
           <span className="luggage-capacity">
@@ -139,6 +202,32 @@ export function LuggageVisualizer({
             <strong>{parcels} colis</strong> compatibles disponibles
           </p>
         </div>
+      </div>
+      <div
+        className="luggage-compartments"
+        role="group"
+        aria-label="Format de bagage"
+      >
+        <button
+          type="button"
+          aria-pressed={kg <= 10}
+          onClick={() => setKg((current) => Math.min(current, 10))}
+        >
+          <Luggage size={17} aria-hidden="true" />
+          <span>
+            Format Cabine<small>1 à 10 kg</small>
+          </span>
+        </button>
+        <button
+          type="button"
+          aria-pressed={kg > 10}
+          onClick={() => setKg((current) => Math.max(current, 11))}
+        >
+          <Luggage size={21} aria-hidden="true" />
+          <span>
+            Format Soute<small>11 à 30 kg</small>
+          </span>
+        </button>
       </div>
       <div className="luggage-slider-control">
         <label htmlFor={`${id}-capacity`}>
@@ -183,7 +272,8 @@ export function LuggageVisualizer({
         <ShieldCheck size={16} /> Suivi des remises · Validation par QR
       </p>
       <small className="luggage-disclaimer">
-        Hypothèse : 7,50 €/kg, billet à 60 €. Estimation hors frais, sous réserve de réservations confirmées.
+        Hypothèse : 7,50 €/kg, billet à 60 €. Estimation hors frais, sous
+        réserve de réservations confirmées.
         {parcelWeights
           ? " Compatibilité selon le poids renseigné, par colis."
           : " Colis estimés à 3 kg chacun."}

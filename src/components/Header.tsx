@@ -4,6 +4,9 @@ import { NotificationItem, MainPillar } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types/auth';
 
+import { BrandMark } from "./BrandMark";
+import { CurrencyConverterModal, CurrencyRatePill } from "./CurrencyConverter/CurrencyConverterModal";
+
 interface HeaderProps {
   activePillar: MainPillar;
   onSelectPillar: (pillar: MainPillar) => void;
@@ -37,6 +40,7 @@ const iconButton = `inline-flex h-10 w-10 shrink-0 items-center justify-center r
 
 export const Header: React.FC<HeaderProps> = ({ activePillar, onSelectPillar, isPhoneFrame, onTogglePhoneFrame, notifications, onOpenPublishModal, onOpenHowItWorks, searchQuery, onSearchChange, pillarCounts }) => {
   const { user, isAuthenticated, logout, switchRole, openAuthModal, setActiveDashboard } = useAuth();
+  const [currencyOpen, setCurrencyOpen] = useState(false);
   const [panel, setPanel] = useState<'notifications' | 'profile' | 'mobile' | null>(null);
   const headerRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -92,8 +96,7 @@ export const Header: React.FC<HeaderProps> = ({ activePillar, onSelectPillar, is
 
       <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-2 px-4 py-4 sm:px-6">
         <a href="#hero" aria-label="BagVoyage / Shop&Go — Accueil" className={`flex min-w-0 items-center gap-2.5 rounded-xl ${focus}`}>
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] border border-white/20 bg-gradient-to-br from-slate-800 to-slate-950 text-white shadow-md"><Plane className="h-5 w-5" aria-hidden="true" /></span>
-          <span className="min-w-0"><span className="block text-lg font-bold leading-tight tracking-[-0.05em] text-slate-900">BagVoyage<span className={compact ? 'hidden' : 'hidden lg:inline'}><span className="mx-2 font-light text-slate-300">/</span><span className="font-medium">Shop<span className="text-blue-600">&</span>Go</span></span></span><span className={`mt-0.5 block text-[9px] font-medium uppercase tracking-[0.16em] text-slate-500 ${compact ? '' : 'lg:hidden'}`}>Shop&Go</span><span className={compact ? 'hidden' : 'mt-1 hidden text-[10px] text-slate-500 lg:block'}>Vos envies voyagent avec nous.</span></span>
+          <BrandMark />
         </a>
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
           {publishButton()}
@@ -121,6 +124,8 @@ export const Header: React.FC<HeaderProps> = ({ activePillar, onSelectPillar, is
         </section>}
       </div>
 
+      <div className="legacy-currency-bar"><CurrencyRatePill onClick={() => setCurrencyOpen(true)} /></div>
+      {currencyOpen && <CurrencyConverterModal onClose={() => setCurrencyOpen(false)} />}
       <div className="border-t border-slate-200/60">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-3 py-2 sm:px-6">
           <nav aria-label="Choisir votre espace" className={`grid min-w-0 grid-cols-3 gap-1 rounded-2xl border border-slate-200/70 bg-slate-100/70 p-1 ${compact ? 'w-full' : 'w-full lg:w-auto'}`}>

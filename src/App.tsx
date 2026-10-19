@@ -45,6 +45,11 @@ import {
   ConversationData,
   createMessage,
 } from "./components/marketplace/Conversation";
+import { BrandMark } from "./components/BrandMark";
+import {
+  CurrencyConverterModal,
+  CurrencyRatePill,
+} from "./components/CurrencyConverter/CurrencyConverterModal";
 import { Dialog } from "./components/marketplace/Dialog";
 import { AuthModal } from "./components/Auth/AuthModal";
 import {
@@ -143,6 +148,7 @@ function Marketplace() {
     "ep-notifications-read-v1",
     [],
   );
+  const [currencyOpen, setCurrencyOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const transactions = [...ledger].sort((a, b) => b.at.localeCompare(a.at));
   const storageReady =
@@ -483,12 +489,7 @@ function Marketplace() {
               </button>
             )}
             <button className="brand" onClick={() => navigate("explore")}>
-              {selectedRequest
-                ? "Demande d’achat"
-                : selectedTrip
-                  ? "Offre de transport"
-                  : "Entre particuliers"}
-              <span className="brand-dot">.</span>
+              <BrandMark />
             </button>
           </div>
           <nav className="desktop-nav" aria-label="Navigation principale">
@@ -570,6 +571,7 @@ function Marketplace() {
           className="header-destinations"
           aria-label="Découvrir et administrer"
         >
+          <CurrencyRatePill onClick={() => setCurrencyOpen(true)} />
           <button onClick={() => navigate("landing")}>
             Découvrir BagVoyage
             <ArrowRight size={13} />
@@ -787,6 +789,9 @@ function Marketplace() {
           </button>
         ))}
       </nav>
+      {currencyOpen && (
+        <CurrencyConverterModal onClose={() => setCurrencyOpen(false)} />
+      )}
       {notificationsOpen && (
         <NotificationsDrawer
           readIds={readNotifications}

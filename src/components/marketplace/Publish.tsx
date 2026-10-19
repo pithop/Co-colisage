@@ -25,6 +25,32 @@ import { Dialog } from "./Dialog";
 import { PhotoGallery } from "./PhotoGallery";
 import { ParcelComposer } from "./ParcelComposer";
 import { localActorId } from "../../services/uploads";
+const shoppingSuggestions = [
+  {
+    name: "Dior Sauvage 100ml",
+    price: 125,
+    specifications:
+      "Eau de parfum, flacon 100 ml, neuf et scellé, avec ticket de caisse.",
+  },
+  {
+    name: "AirPods Pro 2 USB-C",
+    price: 279,
+    specifications:
+      "2e génération, boîtier USB-C, neufs et scellés, avec facture.",
+  },
+  {
+    name: "Caudalie Sérum Éclat",
+    price: 38,
+    specifications:
+      "Sérum éclat Vinoperfect 30 ml, neuf et scellé, avec ticket de caisse.",
+  },
+  {
+    name: "Chocolats Valrhona CDG",
+    price: 32,
+    specifications:
+      "Coffret de chocolats Valrhona à Paris CDG, emballage intact, date de conservation à vérifier.",
+  },
+];
 const transports = [
   { value: "avion", label: "Avion", detail: "Cabine & soute", Icon: Plane },
   {
@@ -133,7 +159,7 @@ export function Publish({
   const currency = (amount: number) =>
     new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2 }).format(amount);
   const totalPurchase =
-    (Number(draft.budget) || 0) +
+    items[0].price +
     items
       .slice(1)
       .reduce((total, item) => total + Math.round(item.price * 100) / 100, 0);
@@ -242,8 +268,7 @@ export function Publish({
           ) : (
             <>
               Votre prochain départ
-              <br />
-              a de la valeur.
+              <br />a de la valeur.
             </>
           )}
         </h3>
@@ -306,9 +331,31 @@ export function Publish({
         >
           {kind === "requests" ? (
             <>
+              <fieldset className="shopping-suggestions">
+                <legend>Suggestions directes France ⇄ Algérie</legend>
+                <div>
+                  {shoppingSuggestions.map((suggestion) => (
+                    <button
+                      type="button"
+                      key={suggestion.name}
+                      onClick={() => changeItem(items[0].id, suggestion)}
+                    >
+                      <Package size={15} aria-hidden="true" />
+                      {suggestion.name} ({suggestion.price} EUR)
+                    </button>
+                  ))}
+                </div>
+                <small>
+                  Une idée pour commencer. Tous les champs restent modifiables.
+                </small>
+              </fieldset>
               <label>
                 Article recherché
                 <input
+                  value={items[0].name}
+                  onChange={(event) =>
+                    changeItem(items[0].id, { name: event.target.value })
+                  }
                   name="title"
                   required
                   maxLength={100}
@@ -318,6 +365,12 @@ export function Publish({
               <label>
                 Précisions
                 <input
+                  value={items[0].specifications}
+                  onChange={(event) =>
+                    changeItem(items[0].id, {
+                      specifications: event.target.value,
+                    })
+                  }
                   name="specifications"
                   required
                   maxLength={200}
@@ -678,6 +731,12 @@ export function Publish({
                 <label>
                   Budget article (€)
                   <input
+                    value={items[0].price || ""}
+                    onChange={(event) =>
+                      changeItem(items[0].id, {
+                        price: Number(event.target.value),
+                      })
+                    }
                     name="budget"
                     type="number"
                     min="1"
@@ -930,12 +989,12 @@ export function Publish({
                 </div>
               </div>
               {kind === "requests" && (
-                <h4>{draft.title || "L’article que vous recherchez"}</h4>
+                <h4>{items[0].name || "L’article que vous recherchez"}</h4>
               )}
               <p className="preview-description">
                 {kind === "trips"
                   ? draft.description || "Chaque départ rapproche quelqu’un."
-                  : draft.specifications ||
+                  : items[0].specifications ||
                     "Ajoutez les détails qui font la différence."}
               </p>
               <div className="preview-footer">
