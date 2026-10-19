@@ -97,6 +97,20 @@ export function OrderTracking({
   return (
     <Dialog title="Suivi de la commande" onClose={onClose}>
       <p className="delivery-title">{c.subject}</p>
+      {c.resolution && (
+        <section className="admin-notice">
+          <h3>
+            {c.resolution.outcome === "refund"
+              ? "Expéditeur remboursé"
+              : "Fonds débloqués au voyageur"}
+          </h3>
+          <p>{c.resolution.reason}</p>
+          <time dateTime={c.resolution.at}>
+            {formatHandoverTime(c.resolution.at)}
+          </time>
+          <p>Décision du support dans le registre local.</p>
+        </section>
+      )}
       <ol className="order-timeline">
         {steps.map((label, i) => {
           const done =
@@ -106,11 +120,12 @@ export function OrderTracking({
                 ? stageIndex >= 2
                 : stageIndex >= 3;
           const active =
-            i === 0
+            !c.resolution &&
+            (i === 0
               ? stageIndex === 0
               : i === 1
                 ? stageIndex === 1
-                : i === 2 && stageIndex === 2;
+                : i === 2 && stageIndex === 2);
           const record = c.handovers?.find(
             (r) => r.stage === (i === 1 ? "pickup" : "delivery"),
           );
@@ -125,7 +140,15 @@ export function OrderTracking({
               </span>
               <div>
                 <h3>{label}</h3>
-                <p>{done ? "Confirmé" : active ? "En cours" : "À venir"}</p>
+                <p>
+                  {done
+                    ? "Confirmé"
+                    : c.resolution
+                      ? "Clôturé par le support"
+                      : active
+                        ? "En cours"
+                        : "À venir"}
+                </p>
                 {i === 0 && c.securedAt && (
                   <time dateTime={c.securedAt}>
                     {formatHandoverTime(c.securedAt)}
@@ -191,9 +214,11 @@ export function OrderTracking({
       )}
       <p className="info-box">
         <ShieldCheck size={18} />
-        {c.stage === "delivered"
-          ? "Seconde remise enregistrée. Le statut de la caution a été mis à jour."
-          : "La livraison finale permet la mise à jour du statut de la caution."}
+        {c.resolution
+          ? "Le séquestre est clôturé par une décision du support."
+          : c.stage === "delivered"
+            ? "Seconde remise enregistrée. Le statut de la caution a été mis à jour."
+            : "La livraison finale permet la mise à jour du statut de la caution."}
       </p>
       <p className="demo-note">
         Suivi des étapes enregistrées sur cet appareil. Aucun suivi GPS continu.

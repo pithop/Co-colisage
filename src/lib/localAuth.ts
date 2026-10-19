@@ -1,3 +1,5 @@
+import { getRecord, saveRecord } from '../services/productionDb';
+import type { Attachment } from '../services/uploads';
 import { User, UserRole } from "../types/auth";
 
 export interface Registration {
@@ -10,6 +12,7 @@ export interface Registration {
   email: string;
   password: string;
   role: UserRole;
+  identityDocuments?: Attachment[];
 }
 interface LocalAccount {
   user: User;
@@ -94,7 +97,9 @@ export async function registerLocalAccount(input: Registration): Promise<User> {
     completedDeliveries: 0,
     activeTripsCount: 0,
   };
-  // Only profile data and a salted password hash are stored. Identity files stay in memory.
+  // Files stay in IndexedDB; the password hash never leaves the local account store.
+  await saveRecord('users', user);
+  await saveRecord('kyc_records', { id: user.id, userId: user.id, status: 'pending', documents: input.identityDocuments, updatedAt: new Date().toISOString() });
   localStorage.setItem(
     accountKey,
     JSON.stringify([...saved, { user, salt, passwordHash }]),
@@ -113,5 +118,5 @@ export async function authenticateLocalAccount(
     (await hashPassword(password, account.salt)) !== account.passwordHash
   )
     throw new Error("Adresse e-mail ou mot de passe incorrect.");
-  return account.user;
+  return await getRecord('users', account.user.id) || account.user;
 }

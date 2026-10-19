@@ -1,6 +1,26 @@
 import type { FreightItem } from "../types";
 
+export interface ShoppingItem {
+  id: string;
+  name: string;
+  url: string;
+  specifications: string;
+  price: number;
+  photo?: import('../services/uploads').Attachment;
+}
 export interface PurchaseRequest {
+  ownerId?: string;
+  kind?: 'shopping' | 'parcel';
+  items?: ShoppingItem[];
+  photos?: import('../services/uploads').Attachment[];
+  flexibility?: 'urgent' | 'week' | 'deadline';
+  dimensions?: { length: number; width: number; height: number };
+  declaredValue?: number;
+  declaredCurrency?: 'EUR' | 'DZD';
+  customsDirection?: 'FR-DZ' | 'DZ-FR';
+  pickupLocation?: string;
+  recipientName?: string;
+  recipientEmail?: string;
   id: string;
   title: string;
   origin: string;
@@ -8,6 +28,8 @@ export interface PurchaseRequest {
   date: string;
   budget: number;
   reward: number;
+  serviceGross?: number;
+  platformFee?: number;
   image: string;
   buyer: string;
   buyerAvatar?: string;
@@ -24,6 +46,11 @@ export const acceptedCategories = [
 ] as const;
 export type AcceptedCategory = (typeof acceptedCategories)[number];
 export interface Trip extends FreightItem {
+  ownerId?: string;
+  professional?: { companyName: string; registration: string; volume: number };
+  status?: 'scheduled' | 'in_transit' | 'completed' | 'cancelled';
+  delayMinutes?: number;
+  transportedKg?: number;
   capacity?: string;
   dimensions?: string;
   startingPrice?: number;

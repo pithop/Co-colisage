@@ -32,10 +32,16 @@ export function RequestDetails({
     <article className="request-detail">
       <div className="detail-photo">
         <img src={r.image} alt={r.title} />
-        <span>Photo d’illustration</span>
+        <span>
+          {r.photos?.length || r.items?.[0]?.photo
+            ? "Photo de l’annonce"
+            : "Photo d’illustration"}
+        </span>
       </div>
       <div className="detail-content">
-        <span className="purchase-badge">À acheter et livrer</span>
+        <span className="purchase-badge">
+          {r.kind === "parcel" ? "Colis à transporter" : "À acheter et livrer"}
+        </span>
         <h1>{r.title}</h1>
         <button className="buyer-row" onClick={() => onChat(false)}>
           <Avatar name={r.buyer} src={r.buyerAvatar} />
@@ -66,8 +72,12 @@ export function RequestDetails({
           </div>
           <div>
             <Wallet />
-            <dt>Budget article</dt>
-            <dd>{euro(r.budget)} maximum</dd>
+            <dt>{r.kind === "parcel" ? "Poids du colis" : "Budget article"}</dt>
+            <dd>
+              {r.kind === "parcel"
+                ? `${r.weightKg} kg`
+                : `${euro(r.budget)} maximum`}
+            </dd>
           </div>
           <div>
             <Euro />
@@ -75,12 +85,63 @@ export function RequestDetails({
             <dd>{euro(r.reward)}</dd>
           </div>
         </dl>
+        {r.kind === "parcel" && (
+          <section className="request-extra">
+            <h2>Détails de l’envoi</h2>
+            <p>Prise en charge : {r.pickupLocation}</p>
+            <p>
+              {r.weightKg} kg / {r.dimensions?.length} × {r.dimensions?.width} ×{" "}
+              {r.dimensions?.height} cm
+            </p>
+            <p>
+              Flexibilité :{" "}
+              {r.flexibility === "urgent"
+                ? "Urgent (24h-48h)"
+                : r.flexibility === "week"
+                  ? "Cette semaine"
+                  : "Date limite précise"}
+            </p>
+            <p>
+              Valeur déclarée : {r.declaredValue?.toLocaleString("fr-FR")}{" "}
+              {r.declaredCurrency}
+            </p>
+            <p>Destinataire : {r.recipientName}</p>
+            <div className="request-photos">
+              {r.photos?.map((photo) => (
+                <img key={photo.id} src={photo.data} alt={photo.name} />
+              ))}
+            </div>
+          </section>
+        )}
+        {!!r.items?.length && (
+          <section className="request-extra">
+            <h2>
+              Liste d’achats / {r.items.length} article
+              {r.items.length > 1 ? "s" : ""}
+            </h2>
+            {r.items.map((item) => (
+              <article key={item.id}>
+                <h3>
+                  {item.name} / {euro(item.price)}
+                </h3>
+                <p>{item.specifications}</p>
+                {item.photo && <img src={item.photo.data} alt={item.name} />}
+                {/^https?:\/\//.test(item.url) && (
+                  <a href={item.url} target="_blank" rel="noreferrer">
+                    Voir l’article en boutique
+                  </a>
+                )}
+              </article>
+            ))}
+          </section>
+        )}
         <p className="info-box">
           <ShieldCheck size={20} />
           <span>
             <strong>Un échange en toute confiance</strong>
             <br />
-            Confirmez la disponibilité avec {r.buyer} avant l’achat.
+            Confirmez les conditions avec {r.buyer} avant{" "}
+            {r.kind === "parcel" ? "la prise en charge" : "l’achat"}.
           </span>
         </p>
       </div>
@@ -91,7 +152,9 @@ export function RequestDetails({
         </div>
         <div className="detail-action-buttons">
           <button className="primary-button" onClick={() => onChat(true)}>
-            Proposer d’acheter et livrer
+            {r.kind === "parcel"
+              ? "Proposer de transporter"
+              : "Proposer d’acheter et livrer"}
             <ArrowRight size={18} />
           </button>
           <button className="outline-button" onClick={() => onChat(false)}>

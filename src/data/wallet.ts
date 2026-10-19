@@ -1,6 +1,10 @@
 import type { ConversationData } from "../components/marketplace/Conversation";
 
-export type TransactionStatus = "Séquestré" | "Débloqué" | "Virement";
+export type TransactionStatus =
+  | "Séquestré"
+  | "Débloqué"
+  | "Virement"
+  | "Remboursé";
 export interface WalletTransaction {
   id: string;
   title: string;
@@ -61,16 +65,23 @@ export function walletTransactions(
     .map((c) => ({
       id: `deposit-${c.id}`,
       title: `Caution · ${c.subject}`,
-      detail:
-        c.stage === "delivered"
+      detail: c.resolution
+        ? `Décision du support : ${c.resolution.reason}`
+        : c.stage === "delivered"
           ? "Caution restituée après validation de la livraison"
           : "Caution · en attente de remise validée",
       at:
+        c.resolution?.at ||
         c.handovers?.find((h) => h.stage === "delivery")?.at ||
         c.securedAt ||
         "2026-10-19T08:30:00Z",
       cents: Math.round(c.amount * 100),
-      status: c.stage === "delivered" ? "Débloqué" : "Séquestré",
+      status:
+        c.resolution?.outcome === "refund"
+          ? "Remboursé"
+          : c.resolution?.outcome === "release" || c.stage === "delivered"
+            ? "Débloqué"
+            : "Séquestré",
     }));
   return [...transfers, ...deposits, ...history].sort((a, b) =>
     b.at.localeCompare(a.at),
@@ -81,7 +92,7 @@ export function walletBalances(transactions: WalletTransaction[]) {
   return transactions.reduce(
     (balance, t) => {
       if (t.status === "Séquestré") balance.escrow += t.cents;
-      else balance.available += t.cents;
+      else if (t.status !== "Remboursé") balance.available += t.cents;
       return balance;
     },
     { available: 0, escrow: 0 },

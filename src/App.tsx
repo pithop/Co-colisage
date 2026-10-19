@@ -22,7 +22,7 @@ import {
 import { arbitrageOpportunities } from "./data/mockData";
 import { ArbitrageOpportunity, FreightItem } from "./types";
 import { useProductionStore } from "./hooks/useProductionStore";
-import { saveRecords, saveRecord } from "./services/productionDb";
+import { saveRecords, saveRecord, getRecord } from "./services/productionDb";
 import { useStoredState } from "./hooks/useStoredState";
 import { WalletView } from "./components/marketplace/WalletView";
 import {
@@ -54,6 +54,24 @@ import {
 } from "./data/conversations";
 import "./marketplace.css";
 import "./finance.css";
+import "./expansion.css";
+import { localActorId } from "./services/uploads";
+import { localAdminEnabled } from "./services/adminOperations";
+const AwwwardsLanding = lazy(() =>
+  import("./components/LandingPage/AwwwardsLanding").then((module) => ({
+    default: module.AwwwardsLanding,
+  })),
+);
+const AdminDashboard = lazy(() =>
+  import("./components/Admin/AdminDashboard").then((module) => ({
+    default: module.AdminDashboard,
+  })),
+);
+const ProOnboardingModal = lazy(() =>
+  import("./components/Modals/ProOnboardingModal").then((module) => ({
+    default: module.ProOnboardingModal,
+  })),
+);
 const TicketScannerModal = lazy(() =>
   import("./components/Modals/TicketScannerModal").then((m) => ({
     default: m.TicketScannerModal,
@@ -67,8 +85,16 @@ const SmartFlightArbitrage = lazy(() =>
 
 function Marketplace() {
   const { user, logout } = useAuth();
+  const [anonymousId] = useState(localActorId);
+  const actorId = user?.id || anonymousId;
+  const [proOnboarding, setProOnboarding] = useState(false);
+  const [publishKind, setPublishKind] = useState<
+    "requests" | "trips" | "parcel" | undefined
+  >();
   const [route, setRoute] = useState(
-    () => window.location.hash.slice(1) || "explore",
+    () =>
+      window.location.hash.slice(1) ||
+      (/\/landing\/?$/.test(window.location.pathname) ? "landing" : "explore"),
   );
   const [mode, setMode] = useState<"requests" | "trips">("requests");
   const [requests, setRequests, requestsReady, requestsError, retryRequests] =
@@ -170,16 +196,16 @@ function Marketplace() {
   const [persistenceError, setPersistenceError] = useState("");
   useEffect(() => {
     if (!user) return;
-    void saveRecord("users", user)
-      .then(() =>
-        saveRecord("kyc_records", {
+    void (async () => {
+      if (!(await getRecord("users", user.id))) await saveRecord("users", user);
+      if (!(await getRecord("kyc_records", user.id)))
+        await saveRecord("kyc_records", {
           id: user.id,
           userId: user.id,
           status: user.kycStatus,
           updatedAt: new Date().toISOString(),
-        }),
-      )
-      .catch(() => setPersistenceError("La sauvegarde du profil a échoué."));
+        });
+    })().catch(() => setPersistenceError("La sauvegarde du profil a échoué."));
   }, [user]);
   const balance = walletBalances(transactions);
   const unreadCount = platformNotifications.filter(
@@ -210,7 +236,7 @@ function Marketplace() {
           : c,
       ),
     );
-    if (qr) return;
+    if (qr || id.startsWith("support-")) return;
     setPendingReplies((current) => [...current, id]);
     const timer = setTimeout(() => {
       setConversations((current) =>
@@ -247,21 +273,38 @@ function Marketplace() {
   const selectedTrip = route.startsWith("trip/")
     ? trips.find((t) => t.id === route.slice(5))
     : undefined;
+  const landing = route === "landing";
+  const admin = route === "admin";
   const wallet = route === "wallet";
   const profile = route === "profile";
   const messages = route === "messages";
   const arbitrage = route === "arbitrage" || route.startsWith("arbitrage/");
   const arbitrageRoute = route.split("/")[1];
-  const exploring = route === "explore";
+  const exploring = route === "explore" || route.startsWith("publish/");
   const navigate = (next: string) => {
     window.location.hash = next;
     setRoute(next);
   };
   useEffect(() => {
-    const update = () => setRoute(window.location.hash.slice(1) || "explore");
+    const update = () =>
+      setRoute(
+        window.location.hash.slice(1) ||
+          (/\/landing\/?$/.test(window.location.pathname)
+            ? "landing"
+            : "explore"),
+      );
     window.addEventListener("hashchange", update);
     return () => window.removeEventListener("hashchange", update);
   }, []);
+  useEffect(() => {
+    if (route.startsWith("publish/")) {
+      const kind = route.split("/")[1];
+      if (kind === "parcel" || kind === "requests" || kind === "trips") {
+        setPublishKind(kind);
+        setPublish(true);
+      }
+    }
+  }, [route]);
   useEffect(() => {
     window.scrollTo(0, 0);
     document.getElementById("main-content")?.scrollTo(0, 0);
@@ -293,14 +336,23 @@ function Marketplace() {
     subject: string,
     amount: number,
     offer = false,
+    serviceAmount?: number,
+    parcel = false,
+    ownerId?: string,
   ) => {
+    const offerText = parcel
+      ? `Bonjour ${name}, je propose de transporter votre colis : ${subject}. Confirmons son contenu et les points de remise.`
+      : `Bonjour ${name}, je propose d’acheter et livrer votre article : ${subject}. Pouvons-nous confirmer sa disponibilité et les modalités ?`;
     setConversations((current) => {
       const existing = current.find((c) => c.id === id);
       if (existing) {
         if (
           !offer ||
           existing.messages.some(
-            (m) => m.mine && m.text.includes("je propose d’acheter et livrer"),
+            (m) =>
+              m.mine &&
+              (m.text.includes("je propose d’acheter et livrer") ||
+                m.text.includes("je propose de transporter")),
           )
         )
           return current;
@@ -308,12 +360,7 @@ function Marketplace() {
           c.id === id
             ? {
                 ...c,
-                messages: [
-                  ...c.messages,
-                  createMessage(
-                    `Bonjour ${name}, je propose d’acheter et livrer votre article : ${subject}. Pouvons-nous confirmer sa disponibilité et les modalités ?`,
-                  ),
-                ],
+                messages: [...c.messages, createMessage(offerText)],
               }
             : c,
         );
@@ -326,15 +373,15 @@ function Marketplace() {
           name,
           subject,
           amount,
+          serviceAmount,
+          participantIds: [
+            ...new Set([actorId, ...(ownerId ? [ownerId] : [])]),
+          ],
           stage: "discussion",
           pickupCode,
           deliveryCode,
           messages: offer
-            ? [
-                createMessage(
-                  `Bonjour ${name}, je propose d’acheter et livrer votre article : ${subject}. Pouvons-nous confirmer sa disponibilité et les modalités ?`,
-                ),
-              ]
+            ? [createMessage(offerText)]
             : [
                 createMessage(
                   `Bonjour ! Merci de votre intérêt pour « ${subject} ». Quels sont vos besoins et vos disponibilités ?`,
@@ -390,7 +437,9 @@ function Marketplace() {
     { id: "profile", label: "Profil", Icon: UserRound },
   ];
   const activate = (id: string) =>
-    id === "publish" ? setPublish(true) : navigate(id);
+    id === "publish"
+      ? (setPublishKind(undefined), setPublish(true))
+      : navigate(id);
   if (!storageReady)
     return (
       <main className="storage-loading">
@@ -517,12 +566,43 @@ function Marketplace() {
             )}
           </div>
         </div>
+        <nav
+          className="header-destinations"
+          aria-label="Découvrir et administrer"
+        >
+          <button onClick={() => navigate("landing")}>
+            Découvrir BagVoyage
+            <ArrowRight size={13} />
+          </button>
+          {localAdminEnabled && (
+            <button onClick={() => navigate("admin")}>
+              <ShieldCheck size={13} />
+              Super Admin
+            </button>
+          )}
+        </nav>
       </header>
       <main
         id="main-content"
         tabIndex={-1}
-        className={`main-container ${messages ? "messages-container" : ""}`}
+        className={`main-container ${messages ? "messages-container" : ""} ${landing || admin ? "destination-container" : ""}`}
       >
+        {landing && (
+          <Suspense fallback={<p role="status">Chargement de BagVoyage…</p>}>
+            <AwwwardsLanding
+              initialLanguage={
+                window.location.pathname.startsWith("/en/") ? "en" : "fr"
+              }
+            />
+          </Suspense>
+        )}
+        {admin && (
+          <Suspense
+            fallback={<p role="status">Chargement du centre de contrôle…</p>}
+          >
+            <AdminDashboard />
+          </Suspense>
+        )}
         {exploring && (
           <Explorer
             mode={mode}
@@ -543,8 +623,12 @@ function Marketplace() {
                 selectedRequest.id,
                 selectedRequest.buyer,
                 selectedRequest.title,
-                selectedRequest.budget + selectedRequest.reward,
+                selectedRequest.budget +
+                  (selectedRequest.serviceGross ?? selectedRequest.reward),
                 offer,
+                selectedRequest.serviceGross ?? selectedRequest.reward,
+                selectedRequest.kind === "parcel",
+                selectedRequest.ownerId,
               )
             }
           />
@@ -578,6 +662,14 @@ function Marketplace() {
         )}
         {profile && (
           <Profile
+            actorId={actorId}
+            userEmail={user?.email}
+            onPublishRole={(kind) => {
+              setPublishKind(kind);
+              setPublish(true);
+            }}
+            onPro={() => (user ? setProOnboarding(true) : setAuth("register"))}
+            onMessages={() => navigate("messages")}
             autoAccept={autoAccept}
             onAutoAcceptChange={setAutoAccept}
             onWallet={() => navigate("wallet")}
@@ -625,7 +717,9 @@ function Marketplace() {
               </h1>
               <p>Vos commissions peuvent financer votre prochain départ.</p>
             </div>
-            <Suspense fallback={<p role="status">Chargement du calculateur…</p>}>
+            <Suspense
+              fallback={<p role="status">Chargement du calculateur…</p>}
+            >
               <SmartFlightArbitrage
                 key={arbitrageRoute || "default"}
                 initialRouteId={arbitrageRoute}
@@ -641,7 +735,9 @@ function Marketplace() {
           !wallet &&
           !profile &&
           !messages &&
-          !arbitrage && (
+          !arbitrage &&
+          !landing &&
+          !admin && (
             <div className="empty-state">
               <h1>Cette annonce n’est pas disponible</h1>
               <p>
@@ -663,7 +759,13 @@ function Marketplace() {
               <ShieldCheck size={18} />
               Un besoin, un trajet, une rencontre.
             </span>
-            <button className="primary-button" onClick={() => setPublish(true)}>
+            <button
+              className="primary-button"
+              onClick={() => {
+                setPublishKind(undefined);
+                setPublish(true);
+              }}
+            >
               <CirclePlus size={19} />
               {mode === "requests"
                 ? "Publier une demande"
@@ -717,8 +819,30 @@ function Marketplace() {
           )}
         </div>
       )}
+      {proOnboarding && user && (
+        <Suspense
+          fallback={
+            <p className="toast" role="status">
+              Ouverture du dossier…
+            </p>
+          }
+        >
+          <ProOnboardingModal
+            user={user}
+            onClose={() => setProOnboarding(false)}
+            onSubmitted={() => {
+              setProOnboarding(false);
+              setNotice(
+                "Dossier professionnel enregistré, en attente d’examen.",
+              );
+            }}
+          />
+        </Suspense>
+      )}
       {publish && (
         <Publish
+          ownerId={actorId}
+          initialKind={publishKind}
           defaultAutoAccept={autoAccept}
           mode={mode}
           name={user?.name || "Camille"}

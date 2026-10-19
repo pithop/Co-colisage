@@ -24,12 +24,14 @@ export interface ChatMessage {
   mine: boolean;
   time: string;
   qr?: string;
+  official?: boolean;
 }
 export interface ConversationData {
   id: string;
   name: string;
   subject: string;
   amount: number;
+  serviceAmount?: number;
   messages: ChatMessage[];
   stage: "discussion" | "secured" | "collected" | "delivered";
   pickupCode: string;
@@ -38,6 +40,9 @@ export interface ConversationData {
   handovers?: HandoverRecord[];
   delays?: FlightDelay[];
   securedAt?: string;
+  participantIds?: string[];
+  resolution?: { outcome: "release" | "refund"; reason: string; at: string };
+  dispute?: { reason: string; at: string };
 }
 export const createMessage = (
   text: string,
@@ -96,7 +101,7 @@ export function Conversation({
       draft,
     );
   const secureAgreement = () => {
-    if (!c) return;
+    if (!c || c.resolution || c.id.startsWith("support-")) return;
     if (c.stage !== "discussion") {
       setTracking(true);
       return;
@@ -113,9 +118,7 @@ export function Conversation({
         ),
       ],
     });
-    onNotice(
-      "Accord enregistré. Vous pouvez maintenant organiser la remise.",
-    );
+    onNotice("Accord enregistré. Vous pouvez maintenant organiser la remise.");
     void confetti({
       particleCount: 90,
       spread: 65,
@@ -124,8 +127,11 @@ export function Conversation({
       disableForReducedMotion: true,
     });
   };
-  const stageText =
-    c?.stage === "discussion"
+  const stageText = c?.resolution
+    ? c.resolution.outcome === "refund"
+      ? "Expéditeur remboursé"
+      : "Fonds débloqués au voyageur"
+    : c?.stage === "discussion"
       ? "En attente d’accord"
       : c?.stage === "secured"
         ? "Fonds sous séquestre"
@@ -188,7 +194,8 @@ export function Conversation({
               </strong>
               <small>Registre BagVoyage</small>
             </div>
-            {c.stage === "discussion" ? (
+            {c.resolution || c.id.startsWith("support-") ? null : c.stage ===
+              "discussion" ? (
               <button
                 className="agreement-button"
                 onClick={() => {
@@ -230,7 +237,14 @@ export function Conversation({
               <div key={m.id} className={`message ${m.mine ? "mine" : ""}`}>
                 <div>
                   {m.qr && <QrImage value={m.qr} />}
-                  <p>{m.text}</p>
+                  <p>
+                    {m.official && (
+                      <strong className="official-badge">
+                        Support Officiel BagVoyage
+                      </strong>
+                    )}
+                    {m.text}
+                  </p>
                 </div>
                 <small>
                   {m.time}
@@ -250,13 +264,21 @@ export function Conversation({
                 Voir le suivi de la commande
               </button>
               <button
-                disabled={c.stage === "delivered"}
+                disabled={
+                  !!c.resolution ||
+                  c.id.startsWith("support-") ||
+                  c.stage === "delivered"
+                }
                 onClick={() => setDelay(true)}
               >
                 Signaler un retard de vol
               </button>
               <button
-                disabled={c.stage === "discussion" || c.stage === "delivered"}
+                disabled={
+                  !!c.resolution ||
+                  c.stage === "discussion" ||
+                  c.stage === "delivered"
+                }
                 onClick={() => {
                   const pickup = c.stage === "secured";
                   const code = pickup ? c.pickupCode : c.deliveryCode;
@@ -344,7 +366,7 @@ export function Conversation({
           onClose={() => setDelay(false)}
         />
       )}
-      {delivery && c && (
+      {delivery && c && !c.resolution && (
         <DeliveryModal
           conversation={c}
           onUpdate={onUpdate}

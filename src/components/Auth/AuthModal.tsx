@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { demoUsers, UserRole } from "../../types/auth";
+import { readAttachment } from "../../services/uploads";
 import { Registration } from "../../lib/localAuth";
 import { Dialog } from "../marketplace/Dialog";
 
@@ -83,13 +84,13 @@ function IdentityUpload({
             ];
             if (
               !allowed.includes(next.type) ||
-              next.size > 10 * 1024 * 1024 ||
+              next.size > 4 * 1024 * 1024 ||
               next.size === 0
             ) {
               setError(
                 "Choisissez un fichier JPG, PNG ou WebP" +
                   (!selfie ? " ou PDF" : "") +
-                  " de moins de 10 Mo.",
+                  " de 4 Mo maximum.",
               );
               onChange(null);
               event.target.value = "";
@@ -221,7 +222,17 @@ export function AuthModal({
     setBusy(true);
     try {
       if (tab === "login") await signIn(profile.email, profile.password);
-      else await register(profile);
+      else
+        await register({
+          ...profile,
+          identityDocuments:
+            !identityDeferred && identity && selfie
+              ? await Promise.all([
+                  readAttachment(identity, true),
+                  readAttachment(selfie),
+                ])
+              : undefined,
+        });
       if (mounted.current)
         onSuccess(
           tab === "login"

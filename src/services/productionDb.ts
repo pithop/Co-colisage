@@ -21,13 +21,41 @@ export interface Order {
   status: Conversation["stage"];
   updatedAt: string;
 }
+export interface ProApplication {
+  id: string;
+  userId: string;
+  companyName: string;
+  country: "FR" | "DZ";
+  registration: string;
+  documents: Record<
+    "registry" | "license" | "insurance" | "identity",
+    import("./uploads").Attachment
+  >;
+  fleet: { id: string; type: string; payloadKg: number; volume: number }[];
+  status: "pending" | "approved" | "rejected";
+  submittedAt: string;
+  reviewedAt?: string;
+  reason?: string;
+}
+export interface AdminMessage {
+  id: string;
+  conversationId: string;
+  userId?: string;
+  text: string;
+  createdAt: string;
+  author: "Support Officiel BagVoyage";
+}
 export interface KycRecord {
   id: string;
   userId: string;
   status: User["kycStatus"];
+  documents?: import("./uploads").Attachment[];
+  reason?: string;
   updatedAt: string;
 }
 export interface DatabaseSchema {
+  pro_applications: ProApplication;
+  admin_messages: AdminMessage;
   users: User;
   trips: Trip;
   purchase_requests: PurchaseRequest;
@@ -38,6 +66,8 @@ export interface DatabaseSchema {
 }
 export type StoreName = keyof DatabaseSchema;
 const stores: StoreName[] = [
+  "pro_applications",
+  "admin_messages",
   "users",
   "trips",
   "purchase_requests",
@@ -55,7 +85,7 @@ const listeners = new Set<(store: StoreName) => void>();
 channel?.addEventListener("message", ({ data }) => {
   if (stores.includes(data)) listeners.forEach((listener) => listener(data));
 });
-function notifyStore(store: StoreName) {
+export function notifyStore(store: StoreName) {
   channel?.postMessage(store);
   listeners.forEach((listener) => listener(store));
 }
@@ -119,12 +149,13 @@ export function initDB(): Promise<IDBDatabase> {
       reject(new Error("Le stockage IndexedDB est indisponible."));
       return;
     }
-    const request = indexedDB.open("BagVoyageDB_v1", 1);
-    request.onupgradeneeded = () => {
+    const request = indexedDB.open("BagVoyageDB_v1", 2);
+    request.onupgradeneeded = (event) => {
       const db = request.result;
       for (const name of stores)
         if (!db.objectStoreNames.contains(name))
           db.createObjectStore(name, { keyPath: "id" });
+      if (event.oldVersion > 0) return; // Upgrades must never overwrite existing records.
       const tx = request.transaction!;
       const seedConversations = legacy(
         "ep-conversations-v1",
@@ -231,13 +262,15 @@ export async function saveRecords<K extends StoreName>(
           merged = {
             ...before,
             ...after,
-            stage:
-              stages[
-                Math.max(
-                  stages.indexOf(before.stage),
-                  stages.indexOf(after.stage),
-                )
-              ],
+            resolution: before.resolution || after.resolution,
+            stage: before.resolution
+              ? before.stage
+              : stages[
+                  Math.max(
+                    stages.indexOf(before.stage),
+                    stages.indexOf(after.stage),
+                  )
+                ],
             messages: [
               ...new Map(
                 [...before.messages, ...after.messages].map((message) => [

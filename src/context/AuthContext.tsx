@@ -1,3 +1,4 @@
+import { getRecord, subscribeToDatabase } from '../services/productionDb';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole, demoUsers } from '../types/auth';
 import { authenticateLocalAccount, registerLocalAccount, Registration } from '../lib/localAuth';
@@ -29,6 +30,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return parsed && typeof parsed.name === 'string' ? parsed : null;
     } catch { return null; }
   });
+
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+    const id = user.id;
+    const refresh = async () => {
+      const saved = await getRecord('users', id);
+      if (active && saved) setUser(current => current?.id === id && JSON.stringify(current) !== JSON.stringify(saved) ? saved : current);
+    };
+    void refresh().catch(() => undefined);
+    const unsubscribe = subscribeToDatabase(store => { if (store === 'users') void refresh().catch(() => undefined); });
+    return () => { active = false; unsubscribe(); };
+  }, [user?.id]);
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [activeDashboard, setActiveDashboard] = useState<'none' | 'voyageur' | 'transporteur' | 'expediteur'>('none');
@@ -69,7 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const switchRole = (newRole: UserRole) => {
-    setUser(demoUsers[newRole]);
+    setUser(current => current ? { ...current, role: newRole } : null);
   };
 
   return (

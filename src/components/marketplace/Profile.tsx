@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useDatabaseQuery } from "../../hooks/useDatabaseQuery";
 import {
   Check,
   Wallet,
@@ -12,8 +14,13 @@ import {
   MessageCircle,
   Zap,
 } from "lucide-react";
-export type Intention = "request" | "shop" | "carry";
+export type Intention = "request" | "shop" | "carry" | "send" | "receive";
 export function Profile({
+  actorId,
+  userEmail,
+  onPublishRole,
+  onPro,
+  onMessages,
   onWallet,
   walletBalance,
   selected,
@@ -28,6 +35,11 @@ export function Profile({
   autoAccept,
   onAutoAcceptChange,
 }: {
+  actorId: string;
+  userEmail?: string;
+  onPublishRole: (kind: "requests" | "trips" | "parcel") => void;
+  onPro: () => void;
+  onMessages: () => void;
   onWallet: () => void;
   walletBalance: string;
   selected: Intention[];
@@ -42,6 +54,48 @@ export function Profile({
   autoAccept: boolean;
   onAutoAcceptChange: (enabled: boolean) => void;
 }) {
+  const [activeRole, setActiveRole] = useState<
+    "carry" | "send" | "request" | "receive"
+  >("request");
+  const { rows: trips } = useDatabaseQuery("trips");
+  const { rows: requests } = useDatabaseQuery("purchase_requests");
+  const { rows: applications } = useDatabaseQuery("pro_applications");
+  const application =
+    applications.find(
+      (row) => row.userId === actorId && row.status !== "rejected",
+    ) || applications.find((row) => row.userId === actorId);
+  const activities =
+    activeRole === "carry"
+      ? trips
+          .filter((row) => row.ownerId === actorId)
+          .map((row) => ({
+            id: row.id,
+            title: `${row.origin} → ${row.destination}`,
+            detail: row.departureDate,
+            href: `/#trip/${row.id}`,
+          }))
+      : requests
+          .filter((row) =>
+            activeRole === "receive"
+              ? !!userEmail &&
+                row.recipientEmail?.toLowerCase() === userEmail.toLowerCase()
+              : row.ownerId === actorId &&
+                (activeRole === "send"
+                  ? row.kind === "parcel"
+                  : row.kind !== "parcel"),
+          )
+          .map((row) => ({
+            id: row.id,
+            title: row.title,
+            detail: row.date,
+            href: `/#request/${row.id}`,
+          }));
+  const roleTitles = {
+    carry: "Mes trajets",
+    send: "Mes envois",
+    request: "Mes achats Shop & Go",
+    receive: "Mes livraisons à recevoir",
+  };
   return (
     <section className="profile-page">
       <span className="eyebrow">VOTRE PROFIL, VOS ENVIES</span>
@@ -57,6 +111,108 @@ export function Profile({
         </span>
         <ChevronRight size={20} />
       </button>
+      <section className="role-workspace" aria-label="Mes quatre rôles">
+        <div className="role-tabs" aria-label="Choisir une activité">
+          {(
+            [
+              { id: "carry", label: "Transporteur", Icon: Truck },
+              { id: "send", label: "Envoyeur", Icon: Package },
+              { id: "request", label: "Acheteur", Icon: ShoppingBag },
+              { id: "receive", label: "Receveur", Icon: ShieldCheck },
+            ] as const
+          ).map(({ id, label, Icon }) => (
+            <button
+              key={id}
+              aria-pressed={activeRole === id}
+              onClick={() => setActiveRole(id)}
+            >
+              <Icon size={22} strokeWidth={1.5} />
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="role-content">
+          <h2>{roleTitles[activeRole]}</h2>
+          <p>
+            {activeRole === "receive"
+              ? "Retrouvez les colis adressés à votre compte. Validez la remise par QR code ou PIN dans la conversation."
+              : "Toutes vos activités restent accessibles avec le même compte."}
+          </p>
+          <label className="check-row">
+            <input
+              type="checkbox"
+              checked={selected.includes(activeRole)}
+              onChange={() =>
+                onSelect(
+                  selected.includes(activeRole)
+                    ? selected.filter((role) => role !== activeRole)
+                    : [...selected, activeRole],
+                )
+              }
+            />
+            Activer ce rôle dans mes préférences
+          </label>
+          {activities.length ? (
+            <ul>
+              {activities.map((activity) => (
+                <li key={activity.id}>
+                  <a href={activity.href}>
+                    <span>{activity.title}</span>
+                    <small>{activity.detail}</small>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Aucune activité pour ce rôle pour le moment.</p>
+          )}
+          <button
+            className="primary-button"
+            onClick={() =>
+              activeRole === "receive"
+                ? onMessages()
+                : onPublishRole(
+                    activeRole === "carry"
+                      ? "trips"
+                      : activeRole === "send"
+                        ? "parcel"
+                        : "requests",
+                  )
+            }
+          >
+            {activeRole === "receive"
+              ? "Valider une livraison"
+              : activeRole === "carry"
+                ? "Proposer un trajet"
+                : activeRole === "send"
+                  ? "Envoyer un colis"
+                  : "Créer une liste d’achats"}
+            <ChevronRight size={17} />
+          </button>
+        </div>
+      </section>
+      <div className="pro-entry">
+        <ShieldCheck size={24} />
+        <div>
+          <strong>
+            {application?.status === "approved"
+              ? "Transporteur Professionnel Vérifié"
+              : "Votre espace professionnel"}
+          </strong>
+          <p>
+            {application?.status === "pending"
+              ? "Dossier en cours d’examen."
+              : application?.status === "rejected"
+                ? `Dossier rejeté : ${application.reason}`
+                : application?.status === "approved"
+                  ? application.companyName
+                  : "Entreprise, documents et flotte en un seul dossier."}
+          </p>
+        </div>
+        {(!application || application.status === "rejected") && (
+          <button onClick={onPro}>Devenir transporteur pro</button>
+        )}
+      </div>
       <div className="intention-list">
         {[
           {

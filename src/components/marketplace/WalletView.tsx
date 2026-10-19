@@ -121,7 +121,7 @@ export function WalletView({
           role="group"
           aria-label="Filtrer les transactions"
         >
-          {(["Tout", "Séquestré", "Débloqué", "Virement"] as const).map(
+          {(["Tout", "Séquestré", "Débloqué", "Virement", "Remboursé"] as const).map(
             (status) => (
               <button
                 key={status}

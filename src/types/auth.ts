@@ -14,6 +14,8 @@ export interface User {
   kycStatus: 'verified' | 'pending' | 'unverified';
   phone?: string;
   siret?: string;
+  proVerified?: boolean;
+  roles?: ('carrier' | 'sender' | 'buyer' | 'receiver')[];
   companyName?: string;
   rating: number;
   reviewsCount: number;

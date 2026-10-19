@@ -243,9 +243,7 @@ export function Explorer({
               <dd>{new Set(trips.map((trip) => trip.transportType)).size}</dd>
             </div>
           </dl>
-          <p>
-            Estimez vos gains et convenez des modalités avant de réserver.
-          </p>
+          <p>Estimez vos gains et convenez des modalités avant de réserver.</p>
         </section>
       </div>
       <div className="explore-layout">
@@ -425,7 +423,9 @@ export function Explorer({
                       />
                       <div>
                         <span className="purchase-badge">
-                          À acheter et livrer
+                          {r.kind === "parcel"
+                            ? "Colis à transporter"
+                            : "À acheter et livrer"}
                         </span>
                         <h2>{r.title}</h2>
                         <p className="route">
@@ -450,7 +450,15 @@ export function Explorer({
                     <div className="request-bottom">
                       <div>
                         <span>
-                          Article : <strong>{euro(r.budget)} max</strong>
+                          {r.kind === "parcel" ? (
+                            <>
+                              Colis : <strong>{r.weightKg} kg</strong>
+                            </>
+                          ) : (
+                            <>
+                              Article : <strong>{euro(r.budget)} max</strong>
+                            </>
+                          )}
                         </span>
                         <span className="service-reward">
                           Service : <strong>{euro(r.reward)}</strong>

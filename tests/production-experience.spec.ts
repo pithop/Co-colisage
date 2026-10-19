@@ -132,9 +132,11 @@ test("IndexedDB CRUD is atomic, idempotent and updates another open tab", async 
     };
   });
   expect(result.stores).toEqual([
+    "admin_messages",
     "conversations",
     "kyc_records",
     "orders",
+    "pro_applications",
     "purchase_requests",
     "trips",
     "users",
