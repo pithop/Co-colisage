@@ -108,13 +108,13 @@ export function Conversation({
       messages: [
         ...c.messages,
         createMessage(
-          "Accord simulé : les fonds sont placés sous séquestre de démonstration.",
+          "Accord enregistré. La remise peut maintenant être organisée.",
           false,
         ),
       ],
     });
     onNotice(
-      "Accord simulé : les fonds sont placés sous séquestre. Vous pouvez maintenant tester la remise.",
+      "Accord enregistré. Vous pouvez maintenant organiser la remise.",
     );
     void confetti({
       particleCount: 90,
@@ -186,7 +186,7 @@ export function Conversation({
               <strong>
                 {stageText} · {euro(c.amount)}
               </strong>
-              <small>Stripe · démonstration</small>
+              <small>Registre BagVoyage</small>
             </div>
             {c.stage === "discussion" ? (
               <button
@@ -195,7 +195,7 @@ export function Conversation({
                   secureAgreement();
                 }}
               >
-                Simuler l’accord
+                Enregistrer l’accord
               </button>
             ) : (
               <button
@@ -323,8 +323,7 @@ export function Conversation({
             </form>
             <p className="demo-note">
               <Info size={12} />
-              Messages enregistrés sur cet appareil · réponses automatiques
-              simulées.
+              Messages enregistrés sur cet appareil · réponses automatiques.
             </p>
           </footer>
         </div>

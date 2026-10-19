@@ -17,12 +17,12 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import {
   requests as initialRequests,
   trips as initialTrips,
-  PurchaseRequest,
-  Trip,
   euro,
 } from "./data/marketplace";
 import { arbitrageOpportunities } from "./data/mockData";
 import { ArbitrageOpportunity, FreightItem } from "./types";
+import { useProductionStore } from "./hooks/useProductionStore";
+import { saveRecords, saveRecord } from "./services/productionDb";
 import { useStoredState } from "./hooks/useStoredState";
 import { WalletView } from "./components/marketplace/WalletView";
 import {
@@ -71,11 +71,10 @@ function Marketplace() {
     () => window.location.hash.slice(1) || "explore",
   );
   const [mode, setMode] = useState<"requests" | "trips">("requests");
-  const [requests, setRequests] = useStoredState<PurchaseRequest[]>(
-    "ep-requests-v1",
-    initialRequests,
-  );
-  const [trips, setTrips] = useStoredState<Trip[]>("ep-trips-v1", initialTrips);
+  const [requests, setRequests, requestsReady, requestsError, retryRequests] =
+    useProductionStore("purchase_requests", "ep-requests-v1", initialRequests);
+  const [trips, setTrips, tripsReady, tripsError, retryTrips] =
+    useProductionStore("trips", "ep-trips-v1", initialTrips);
   const [autoAccept, setAutoAccept] = useStoredState(
     "ep-auto-accept-v1",
     false,
@@ -84,20 +83,104 @@ function Marketplace() {
     "ep-intentions-v1",
     ["request"],
   );
-  const [conversations, setConversations] = useStoredState<ConversationData[]>(
+  const [
+    conversations,
+    setConversations,
+    conversationsReady,
+    conversationsError,
+    retryConversations,
+  ] = useProductionStore(
+    "conversations",
     "ep-conversations-v1",
     initialConversations,
   );
-  const [transfers, setTransfers] = useStoredState<WalletTransaction[]>(
-    "ep-wallet-transfers-v1",
-    [],
+  const [ledger, setLedger, walletReady, walletError, retryWallet] =
+    useProductionStore("wallet_transactions", "ep-wallet-ledger-v1", []);
+  const transfers = ledger.filter(
+    (tx) => tx.status === "Virement" && !tx.id.startsWith("EP-"),
   );
+  const setTransfers = (
+    update: (current: WalletTransaction[]) => WalletTransaction[],
+  ) => {
+    setLedger((current) => [
+      ...current.filter(
+        (tx) => tx.status !== "Virement" || tx.id.startsWith("EP-"),
+      ),
+      ...update(
+        current.filter(
+          (tx) => tx.status === "Virement" && !tx.id.startsWith("EP-"),
+        ),
+      ),
+    ]);
+  };
   const [readNotifications, setReadNotifications] = useStoredState<string[]>(
     "ep-notifications-read-v1",
     [],
   );
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const transactions = walletTransactions(conversations, transfers);
+  const transactions = [...ledger].sort((a, b) => b.at.localeCompare(a.at));
+  const storageReady =
+    requestsReady && tripsReady && conversationsReady && walletReady;
+  const storageError =
+    requestsError || tripsError || conversationsError || walletError;
+  useEffect(() => {
+    if (!storageReady) return;
+    const derived = walletTransactions(conversations, []);
+    setLedger((current) => {
+      const changed = derived.some(
+        (tx) =>
+          !current.some(
+            (stored) =>
+              stored.id === tx.id &&
+              stored.status === tx.status &&
+              stored.cents === tx.cents &&
+              stored.at === tx.at,
+          ),
+      );
+      return changed
+        ? [
+            ...current.filter((tx) => !derived.some((row) => row.id === tx.id)),
+            ...derived,
+          ]
+        : current;
+    });
+    void saveRecords(
+      "orders",
+      conversations
+        .filter((c) => c.stage !== "discussion")
+        .map((c) => ({
+          id: c.id,
+          conversationId: c.id,
+          status: c.stage,
+          updatedAt:
+            c.handovers?.[c.handovers.length - 1]?.at ||
+            c.securedAt ||
+            new Date().toISOString(),
+        })),
+    ).catch(() => setPersistenceError("La sauvegarde des commandes a échoué."));
+  }, [conversations, storageReady, setLedger]);
+  useEffect(() => {
+    if (!walletReady) return;
+    try {
+      localStorage.setItem("ep-wallet-transfers-v1", JSON.stringify(transfers));
+    } catch {
+      /* Compatibility cache only. */
+    }
+  }, [ledger, walletReady]);
+  const [persistenceError, setPersistenceError] = useState("");
+  useEffect(() => {
+    if (!user) return;
+    void saveRecord("users", user)
+      .then(() =>
+        saveRecord("kyc_records", {
+          id: user.id,
+          userId: user.id,
+          status: user.kycStatus,
+          updatedAt: new Date().toISOString(),
+        }),
+      )
+      .catch(() => setPersistenceError("La sauvegarde du profil a échoué."));
+  }, [user]);
   const balance = walletBalances(transactions);
   const unreadCount = platformNotifications.filter(
     (item) => !readNotifications.includes(item.id),
@@ -109,13 +192,6 @@ function Marketplace() {
   const replyTimers = useRef(new Set<ReturnType<typeof setTimeout>>());
   const [pendingReplies, setPendingReplies] = useState<string[]>([]);
   useEffect(() => {
-    // Existing local conversations remain intact when adding the demo threads.
-    setConversations((current) => {
-      const missing = initialConversations.filter(
-        (seed) => !current.some((c) => c.id === seed.id),
-      );
-      return missing.length ? [...current, ...missing] : current;
-    });
     const timers = replyTimers.current;
     return () => {
       timers.forEach(clearTimeout);
@@ -315,6 +391,24 @@ function Marketplace() {
   ];
   const activate = (id: string) =>
     id === "publish" ? setPublish(true) : navigate(id);
+  if (!storageReady)
+    return (
+      <main className="storage-loading">
+        <ShieldCheck size={32} />
+        <h1>BagVoyage</h1>
+        <p role={storageError ? "alert" : "status"}>
+          {storageError || "Ouverture de votre espace…"}
+        </p>
+        {storageError && (
+          <button
+            className="primary-button"
+            onClick={() => window.location.reload()}
+          >
+            Réessayer
+          </button>
+        )}
+      </main>
+    );
   return (
     <div className="marketplace">
       <a
@@ -531,7 +625,7 @@ function Marketplace() {
               </h1>
               <p>Vos commissions peuvent financer votre prochain départ.</p>
             </div>
-            <Suspense fallback={<p role="status">Chargement du simulateur…</p>}>
+            <Suspense fallback={<p role="status">Chargement du calculateur…</p>}>
               <SmartFlightArbitrage
                 key={arbitrageRoute || "default"}
                 initialRouteId={arbitrageRoute}
@@ -551,8 +645,7 @@ function Marketplace() {
             <div className="empty-state">
               <h1>Cette annonce n’est pas disponible</h1>
               <p>
-                Les annonces de démonstration publiées restent sur l’appareil
-                qui les a créées.
+                Les annonces publiées restent sur l’appareil qui les a créées.
               </p>
               <button
                 className="primary-button"
@@ -603,9 +696,25 @@ function Marketplace() {
           onClose={() => setNotificationsOpen(false)}
         />
       )}
-      {notice && (
-        <div className="toast" role="status">
-          {notice}
+      {(notice || storageError || persistenceError) && (
+        <div
+          className="toast"
+          role={storageError || persistenceError ? "alert" : "status"}
+        >
+          {storageError || persistenceError || notice}
+          {storageError && (
+            <button
+              className="outline-button"
+              onClick={() => {
+                retryRequests();
+                retryTrips();
+                retryConversations();
+                retryWallet();
+              }}
+            >
+              Réessayer la sauvegarde
+            </button>
+          )}
         </div>
       )}
       {publish && (
@@ -658,7 +767,7 @@ function Marketplace() {
           title="Votre voyage, vos possibilités"
           onClose={() => setDeal(null)}
         >
-          <span className="purchase-badge">Simulation d’arbitrage</span>
+          <span className="purchase-badge">Estimation des gains</span>
           <h3 className="deal-title">
             {deal.flight.origin} → {deal.flight.destination}
           </h3>

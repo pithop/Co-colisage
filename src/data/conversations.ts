@@ -31,7 +31,7 @@ export const initialConversations: ConversationData[] = [
         false,
       ),
       createMessage(
-        "Nous pourrons confirmer ensemble la disponibilité, puis simuler l’accord pour tester la prise en charge et la livraison.",
+        "Nous pourrons confirmer ensemble la disponibilité, puis enregistrer l’accord pour organiser la prise en charge et la livraison.",
         false,
       ),
     ],

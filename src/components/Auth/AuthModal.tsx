@@ -5,6 +5,8 @@ import {
   Check,
   FileCheck,
   ShieldCheck,
+  UserRound,
+  Upload,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { demoUsers, UserRole } from "../../types/auth";
@@ -57,7 +59,12 @@ function IdentityUpload({
           {selfie ? <Camera size={20} /> : <FileCheck size={20} />}
           {label}
         </span>
+        <span className="identity-file-action" aria-hidden="true">
+          <Upload size={16} /> Choisir un fichier
+        </span>
         <input
+          className="identity-file-input"
+          aria-label={label}
           type="file"
           accept={
             selfie
@@ -93,7 +100,50 @@ function IdentityUpload({
           }}
         />
       </label>
-      {preview && <img src={preview} alt={`Aperçu : ${label}`} />}
+      <div
+        className={`identity-viewfinder ${selfie ? "selfie-viewfinder" : "document-viewfinder"}`}
+      >
+        <button
+          type="button"
+          className="scanner-capture"
+          aria-label={
+            selfie ? "Cadrer mon selfie" : "Cadrer ma pièce d’identité"
+          }
+          onClick={(event) =>
+            event.currentTarget
+              .closest(".identity-upload")
+              ?.querySelector("input")
+              ?.click()
+          }
+        >
+          {preview ? (
+            <img src={preview} alt={`Aperçu : ${label}`} />
+          ) : selfie ? (
+            <UserRound size={68} strokeWidth={1} />
+          ) : (
+            <FileCheck size={56} strokeWidth={1} />
+          )}
+          <span
+            className={
+              selfie ? "biometric-oval-scanner" : "document-corner-scanner"
+            }
+            aria-hidden="true"
+          >
+            <i />
+            <i />
+            <i />
+            <i />
+            <span className="identity-laser" />
+          </span>
+          <span className="scanner-guidance">
+            {file
+              ? "Capture reçue · contrôle en attente"
+              : selfie
+                ? "Placez votre visage au centre"
+                : "Alignez les quatre coins du document"}
+          </span>
+        </button>
+      </div>
       {file && (
         <p className="upload-status">
           <Check size={16} />
@@ -126,7 +176,7 @@ export function AuthModal({
   const [profile, setProfile] = useState(emptyProfile);
   const [selfie, setSelfie] = useState<File | null>(null);
   const [identity, setIdentity] = useState<File | null>(null);
-  const [demoIdentity, setDemoIdentity] = useState(false);
+  const [identityDeferred, setIdentityDeferred] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const mounted = useRef(true);
@@ -140,6 +190,18 @@ export function AuthModal({
   useEffect(() => {
     if (step === "identity") stepHeading.current?.focus();
   }, [step]);
+  const passwordCriteria = [
+    { label: "8+ caractères", passed: profile.password.length >= 8 },
+    { label: "Majuscule", passed: /[A-ZÀ-ÖØ-Þ]/.test(profile.password) },
+    { label: "Chiffre", passed: /[0-9]/.test(profile.password) },
+    { label: "Symbole", passed: /[^\p{L}\p{N}\s]/u.test(profile.password) },
+  ];
+  const passwordScore = passwordCriteria.filter(
+    (criterion) => criterion.passed,
+  ).length;
+  const passwordLabel = ["Faible", "Faible", "Moyen", "Fort", "Impénétrable"][
+    passwordScore
+  ];
   const change = (field: keyof Registration, value: string) => {
     setProfile((current) => ({ ...current, [field]: value }));
     setError("");
@@ -152,7 +214,7 @@ export function AuthModal({
       setStep("identity");
       return;
     }
-    if (tab === "register" && !demoIdentity && (!selfie || !identity)) {
+    if (tab === "register" && !identityDeferred && (!selfie || !identity)) {
       setError("Ajoutez un selfie et une pièce d’identité pour continuer.");
       return;
     }
@@ -164,7 +226,7 @@ export function AuthModal({
         onSuccess(
           tab === "login"
             ? "Vous êtes connecté à votre compte local."
-            : "Votre compte local a été créé. Le contrôle d’identité reste en attente en mode démo.",
+            : "Votre compte a été créé. Votre identité reste en attente de vérification.",
         );
     } catch (cause) {
       if (mounted.current)
@@ -193,7 +255,7 @@ export function AuthModal({
           <ShieldCheck size={18} />
           La connexion Apple sera disponible lorsque le service
           d’authentification sera connecté. Vous pouvez explorer le parcours
-          avec un compte de démonstration.
+          avec un profil enregistré sur cet appareil.
         </p>
       )}
       <div className="segment auth-tabs" aria-label="Authentification">
@@ -219,16 +281,11 @@ export function AuthModal({
         </button>
       </div>
       <p className="demo-note">
-        Démonstration locale : le compte est enregistré sur cet appareil. Aucun
-        service d’authentification ou de vérification d’identité externe n’est
-        connecté.
+        Espace BagVoyage · Vos informations sont enregistrées sur cet appareil.
       </p>
       {tab === "login" && (
-        <section
-          className="demo-accounts"
-          aria-label="Comptes de démonstration"
-        >
-          <h3>Tester en un clic</h3>
+        <section className="demo-accounts" aria-label="Profils disponibles">
+          <h3>Choisir un profil</h3>
           {roles.map(({ role, label }) => (
             <button
               key={role}
@@ -237,7 +294,7 @@ export function AuthModal({
               onClick={() => {
                 login(demoUsers[role].email, role);
                 onSuccess(
-                  `Vous êtes connecté au compte de démonstration de ${demoUsers[role].name}.`,
+                  `Vous êtes connecté au profil de ${demoUsers[role].name}.`,
                 );
               }}
             >
@@ -250,10 +307,10 @@ export function AuthModal({
             disabled={busy}
             onClick={() => {
               login(demoUsers.voyageur.email, "voyageur");
-              onSuccess("Vous êtes connecté au compte de démonstration.");
+              onSuccess("Vous êtes connecté au profil voyageur.");
             }}
           >
-            Continuer en démonstration
+            Continuer avec le profil voyageur
           </button>
         </section>
       )}
@@ -367,7 +424,50 @@ export function AuthModal({
               {tab === "register" && <small>Au moins 8 caractères.</small>}
             </label>
             {tab === "register" && (
-              <label>
+              <section
+                className="password-strength"
+                aria-label="Robustesse de votre secret"
+              >
+                <div>
+                  <span>Force du mot de passe</span>
+                  <strong aria-live="polite">{passwordLabel}</strong>
+                </div>
+                <div
+                  className="password-bars"
+                  role="meter"
+                  aria-label="Critères de composition"
+                  aria-valuemin={0}
+                  aria-valuemax={4}
+                  aria-valuenow={passwordScore}
+                  aria-valuetext={passwordLabel}
+                >
+                  {passwordCriteria.map((_, index) => (
+                    <span
+                      key={index}
+                      className={
+                        index < passwordScore
+                          ? `filled strength-${passwordScore}`
+                          : ""
+                      }
+                    />
+                  ))}
+                </div>
+                <ul>
+                  {passwordCriteria.map(({ label, passed }) => (
+                    <li key={label} className={passed ? "passed" : ""}>
+                      <Check size={14} aria-hidden="true" />
+                      {label}
+                    </li>
+                  ))}
+                </ul>
+                <small>
+                  Indication des critères de composition ; privilégiez une
+                  phrase longue et unique.
+                </small>
+              </section>
+            )}
+            {tab === "register" && (
+              <label className="native-control-bridge">
                 Je souhaite m’inscrire comme
                 <select
                   value={profile.role}
@@ -381,6 +481,30 @@ export function AuthModal({
                 </select>
               </label>
             )}
+            {tab === "register" && (
+              <div
+                className="auth-role-picker"
+                role="group"
+                aria-label="Votre activité"
+              >
+                {(
+                  [
+                    { role: "voyageur", label: "Voyageur" },
+                    { role: "expediteur", label: "Expéditeur" },
+                    { role: "transporteur_pro", label: "Professionnel" },
+                  ] as const
+                ).map(({ role, label }) => (
+                  <button
+                    type="button"
+                    key={role}
+                    aria-pressed={profile.role === role}
+                    onClick={() => change("role", role)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
           </>
         ) : (
           <>
@@ -388,10 +512,9 @@ export function AuthModal({
               Vérification d’identité KYC
             </h3>
             <p className="muted">
-              Ajoutez un selfie et une pièce d’identité, ou utilisez les
-              justificatifs de démonstration. Les fichiers restent en mémoire
-              pendant cette étape ; ils ne sont ni transmis ni conservés après
-              fermeture.
+              Ajoutez un selfie et une pièce d’identité. Utilisez les repères de
+              cadrage pour préparer une image nette. Les fichiers restent en
+              mémoire pendant cette étape et sont effacés à sa fermeture.
             </p>
             <IdentityUpload
               label="Selfie"
@@ -399,7 +522,7 @@ export function AuthModal({
               file={selfie}
               onChange={(file) => {
                 setSelfie(file);
-                setDemoIdentity(false);
+                setIdentityDeferred(false);
               }}
             />
             <IdentityUpload
@@ -407,28 +530,29 @@ export function AuthModal({
               file={identity}
               onChange={(file) => {
                 setIdentity(file);
-                setDemoIdentity(false);
+                setIdentityDeferred(false);
               }}
             />
             <button
               type="button"
               className="outline-button"
               onClick={() => {
-                setDemoIdentity(true);
+                setIdentityDeferred(true);
                 setError("");
               }}
             >
-              Utiliser des justificatifs de démonstration
+              Fournir mes justificatifs plus tard
             </button>
-            {demoIdentity && (
+            {identityDeferred && (
               <p role="status" className="info-box">
                 <Check size={18} />
-                Selfie et pièce d’identité de démonstration sélectionnés.
+                Vous pourrez compléter vos justificatifs ultérieurement. Votre
+                identité reste en attente.
               </p>
             )}
             <p className="demo-note">
-              Le dépôt simule un dossier KYC. L’identité reste en attente de
-              vérification ; aucune validation réelle n’est effectuée.
+              Votre identité reste en attente jusqu’au contrôle des
+              justificatifs par un service de vérification connecté.
             </p>
           </>
         )}
@@ -444,7 +568,7 @@ export function AuthModal({
             busy ||
             (tab === "register" &&
               step === "identity" &&
-              !demoIdentity &&
+              !identityDeferred &&
               (!selfie || !identity))
           }
         >

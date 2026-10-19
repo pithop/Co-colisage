@@ -4,7 +4,7 @@ async function openHandover(page: Page) {
   await page.goto("/#messages");
   await page.getByRole("button", { name: /Sarah.*Nike/ }).click();
   await page
-    .getByRole("button", { name: "Simuler l’accord", exact: true })
+    .getByRole("button", { name: "Enregistrer l’accord", exact: true })
     .click();
   await page
     .getByRole("button", { name: "Valider la remise", exact: true })
@@ -45,7 +45,7 @@ test("photos, timestamps, GPS and both handovers persist in the order timeline",
     await expect(dialog.getByText(/Position enregistrée/)).toBeVisible();
     await dialog
       .getByRole("button", {
-        name: "Simuler le scan automatique par le partenaire",
+        name: "Confirmer avec le code affiché",
       })
       .click();
   }
@@ -206,7 +206,7 @@ test("camera denied and invalid photos still allow the explicit demo path", asyn
   await expect(dialog.getByRole("alert")).toContainText("Choisissez une image");
   await dialog
     .getByRole("button", {
-      name: "Simuler le scan automatique par le partenaire",
+      name: "Confirmer avec le code affiché",
     })
     .click();
   await expect(
@@ -214,7 +214,7 @@ test("camera denied and invalid photos still allow the explicit demo path", asyn
   ).toBeVisible();
   await dialog
     .getByRole("button", {
-      name: "Simuler le scan automatique par le partenaire",
+      name: "Confirmer avec le code affiché",
     })
     .click();
   await expect(dialog.getByText("Article remis, merci !")).toBeVisible();

@@ -117,7 +117,7 @@ export function Profile({
       >
         <div className="verification-heading">
           <h2 id="verification-title">Statut & Vérification</h2>
-          <span>Profil de démonstration</span>
+          <span>Votre identité BagVoyage</span>
         </div>
         <div className="kyc-status">
           <span className="verification-icon">
@@ -127,14 +127,14 @@ export function Profile({
             <strong>
               {kycStatus === "pending"
                 ? "Identité en attente de vérification"
-                : kycStatus === "unverified"
+                : kycStatus !== "verified"
                   ? "Identité non vérifiée"
                   : "Identité vérifiée"}
             </strong>
             <p>
               {kycStatus === "pending"
-                ? "Dossier KYC simulé · aucun contrôle réel effectué"
-                : kycStatus === "unverified"
+                ? "Dossier en attente de contrôle d’identité"
+                : kycStatus !== "verified"
                   ? "Selfie et pièce d’identité à fournir"
                   : "Selfie et pièce d’identité validés"}
             </p>
@@ -213,8 +213,7 @@ export function Profile({
             ))}
           </ul>
           <p className="reputation-note">
-            Indicateurs de démonstration. Sélectionnez un critère pour découvrir
-            son détail.
+            Sélectionnez un critère pour découvrir son détail.
           </p>
         </div>
       </section>
@@ -263,7 +262,7 @@ export function Profile({
       </button>
       {userName ? (
         <p className="profile-login">
-          Connecté en mode démo : {userName}.{" "}
+          Connecté : {userName}.{" "}
           <button onClick={onLogout}>Se déconnecter</button>
         </p>
       ) : (

@@ -35,7 +35,7 @@ test("transport routes, vehicle filters and detail contact", async ({
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Transports", exact: true }).click();
-  await expect(page.locator(".trip-card")).toHaveCount(5);
+  await expect(page.locator(".trip-card")).toHaveCount(9);
   await expect(page.locator(".trip-card").first()).toContainText(
     "80 × 60 × 40 cm",
   );
@@ -112,7 +112,7 @@ test("request chat, PIN rejection, both QR stages and four ratings", async ({
     .fill("Je peux passer demain.");
   await page.getByRole("button", { name: "Envoyer le message" }).click();
   await expect(page.getByRole("log")).toContainText("Je peux passer demain.");
-  await page.getByRole("button", { name: "Simuler l’accord" }).click();
+  await page.getByRole("button", { name: "Enregistrer l’accord" }).click();
   await expect(page.locator(".escrow-strip")).toContainText(
     "Fonds sous séquestre · 145 €",
   );

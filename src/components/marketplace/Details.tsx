@@ -45,7 +45,7 @@ export function RequestDetails({
           </span>
           {r.buyerAvatar && (
             <span className="verified-badge">
-              <ShieldCheck size={14} /> Profil vérifié · démo
+              <ShieldCheck size={14} /> Profil BagVoyage
             </span>
           )}
           <ChevronRight size={19} />

@@ -35,7 +35,7 @@ const history: WalletTransaction[] = [
   {
     id: "EP-0142",
     title: "Virement SEPA instantané",
-    detail: "Compte bancaire •••• 0189 · simulation",
+    detail: "Compte bancaire •••• 0189 · demande enregistrée",
     at: "2026-10-16T12:00:00Z",
     cents: -10000,
     status: "Virement",
@@ -64,7 +64,7 @@ export function walletTransactions(
       detail:
         c.stage === "delivered"
           ? "Caution restituée après validation de la livraison"
-          : "Caution de démonstration · en attente de remise validée",
+          : "Caution · en attente de remise validée",
       at:
         c.handovers?.find((h) => h.stage === "delivery")?.at ||
         c.securedAt ||
@@ -142,8 +142,8 @@ export function validIban(value: string) {
 
 export function downloadReceipt(t: WalletTransaction) {
   const content = [
-    "ENTRE PARTICULIERS",
-    "REÇU DE DÉMONSTRATION — SANS VALEUR COMPTABLE",
+    "BAGVOYAGE",
+    "RELEVÉ D’OPÉRATION — SANS VALEUR COMPTABLE",
     "",
     `Référence : ${t.id}`,
     `Date : ${new Date(t.at).toLocaleString("fr-FR")}`,
@@ -152,14 +152,14 @@ export function downloadReceipt(t: WalletTransaction) {
     `Statut : ${t.status}`,
     t.detail,
     "",
-    "Simulation locale. Aucun fonds bloqué, débité ou viré. Aucun paiement Stripe effectué.",
+    "Registre local BagVoyage. Ce relevé ne constitue pas une confirmation bancaire. Le transfert et la conservation de fonds nécessitent un prestataire de paiement connecté.",
   ].join("\n");
   const url = URL.createObjectURL(
     new Blob([content], { type: "text/plain;charset=utf-8" }),
   );
   const link = document.createElement("a");
   link.href = url;
-  link.download = `recu-demo-${t.id}.txt`;
+  link.download = `recu-${t.id}.txt`;
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

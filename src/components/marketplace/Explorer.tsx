@@ -181,7 +181,7 @@ export function Explorer({
           className="primary-button"
           onClick={() => onArbitrage(flightRouteId)}
         >
-          Simuler ce voyage <ArrowRight size={17} />
+          Estimer ce voyage <ArrowRight size={17} />
         </button>
         <p className="express-disclaimer">
           Commandes en attente fictives · tarifs indicatifs · estimation hors
@@ -227,25 +227,24 @@ export function Explorer({
           aria-labelledby="market-guarantees-title"
         >
           <h2 id="market-guarantees-title">
-            <ShieldCheck size={20} /> Garantie & Chiffres clés
+            <ShieldCheck size={20} /> Votre réseau, en chiffres
           </h2>
           <dl>
             <div>
-              <dt>Sous séquestre</dt>
-              <dd>145 000 €</dd>
+              <dt>Demandes d’achat</dt>
+              <dd>{requests.length}</dd>
             </div>
             <div>
-              <dt>Livraisons réussies</dt>
-              <dd>99.4%</dd>
+              <dt>Trajets proposés</dt>
+              <dd>{trips.length}</dd>
             </div>
             <div>
-              <dt>Frais cachés</dt>
-              <dd>0 €</dd>
+              <dt>Modes de transport</dt>
+              <dd>{new Set(trips.map((trip) => trip.transportType)).size}</dd>
             </div>
           </dl>
           <p>
-            Chiffres de démonstration · Garantie jusqu’à 1 500 € et séquestre
-            Stripe simulés.
+            Estimez vos gains et convenez des modalités avant de réserver.
           </p>
         </section>
       </div>

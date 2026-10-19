@@ -19,7 +19,7 @@ test("wallet opens from header and profile with escrow, cash rule and filterable
   await expect(page.getByTestId("escrow-balance")).toHaveText("145,00 €");
   await expect(
     page.getByRole("region", { name: "Fonds sous séquestre actifs" }),
-  ).toContainText("Stripe Escrow");
+  ).toContainText("Prestataire bancaire à connecter");
   await expect(page.locator(".wallet-cash")).toContainText("espèces");
   await expect(page.locator(".wallet-cash")).toContainText("QR code");
   await expect(page.locator(".transaction-row")).toHaveCount(5);
@@ -54,7 +54,7 @@ test("SEPA validates checksum and amount, confirms once, persists and masks bank
   await dialog.getByRole("button", { name: "Vérifier le virement" }).click();
   await expect(dialog.getByRole("alert")).toContainText("IBAN valide");
   await dialog
-    .getByRole("button", { name: "Utiliser un IBAN de démonstration" })
+    .getByRole("button", { name: "Préremplir un exemple d’IBAN" })
     .click();
   for (const amount of ["0", "-1", "345.01", "12.123", "NaN"]) {
     await dialog.getByLabel("Montant du virement").fill(amount);
@@ -66,9 +66,9 @@ test("SEPA validates checksum and amount, confirms once, persists and masks bank
   await expect(dialog).toContainText("244,75 €");
   await expect(page.getByTestId("available-balance")).toHaveText("345,00 €");
   await dialog
-    .getByRole("button", { name: "Confirmer le virement simulé" })
+    .getByRole("button", { name: "Confirmer la demande de virement" })
     .click();
-  await expect(dialog).toContainText("Virement simulé avec succès");
+  await expect(dialog).toContainText("Demande de virement enregistrée");
   await expect(page.getByTestId("available-balance")).toHaveText("244,75 €");
   await expect(page.getByTestId("escrow-balance")).toHaveText("145,00 €");
   await dialog.getByRole("button", { name: "Terminer" }).click();
@@ -92,7 +92,7 @@ test("cancel and edit never debit; transferring the remaining balance disables n
   await open.click();
   const dialog = page.getByRole("dialog");
   await dialog
-    .getByRole("button", { name: "Utiliser un IBAN de démonstration" })
+    .getByRole("button", { name: "Préremplir un exemple d’IBAN" })
     .click();
   await dialog.getByRole("button", { name: "Vérifier le virement" }).click();
   await dialog.getByRole("button", { name: "Modifier", exact: true }).click();
@@ -102,11 +102,11 @@ test("cancel and edit never debit; transferring the remaining balance disables n
   await expect(page.getByTestId("available-balance")).toHaveText("345,00 €");
   await open.click();
   await dialog
-    .getByRole("button", { name: "Utiliser un IBAN de démonstration" })
+    .getByRole("button", { name: "Préremplir un exemple d’IBAN" })
     .click();
   await dialog.getByRole("button", { name: "Vérifier le virement" }).click();
   await dialog
-    .getByRole("button", { name: "Confirmer le virement simulé" })
+    .getByRole("button", { name: "Confirmer la demande de virement" })
     .click();
   await dialog.getByRole("button", { name: "Terminer" }).click();
   await expect(open).toBeDisabled();
@@ -124,7 +124,7 @@ test("downloaded receipt contains transaction amount, date, status and demo disc
     .click();
   const download = await downloadEvent;
   expect(download.suggestedFilename()).toBe(
-    "recu-demo-deposit-nike-air-max.txt",
+    "recu-deposit-nike-air-max.txt",
   );
   const receipt = await readFile((await download.path())!, "utf8");
   expect(receipt).toContain("SANS VALEUR COMPTABLE");
@@ -140,13 +140,13 @@ test("deposit only releases after final handover and never credits twice on relo
   await page.goto("/#messages");
   await page.getByRole("button", { name: /Sarah.*Nike/ }).click();
   await page
-    .getByRole("button", { name: "Simuler l’accord", exact: true })
+    .getByRole("button", { name: "Enregistrer l’accord", exact: true })
     .click();
   await page
     .getByRole("button", { name: "Valider la remise", exact: true })
     .click();
   const dialog = page.getByRole("dialog");
-  await dialog.getByRole("button", { name: "Remplir le code (démo)" }).click();
+  await dialog.getByRole("button", { name: "Utiliser le code affiché" }).click();
   await dialog
     .getByRole("button", { name: "Valider la prise en charge", exact: true })
     .click();
@@ -158,7 +158,7 @@ test("deposit only releases after final handover and never credits twice on relo
   await page
     .getByRole("button", { name: "Valider la remise", exact: true })
     .click();
-  await dialog.getByRole("button", { name: "Remplir le code (démo)" }).click();
+  await dialog.getByRole("button", { name: "Utiliser le code affiché" }).click();
   await dialog
     .getByRole("button", { name: "Valider la livraison", exact: true })
     .click();
@@ -190,7 +190,7 @@ test("notifications support reading, filtering, persistence, focus trapping and 
     .getByRole("button", { name: /Arbitrage IA.*Voyagez gratuit/ })
     .click();
   await expect(
-    drawer.getByRole("button", { name: "Simuler ce vol" }),
+    drawer.getByRole("button", { name: "Estimer ce vol" }),
   ).toBeVisible();
   await expect(bell(page)).toHaveAccessibleName("Notifications, 3 non lues");
   await page.keyboard.press("Escape");
@@ -226,7 +226,7 @@ test("each alert navigates to its relevant simulation, conversation or profile",
 }) => {
   await page.goto("/");
   for (const [summary, action, destination] of [
-    [/Arbitrage IA.*Voyagez gratuit/, "Simuler ce vol", "arbitrage/mrs-alg"],
+    [/Arbitrage IA.*Voyagez gratuit/, "Estimer ce vol", "arbitrage/mrs-alg"],
     [/Suivi de commande.*Sarah/, "Ouvrir le suivi avec Sarah", "messages"],
     [/Alerte retard.*Karim/, "Contacter Karim", "messages"],
     [/Identité & sécurité.*Votre identité/, "Voir mon profil", "profile"],
@@ -237,7 +237,7 @@ test("each alert navigates to its relevant simulation, conversation or profile",
     await drawer.getByRole("button", { name: action, exact: true }).click();
     await expect(drawer).toHaveCount(0);
     await expect(page).toHaveURL(new RegExp(`#${destination}$`));
-    if (action === "Simuler ce vol") {
+    if (action === "Estimer ce vol") {
       await expect(page.getByLabel("Itinéraire du vol")).toHaveValue("mrs-alg");
       await expect(page.getByRole("status")).toContainText("+101");
     } else if (action.includes("Sarah"))
@@ -273,7 +273,7 @@ test("express calculator updates all destinations and preserves the chosen fligh
     await expect(widget.getByRole("status")).toContainText(`${fare} € de vol`);
   }
   await widget.getByLabel("Votre destination").selectOption("lys-orn");
-  await widget.getByRole("button", { name: "Simuler ce voyage" }).click();
+  await widget.getByRole("button", { name: "Estimer ce voyage" }).click();
   await expect(page.getByLabel("Itinéraire du vol")).toHaveValue("lys-orn");
   await expect(page.getByRole("status")).toContainText("+95");
   await page.reload();

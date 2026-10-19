@@ -47,7 +47,7 @@ export function WalletView({
         </p>
       </div>
       <p className="finance-demo">
-        <span /> Espace de démonstration · aucun mouvement d’argent réel
+        <span /> Votre activité BagVoyage · registre enregistré sur cet appareil
       </p>
       <div className="wallet-overview">
         <section className="wallet-balance" aria-label="Solde disponible">
@@ -67,7 +67,8 @@ export function WalletView({
             <ArrowUpRight size={18} /> Virer vers mon IBAN / compte bancaire
           </button>
           <small>
-            <Landmark size={14} /> SEPA instantané · simulation sans frais
+            <Landmark size={14} /> Coordonnées SEPA · confirmation bancaire
+            requise
           </small>
         </section>
         <section
@@ -85,8 +86,7 @@ export function WalletView({
           <div className="escrow-provider">
             <ShieldCheck size={18} />
             <span>
-              Protection Stripe Escrow{" "}
-              <small>Parcours simulé · aucun séquestre Stripe réel</small>
+              Suivi des cautions <small>Prestataire bancaire à connecter</small>
             </span>
           </div>
         </section>
@@ -112,7 +112,7 @@ export function WalletView({
         <div className="wallet-history-heading">
           <div>
             <h2 id="history-title">Votre activité</h2>
-            <p>Historique des transactions et reçus de démonstration.</p>
+            <p>Historique de vos opérations et de leurs justificatifs.</p>
           </div>
           <span>{transactions.length} opérations</span>
         </div>
@@ -176,7 +176,7 @@ export function WalletView({
               <button
                 className="icon-button receipt-button"
                 aria-label={`Télécharger le reçu de ${t.title}`}
-                title="Télécharger le reçu de démonstration (.txt)"
+                title="Télécharger le relevé de l’opération (.txt)"
                 onClick={() => downloadReceipt(t)}
               >
                 <Download size={18} />
@@ -211,6 +211,7 @@ function TransferDialog({
   onTransfer: (transaction: WalletTransaction) => void;
 }) {
   const [iban, setIban] = useState("");
+  const [bic, setBic] = useState("");
   const [amount, setAmount] = useState((available / 100).toFixed(2));
   const [error, setError] = useState("");
   const [review, setReview] = useState(false);
@@ -221,8 +222,12 @@ function TransferDialog({
   const validate = () => {
     if (!validIban(iban)) {
       setError(
-        "Saisissez un IBAN valide d’un pays pris en charge pour cette simulation SEPA.",
+        "Saisissez un IBAN valide d’un pays pris en charge pour un virement SEPA.",
       );
+      return false;
+    }
+    if (bic && !/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(bic)) {
+      setError("Saisissez un code BIC/SWIFT de 8 ou 11 caractères.");
       return false;
     }
     if (
@@ -246,13 +251,15 @@ function TransferDialog({
           <span className="finance-icon released">
             <Check size={28} />
           </span>
-          <h3>Virement simulé avec succès</h3>
+          <h3>Demande de virement enregistrée</h3>
           <strong>{money(-receipt.cents)}</strong>
           <p>
-            Vers le compte {masked}. Votre solde de démonstration et votre
-            historique ont été mis à jour.
+            Vers le compte {masked}. Votre solde et votre historique ont été mis
+            à jour.
           </p>
-          <p className="muted">Aucun argent réel n’a été transféré.</p>
+          <p className="muted">
+            En attente de transmission au prestataire bancaire.
+          </p>
           <button
             className="outline-button"
             onClick={() => downloadReceipt(receipt)}
@@ -278,7 +285,7 @@ function TransferDialog({
             const transaction: WalletTransaction = {
               id: crypto.randomUUID(),
               title: "Virement SEPA instantané",
-              detail: `Compte bancaire ${masked} · simulation`,
+              detail: `Compte bancaire ${masked} · demande enregistrée`,
               at: new Date().toISOString(),
               cents: -cents,
               status: "Virement",
@@ -287,8 +294,63 @@ function TransferDialog({
             setReceipt(transaction);
           }}
         >
+          <div
+            className="metallic-virtual-card"
+            aria-label="Aperçu de votre compte destinataire"
+          >
+            <div className="metallic-card-heading">
+              <strong>BagVoyage</strong>
+              <span>COMPTE DESTINATAIRE</span>
+            </div>
+            <span className="metallic-watermark" aria-hidden="true">
+              BV
+            </span>
+            <svg
+              className="emv-chip"
+              width="48"
+              height="38"
+              viewBox="0 0 48 38"
+              aria-hidden="true"
+            >
+              <defs>
+                <linearGradient id="chip-gold">
+                  <stop stopColor="#eddcb1" />
+                  <stop offset="1" stopColor="#ab8649" />
+                </linearGradient>
+              </defs>
+              <rect
+                x="1"
+                y="1"
+                width="46"
+                height="36"
+                rx="8"
+                fill="url(#chip-gold)"
+              />
+              <g fill="none" stroke="#826634" strokeWidth="1">
+                <rect x="16" y="8" width="16" height="22" rx="4" />
+                <path d="M0 12h16M0 26h16M32 12h16M32 26h16M24 0v8M24 30v8" />
+              </g>
+            </svg>
+            <div className="metallic-iban" aria-label="Coordonnées saisies">
+              {(
+                iban
+                  .replace(/\s/g, "")
+                  .toUpperCase()
+                  .match(/.{1,4}/g) || ["----", "----", "----", "----"]
+              ).map((block, index) => (
+                <span key={index}>{block}</span>
+              ))}
+            </div>
+            <div className="metallic-card-footer">
+              <span>VIREMENT SEPA</span>
+              <span>
+                <ShieldCheck size={14} />
+                {validIban(iban) ? "Format IBAN vérifié" : "IBAN à renseigner"}
+              </span>
+            </div>
+          </div>
           <p className="finance-demo">
-            Simulation uniquement · aucun débit bancaire
+            Préparez votre virement · transmission bancaire à activer
           </p>
           {review ? (
             <>
@@ -303,7 +365,7 @@ function TransferDialog({
                   <dd>{money(cents)}</dd>
                 </div>
                 <div>
-                  <dt>Frais simulés</dt>
+                  <dt>Frais estimés</dt>
                   <dd>0,00 €</dd>
                 </div>
                 <div>
@@ -327,7 +389,7 @@ function TransferDialog({
                   autoComplete="off"
                   spellCheck={false}
                   value={iban}
-                  onChange={(e) => setIban(e.target.value)}
+                  onChange={(e) => setIban(e.target.value.toUpperCase())}
                   placeholder="FR76 3000 6000 0112 3456 7890 189"
                   aria-invalid={!!error}
                   aria-describedby={error ? "transfer-error" : undefined}
@@ -338,8 +400,51 @@ function TransferDialog({
                 className="transfer-demo-button"
                 onClick={() => setIban("FR76 3000 6000 0112 3456 7890 189")}
               >
-                Utiliser un IBAN de démonstration
+                Préremplir un exemple d’IBAN
               </button>
+              <label>
+                Code BIC/SWIFT
+                <input
+                  value={bic}
+                  onChange={(e) =>
+                    setBic(e.target.value.toUpperCase().replace(/\s/g, ""))
+                  }
+                  maxLength={11}
+                  placeholder="Ex. AGRIFRPP"
+                  autoComplete="off"
+                />
+                <small>Facultatif pour les virements SEPA.</small>
+              </label>
+              <div
+                className="quick-withdrawals"
+                role="group"
+                aria-label="Montants de retrait rapide"
+              >
+                {[25, 50, 100, 250].map((value) => (
+                  <button
+                    type="button"
+                    key={value}
+                    disabled={value * 100 > available}
+                    aria-pressed={cents === value * 100}
+                    onClick={() => {
+                      setAmount(value.toFixed(2));
+                      setError("");
+                    }}
+                  >
+                    {value} €
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  aria-pressed={cents === available}
+                  onClick={() => {
+                    setAmount((available / 100).toFixed(2));
+                    setError("");
+                  }}
+                >
+                  Solde total
+                </button>
+              </div>
               <label>
                 Montant du virement (€)
                 <input
@@ -361,7 +466,9 @@ function TransferDialog({
           )}
           <button className="primary-button" type="submit">
             <ArrowUpRight size={18} />
-            {review ? "Confirmer le virement simulé" : "Vérifier le virement"}
+            {review
+              ? "Confirmer la demande de virement"
+              : "Vérifier le virement"}
           </button>
           <p className="muted">
             L’IBAN complet n’est pas conservé. Seuls ses quatre derniers

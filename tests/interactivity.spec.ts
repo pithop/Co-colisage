@@ -101,7 +101,7 @@ test("demo documents and one-click accounts are usable", async ({ page }) => {
   const dialog = await registerProfile(page);
   await dialog
     .getByRole("button", {
-      name: "Utiliser des justificatifs de démonstration",
+      name: "Fournir mes justificatifs plus tard",
     })
     .click();
   await dialog.getByRole("button", { name: "Valider mon inscription" }).click();
@@ -143,8 +143,8 @@ test("seeded chats reply after 800 ms and preserve agreements across navigation"
     await page.getByRole("button", { name: "Envoyer le message" }).click();
   }
   await expect(page.locator(".message")).toHaveCount(6);
-  await page.getByRole("button", { name: "Simuler l’accord" }).click();
-  await expect(page.locator(".toast")).toContainText("Accord simulé");
+  await page.getByRole("button", { name: "Enregistrer l’accord" }).click();
+  await expect(page.locator(".toast")).toContainText("Accord enregistré");
   await page.clock.runFor(799);
   await expect(page.locator(".message")).toHaveCount(7);
   await nav(page, "Explorer").click();
@@ -176,7 +176,7 @@ test("card surfaces open details and demo PIN helper follows both delivery stage
   await page
     .getByRole("button", { name: "Proposer d’acheter et livrer" })
     .click();
-  await page.getByRole("button", { name: "Simuler l’accord" }).click();
+  await page.getByRole("button", { name: "Enregistrer l’accord" }).click();
   await page
     .getByRole("button", { name: "Valider la remise", exact: true })
     .click();
@@ -186,7 +186,7 @@ test("card surfaces open details and demo PIN helper follows both delivery stage
     const expected = await dialog.locator(".demo-code strong").innerText();
     if (action === "Valider la livraison") expect(expected).not.toBe(first);
     await dialog
-      .getByRole("button", { name: "Remplir le code (démo)" })
+      .getByRole("button", { name: "Utiliser le code affiché" })
       .click();
     await expect(dialog.getByLabel("Code PIN ou contenu")).toHaveValue(
       expected,

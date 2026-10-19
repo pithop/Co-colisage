@@ -145,7 +145,7 @@ export function OrderTracking({
                     )}
                     <p>
                       {record.method === "simulation"
-                        ? "Scan partenaire simulé"
+                        ? "Validation manuelle"
                         : record.method === "camera"
                           ? "QR reconnu par la caméra"
                           : record.method === "import"
@@ -166,7 +166,7 @@ export function OrderTracking({
                         </figcaption>
                       </figure>
                     ) : (
-                      <p>Preuve photo non fournie · démonstration</p>
+                      <p>Preuve photo non fournie</p>
                     )}
                   </div>
                 )}
@@ -192,8 +192,8 @@ export function OrderTracking({
       <p className="info-box">
         <ShieldCheck size={18} />
         {c.stage === "delivered"
-          ? "Fonds libérés en démonstration après la seconde remise."
-          : "La livraison finale déclenche la libération des fonds en démonstration."}
+          ? "Seconde remise enregistrée. Le statut de la caution a été mis à jour."
+          : "La livraison finale permet la mise à jour du statut de la caution."}
       </p>
       <p className="demo-note">
         Suivi des étapes enregistrées sur cet appareil. Aucun suivi GPS continu.

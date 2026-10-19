@@ -74,7 +74,7 @@ export const SmartFlightArbitrage: React.FC<SmartFlightArbitrageProps> = ({ oppo
       ordersCount: selectedErrands.length,
       ordersDescription: selectedErrands.map(item => item.name).join(' · '),
       totalOrderReward: commission, netProfit: profit,
-      clientName: selectedErrands.length === 1 && source ? source.clientName : 'Clients de la simulation',
+      clientName: selectedErrands.length === 1 && source ? source.clientName : 'Clients du parcours',
       clientAvatar: source?.clientAvatar ?? '',
       escrowSecured: false,
       tag: profit > 0 ? `Vol financé + ${euro(profit)} net` : profit === 0 ? 'Vol financé à 100 %' : `${euro(-profit)} restant à financer`,
@@ -92,7 +92,7 @@ export const SmartFlightArbitrage: React.FC<SmartFlightArbitrageProps> = ({ oppo
         <header className="px-5 pb-7 pt-7 sm:px-8 sm:pt-9">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-indigo-200"><Sparkles aria-hidden="true" className="h-4 w-4" /> Le voyage qui vous rapporte</span>
-            <span className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] text-slate-300"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400 motion-safe:animate-pulse" /> Simulateur interactif</span>
+            <span className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] text-slate-300"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400 motion-safe:animate-pulse" /> Calculateur interactif</span>
           </div>
           <h2 id={`${id}-title`} className="max-w-2xl text-3xl font-semibold leading-[1.15] tracking-tight sm:text-4xl lg:text-[2.75rem]">Votre prochain vol.<br /><span className="bg-gradient-to-r from-emerald-300 to-teal-200 bg-clip-text text-transparent">Financé par vos courses.</span></h2>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-400">Choisissez votre vol, ajoutez des missions. Découvrez ce qu’il vous reste en poche, avant même de faire votre valise.</p>
@@ -117,7 +117,7 @@ export const SmartFlightArbitrage: React.FC<SmartFlightArbitrageProps> = ({ oppo
                   const best = fare === cheapest;
                   return (
                     <button key={index} type="button" aria-pressed={selected} aria-label={`${DAY_LABELS[index]}, ${route.airlines[index]}, ${euro(fare)}${best ? ', meilleur tarif' : ''}`} onClick={() => setDayIndex(index)} className={`relative flex min-w-0 flex-col items-center rounded-xl border px-1 py-3 text-center transition duration-200 motion-reduce:transition-none ${focus} ${selected ? 'border-emerald-400/70 bg-emerald-400/10 shadow-lg shadow-emerald-500/5' : 'border-white/10 bg-white/[0.03] hover:border-white/30 hover:bg-white/[0.06]'}`}>
-                      <span className={`mb-2 h-4 text-[9px] font-bold tracking-wider ${best ? 'text-emerald-300' : 'text-slate-500'}`}>{best ? 'BEST DEAL' : 'VOL SIMULÉ'}</span>
+                      <span className={`mb-2 h-4 text-[9px] font-bold tracking-wider ${best ? 'text-emerald-300' : 'text-slate-500'}`}>{best ? 'BEST DEAL' : 'VOL ESTIMÉ'}</span>
                       <span className="text-xs font-medium text-slate-200">{DAY_LABELS[index]}</span>
                       <span className="mt-1 text-[10px] text-slate-400">{dateFor(index).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}</span>
                       <span className={`my-2 text-2xl font-semibold tracking-tight tabular-nums ${selected ? 'text-emerald-300' : 'text-white'}`}>{fare}<span className="ml-0.5 text-sm">€</span></span>
@@ -178,7 +178,7 @@ export const SmartFlightArbitrage: React.FC<SmartFlightArbitrageProps> = ({ oppo
           <ol aria-label="Les étapes du paiement sécurisé" className="grid gap-4 sm:grid-cols-3">
             {[{ Icon: LockKeyhole, title: '01. Fonds sous séquestre', text: 'L’acheteur sécurise la commission.' }, { Icon: Plane, title: '02. Voyagez sereinement', text: 'Vous transportez les articles convenus.' }, { Icon: CheckCircle2, title: '03. Remettez & encaissez', text: 'La remise validée déclenche le paiement.' }].map(({ Icon, title, text }) => <li key={title} className="flex items-start gap-3"><Icon aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-indigo-300" /><div><p className="text-[11px] font-semibold text-slate-200">{title}</p><p className="mt-1 text-[10px] leading-relaxed text-slate-400">{text}</p></div></li>)}
           </ol>
-          <p className="mt-5 text-[10px] leading-relaxed text-slate-500">Simulation illustrative, sans réservation ni fonds bloqués. Gain = commissions − billet, hors bagages, achats et frais éventuels. Tarifs, missions et conditions de transport à confirmer.</p>
+          <p className="mt-5 text-[10px] leading-relaxed text-slate-500">Estimation indicative, sans réservation ni fonds bloqués. Gain = commissions − billet, hors bagages, achats et frais éventuels. Tarifs, missions et conditions de transport à confirmer.</p>
         </footer>
       </div>
     </section>

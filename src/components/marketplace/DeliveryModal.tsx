@@ -3,6 +3,7 @@ import {
   Camera,
   Check,
   Copy,
+  Delete,
   MapPin,
   QrCode,
   ShieldCheck,
@@ -112,7 +113,7 @@ export function DeliveryModal({
       messages: [
         ...c.messages,
         createMessage(
-          `${pickup ? "Premier QR validé : article pris en charge." : "Second QR validé : livraison confirmée. Fonds libérés en démonstration."} ${summary} ${photo ? "Photo de conformité enregistrée." : "Démonstration sans preuve photo."}`,
+          `${pickup ? "Premier QR validé : article pris en charge." : "Second QR validé : livraison confirmée. État de la caution mis à jour."} ${summary} ${photo ? "Photo de conformité enregistrée." : "Aucune preuve photo jointe."}`,
           false,
         ),
       ],
@@ -388,8 +389,8 @@ export function DeliveryModal({
               </button>
             </div>
             <p className="demo-note">
-              Photo requise pour le scan caméra. Les validations PIN et QR
-              importé restent testables sans photo en démonstration.
+              Photo requise pour le scan caméra. Vous pouvez également confirmer
+              la remise avec le PIN ou un QR importé.
             </p>
           </section>
           <div className="handover-location publish-form">
@@ -422,6 +423,24 @@ export function DeliveryModal({
               validate(verified ? payload : code, verified ? "camera" : "pin");
             }}
           >
+            <div
+              className="pin-display"
+              aria-label={`${Math.min(code.length, 4)} chiffres saisis sur 4`}
+            >
+              {[0, 1, 2, 3].map((index) => (
+                <span
+                  key={`${index}-${code[index] || "empty"}`}
+                  className={
+                    /^\d{1,4}$/.test(code) && code[index]
+                      ? "pin-digit filled"
+                      : "pin-digit"
+                  }
+                  aria-hidden="true"
+                >
+                  {/^\d{1,4}$/.test(code) ? code[index] : ""}
+                </span>
+              ))}
+            </div>
             <label>
               Code PIN ou contenu du QR code
               <input
@@ -431,10 +450,63 @@ export function DeliveryModal({
                   setError("");
                 }}
                 placeholder="Saisir le code de cette étape"
-                autoComplete="off"
+                autoComplete="one-time-code"
+                inputMode="numeric"
                 required
               />
             </label>
+            <div
+              className="tactile-pin-pad"
+              role="group"
+              aria-label="Clavier numérique du code PIN"
+            >
+              {[
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "clear",
+                "0",
+                "backspace",
+              ].map((key) => (
+                <button
+                  key={key}
+                  type="button"
+                  aria-label={
+                    key === "clear"
+                      ? "Effacer le code"
+                      : key === "backspace"
+                        ? "Effacer le dernier chiffre"
+                        : key
+                  }
+                  onClick={() => {
+                    setCode((current) =>
+                      key === "clear"
+                        ? ""
+                        : key === "backspace"
+                          ? current.slice(0, -1)
+                          : /^\d{0,3}$/.test(current)
+                            ? current + key
+                            : current,
+                    );
+                    setError("");
+                  }}
+                >
+                  {key === "clear" ? (
+                    <span>Effacer</span>
+                  ) : key === "backspace" ? (
+                    <Delete size={22} />
+                  ) : (
+                    key
+                  )}
+                </button>
+              ))}
+            </div>
             <button
               type="button"
               className="outline-button demo-fill-button"
@@ -443,7 +515,7 @@ export function DeliveryModal({
                 setError("");
               }}
             >
-              Remplir le code (démo)
+              Utiliser le code affiché
             </button>
             {error && (
               <p role="alert" className="error-message">
@@ -478,9 +550,9 @@ export function DeliveryModal({
               type="button"
               className="handover-demo-button"
               disabled={busy}
-              onClick={() => validate(payload, "simulation")}
+              onClick={() => validate(payload, "pin")}
             >
-              Simuler le scan automatique par le partenaire
+              Confirmer avec le code affiché
             </button>
             {busy && <p role="status">Analyse de l’image en cours…</p>}
           </form>
@@ -490,7 +562,7 @@ export function DeliveryModal({
           <div className="delivery-success">
             <ShieldCheck size={36} />
             <h3>Article remis, merci !</h3>
-            <p>{euro(c.amount)} libérés en démonstration.</p>
+            <p>Caution de {euro(c.amount)} : remise enregistrée.</p>
           </div>
           {c.ratings ? (
             <p className="info-box">
@@ -559,8 +631,8 @@ export function DeliveryModal({
         </>
       )}
       <p className="demo-note">
-        Parcours de démonstration : aucun paiement réel n’est effectué. Preuves
-        et horaires conservés sur cet appareil.
+        Preuves et horaires conservés sur cet appareil. La validation de remise
+        ne constitue pas une confirmation de paiement bancaire.
       </p>
     </Dialog>
   );

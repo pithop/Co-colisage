@@ -36,7 +36,7 @@ export function LuggageVisualizer({
           <h2 id={`${id}-title`}>Vos kilos ont de la valeur.</h2>
         </div>
         <span className="luggage-live">
-          <Sparkles size={13} /> Simulation
+          <Sparkles size={13} /> Estimation
         </span>
       </header>
       <div className="luggage-body">
@@ -169,7 +169,7 @@ export function LuggageVisualizer({
         <Plane size={17} />
         <span>
           {kg >= 8
-            ? "Votre billet d’avion Paris → Alger est financé à 100% !"
+            ? "Vos gains estimés peuvent couvrir un billet à 60 €"
             : "Finance une grande partie de votre trajet"}
         </span>
       </p>
@@ -180,11 +180,10 @@ export function LuggageVisualizer({
         Filtrer les annonces pour {kg} kg <ArrowRight size={17} />
       </button>
       <p className="luggage-security">
-        <ShieldCheck size={16} /> Garantie 1 500 € · Séquestre Stripe
+        <ShieldCheck size={16} /> Suivi des remises · Validation par QR
       </p>
       <small className="luggage-disclaimer">
-        Démonstration : 7,50 €/kg, billet à 60 €. Estimation hors frais ;
-        garantie et séquestre simulés.
+        Hypothèse : 7,50 €/kg, billet à 60 €. Estimation hors frais, sous réserve de réservations confirmées.
         {parcelWeights
           ? " Compatibilité selon le poids renseigné, par colis."
           : " Colis estimés à 3 kg chacun."}

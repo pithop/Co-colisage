@@ -19,8 +19,8 @@ export const platformNotifications = [
     title:
       "Voyagez gratuit : Vol Marseille-Alger à 49 € pour 150 € de commandes (Gain net : +101 €)",
     detail:
-      "Une mission de shopping peut financer votre billet. Comparez les départs et ajustez les commandes dans le simulateur.",
-    action: "Simuler ce vol",
+      "Une mission de shopping peut financer votre billet. Comparez les départs et ajustez les commandes dans le calculateur.",
+    action: "Estimer ce vol",
     target: "arbitrage",
     Icon: Sparkles,
     time: "Il y a 5 min",
@@ -152,7 +152,7 @@ export function NotificationsDrawer({
           </button>
         </div>
         <p className="notifications-demo">
-          Exemples de démonstration · découvrez les parcours de la plateforme.
+          Votre activité et vos prochains départs au même endroit.
         </p>
         <div className="notifications-feed">
           {visible.map((item) => {
