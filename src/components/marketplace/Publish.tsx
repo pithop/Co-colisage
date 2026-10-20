@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { RadarMovement } from "../../services/flightFerryRadarApi";
 import {
   ArrowRight,
   ScanLine,
@@ -114,7 +115,9 @@ export function Publish({
   defaultAutoAccept = false,
   ownerId = localActorId(),
   initialKind,
+  initialRoute,
 }: {
+  initialRoute?: RadarMovement;
   mode: "requests" | "trips";
   name: string;
   onClose: () => void;
@@ -302,6 +305,7 @@ export function Publish({
       </div>
       {kind === "parcel" ? (
         <ParcelComposer
+          initialRoute={initialRoute}
           name={name}
           ownerId={ownerId}
           onPublish={(request) => {

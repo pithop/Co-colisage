@@ -82,15 +82,17 @@ export function FlightDelayDialog({
 export function OrderTracking({
   conversation: c,
   onClose,
+  transportContext: providedContext,
 }: {
   conversation: ConversationData;
+  transportContext?: TransportContext;
   onClose: () => void;
 }) {
   const [waybillOpen, setWaybillOpen] = useState(false);
   const [customsOpen, setCustomsOpen] = useState(false);
   const [radarOpen, setRadarOpen] = useState(false);
 
-  const transportContext: TransportContext = {
+  const transportContext: TransportContext = providedContext || {
     id: c.id,
     subject: c.subject,
     sender: "Sarah",

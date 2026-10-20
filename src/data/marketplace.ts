@@ -18,6 +18,7 @@ export interface PurchaseRequest {
   declaredValue?: number;
   declaredCurrency?: 'EUR' | 'DZD';
   customsDirection?: 'FR-DZ' | 'DZ-FR';
+  transportReference?: string;
   pickupLocation?: string;
   recipientName?: string;
   recipientEmail?: string;

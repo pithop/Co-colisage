@@ -22,7 +22,7 @@ function WaybillPaper({ doc }: { doc: TransportDocument<WaybillFields> }) {
 }
 export function WaybillModal({ context, onClose }: { context: TransportContext; onClose: () => void }) {
   const { t } = useLanguage();
-  const [fields, setFields] = useState<WaybillFields>({ sender: context.sender ?? 'Expéditeur BagVoyage', senderAddress: 'Marseille (MRS) · Prise en charge', carrier: context.carrier ?? 'Transporteur Vérifié', recipient: context.recipient ?? 'Destinataire Confirmé', recipientAddress: 'Alger (ALG) · Livraison convenante', origin: context.origin ?? 'Marseille', destination: context.destination ?? 'Alger', reference: context.reference ?? 'AH1021', date: context.date ?? new Date().toISOString().split('T')[0], description: context.subject, weight: context.weight ?? 5, value: context.value ?? 100, currency: context.currency ?? 'EUR' });
+  const [fields, setFields] = useState<WaybillFields>({ sender: context.sender ?? 'Expéditeur BagVoyage', senderAddress: context.senderAddress ?? 'Marseille (MRS) · Prise en charge', carrier: context.carrier ?? 'Transporteur Vérifié', recipient: context.recipient ?? 'Destinataire Confirmé', recipientAddress: context.recipientAddress ?? 'Alger (ALG) · Livraison convenante', origin: context.origin ?? 'Marseille', destination: context.destination ?? 'Alger', reference: context.reference ?? 'AH1021', date: context.date ?? new Date().toISOString().split('T')[0], description: context.subject, weight: context.weight ?? 5, value: context.value ?? 100, currency: context.currency ?? 'EUR' });
   const [doc, setDoc] = useState<TransportDocument<WaybillFields>>();
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);

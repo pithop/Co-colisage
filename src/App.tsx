@@ -15,6 +15,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import type { RadarMovement } from "./services/flightFerryRadarApi";
 import {
   requests as initialRequests,
   trips as initialTrips,
@@ -84,6 +85,24 @@ const ProOnboardingModal = lazy(() =>
 const TicketScannerModal = lazy(() =>
   import("./components/Modals/TicketScannerModal").then((m) => ({
     default: m.TicketScannerModal,
+  })),
+);
+const InteractiveRadarPage = lazy(() =>
+  import("./components/Radar/InteractiveRadarPage").then((m) => ({
+    default: m.InteractiveRadarPage,
+  })),
+);
+const LoginPage = lazy(() =>
+  import("./components/Auth/LoginPage").then((m) => ({ default: m.LoginPage })),
+);
+const RegisterPage = lazy(() =>
+  import("./components/Auth/RegisterPage").then((m) => ({
+    default: m.RegisterPage,
+  })),
+);
+const TrackingPage = lazy(() =>
+  import("./components/marketplace/TrackingPage").then((m) => ({
+    default: m.TrackingPage,
   })),
 );
 const SmartFlightArbitrage = lazy(() =>
@@ -274,6 +293,7 @@ function Marketplace() {
   };
   const [activeChat, setActiveChat] = useState<string | null>(null);
   const [publish, setPublish] = useState(false);
+  const [radarBooking, setRadarBooking] = useState<RadarMovement>();
   const [scanner, setScanner] = useState(false);
   const [auth, setAuth] = useState<"email" | "apple" | "register" | null>(null);
   const [preview, setPreview] = useState(false);
@@ -285,6 +305,11 @@ function Marketplace() {
   const selectedTrip = route.startsWith("trip/")
     ? trips.find((t) => t.id === route.slice(5))
     : undefined;
+  const radar = route === "radar" || route.startsWith("radar/");
+  const loginPage = route === "login";
+  const registerPage = route === "register";
+  const tracking = route === "tracking";
+  const expansionPage = radar || loginPage || registerPage || tracking;
   const landing = route === "landing";
   const admin = route === "admin";
   const wallet = route === "wallet";
@@ -332,6 +357,14 @@ function Marketplace() {
         c.id === conversation.id
           ? {
               ...conversation,
+              participantIds:
+                conversation.participantIds ??
+                c.participantIds ??
+                (user &&
+                c.stage === "discussion" &&
+                conversation.stage === "secured"
+                  ? [user.id]
+                  : undefined),
               messages: [
                 ...c.messages,
                 ...conversation.messages.filter(
@@ -586,6 +619,12 @@ function Marketplace() {
             Découvrir BagVoyage
             <ArrowRight size={13} />
           </button>
+          <a className="bv-destination-link" href="#radar">
+            Carte interactive
+          </a>
+          <a className="bv-destination-link" href="#tracking">
+            Mes expéditions
+          </a>
           {localAdminEnabled && (
             <button type="button" onClick={() => navigate("admin")}>
               <ShieldCheck size={13} />
@@ -598,8 +637,32 @@ function Marketplace() {
       <main
         id="main-content"
         tabIndex={-1}
-        className={`main-container ${messages ? "messages-container" : ""} ${landing || admin ? "destination-container" : ""}`}
+        className={`main-container ${messages ? "messages-container" : ""} ${landing || admin || loginPage || registerPage ? "destination-container" : ""}`}
       >
+        {expansionPage && (
+          <Suspense fallback={<p role="status">Chargement de votre espace…</p>}>
+            {radar && (
+              <InteractiveRadarPage
+                initialReference={route.split("/")[1]}
+                onShip={(movement) => {
+                  setRadarBooking(movement);
+                  setPublishKind("parcel");
+                  setPublish(true);
+                }}
+              />
+            )}
+            {loginPage && <LoginPage />}
+            {registerPage && <RegisterPage />}
+            {tracking && (
+              <TrackingPage
+                conversations={conversations}
+                requests={requests}
+                trips={trips}
+                loading={!storageReady}
+              />
+            )}
+          </Suspense>
+        )}
         {landing && (
           <Suspense fallback={<p role="status">Chargement de BagVoyage…</p>}>
             <AwwwardsLanding
@@ -751,7 +814,8 @@ function Marketplace() {
           !messages &&
           !arbitrage &&
           !landing &&
-          !admin && (
+          !admin &&
+          !expansionPage && (
             <div className="empty-state">
               <h1>Cette annonce n’est pas disponible</h1>
               <p>
@@ -804,9 +868,7 @@ function Marketplace() {
       {currencyOpen && (
         <CurrencyConverterModal onClose={() => setCurrencyOpen(false)} />
       )}
-      {radarOpen && (
-        <LiveRadarModal onClose={() => setRadarOpen(false)} />
-      )}
+      {radarOpen && <LiveRadarModal onClose={() => setRadarOpen(false)} />}
       {trustOpen && (
         <TrustVerificationModal onClose={() => setTrustOpen(false)} />
       )}
@@ -865,11 +927,15 @@ function Marketplace() {
       {publish && (
         <Publish
           ownerId={actorId}
+          initialRoute={radarBooking}
           initialKind={publishKind}
           defaultAutoAccept={autoAccept}
           mode={mode}
           name={user?.name || "Camille"}
-          onClose={() => setPublish(false)}
+          onClose={() => {
+            setPublish(false);
+            setRadarBooking(undefined);
+          }}
           onRequest={(r) => {
             setRequests((current) => [r, ...current]);
             setMode("requests");

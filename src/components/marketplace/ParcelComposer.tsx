@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { RadarMovement } from "../../services/flightFerryRadarApi";
 import { ArrowRight, Package, ShieldCheck } from "lucide-react";
 import { PhotoGallery } from "./PhotoGallery";
 import type { Attachment } from "../../services/uploads";
@@ -12,7 +13,9 @@ export function ParcelComposer({
   name,
   ownerId,
   onPublish,
+  initialRoute,
 }: {
+  initialRoute?: RadarMovement;
   name: string;
   ownerId: string;
   onPublish: (request: PurchaseRequest) => void;
@@ -21,8 +24,16 @@ export function ParcelComposer({
   const [flexibility, setFlexibility] = useState<
     "urgent" | "week" | "deadline"
   >("week");
-  const [direction, setDirection] = useState<"FR-DZ" | "DZ-FR">("FR-DZ");
-  const [transport, setTransport] = useState("air");
+  const [direction, setDirection] = useState<"FR-DZ" | "DZ-FR">(
+    initialRoute?.origin.code.startsWith("ALG") ||
+      initialRoute?.origin.code.startsWith("ORN") ||
+      initialRoute?.origin.code === "CZL"
+      ? "DZ-FR"
+      : "FR-DZ",
+  );
+  const [transport, setTransport] = useState(
+    initialRoute?.kind === "ferry" ? "sea" : "air",
+  );
   const [value, setValue] = useState(0);
   const [personal, setPersonal] = useState(false);
   const [error, setError] = useState("");
@@ -76,12 +87,27 @@ export function ParcelComposer({
           declaredValue: value,
           declaredCurrency: currency,
           customsDirection: direction,
+          transportReference: initialRoute?.reference,
           image: photos[0].data,
           photos,
-          specifications: str("contents"),
+          specifications: [
+            str("contents"),
+            initialRoute
+              ? `Liaison souhaitée : ${initialRoute.reference} (${initialRoute.origin.code} / ${initialRoute.destination.code}), simulation, disponibilité à confirmer.`
+              : "",
+          ]
+            .filter(Boolean)
+            .join("\n"),
         });
       }}
     >
+      {initialRoute && (
+        <p className="info-box">
+          Liaison souhaitée : {initialRoute.reference} ·{" "}
+          {initialRoute.origin.code} / {initialRoute.destination.code}.
+          Simulation, aucune réservation effectuée.
+        </p>
+      )}
       <div className="composer-heading">
         <Package size={28} />
         <div>
@@ -164,11 +190,21 @@ export function ParcelComposer({
       <div className="form-grid">
         <label>
           Ville de départ
-          <input name="origin" required maxLength={80} />
+          <input
+            name="origin"
+            required
+            maxLength={80}
+            defaultValue={initialRoute?.origin.name}
+          />
         </label>
         <label>
           Ville de destination
-          <input name="destination" required maxLength={80} />
+          <input
+            name="destination"
+            required
+            maxLength={80}
+            defaultValue={initialRoute?.destination.name}
+          />
         </label>
       </div>
       <label>

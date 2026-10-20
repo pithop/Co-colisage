@@ -4,6 +4,8 @@ export interface TransportContext {
   id: string;
   subject: string;
   sender?: string;
+  senderAddress?: string;
+  recipientAddress?: string;
   carrier?: string;
   recipient?: string;
   origin?: string;
@@ -30,7 +32,7 @@ export interface TransportDocument<T = WaybillFields | CustomsFields> {
 }
 export const requestTransportContext = (r: PurchaseRequest): TransportContext => ({
   id: r.id, subject: r.title, sender: r.buyer, recipient: r.recipientName,
-  origin: r.origin, destination: r.destination, date: r.date,
+  origin: r.origin, destination: r.destination, date: r.date, reference: r.transportReference,
   weight: r.weightKg, value: r.declaredValue ?? r.budget, currency: r.declaredCurrency ?? 'EUR',
 });
 export const tripTransportContext = (t: Trip): TransportContext => ({

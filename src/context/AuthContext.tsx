@@ -6,8 +6,8 @@ import { authenticateLocalAccount, registerLocalAccount, Registration } from '..
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, role?: UserRole) => void;
-  signIn: (email: string, password: string) => Promise<void>;
+  login: (email: string, role?: UserRole, remember?: boolean) => void;
+  signIn: (email: string, password: string, remember?: boolean) => Promise<void>;
   register: (input: Registration) => Promise<void>;
   loginWithGoogle: () => void;
   logout: () => void;
@@ -25,10 +25,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Start signed out; the demo account is entered explicitly.
   const [user, setUser] = useState<User | null>(() => {
     try {
-      const saved = localStorage.getItem('bagvoyage_user');
+      const saved = sessionStorage.getItem('bagvoyage_session_user') || localStorage.getItem('bagvoyage_user');
       const parsed = saved ? JSON.parse(saved) : null;
       return parsed && typeof parsed.name === 'string' ? parsed : null;
     } catch { return null; }
+  });
+
+  const [rememberSession, setRememberSession] = useState(() => {
+    try { return !sessionStorage.getItem('bagvoyage_session_user'); } catch { return true; }
   });
 
   useEffect(() => {
@@ -49,12 +53,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     try {
-      if (user) localStorage.setItem('bagvoyage_user', JSON.stringify(user));
-      else localStorage.removeItem('bagvoyage_user');
+      localStorage.removeItem('bagvoyage_user');
+      sessionStorage.removeItem('bagvoyage_session_user');
+      if (user) {
+        if (rememberSession) localStorage.setItem('bagvoyage_user', JSON.stringify(user));
+        else sessionStorage.setItem('bagvoyage_session_user', JSON.stringify(user));
+      }
     } catch { /* Keep the session usable if browser storage is unavailable. */ }
-  }, [user]);
+  }, [user, rememberSession]);
 
-  const login = (email: string, role: UserRole = 'voyageur') => {
+  const login = (email: string, role: UserRole = 'voyageur', remember = true) => {
+    setRememberSession(remember);
     const base = demoUsers[role];
     const newUser: User = {
       ...base,
@@ -92,8 +101,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         isAuthenticated: !!user,
         login,
-        signIn: async (email, password) => {
-          setUser(await authenticateLocalAccount(email, password));
+        signIn: async (email, password, remember = true) => {
+          const authenticated = await authenticateLocalAccount(email, password);
+          setRememberSession(remember);
+          setUser(authenticated);
           setIsAuthModalOpen(false);
         },
         register: async (input) => {

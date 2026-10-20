@@ -13,6 +13,7 @@ export interface Registration {
   password: string;
   role: UserRole;
   identityDocuments?: Attachment[];
+  roles?: User['roles'];
 }
 interface LocalAccount {
   user: User;
@@ -88,6 +89,7 @@ export async function registerLocalAccount(input: Registration): Promise<User> {
     city: input.city.trim(),
     phone: input.phone.trim(),
     role: input.role,
+    roles: input.roles,
     avatar: "",
     kycStatus: "pending",
     rating: 0,
