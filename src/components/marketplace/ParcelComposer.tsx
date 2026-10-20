@@ -4,6 +4,7 @@ import { ArrowRight, Package, ShieldCheck } from "lucide-react";
 import { PhotoGallery } from "./PhotoGallery";
 import type { Attachment } from "../../services/uploads";
 import type { PurchaseRequest } from "../../data/marketplace";
+import { airports } from "../../data/international";
 const dateAfter = (days: number) => {
   const date = new Date();
   date.setDate(date.getDate() + days);
@@ -37,9 +38,11 @@ export function ParcelComposer({
   const [value, setValue] = useState(0);
   const [personal, setPersonal] = useState(false);
   const [error, setError] = useState("");
+  const regionalCustoms = !initialRoute || [initialRoute.origin.code, initialRoute.destination.code]
+    .every(code => ["FR", "DZ"].includes(airports[code.replace("-PORT", "")]?.country ?? (code === "SETE-PORT" ? "FR" : "")));
   const threshold =
     direction === "FR-DZ" ? 150000 : transport === "air" ? 430 : 300;
-  const currency = direction === "FR-DZ" ? "DZD" : "EUR";
+  const currency = regionalCustoms && direction === "FR-DZ" ? "DZD" : "EUR";
   const excess = Math.max(0, value - threshold);
   return (
     <form
@@ -65,6 +68,8 @@ export function ParcelComposer({
           buyer: name,
           origin: str("origin"),
           destination: str("destination"),
+          originCode: initialRoute?.kind === "flight" && str("origin") === initialRoute.origin.name ? initialRoute.origin.code : undefined,
+          destinationCode: initialRoute?.kind === "flight" && str("destination") === initialRoute.destination.name ? initialRoute.destination.code : undefined,
           pickupLocation: str("pickup"),
           location: str("location"),
           recipientName: str("recipientName"),
@@ -86,7 +91,7 @@ export function ParcelComposer({
           reward: num("reward"),
           declaredValue: value,
           declaredCurrency: currency,
-          customsDirection: direction,
+          customsDirection: regionalCustoms ? direction : undefined,
           transportReference: initialRoute?.reference,
           image: photos[0].data,
           photos,
@@ -230,7 +235,7 @@ export function ParcelComposer({
           <input name="recipientEmail" type="email" required maxLength={200} />
         </label>
       </div>
-      <section className="customs-calculator" aria-label="Calculateur douanier">
+      {regionalCustoms ? <section className="customs-calculator" aria-label="Calculateur douanier">
         <h3>
           <ShieldCheck size={19} /> Préparer le passage en douane
         </h3>
@@ -309,7 +314,13 @@ export function ParcelComposer({
             ? "Article 106 LF 2021 : référence historique, à confirmer avant voyage"
             : "Consulter les conditions des douanes françaises"}
         </a>
-      </section>
+      </section> : <section className="customs-calculator" aria-label="Valeur du colis international">
+        <h3><ShieldCheck size={19} /> Informations du colis</h3>
+        <label>Valeur marchande déclarée (EUR)
+          <input type="number" min="0" max="100000000" step="0.01" required value={value || ""} onChange={event => setValue(Number(event.target.value))} />
+        </label>
+        <p>Le régime douanier de cette liaison reste à confirmer avant le transport.</p>
+      </section>}
       <label>
         Budget proposé au voyageur (€)
         <input

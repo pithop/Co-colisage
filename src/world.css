@@ -1,0 +1,64 @@
+.unified-header.site-header {
+  height: 68px;
+  background: rgb(255 255 255 / 94%);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid #e8ebef;
+}
+.unified-header .header-inner {
+  height: 68px;
+  max-width: 1760px;
+  padding: 0 24px;
+  gap: 24px;
+}
+.unified-header .brand-wrap { flex: 0 0 auto; gap: 4px; }
+.unified-header .bagvoyage-insignia { width: 30px; height: 32px; }
+.unified-header .bagvoyage-wordmark { font-size: 19px; font-weight: 750; letter-spacing: -.7px; background: none; -webkit-text-fill-color: #172438; }
+.header-rail { display: flex; align-items: center; justify-content: space-between; gap: 18px; min-width: 0; flex: 1; overflow-x: auto; scrollbar-width: none; height: 100%; }
+.header-rail::-webkit-scrollbar { display: none; }
+.unified-header .desktop-nav { display: flex; flex-shrink: 0; gap: 3px; height: 100%; align-items: center; }
+.unified-header .desktop-nav :is(button, a) { display: inline-flex; align-items: center; gap: 6px; padding: 10px 9px; color: #5e6674; white-space: nowrap; font-size: 12px; font-weight: 550; border-radius: 7px; text-decoration: none; }
+.unified-header .desktop-nav [aria-current="page"] { color: #172438; background: #f1f4f7; }
+.header-utilities { display: flex; flex-shrink: 0; align-items: center; gap: 3px; }
+.unified-header .header-tool { display: inline-flex; justify-content: center; align-items: center; width: 34px; height: 38px; flex-shrink: 0; color: #606c7b; border-radius: 7px; }
+.unified-header :is(.header-tool, .desktop-nav button, .desktop-nav a):hover { background: #f1f4f7; color: #14263b; }
+.unified-header .currency-rate-pill { color: #606c7b; background: none; border: 0; box-shadow: none; min-height: 38px; padding: 6px; gap: 5px; font-size: 11px; }
+.unified-header .currency-rate-pill svg { color: inherit; }
+.unified-header .bv-language { color: #606c7b; gap: 0; min-height: 38px; }
+.unified-header .bv-language svg { display: none; }
+.unified-header .bv-language select { color: #606c7b; font-size: 11px; width: 48px; padding: 6px 2px; min-height: 38px; }
+.unified-header .wallet-pill { border: 0; background: #f4f6f8; color: #26384c; padding: 5px 8px; gap: 5px; min-height: 34px; border-radius: 7px; font-size: 11px; white-space: nowrap; margin-inline: 4px; }
+.unified-header .wallet-pill > span { display: inline; }
+.unified-header .wallet-pill { width: auto; flex-shrink: 0; }
+.unified-header .mobile-header-link { display: none; }
+.unified-header .login-button { display: inline-flex; padding: 8px 10px; gap: 5px; border-radius: 7px; font-size: 11px !important; min-height: 36px; white-space: nowrap; }
+.unified-header .notification-count { width: 13px; height: 13px; min-width: 13px; right: 1px; top: 2px; font-size: 8px; }
+.catalogue-scope { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 20px 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: white; }
+.catalogue-scope p { font-size: 12px; color: var(--muted); }
+.catalogue-scope [role="group"] { display: flex; gap: 4px; flex-shrink: 0; }
+.catalogue-scope button { padding: 8px 12px; border-radius: 7px; color: #596779; font-size: 12px; }
+.catalogue-scope [aria-pressed="true"] { background: #edf3f8; color: #163b60; }
+.demo-label { font-size: 11px; font-weight: 500; color: #657487; }
+.traveler-reviews { margin: 24px 0; border-top: 1px solid var(--line); padding-top: 24px; }
+.traveler-reviews article { padding: 16px 0; border-bottom: 1px solid var(--line); }
+.traveler-reviews article > div { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 12px; }
+.traveler-reviews p { margin-top: 8px; color: #536174; font-size: 13px; line-height: 1.8; }
+.radar-corridor { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #536174; }
+.radar-corridor select { background: white; border: 1px solid #dde4eb; border-radius: 8px; padding: 8px 10px; max-width: 190px; }
+.radar-pagination { display: flex; justify-content: flex-end; align-items: center; gap: 16px; padding: 16px 24px; color: #536174; font-size: 12px; }
+.radar-pagination button { border: 1px solid #dce3eb; padding: 7px 12px; border-radius: 7px; }
+@media (max-width: 1200px) {
+  .unified-header .header-inner { padding: 0 16px; gap: 16px; }
+  .unified-header .currency-rate-compact span { display: none; }
+}
+@media (max-width: 760px) {
+  .unified-header .header-inner { padding: 0 12px; gap: 12px; }
+  .unified-header .bagvoyage-wordmark, .unified-header .header-back { display: none; }
+  .unified-header .desktop-nav, .unified-header .desktop-account { display: none; }
+  .header-rail { gap: 0; }
+  .header-utilities { gap: 3px; }
+  .unified-header .header-tool { width: 34px; height: 44px; }
+  .unified-header .mobile-header-link { display: inline-flex; }
+  .unified-header .login-button { display: inline-flex; }
+  .catalogue-scope { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .radar-corridor { flex-wrap: wrap; }
+}

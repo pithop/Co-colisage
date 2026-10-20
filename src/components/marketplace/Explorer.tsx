@@ -56,6 +56,7 @@ export function Explorer({
     flightRoutes.find((item) => item.id === flightRouteId) ?? flightRoutes[0];
   const flightPrice = Math.min(...flightRoute.prices);
   const [query, setQuery] = useState("");
+  const [worldwide, setWorldwide] = useState(false);
   const [destination, setDestination] = useState("");
   const [date, setDate] = useState("");
   const [budget, setBudget] = useState("");
@@ -65,6 +66,7 @@ export function Explorer({
   const [capacity, setCapacity] = useState<number | null>(null);
   const isRequests = mode === "requests";
   const reset = () => {
+    setWorldwide(false);
     setQuery("");
     setDestination("");
     setDate("");
@@ -81,6 +83,8 @@ export function Explorer({
     words.every((word) => normalize(text).includes(word));
   const visibleRequests = requests.filter(
     (r) =>
+      (worldwide || !r.market) &&
+      (!r.status || r.status === "available") &&
       matches(`${r.title} ${r.origin} ${r.destination}`) &&
       (!destination || r.destination === destination) &&
       (!date || r.date <= date) &&
@@ -90,6 +94,7 @@ export function Explorer({
   );
   const visibleTrips = trips.filter(
     (t) =>
+      (worldwide || !t.market) &&
       matches(
         `${t.travelerName} ${t.origin} ${t.destination} ${t.transportLabel}`,
       ) &&
@@ -190,12 +195,13 @@ export function Explorer({
       </section>
       <div className="discovery-bento">
         <LuggageVisualizer
-          parcelWeights={requests.flatMap((r) =>
+          parcelWeights={requests.filter(r => (worldwide || !r.market) && (!r.status || r.status === "available")).flatMap((r) =>
             r.weightKg === undefined ? [] : [r.weightKg],
           )}
           onSelectCapacity={(kg) => {
             onMode("requests");
             reset();
+            setWorldwide(worldwide);
             setCapacity(kg);
             document
               .getElementById("capacity-results")
@@ -268,6 +274,14 @@ export function Explorer({
               Transports
             </button>
           </div>
+          <div className="catalogue-scope">
+            <div><strong>Des trajets au-delà des frontières.</strong><p>Maghreb, Afrique de l’Ouest, Canada et Émirats.</p></div>
+            <div role="group" aria-label="Catalogue d’annonces">
+              <button aria-pressed={!worldwide} onClick={() => { setWorldwide(false); reset(); }}>Sélection</button>
+              <button aria-pressed={worldwide} onClick={() => { reset(); setWorldwide(true); }}>Monde entier</button>
+            </div>
+          </div>
+          {worldwide && <p className="demo-label">Profils, photos d’illustration et annonces de démonstration.</p>}
           <div className="search-field">
             <Search size={20} />
             <input
@@ -278,7 +292,7 @@ export function Explorer({
                   : "Départ → Arrivée"
               }
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => { setQuery(e.target.value); if (e.target.value.trim()) setWorldwide(true); }}
             />
             {query && (
               <button

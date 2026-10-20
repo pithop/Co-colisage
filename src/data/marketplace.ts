@@ -1,4 +1,5 @@
 import type { FreightItem } from "../types";
+import { internationalRequests, internationalTrips } from "./international";
 
 export interface ShoppingItem {
   id: string;
@@ -9,6 +10,12 @@ export interface ShoppingItem {
   photo?: import('../services/uploads').Attachment;
 }
 export interface PurchaseRequest {
+  market?: "international";
+  demo?: boolean;
+  status?: "available" | "reserved" | "unavailable";
+  originCode?: string;
+  destinationCode?: string;
+  availableFrom?: string;
   ownerId?: string;
   kind?: 'shopping' | 'parcel';
   items?: ShoppingItem[];
@@ -47,6 +54,9 @@ export const acceptedCategories = [
 ] as const;
 export type AcceptedCategory = (typeof acceptedCategories)[number];
 export interface Trip extends FreightItem {
+  market?: "international";
+  demo?: boolean;
+  reviews?: { id: string; author: string; rating: number; date: string; comment: string; demo: boolean }[];
   ownerId?: string;
   professional?: { companyName: string; registration: string; volume: number };
   status?: 'scheduled' | 'in_transit' | 'completed' | 'cancelled';
@@ -91,6 +101,7 @@ export const requests: PurchaseRequest[] = [
     specifications: "Neuf · Eau de parfum · 100 ml",
     location: "Marseille, Saint-Charles",
   },
+  ...internationalRequests,
 ];
 const trip = (
   id: string,
@@ -208,6 +219,7 @@ export const trips: Trip[] = [
     4.9,
     { availableKg: 20, capacity: "20 kg disponibles", pricePerKg: 6 },
   ),
+  ...internationalTrips,
 ];
 export const euro = (value: number) =>
   `${new Intl.NumberFormat("fr-FR").format(value)} €`;

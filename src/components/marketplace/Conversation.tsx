@@ -30,6 +30,7 @@ export interface ChatMessage {
   official?: boolean;
 }
 export interface ConversationData {
+  arbitrage?: { groupId: string; flightId: string; requestIds: string[]; source: "estimate" | "live" };
   id: string;
   name: string;
   subject: string;
@@ -221,6 +222,7 @@ export function Conversation({
             <div>
               <h2>{c.name}</h2>
               <p>{c.subject}</p>
+              {c.arbitrage && <small className="demo-label">Groupe de {c.arbitrage.requestIds.length} missions · accords à confirmer</small>}
             </div>
           </header>
           <div className="escrow-strip">

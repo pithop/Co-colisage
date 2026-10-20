@@ -21,6 +21,7 @@ import {
 } from "../../services/flightFerryRadarApi";
 import { useModalFocus } from "../../hooks/useModalFocus";
 import { InteractiveMediterraneanMap } from "./InteractiveMediterraneanMap";
+import { corridorLabels, type Corridor } from "../../data/international";
 const time = (value: number) =>
   new Date(value).toLocaleTimeString("fr-FR", {
     hour: "2-digit",
@@ -179,6 +180,8 @@ export function InteractiveRadarPage({
   const [snapshot, setSnapshot] = useState(flightFerryRadarApi.getSnapshot);
   const [filter, setFilter] = useState<"all" | RadarKind>("all");
   const [query, setQuery] = useState("");
+  const [corridor, setCorridor] = useState<"all" | Corridor>("all");
+  const [page, setPage] = useState(0);
   const [sort, setSort] = useState<
     "departureAt" | "availableKg" | "pricePerKg"
   >("departureAt");
@@ -201,13 +204,17 @@ export function InteractiveRadarPage({
         .filter(
           (m) =>
             (filter === "all" || m.kind === filter) &&
+            (corridor === "all" || m.corridor === corridor) &&
             `${m.reference} ${m.operator} ${m.vehicle} ${m.origin.code} ${m.origin.name} ${m.destination.code} ${m.destination.name}`
               .toLocaleLowerCase("fr")
               .includes(query.trim().toLocaleLowerCase("fr")),
         )
         .sort((a, b) => (a[sort] - b[sort]) * (ascending ? 1 : -1)),
-    [snapshot, filter, query, sort, ascending],
+    [snapshot, filter, query, sort, ascending, corridor],
   );
+  useEffect(() => setPage(0), [filter, query, sort, ascending, corridor]);
+  const pageCount = Math.max(1, Math.ceil(movements.length / 9));
+  const visibleMovements = movements.slice(Math.min(page, pageCount - 1) * 9, (Math.min(page, pageCount - 1) + 1) * 9);
   const selected = snapshot.movements.find((m) => m.id === selectedId);
   const available = snapshot.movements
     .filter((m) => m.status === "scheduled" || m.status === "boarding")
@@ -217,10 +224,10 @@ export function InteractiveRadarPage({
       <header className="bv-page-heading">
         <div>
           <span className="bv-eyebrow">
-            <Radio size={14} /> LE PONT ENTRE DEUX RIVES
+            <Radio size={14} /> LES CORRIDORS BAGVOYAGE
           </span>
           <h1>
-            La Méditerranée,
+            Le monde,
             <br />
             <em>en mouvement.</em>
           </h1>
@@ -261,10 +268,10 @@ export function InteractiveRadarPage({
             detail: "Sur les prochains départs",
           },
           {
-            label: "Deux rives, un réseau",
-            value: "FR / DZ",
+            label: "Un réseau international",
+            value: "8 pays",
             Icon: Compass,
-            detail: "France et Algérie",
+            detail: "Europe, Afrique, Amérique et Moyen-Orient",
           },
         ].map(({ label, value, Icon, detail }) => (
           <section key={label}>
@@ -311,10 +318,12 @@ export function InteractiveRadarPage({
               </button>
             ))}
           </div>
-          <span className="bv-toolbar-note">
-            France <ArrowRight size={14} /> Algérie <span> / </span> Aller et
-            retour
-          </span>
+          <label className="radar-corridor">Corridor
+            <select aria-label="Corridor" value={corridor} onChange={event => setCorridor(event.target.value as "all" | Corridor)}>
+              <option value="all">Tous</option>
+              {Object.entries(corridorLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+            </select>
+          </label>
         </div>
         <InteractiveMediterraneanMap
           movements={movements}
@@ -384,7 +393,7 @@ export function InteractiveRadarPage({
               </tr>
             </thead>
             <tbody>
-              {movements.map((m) => (
+              {visibleMovements.map((m) => (
                 <tr key={m.id}>
                   <td>
                     <button
@@ -452,6 +461,11 @@ export function InteractiveRadarPage({
             </tbody>
           </table>
         </div>
+        {pageCount > 1 && <nav className="radar-pagination" aria-label="Pages du manifeste">
+          <button disabled={page === 0} onClick={() => setPage(value => value - 1)}>Précédent</button>
+          <span>Page {page + 1} sur {pageCount} · {movements.length} liaisons</span>
+          <button disabled={page >= pageCount - 1} onClick={() => setPage(value => value + 1)}>Suivant</button>
+        </nav>}
         {!movements.length && (
           <div className="bv-empty">
             <Search size={30} />
@@ -462,6 +476,7 @@ export function InteractiveRadarPage({
               onClick={() => {
                 setQuery("");
                 setFilter("all");
+                setCorridor("all");
               }}
             >
               Réinitialiser les filtres

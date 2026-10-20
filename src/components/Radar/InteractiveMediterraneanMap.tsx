@@ -7,107 +7,12 @@ import {
   type RadarMovement,
 } from "../../services/flightFerryRadarApi";
 
+import { worldLand } from "../../data/worldLand";
+
 export const projectMediterranean = (p: GeoPoint) => ({
-  x: ((p.longitude + 5) / 17) * 1000,
-  y: ((51 - p.latitude) / 18) * 680,
+  x: ((p.longitude + 180) / 360) * 1000,
+  y: ((90 - p.latitude) / 180) * 680,
 });
-const outline = (points: [number, number][]) =>
-  points
-    .map(([longitude, latitude], i) => {
-      const p = projectMediterranean({ longitude, latitude });
-      return `${i ? "L" : "M"}${p.x},${p.y}`;
-    })
-    .join(" ") + " Z";
-const land = [
-  [
-    [-5, 51],
-    [12, 51],
-    [12, 45],
-    [9, 44.4],
-    [8.7, 44.1],
-    [7.5, 43.8],
-    [7, 43.5],
-    [6.3, 43.1],
-    [5.9, 43],
-    [5.4, 43.2],
-    [5, 43.35],
-    [4.7, 43.4],
-    [4.1, 43.55],
-    [3.7, 43.4],
-    [3.1, 43.05],
-    [3, 42.5],
-    [2.1, 42.4],
-    [0.7, 42.7],
-    [-1.8, 43.35],
-    [-1.3, 46],
-    [-4.8, 48.5],
-  ],
-  [
-    [-5, 43.7],
-    [-1.8, 43.35],
-    [0.7, 42.7],
-    [2.1, 42.4],
-    [3, 42.5],
-    [3.2, 41.9],
-    [2.2, 41.4],
-    [1, 41],
-    [0.2, 40.5],
-    [-0.3, 39.4],
-    [0.2, 38.8],
-    [-0.6, 38],
-    [-1.7, 37.4],
-    [-2.4, 36.8],
-    [-4.5, 36.6],
-    [-5, 36],
-  ],
-  [
-    [-5, 33],
-    [12, 33],
-    [12, 36.8],
-    [10.8, 37.1],
-    [10, 37.3],
-    [9, 37.2],
-    [8.6, 36.9],
-    [7.2, 37],
-    [6.3, 36.9],
-    [5.3, 36.7],
-    [4.6, 36.9],
-    [3.1, 36.8],
-    [2.2, 36.6],
-    [1, 36.5],
-    [0.2, 36],
-    [-0.6, 35.75],
-    [-1.1, 35.65],
-    [-2.2, 35.1],
-    [-3, 35.3],
-    [-4, 35.2],
-    [-5, 35.5],
-  ],
-  [
-    [8.6, 42.4],
-    [9.35, 43],
-    [9.55, 42.5],
-    [9.4, 41.4],
-    [8.8, 41.5],
-    [8.6, 42.4],
-  ],
-  [
-    [8.2, 40.9],
-    [9.3, 41.25],
-    [9.8, 40.5],
-    [9.6, 39.1],
-    [9, 38.9],
-    [8.4, 39],
-    [8.2, 40],
-  ],
-  [
-    [2.3, 39.6],
-    [3.2, 39.95],
-    [3.5, 39.7],
-    [3, 39.3],
-    [2.5, 39.4],
-  ],
-] satisfies [number, number][][];
 export function InteractiveMediterraneanMap({
   movements,
   selectedId,
@@ -131,14 +36,14 @@ export function InteractiveMediterraneanMap({
   return (
     <div className="bv-map-wrap">
       <div className="bv-map-caption">
-        <span className="bv-live-dot" /> MÉDITERRANÉE OCCIDENTALE{" "}
+        <span className="bv-live-dot" /> RÉSEAU INTERNATIONAL{" "}
         <span>Simulation</span>
       </div>
       <div ref={viewport} className="bv-map-viewport">
         <svg
           className="bv-interactive-map"
-          viewBox={`${500 - 500 / zoom} ${340 - 340 / zoom} ${1000 / zoom} ${680 / zoom}`}
-          aria-label="Carte interactive des vols et ferries France Algérie"
+          viewBox={`${490 - 270 / zoom} ${230 - 180 / zoom} ${540 / zoom} ${360 / zoom}`}
+          aria-label="Carte interactive des vols et ferries dans le monde"
           role="group"
         >
           <defs>
@@ -168,32 +73,21 @@ export function InteractiveMediterraneanMap({
             fill={`url(#${id}-sea)`}
           />
           <rect width="1000" height="680" fill={`url(#${id}-grid)`} />
-          {land.map((points, i) => (
+          {worldLand.map((path, i) => (
             <path
               key={i}
-              d={outline(points)}
+              d={path}
               fill="#fafbf8"
               stroke="#b5c6c8"
-              strokeWidth="1.5"
+              strokeWidth="0.5"
             />
           ))}
-          <g className="bv-map-country">
-            <text x="460" y="160">
-              FRANCE
-            </text>
-            <text x="155" y="375">
-              ESPAGNE
-            </text>
-            <text x="455" y="635">
-              ALGÉRIE
-            </text>
-            <text x="900" y="270">
-              ITALIE
-            </text>
+          <g className="bv-map-country" style={{ fontSize: 7 }}>
+            <text x="265" y="140">CANADA</text>
+            <text x="490" y="135">EUROPE</text>
+            <text x="500" y="285">AFRIQUE</text>
+            <text x="665" y="200">MOYEN-ORIENT</text>
           </g>
-          <text x="570" y="460" className="bv-map-sea">
-            Mer Méditerranée
-          </text>
           {movements.map((m) => {
             const path = Array.from({ length: 65 }, (_, i) => {
               const p = projectMediterranean(routePosition(m, i / 64).position);
@@ -208,7 +102,7 @@ export function InteractiveMediterraneanMap({
               />
             );
           })}
-          {radarNodes.map((n) => {
+          {radarNodes.filter(n => movements.some(m => m.origin.code === n.code || m.destination.code === n.code)).map((n) => {
             const p = projectMediterranean(n),
               port = n.kind === "port";
             const offsets: Record<string, [number, number]> = {
@@ -244,14 +138,14 @@ export function InteractiveMediterraneanMap({
                 <circle
                   cx={p.x}
                   cy={p.y}
-                  r={port ? 4 : 5}
+                  r={port ? 1.8 : 2.2}
                   fill={port ? "#087c77" : "#253d58"}
                   stroke="white"
-                  strokeWidth="2"
+                  strokeWidth="0.8"
                 />
-                <text x={p.x + dx} y={p.y + dy}>
+                {(!port && !["ORY", "LYS", "MRS", "NCE", "ORN", "CZL"].includes(n.code) || zoom > 1.5 || selectedNode === n.code) && <text x={p.x + dx / 2} y={p.y + dy / 2} style={{ fontSize: 6 }}>
                   {n.code.replace("-PORT", " · PORT")}
-                </text>
+                </text>}
               </g>
             );
           })}
@@ -260,7 +154,7 @@ export function InteractiveMediterraneanMap({
             return (
               <g
                 key={m.id}
-                transform={`translate(${p.x} ${p.y})`}
+                transform={`translate(${p.x} ${p.y}) scale(0.5)`}
                 className={`bv-map-vehicle ${m.kind}`}
                 role="button"
                 tabIndex={0}
@@ -282,7 +176,7 @@ export function InteractiveMediterraneanMap({
                   r="18"
                   fill={selectedId === m.id ? "#152e45" : "white"}
                   stroke={m.kind === "flight" ? "#336195" : "#087c77"}
-                  strokeWidth="1.5"
+                  strokeWidth="0.5"
                 />
                 <g
                   transform={`rotate(${m.heading - (m.kind === "flight" ? 45 : 0)})`}

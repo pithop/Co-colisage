@@ -17,7 +17,7 @@ export const flightRoutes: FlightRoute[] = [
     destination: "Alger",
     destinationCode: "ALG",
     prices: [65, 49, 79],
-    airlines: ["Air Algérie", "Vueling", "Transavia"],
+    airlines: ["Air Algérie", "Air Algérie", "Air Algérie"],
   },
   {
     id: "par-alg",
@@ -25,8 +25,8 @@ export const flightRoutes: FlightRoute[] = [
     originCode: "ORY",
     destination: "Alger",
     destinationCode: "ALG",
-    prices: [89, 59, 75],
-    airlines: ["Air Algérie", "Transavia", "Vueling"],
+    prices: [89, 49, 75],
+    airlines: ["Transavia", "Transavia", "Transavia"],
   },
   {
     id: "lys-orn",
@@ -53,7 +53,7 @@ export const flightRoutes: FlightRoute[] = [
     destination: "Casablanca",
     destinationCode: "CMN",
     prices: [95, 69, 89],
-    airlines: ["Vueling", "Vueling", "Vueling"],
+    airlines: ["Royal Air Maroc", "Royal Air Maroc", "Royal Air Maroc"],
   },
 ];
 

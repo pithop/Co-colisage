@@ -43,6 +43,7 @@ export function RequestDetails({
           {r.kind === "parcel" ? "Colis à transporter" : "À acheter et livrer"}
         </span>
         <h1>{r.title}</h1>
+        {r.demo && <p className="demo-label">Annonce et profil de démonstration · photographie d’illustration.</p>}
         <button className="buyer-row" onClick={() => onChat(false)}>
           <Avatar name={r.buyer} src={r.buyerAvatar} />
           <span>
@@ -207,6 +208,15 @@ export function TripDetails({
           </span>
         </div>
         <p className="trip-description">{t.description}</p>
+        {t.demo && <p className="demo-label">Profil de démonstration · photographie d’illustration.</p>}
+        {!!t.reviews?.length && <section className="traveler-reviews" aria-label="Avis sur ce voyageur">
+          <h2>Retours sur les remises</h2>
+          <p className="demo-label">Exemples d’avis de démonstration, sans certification de transaction.</p>
+          {t.reviews.map(review => <article key={review.id}>
+            <div><strong>{review.author}</strong><span className="rating"><Star size={14} />{review.rating}/5</span><time dateTime={review.date}>{dateLabel(review.date, true)}</time></div>
+            <p>{review.comment}</p>
+          </article>)}
+        </section>}
         {(t.autoAccept ||
           t.canBuyProduct ||
           t.acceptedCategories?.length ||

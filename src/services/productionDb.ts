@@ -5,6 +5,7 @@ import {
   type PurchaseRequest,
 } from "../data/marketplace";
 import { initialConversations } from "../data/conversations";
+import { internationalRequests as worldRequests, internationalTrips as worldTrips } from "../data/international";
 import { walletTransactions, type WalletTransaction } from "../data/wallet";
 import type {
   ConversationData,
@@ -129,10 +130,12 @@ const internationalTrips: Trip[] = corridors.map(
       departureDate: date.toISOString().slice(0, 10),
       departureTime: "10:30",
       flightNumber: undefined,
-      travelerName: ["Amine", "Nadia", "Salma", "Julien"][i],
-      travelerAvatar: "",
-      rating: 0,
-      reviewsCount: 0,
+      travelerName: ["Amine Zeroual", "Nadia Koné", "Yasmine Benali", "Thomas Dubois"][i],
+      travelerAvatar: worldTrips[i].travelerAvatar,
+      rating: 4.5,
+      reviewsCount: 2,
+      reviews: worldTrips[i].reviews,
+      demo: true,
       isSuperTraveler: false,
       availableKg: 12 + i,
       pricePerKg: 8 + i,
@@ -149,27 +152,42 @@ export function initDB(): Promise<IDBDatabase> {
       reject(new Error("Le stockage IndexedDB est indisponible."));
       return;
     }
-    const request = indexedDB.open("BagVoyageDB_v1", 2);
+    const request = indexedDB.open("BagVoyageDB_v1", 3);
     request.onupgradeneeded = (event) => {
       const db = request.result;
       for (const name of stores)
         if (!db.objectStoreNames.contains(name))
           db.createObjectStore(name, { keyPath: "id" });
-      if (event.oldVersion > 0) return; // Upgrades must never overwrite existing records.
+      if (event.oldVersion > 0) {
+        // Add the new catalogue once; preserve every existing record and deletion on future reloads.
+        const tx = request.transaction!;
+        for (const [name, rows] of [["trips", worldTrips], ["purchase_requests", worldRequests]] as const) {
+          const store = tx.objectStore(name);
+          rows.forEach((item, index) => {
+            const existing = store.get(item.id);
+            existing.onsuccess = () => { if (!existing.result) store.add({ ...item, _position: 10000 + index }); };
+          });
+        }
+        return;
+      }
       const tx = request.transaction!;
       const seedConversations = legacy(
         "ep-conversations-v1",
         initialConversations,
       );
       const seedTrips = legacy("ep-trips-v1", trips);
+      const seedRequests = legacy("ep-requests-v1", requests);
       const seeds: Partial<{ [K in StoreName]: DatabaseSchema[K][] }> = {
         trips: [
           ...seedTrips,
-          ...internationalTrips.filter(
+          ...[...internationalTrips, ...worldTrips].filter(
             (trip) => !seedTrips.some((existing) => existing.id === trip.id),
           ),
         ],
-        purchase_requests: legacy("ep-requests-v1", requests),
+        purchase_requests: [
+          ...seedRequests,
+          ...worldRequests.filter(request => !seedRequests.some(existing => existing.id === request.id)),
+        ],
         conversations: seedConversations,
         wallet_transactions: walletTransactions(
           seedConversations,

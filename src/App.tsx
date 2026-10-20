@@ -1,17 +1,11 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowLeft,
-  Bell,
-  Wallet,
   ArrowRight,
   CirclePlus,
   MessageCircle,
-  Radio,
+  Plane,
   Search,
-  Share2,
   ShieldCheck,
-  Smartphone,
-  Sparkles,
   UserRound,
 } from "lucide-react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -21,8 +15,7 @@ import {
   trips as initialTrips,
   euro,
 } from "./data/marketplace";
-import { arbitrageOpportunities } from "./data/mockData";
-import { ArbitrageOpportunity, FreightItem } from "./types";
+import { FreightItem } from "./types";
 import { useProductionStore } from "./hooks/useProductionStore";
 import { saveRecords, saveRecord, getRecord } from "./services/productionDb";
 import { useStoredState } from "./hooks/useStoredState";
@@ -47,10 +40,8 @@ import {
   ConversationData,
   createMessage,
 } from "./components/marketplace/Conversation";
-import { BrandMark } from "./components/BrandMark";
 import {
   CurrencyConverterModal,
-  CurrencyRatePill,
 } from "./components/CurrencyConverter/CurrencyConverterModal";
 import { Dialog } from "./components/marketplace/Dialog";
 import { AuthModal } from "./components/Auth/AuthModal";
@@ -62,9 +53,13 @@ import {
 import "./marketplace.css";
 import "./finance.css";
 import "./expansion.css";
+import "./world.css";
+import { MarketplaceHeader } from "./components/MarketplaceHeader";
+import { type MatchedOpportunity } from "./services/flightArbitrageApi";
+import { prepareArbitrageDeal } from "./services/arbitrageBooking";
 import { localActorId } from "./services/uploads";
 import { localAdminEnabled } from "./services/adminOperations";
-import { LanguageProvider, LanguageSelector } from "./context/LanguageContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import { LiveRadarModal } from "./components/logistics/LiveRadarModal";
 import { TrustVerificationModal } from "./components/Trust/TrustVerificationModal";
 const AwwwardsLanding = lazy(() =>
@@ -129,6 +124,10 @@ function Marketplace() {
     useProductionStore("purchase_requests", "ep-requests-v1", initialRequests);
   const [trips, setTrips, tripsReady, tripsError, retryTrips] =
     useProductionStore("trips", "ep-trips-v1", initialTrips);
+  const arbitrageRequests = useMemo(
+    () => requests.filter(request => request.ownerId !== actorId),
+    [requests, actorId],
+  );
   const [autoAccept, setAutoAccept] = useStoredState(
     "ep-auto-accept-v1",
     false,
@@ -297,7 +296,9 @@ function Marketplace() {
   const [scanner, setScanner] = useState(false);
   const [auth, setAuth] = useState<"email" | "apple" | "register" | null>(null);
   const [preview, setPreview] = useState(false);
-  const [deal, setDeal] = useState<ArbitrageOpportunity | null>(null);
+  const [deal, setDeal] = useState<MatchedOpportunity | null>(null);
+  const [dealError, setDealError] = useState("");
+  const [dealPending, setDealPending] = useState(false);
   const [notice, setNotice] = useState("");
   const selectedRequest = route.startsWith("request/")
     ? requests.find((r) => r.id === route.slice(8))
@@ -466,6 +467,17 @@ function Marketplace() {
   };
   const openArbitrage = (routeId?: string) =>
     navigate(routeId ? `arbitrage/${routeId}` : "arbitrage");
+  const reserveArbitrage = async (selected: MatchedOpportunity) => {
+    const prepared = await prepareArbitrageDeal(selected, actorId);
+    setConversations(current => [
+      ...current.filter(conversation => !prepared.some(item => item.id === conversation.id)),
+      ...prepared,
+    ]);
+    setActiveChat(prepared[0].id);
+    setDeal(null);
+    navigate("messages");
+    setNotice(`${prepared.length} discussion${prepared.length > 1 ? "s" : ""} préparée${prepared.length > 1 ? "s" : ""}. Confirmez chaque mission avant de réserver le billet.`);
+  };
   const followNotification = (target: NotificationTarget) => {
     setNotificationsOpen(false);
     if (target === "arbitrage") openArbitrage("mrs-alg");
@@ -515,125 +527,17 @@ function Marketplace() {
       >
         Aller au contenu
       </a>
-      <header className="site-header">
-        <div className="header-inner">
-          <div className="brand-wrap">
-            {!exploring && (
-              <button
-                className="icon-button"
-                aria-label="Retour à Explorer"
-                onClick={() => navigate("explore")}
-              >
-                <ArrowLeft size={22} />
-              </button>
-            )}
-            <button className="brand" onClick={() => navigate("explore")}>
-              <BrandMark />
-            </button>
-          </div>
-          <nav className="desktop-nav" aria-label="Navigation principale">
-            {navItems.map(({ id, label, Icon }) => (
-              <button
-                key={id}
-                className={route === id ? "active" : ""}
-                onClick={() => activate(id)}
-              >
-                <Icon size={17} />
-                {label}
-              </button>
-            ))}
-          </nav>
-          <div className="header-actions">
-            <button
-              className={`wallet-pill ${wallet ? "active" : ""}`}
-              aria-label={`Mon portefeuille, solde disponible ${money(balance.available)}`}
-              aria-current={wallet ? "page" : undefined}
-              onClick={() => navigate("wallet")}
-            >
-              <Wallet size={18} />
-              <span>{money(balance.available)}</span>
-            </button>
-            <button
-              className="icon-button notification-bell"
-              aria-label={`Notifications, ${unreadCount} non lues`}
-              aria-expanded={notificationsOpen}
-              aria-haspopup="dialog"
-              aria-controls={
-                notificationsOpen ? "notifications-drawer" : undefined
-              }
-              onClick={() => setNotificationsOpen(true)}
-            >
-              <Bell size={20} />
-              {unreadCount > 0 && (
-                <span className="notification-count" aria-hidden="true">
-                  {unreadCount}
-                </span>
-              )}
-            </button>
-            {selectedRequest || selectedTrip ? (
-              <button
-                className="icon-button"
-                aria-label="Partager l’annonce"
-                onClick={() => void share()}
-              >
-                <Share2 size={20} />
-              </button>
-            ) : (
-              <>
-                <button
-                  className="preview-toggle icon-button"
-                  aria-label="Aperçu mobile"
-                  onClick={() => setPreview(true)}
-                >
-                  <Smartphone size={19} />
-                </button>
-                <button
-                  className="login-button"
-                  onClick={() =>
-                    user ? navigate("profile") : setAuth("email")
-                  }
-                >
-                  {user ? (
-                    <>
-                      <span className="mini-avatar">{user.name[0]}</span>
-                      <span>Mon profil</span>
-                    </>
-                  ) : (
-                    "Se connecter"
-                  )}
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-        <nav
-          className="header-destinations"
-          aria-label="Découvrir et administrer"
-        >
-          <CurrencyRatePill onClick={() => setCurrencyOpen(true)} />
-          <button type="button" onClick={() => setRadarOpen(true)}>
-            <Radio size={13} />
-            Radar Méditerranée
-          </button>
-          <button type="button" onClick={() => navigate("landing")}>
-            Découvrir BagVoyage
-            <ArrowRight size={13} />
-          </button>
-          <a className="bv-destination-link" href="#radar">
-            Carte interactive
-          </a>
-          <a className="bv-destination-link" href="#tracking">
-            Mes expéditions
-          </a>
-          {localAdminEnabled && (
-            <button type="button" onClick={() => navigate("admin")}>
-              <ShieldCheck size={13} />
-              Super Admin
-            </button>
-          )}
-          <LanguageSelector location="header" />
-        </nav>
-      </header>
+      <MarketplaceHeader
+        route={route} balance={money(balance.available)} unreadCount={unreadCount}
+        notificationsOpen={notificationsOpen} userName={user?.name}
+        showAdmin={localAdminEnabled} canShare={!!(selectedRequest || selectedTrip)}
+        navigate={navigate}
+        onPublish={() => { setPublishKind(undefined); setPublish(true); }}
+        onCurrency={() => setCurrencyOpen(true)} onRadar={() => setRadarOpen(true)}
+        onNotifications={() => setNotificationsOpen(true)}
+        onLogin={() => user ? navigate("profile") : setAuth("email")}
+        onPreview={() => setPreview(true)} onShare={() => void share()}
+      />
       <main
         id="main-content"
         tabIndex={-1}
@@ -785,7 +689,7 @@ function Marketplace() {
           <div className="arbitrage-page">
             <div className="page-intro">
               <span className="eyebrow">
-                <Sparkles size={15} /> ARBITRAGE IA
+                <Plane size={15} /> ARBITRAGE DE VOLS
               </span>
               <h1>
                 Voyager gratuit ou
@@ -800,8 +704,10 @@ function Marketplace() {
               <SmartFlightArbitrage
                 key={arbitrageRoute || "default"}
                 initialRouteId={arbitrageRoute}
-                opportunities={arbitrageOpportunities}
-                onSelectDeal={setDeal}
+                requests={arbitrageRequests}
+                reservedRequestIds={conversations.filter(c => c.stage !== "discussion").map(c => c.id)}
+                onReserveDeal={reserveArbitrage}
+                onSelectDeal={selected => { setDeal(selected); setDealError(""); }}
               />
             </Suspense>
           </div>
@@ -993,6 +899,10 @@ function Marketplace() {
               <dt>Commissions des missions</dt>
               <dd>{euro(deal.totalOrderReward)}</dd>
             </div>
+            {deal.additionalCosts > 0 && <div>
+              <dt>Bagage et frais connus</dt>
+              <dd>{euro(deal.additionalCosts)}</dd>
+            </div>}
             <div>
               <dt>
                 {deal.netProfit >= 0
@@ -1005,23 +915,21 @@ function Marketplace() {
           <p className="muted">{deal.ordersDescription}</p>
           <p className="info-box">
             <InfoIcon />
-            Estimation hors achats, bagages et frais éventuels. Confirmez les
-            missions avant toute réservation.
+            Estimation avec les frais connus, hors budget d’achat et frais
+            non communiqués. Confirmez les missions avant toute réservation.
           </p>
+          {dealError && <p role="alert" className="form-error">{dealError}</p>}
           <button
             className="primary-button"
+            disabled={dealPending}
             onClick={() => {
-              openChat(
-                deal.id,
-                deal.clientName,
-                deal.ordersDescription,
-                deal.totalOrderReward,
-                true,
-              );
-              setDeal(null);
+              setDealPending(true);
+              void reserveArbitrage(deal)
+                .catch(error => setDealError(error instanceof Error ? error.message : "La préparation des discussions a échoué."))
+                .finally(() => setDealPending(false));
             }}
           >
-            Discuter des missions
+            {dealPending ? "Préparation des discussions…" : "Discuter des missions"}
             <ArrowRight size={18} />
           </button>
         </Dialog>

@@ -138,6 +138,10 @@ export interface FlightDeal {
 }
 
 export interface ArbitrageOpportunity {
+  requestIds?: string[];
+  totalWeightKg?: number;
+  roi?: number | null;
+  additionalCosts?: number;
   id: string;
   title: string;
   city: string;

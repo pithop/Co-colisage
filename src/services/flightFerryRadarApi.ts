@@ -1,3 +1,5 @@
+import { airports, type Corridor } from "../data/international";
+
 export interface GeoPoint {
   latitude: number;
   longitude: number;
@@ -10,6 +12,7 @@ export interface RadarNode extends GeoPoint {
 export type RadarKind = "flight" | "ferry";
 export type RadarStatus = "scheduled" | "boarding" | "moving" | "arrived";
 export interface RadarRoute {
+  corridor: Corridor;
   id: string;
   reference: string;
   operator: string;
@@ -48,6 +51,14 @@ export interface RadarSnapshot {
 }
 
 export const radarNodes: readonly RadarNode[] = [
+  { code: "CMN", name: "Casablanca Mohammed V", latitude: 33.3675, longitude: -7.5898, kind: "airport" },
+  { code: "RAK", name: "Marrakech Ménara", latitude: 31.6069, longitude: -8.0363, kind: "airport" },
+  { code: "TUN", name: "Tunis Carthage", latitude: 36.851, longitude: 10.2272, kind: "airport" },
+  { code: "DJE", name: "Djerba Zarzis", latitude: 33.875, longitude: 10.7755, kind: "airport" },
+  { code: "DSS", name: "Dakar Blaise Diagne", latitude: 14.67, longitude: -17.0733, kind: "airport" },
+  { code: "ABJ", name: "Abidjan Félix Houphouët-Boigny", latitude: 5.2614, longitude: -3.9263, kind: "airport" },
+  { code: "YUL", name: "Montréal Pierre Elliott Trudeau", latitude: 45.4706, longitude: -73.7408, kind: "airport" },
+  { code: "DXB", name: "Dubaï International", latitude: 25.2532, longitude: 55.3657, kind: "airport" },
   {
     code: "CDG",
     name: "Paris Charles de Gaulle",
@@ -234,7 +245,8 @@ const node = (code: string): RadarNode => {
 };
 const simulationEpoch = Date.now();
 // Identifiers refer to real operators; assignments, times, cargo and telemetry are demonstration data.
-export function createRadarRoutes(epoch = simulationEpoch): RadarRoute[] {
+// The regional constructor remains backward compatible; the UI subscribes to the worldwide feed.
+export function createRadarRoutes(epoch = simulationEpoch, worldwide = false): RadarRoute[] {
   const definitions: [
     string,
     string,
@@ -366,6 +378,16 @@ export function createRadarRoutes(epoch = simulationEpoch): RadarRoute[] {
       3.5,
     ],
   ];
+  if (worldwide) definitions.push(
+    ["AT780", "Royal Air Maroc", "Boeing 737-800", "flight", "CMN", "ORY", 300, 190, 96, 38, 9],
+    ["TU720", "Tunisair", "Airbus A320", "flight", "TUN", "ORY", 330, 155, 80, 32, 8],
+    ["HC404", "Air Sénégal", "Airbus A330-900", "flight", "DSS", "CDG", 360, 355, 160, 54, 10.5],
+    ["AC870", "Air Canada", "Boeing 777-300ER", "flight", "YUL", "CDG", 390, 415, 180, 64, 10],
+    ["EK074", "Emirates", "Airbus A380", "flight", "CDG", "DXB", 420, 410, 240, 92, 10.5],
+    ["AF702", "Air France", "Boeing 777-300ER", "flight", "CDG", "ABJ", 450, 390, 160, 48, 10],
+    ["TO3010", "Transavia", "Boeing 737-800", "flight", "ORY", "RAK", 480, 200, 75, 24, 8],
+    ["BJ575", "Nouvelair", "Airbus A320", "flight", "LYS", "DJE", 510, 145, 70, 28, 8.5],
+  );
   return definitions.map(
     ([
       reference,
@@ -385,6 +407,7 @@ export function createRadarRoutes(epoch = simulationEpoch): RadarRoute[] {
       operator,
       vehicle,
       kind,
+      corridor: airports[from]?.corridor ?? airports[to]?.corridor ?? "maghreb",
       origin: node(from),
       destination: node(to),
       waypoints:
@@ -406,13 +429,14 @@ export function createRadarRoutes(epoch = simulationEpoch): RadarRoute[] {
 export function getRadarSnapshot(
   now = Date.now(),
   epoch = simulationEpoch,
+  worldwide = false,
 ): RadarSnapshot {
   if (!Number.isFinite(now) || !Number.isFinite(epoch))
     throw new Error("Horodatage radar invalide.");
   return {
     source: "simulation",
     updatedAt: now,
-    movements: createRadarRoutes(epoch).map((route, index) => {
+    movements: createRadarRoutes(epoch, worldwide).map((route, index) => {
       const progress = clamp(
         (now - route.departureAt) / (route.arrivalAt - route.departureAt),
       );
@@ -468,13 +492,13 @@ export const radarStatusLabels: Record<RadarStatus, string> = {
   arrived: "Arrivé",
 };
 export const flightFerryRadarApi = {
-  getSnapshot: getRadarSnapshot,
+  getSnapshot: () => getRadarSnapshot(Date.now(), simulationEpoch, true),
   async getManifest(): Promise<RadarSnapshot> {
-    return getRadarSnapshot();
+    return getRadarSnapshot(Date.now(), simulationEpoch, true);
   },
   subscribe(listener: (snapshot: RadarSnapshot) => void): () => void {
-    listener(getRadarSnapshot());
-    const timer = setInterval(() => listener(getRadarSnapshot()), 1000);
+    listener(getRadarSnapshot(Date.now(), simulationEpoch, true));
+    const timer = setInterval(() => listener(getRadarSnapshot(Date.now(), simulationEpoch, true)), 1000);
     return () => clearInterval(timer);
   },
 };

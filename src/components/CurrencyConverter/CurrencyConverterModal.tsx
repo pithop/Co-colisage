@@ -21,16 +21,18 @@ const amounts = [
 ] as const;
 const dinars = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2 });
 
-export function CurrencyRatePill({ onClick }: { onClick: () => void }) {
+export function CurrencyRatePill({ onClick, compact = false }: { onClick: () => void; compact?: boolean }) {
   return (
     <button
       type="button"
-      className="currency-rate-pill"
+      className={`currency-rate-pill${compact ? " currency-rate-compact" : ""}`}
+      aria-label="1 EUR = 242.50 DZD · Square Port-Saïd"
+      title="1 EUR = 242.50 DZD · Square Port-Saïd"
       onClick={onClick}
       aria-haspopup="dialog"
     >
       <TrendingUp size={15} aria-hidden="true" />
-      <span>1 EUR = 242.50 DZD · Square Port-Saïd</span>
+      <span>{compact ? "Devises" : "1 EUR = 242.50 DZD · Square Port-Saïd"}</span>
     </button>
   );
 }
