@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { Pause, Play } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
+import { FileText, Pause, Play, Sparkles } from "lucide-react";
+import type { AudioTranscription } from "../../types/audio";
 
 export const voiceWave = [
   8, 14, 22, 12, 28, 34, 20, 12, 26, 18, 36, 24, 14, 30, 38, 22, 12, 20, 32, 26,
@@ -12,11 +13,17 @@ export function AudioMessagePlayer({
   url,
   duration = 14,
   mine = false,
+  transcription,
+  transcriptionStatus,
 }: {
   url?: string;
   duration?: number;
   mine?: boolean;
+  transcription?: AudioTranscription;
+  transcriptionStatus?: "pending" | "failed";
 }) {
+  const transcriptId = useId();
+  const [transcriptVisible, setTranscriptVisible] = useState(false);
   const total = Number.isFinite(duration) && duration > 0 ? duration : 14;
   const audio = useRef<HTMLAudioElement>(null);
   const request = useRef(0);
@@ -34,6 +41,7 @@ export function AudioMessagePlayer({
     const element = audio.current;
     setPlaying(false);
     setSimulated(false);
+    setTranscriptVisible(false);
     updatePosition(0);
     return () => {
       request.current += 1;
@@ -166,6 +174,43 @@ export function AudioMessagePlayer({
           Aperçu simulé · audio indisponible
         </small>
       )}
+      <button
+        type="button"
+        className="voice-transcript-toggle"
+        aria-expanded={transcriptVisible}
+        aria-controls={transcriptId}
+        onClick={() => setTranscriptVisible((visible) => !visible)}
+      >
+        <FileText size={16} />
+        {transcriptVisible
+          ? "Masquer la transcription"
+          : "Afficher la transcription"}
+      </button>
+      <div
+        id={transcriptId}
+        hidden={!transcriptVisible}
+        className={transcriptVisible ? "voice-transcript" : undefined}
+      >
+        {transcriptVisible &&
+          (transcription?.text.trim() ? (
+            <>
+              <p dir="auto">{transcription.text}</p>
+              <small>
+                <Sparkles size={12} /> Retranscription automatique Whisper
+              </small>
+              <small>
+                Peut contenir des erreurs. Vérifiez les informations dans
+                l’audio.
+              </small>
+            </>
+          ) : (
+            <p role="status">
+              {transcriptionStatus === "pending"
+                ? "Transcription en cours de traitement…"
+                : "Transcription indisponible pour cette note vocale."}
+            </p>
+          ))}
+      </div>
     </div>
   );
 }

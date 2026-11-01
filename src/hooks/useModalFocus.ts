@@ -1,5 +1,8 @@
 import { useEffect, useRef } from "react";
 
+const modalStack: HTMLDivElement[] = [];
+let bodyOverflow = "";
+
 export function useModalFocus(open: boolean, onClose: () => void) {
   const ref = useRef<HTMLDivElement>(null);
   const close = useRef(onClose);
@@ -7,9 +10,10 @@ export function useModalFocus(open: boolean, onClose: () => void) {
   useEffect(() => {
     if (!open) return;
     const previous = document.activeElement as HTMLElement | null;
-    const overflow = document.body.style.overflow;
+    if (modalStack.length === 0) bodyOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const node = ref.current;
+    if (node) modalStack.push(node);
     const elements = () =>
       Array.from(
         node?.querySelectorAll<HTMLElement>(
@@ -18,6 +22,7 @@ export function useModalFocus(open: boolean, onClose: () => void) {
       ).filter((el) => el.getClientRects().length > 0);
     elements()[0]?.focus();
     const keydown = (event: KeyboardEvent) => {
+      if (modalStack[modalStack.length - 1] !== node) return;
       if (event.key === "Escape") {
         event.preventDefault();
         close.current();
@@ -40,8 +45,12 @@ export function useModalFocus(open: boolean, onClose: () => void) {
     document.addEventListener("keydown", keydown);
     return () => {
       document.removeEventListener("keydown", keydown);
-      document.body.style.overflow = overflow;
-      previous?.focus();
+      const index = node ? modalStack.indexOf(node) : -1;
+      if (index >= 0) modalStack.splice(index, 1);
+      if (modalStack.length === 0) document.body.style.overflow = bodyOverflow;
+      const top = modalStack[modalStack.length - 1];
+      if (previous?.isConnected && (!top || top.contains(previous)))
+        previous.focus();
     };
   }, [open]);
   return ref;

@@ -19,18 +19,30 @@ import { euro } from "../../data/marketplace";
 import { Dialog } from "./Dialog";
 import { Avatar } from "./Avatar";
 import { AudioMessagePlayer, voiceTime, voiceWave } from "./AudioMessagePlayer";
+import type { AudioTranscription } from "../../types/audio";
+import { bundledVoiceTranscriptions } from "../../data/voiceTranscriptions";
 
 export interface ChatMessage {
   id: string;
   text: string;
   mine: boolean;
   time: string;
-  audio?: { url?: string; duration: number };
+  audio?: {
+    url?: string;
+    duration: number;
+    transcription?: AudioTranscription;
+    transcriptionStatus?: "pending" | "failed";
+  };
   qr?: string;
   official?: boolean;
 }
 export interface ConversationData {
-  arbitrage?: { groupId: string; flightId: string; requestIds: string[]; source: "estimate" | "live" };
+  arbitrage?: {
+    groupId: string;
+    flightId: string;
+    requestIds: string[];
+    source: "estimate" | "live";
+  };
   id: string;
   name: string;
   subject: string;
@@ -122,7 +134,12 @@ export function Conversation({
         ...c.messages,
         {
           ...createMessage("Note vocale (0:14)"),
-          audio: { url: "/audio/voice-note-1.ogg", duration: 14 },
+          audio: {
+            url: "/audio/voice-note-1.ogg",
+            duration: 14,
+            transcription:
+              bundledVoiceTranscriptions["/audio/voice-note-1.ogg"],
+          },
         },
       ],
     });
@@ -222,7 +239,12 @@ export function Conversation({
             <div>
               <h2>{c.name}</h2>
               <p>{c.subject}</p>
-              {c.arbitrage && <small className="demo-label">Groupe de {c.arbitrage.requestIds.length} missions · accords à confirmer</small>}
+              {c.arbitrage && (
+                <small className="demo-label">
+                  Groupe de {c.arbitrage.requestIds.length} missions · accords à
+                  confirmer
+                </small>
+              )}
             </div>
           </header>
           <div className="escrow-strip">
@@ -280,6 +302,13 @@ export function Conversation({
                       url={m.audio.url}
                       duration={m.audio.duration}
                       mine={m.mine}
+                      transcription={
+                        m.audio.transcription ??
+                        (m.audio.duration === 14
+                          ? bundledVoiceTranscriptions[m.audio.url ?? ""]
+                          : undefined)
+                      }
+                      transcriptionStatus={m.audio.transcriptionStatus}
                     />
                   )}
                   {m.qr && <QrImage value={m.qr} />}
@@ -448,7 +477,8 @@ export function Conversation({
             </form>
             <p className="demo-note">
               <Info size={12} />
-              Chiffrement de bout en bout AES-256 · Séquestre bancaire garanti par Stripe Connect.
+              Chiffrement de bout en bout AES-256 · Séquestre bancaire garanti
+              par Stripe Connect.
             </p>
           </footer>
         </div>

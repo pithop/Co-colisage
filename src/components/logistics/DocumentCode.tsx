@@ -12,7 +12,7 @@ export function DocumentBarcode({ digest }: { digest: string }) {
   return <svg viewBox={`0 0 ${x + 12} 54`} role="img" aria-label={`Code-barres du bordereau ${digits}`}><rect width="100%" height="100%" fill="white" />{bars.map(bar => <rect key={bar.x} x={bar.x} y="4" width={bar.width} height="34" fill="#0a1128" />)}<text x={(x + 12) / 2} y="49" textAnchor="middle" fontSize="8" fontFamily="monospace">{digits}</text></svg>;
 }
 export function DocumentQr({ id, digest }: { id: string; digest: string }) {
-  const matrix = useMemo(() => QRCode.create(JSON.stringify({ issuer: 'BagVoyage', document: id, sha256: digest }), { errorCorrectionLevel: 'M' }).modules, [id, digest]);
+  const matrix = useMemo(() => QRCode.create(JSON.stringify({ issuer: 'BagVoyage', document: id, ...(digest ? { sha256: digest } : {}) }), { errorCorrectionLevel: 'M' }).modules, [id, digest]);
   const path = Array.from(matrix.data).flatMap((v, i) => v ? [`M${i % matrix.size + 4} ${Math.floor(i / matrix.size) + 4}h1v1h-1z`] : []).join('');
   return <svg viewBox={`0 0 ${matrix.size + 8} ${matrix.size + 8}`} role="img" aria-label="QR code de référence du document" shapeRendering="crispEdges"><rect width="100%" height="100%" fill="white" /><path d={path} fill="#0a1128" /></svg>;
 }

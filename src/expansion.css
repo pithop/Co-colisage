@@ -1,4 +1,942 @@
 /* BagVoyage editorial surfaces and operational workspace. */
+/* Logistics tools share the existing dialog and its keyboard focus boundary. */
+.bv-logistics-actions {
+  margin: 24px 0;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+.bv-logistics-actions > h3 {
+  color: #475569;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  margin-bottom: 12px;
+}
+.bv-logistics-actions > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.bv-logistics-actions button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 76px;
+  min-width: 0;
+  width: 100%;
+  padding: 12px;
+  text-align: start;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  transition:
+    background 0.18s,
+    border-color 0.18s,
+    transform 0.18s;
+}
+.bv-logistics-actions button:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  transform: translateY(-1px);
+}
+.bv-logistics-actions button > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+.bv-logistics-actions button > svg {
+  flex-shrink: 0;
+  color: #64748b;
+}
+.bv-logistics-actions strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.4;
+  color: #0f172a;
+}
+.bv-logistics-actions small {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #64748b;
+}
+.bv-logistics-action-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  height: 36px;
+  color: #1d4ed8;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+.bv-logistics-tool {
+  color: #0f172a;
+  display: grid;
+  gap: 24px;
+  font-size: 14px;
+  line-height: 1.6;
+  min-width: 0;
+}
+.bv-logistics-tool h3 {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.2px;
+  line-height: 1.4;
+}
+.bv-logistics-tool svg {
+  flex-shrink: 0;
+}
+.bv-tool-intro {
+  display: grid;
+  gap: 8px;
+}
+.bv-tool-intro > p {
+  font-size: 23px;
+  line-height: 1.35;
+  letter-spacing: -0.7px;
+  font-weight: 650;
+  max-width: 560px;
+}
+.bv-tool-intro > small {
+  color: #64748b;
+  font-size: 12px;
+}
+.bv-tool-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #1d4ed8;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+}
+.bv-tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.bv-tool-form {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+.bv-tool-form fieldset {
+  min-width: 0;
+  border: 1px solid #e2e8f0;
+  padding: 20px;
+  border-radius: 16px;
+  display: grid;
+  gap: 16px;
+}
+.bv-tool-form legend {
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+}
+.bv-logistics-tool label:not(.bv-tool-check):not(.bv-hs-search) {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+}
+.bv-logistics-tool input:not([type="checkbox"]),
+.bv-logistics-tool select,
+.bv-logistics-tool textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-weight: 450;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.bv-logistics-tool textarea {
+  resize: vertical;
+}
+.bv-tool-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.65;
+  color: #334155;
+  min-height: 44px;
+  padding: 4px 0;
+}
+.bv-tool-check input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  accent-color: #2563eb;
+}
+.bv-logistics-tool input:disabled,
+.bv-logistics-tool fieldset:disabled {
+  opacity: 0.6;
+}
+.bv-tool-note {
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.bv-tool-note > svg {
+  display: inline-block;
+  vertical-align: middle;
+  margin-inline-end: 4px;
+}
+.bv-tool-note a {
+  color: #1d4ed8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.bv-tool-note a svg {
+  display: inline;
+  vertical-align: middle;
+}
+.bv-tool-notice,
+.bv-tool-alert {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.bv-tool-notice {
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  color: #1e40af;
+}
+.bv-tool-alert {
+  border: 1px solid #fed7aa;
+  background: #fff7ed;
+  color: #9a3412;
+}
+.bv-tool-notice svg,
+.bv-tool-alert svg {
+  margin-top: 2px;
+}
+.bv-tool-success {
+  border: 1px solid #a7f3d0;
+  background: #ecfdf5;
+  border-radius: 16px;
+  padding: 20px;
+  color: #065f46;
+  display: grid;
+  gap: 12px;
+}
+.bv-tool-success h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bv-tool-success p {
+  font-size: 12px;
+}
+.bv-tool-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.bv-tool-facts dt {
+  font-size: 10px;
+  color: #64748b;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bv-tool-facts dd {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.3px;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.bv-tool-facts dd small {
+  font-size: 11px;
+  font-weight: 450;
+}
+.bv-tool-hash {
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, monospace;
+  font-size: 10px !important;
+  color: #475569;
+}
+.bv-logistics-tool .primary-button,
+.bv-tool-secondary {
+  min-height: 44px;
+  justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 650;
+}
+.bv-logistics-tool .primary-button {
+  background: #2563eb;
+  color: white;
+  border: 1px solid #2563eb;
+  box-shadow: 0 4px 10px #2563eb15;
+}
+.bv-logistics-tool .primary-button:hover {
+  background: #1d4ed8;
+}
+.bv-logistics-tool .primary-button:disabled {
+  background: #e2e8f0;
+  border-color: #e2e8f0;
+  color: #64748b;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.bv-tool-secondary {
+  background: #fff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+.bv-tool-secondary:hover {
+  background: #f8fafc;
+}
+.bv-tool-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.bv-logistics-tool
+  :is(button, input, select, textarea, a, [tabindex]):focus-visible,
+.bv-logistics-actions button:focus-visible {
+  outline: 3px solid #60a5fa;
+  outline-offset: 3px;
+}
+.bv-seal-preview {
+  padding: 20px;
+  border: 1px solid #a7f3d0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f0fdf4, #fff 75%);
+  display: grid;
+  gap: 16px;
+}
+.bv-seal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #047857;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+.bv-seal-tape {
+  padding: 12px;
+  border: 1px dashed #059669;
+  border-radius: 6px;
+  color: #047857;
+  background: repeating-linear-gradient(
+    135deg,
+    #d1fae5 0px,
+    #d1fae5 10px,
+    #ecfdf5 10px,
+    #ecfdf5 20px
+  );
+  text-align: center;
+  font:
+    700 14px/1.6 ui-monospace,
+    monospace;
+  letter-spacing: 0.12em;
+  overflow-wrap: anywhere;
+}
+.bv-seal-preview.is-void {
+  background: linear-gradient(135deg, #fff1f2, #fff);
+  border-color: #fecdd3;
+}
+.bv-seal-preview.is-void .bv-seal-top {
+  color: #be123c;
+}
+.is-void .bv-seal-tape {
+  border-color: #e11d48;
+  background: repeating-linear-gradient(
+    135deg,
+    #ffe4e6 0px,
+    #ffe4e6 10px,
+    #fff1f2 10px,
+    #fff1f2 20px
+  );
+  color: #be123c;
+  font-size: 22px;
+}
+.bv-seal-identity {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.bv-seal-identity > div {
+  min-width: 0;
+  flex: 1;
+}
+.bv-seal-identity strong {
+  display: block;
+  font:
+    650 13px/1.6 ui-monospace,
+    monospace;
+  overflow-wrap: anywhere;
+  margin: 6px 0;
+}
+.bv-seal-identity > svg {
+  width: 92px;
+  height: 92px;
+  padding: 4px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+.bv-seal-identity p {
+  font-size: 12px;
+}
+.bv-seal-preview small {
+  font-size: 10px;
+  color: #64748b;
+}
+.bv-volume-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: center;
+  gap: 24px;
+}
+.bv-parcel-preview {
+  width: 100%;
+  max-height: 300px;
+}
+.bv-tool-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bv-tool-presets button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  background: #f8fafc;
+  font-size: 11px;
+  border-radius: 10px;
+}
+.bv-volume-results {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.bv-volume-results section {
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #f8fafc;
+}
+.bv-volume-results section > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #475569;
+}
+.bv-volume-results output {
+  display: block;
+  font-size: 36px;
+  font-weight: 750;
+  letter-spacing: -1.4px;
+  font-variant-numeric: tabular-nums;
+  margin: 8px 0 4px;
+}
+.bv-volume-results output small {
+  font-size: 16px;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+.bv-volume-results p {
+  font-size: 10px;
+}
+.bv-volume-results .bv-billable {
+  color: #fff;
+  background: #0f172a;
+  border-color: #0f172a;
+}
+.bv-volume-results .bv-billable > span {
+  color: #cbd5e1;
+}
+.bv-compliance {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 14px;
+}
+.bv-compliance h3 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+}
+.bv-compliance h3 span {
+  font-size: 9px;
+  border-radius: 4px;
+  padding: 2px 4px;
+  color: #9a3412;
+  background: #ffedd5;
+}
+.bv-compliance.is-compatible h3 span {
+  color: #065f46;
+  background: #d1fae5;
+}
+.bv-compliance p {
+  font-size: 11px;
+  color: #64748b;
+  margin: 8px 0;
+}
+.bv-logistics-tool progress {
+  display: block;
+  width: 100%;
+  height: 6px;
+  border: 0;
+  appearance: none;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #e2e8f0;
+  accent-color: #2563eb;
+}
+.bv-logistics-tool progress::-webkit-progress-bar {
+  background: #e2e8f0;
+}
+.bv-logistics-tool progress::-webkit-progress-value {
+  background: #2563eb;
+  border-radius: 20px;
+}
+.bv-logistics-tool progress::-moz-progress-bar {
+  background: #2563eb;
+  border-radius: 20px;
+}
+.bv-compliance.is-exceeded progress::-webkit-progress-value {
+  background: #ea580c;
+}
+.bv-hold-select {
+  margin-top: 8px;
+}
+.bv-airline-comparison {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.bv-tool-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+.bv-tool-table-scroll table {
+  width: 100%;
+  min-width: 580px;
+  border-collapse: collapse;
+  text-align: start;
+  font-size: 11px;
+}
+.bv-tool-table-scroll th,
+.bv-tool-table-scroll td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+  text-align: start;
+}
+.bv-tool-table-scroll thead {
+  color: #64748b;
+  background: #f8fafc;
+  font-size: 10px;
+}
+.bv-tool-table-scroll tr:last-child td,
+.bv-tool-table-scroll tr:last-child th {
+  border-bottom: 0;
+}
+.bv-tool-table-scroll th a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #1d4ed8;
+}
+.bv-tool-table-scroll td small {
+  display: block;
+  margin-top: 4px;
+  color: #64748b;
+  font-size: 10px;
+  max-width: 230px;
+}
+.bv-fit-badge {
+  display: inline-block;
+  border-radius: 6px;
+  padding: 4px 6px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 10px;
+}
+.bv-fit-badge.is-compatible {
+  background: #ecfdf5;
+  color: #047857;
+}
+.bv-locker-card {
+  padding: 24px;
+  display: grid;
+  gap: 24px;
+  border-radius: 20px;
+  border: 1px solid #dbeafe;
+  background: linear-gradient(145deg, #eff6ff, #fff 70%);
+}
+.bv-locker-location {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.bv-locker-location small,
+.bv-locker-location p {
+  color: #64748b;
+  font-size: 11px;
+}
+.bv-locker-location h3 {
+  font-size: 20px;
+  margin: 4px 0;
+  letter-spacing: -0.5px;
+}
+.bv-locker-icon {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #bfdbfe;
+  border-radius: 16px;
+  color: #2563eb;
+  background: #fff;
+  flex-shrink: 0;
+}
+.bv-locker-steps {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.bv-locker-steps span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #475569;
+}
+.bv-locker-access {
+  display: grid;
+  gap: 16px;
+}
+.bv-locker-access h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bv-locker-access > p {
+  color: #64748b;
+  font-size: 12px;
+}
+.bv-otp-card {
+  display: grid;
+  gap: 12px;
+  text-align: center;
+  padding: 24px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  background: #f8fafc;
+}
+.bv-otp-card small {
+  color: #64748b;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+.bv-otp-value {
+  font-family: ui-monospace, monospace;
+  font-size: 32px;
+  letter-spacing: 0.25em;
+  font-weight: 750;
+  color: #0f172a;
+}
+.bv-otp-card p {
+  font-size: 12px;
+  color: #475569;
+}
+.bv-hs-search {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  color: #64748b;
+}
+.bv-hs-catalog {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.bv-hs-catalog button {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  text-align: start;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  min-height: 64px;
+  font-size: 12px;
+}
+.bv-hs-catalog button span {
+  flex: 1 0 100%;
+}
+.bv-hs-catalog button strong {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: #64748b;
+}
+.bv-hs-catalog button[aria-pressed="true"] {
+  border-color: #2563eb;
+  color: #1d4ed8;
+  background: #eff6ff;
+  box-shadow: inset 0 0 0 1px #2563eb;
+}
+.bv-hs-selection {
+  background: #eff6ff;
+  border-inline-start: 3px solid #2563eb;
+  border-radius: 0 12px 12px 0;
+  padding: 16px;
+  font-size: 12px;
+}
+.bv-hs-selection small {
+  display: block;
+  color: #64748b;
+  margin-top: 8px;
+  font-size: 10px;
+}
+.bv-customs-result {
+  display: grid;
+  gap: 20px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+}
+.bv-customs-limit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+}
+.bv-customs-limit strong {
+  font-size: 20px;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+.bv-pir-limit {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 24px;
+  align-items: center;
+  padding: 24px;
+  background: #0f172a;
+  color: white;
+  border-radius: 20px;
+}
+.bv-pir-limit small {
+  display: block;
+  color: #cbd5e1;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+.bv-pir-limit strong {
+  display: block;
+  font-size: 36px;
+  letter-spacing: -1px;
+  white-space: nowrap;
+}
+.bv-pir-limit strong span {
+  font-size: 15px;
+}
+.bv-pir-limit p {
+  font-size: 11px;
+  color: #cbd5e1;
+}
+.bv-pir-insurance {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid #bfdbfe;
+  border-radius: 16px;
+  background: #eff6ff;
+}
+.bv-pir-insurance h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bv-pir-letter {
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px #0f172a08;
+}
+.bv-pir-letter pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.85;
+}
+.voice-player .voice-transcript-toggle {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  font-size: 11px;
+  padding: 8px 0;
+  color: #1d4ed8;
+  text-align: start;
+}
+.voice-transcript {
+  width: 100%;
+  border-top: 1px solid #bfdbfe;
+  padding-top: 12px;
+  animation: bv-transcript-in 0.18s ease-out;
+}
+.voice-transcript p {
+  font-size: 12px;
+  line-height: 1.65;
+  color: #334155;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.voice-transcript small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 9px;
+  color: #64748b;
+}
+.voice-player-mine .voice-transcript-toggle,
+.voice-player-mine .voice-transcript p,
+.voice-player-mine .voice-transcript small {
+  color: #fff;
+}
+.voice-player-mine .voice-transcript {
+  border-color: #ffffff50;
+}
+@keyframes bv-transcript-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 600px) {
+  .bv-volume-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .bv-parcel-preview {
+    max-height: 210px;
+  }
+  .bv-tool-facts {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .bv-tool-facts > div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .bv-tool-facts dd {
+    text-align: end;
+    font-size: 14px;
+  }
+  .bv-pir-limit {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .bv-tool-form fieldset {
+    padding: 16px;
+  }
+  .bv-seal-identity {
+    gap: 12px;
+  }
+  .bv-seal-identity > svg {
+    width: 76px;
+    height: 76px;
+  }
+  .bv-seal-identity strong {
+    font-size: 11px;
+  }
+  .bv-volume-results section {
+    padding: 16px 12px;
+  }
+  .bv-volume-results output {
+    font-size: 30px;
+  }
+  .bv-tool-intro > p {
+    font-size: 21px;
+  }
+  .bv-pir-letter {
+    padding: 16px;
+  }
+}
+@media (max-width: 420px) {
+  .bv-logistics-actions > div,
+  .bv-hs-catalog,
+  .bv-tool-grid {
+    grid-template-columns: 1fr;
+  }
+  .bv-volume-layout .bv-tool-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .bv-logistics-actions button {
+    min-height: 64px;
+  }
+  .bv-customs-limit {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .bv-seal-preview,
+  .bv-locker-card {
+    padding: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bv-logistics-actions button {
+    transition: none;
+  }
+  .voice-transcript {
+    animation: none;
+  }
+}
 .main-container.destination-container {
   max-width: 1440px;
   padding: 0 32px;

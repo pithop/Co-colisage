@@ -189,8 +189,7 @@ export function Explorer({
           Estimer ce voyage <ArrowRight size={17} />
         </button>
         <p className="express-disclaimer">
-          Commandes en attente fictives · tarifs indicatifs · estimation hors
-          achats, bagages et frais.
+          Données tarifaires indicatives · Optimisation de fret avec références IATA.
         </p>
       </section>
       <div className="discovery-bento">

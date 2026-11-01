@@ -1,5 +1,6 @@
 import type { ConversationData } from "../components/marketplace/Conversation";
 import { createMessage } from "../components/marketplace/Conversation";
+import { bundledVoiceTranscriptions } from "./voiceTranscriptions";
 
 export function createCodes() {
   const codes = crypto.getRandomValues(new Uint32Array(2));
@@ -59,7 +60,11 @@ export const initialConversations: ConversationData[] = [
           "Bien sûr. Indiquez-moi son poids, ses dimensions et son contenu. Nous conviendrons du rendez-vous à Marseille et du destinataire à Alger avant l’accord.",
           false,
         ),
-        audio: { url: "/audio/voice-note-1.ogg", duration: 14 },
+        audio: {
+          url: "/audio/voice-note-1.ogg",
+          duration: 14,
+          transcription: bundledVoiceTranscriptions["/audio/voice-note-1.ogg"],
+        },
       },
     ],
   },

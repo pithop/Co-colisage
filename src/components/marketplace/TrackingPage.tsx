@@ -22,6 +22,11 @@ import {
 import { WaybillModal } from "../logistics/WaybillModal";
 import { CustomsModal } from "../logistics/CustomsModal";
 import { OrderTracking } from "./OrderTracking";
+import {
+  LogisticsActions,
+  LogisticsToolModal,
+  type LogisticsTool,
+} from "../logistics/LogisticsTools";
 const stageLabels: Record<ConversationData["stage"], string> = {
   discussion: "En discussion",
   secured: "Prise en charge à organiser",
@@ -49,6 +54,10 @@ export function TrackingPage({
     context: TransportContext;
   }>();
   const [detail, setDetail] = useState<string>();
+  const [logistics, setLogistics] = useState<{
+    tool: LogisticsTool;
+    context: TransportContext;
+  }>();
   const mine = user
     ? conversations.filter(
         (c) => c.stage !== "discussion" && c.participantIds?.includes(user.id),
@@ -327,6 +336,9 @@ export function TrackingPage({
                         {c.resolution.reason}
                       </p>
                     )}
+                    <LogisticsActions
+                      onSelect={(tool) => setLogistics({ tool, context })}
+                    />
                     <footer>
                       <div>
                         <button
@@ -394,6 +406,14 @@ export function TrackingPage({
           transportContext={contextFor(selected)}
           conversation={selected}
           onClose={() => setDetail(undefined)}
+        />
+      )}
+      {logistics && user && mine.some((c) => c.id === logistics.context.id) && (
+        <LogisticsToolModal
+          key={`${logistics.context.id}-${logistics.tool}`}
+          tool={logistics.tool}
+          context={logistics.context}
+          onClose={() => setLogistics(undefined)}
         />
       )}
     </div>

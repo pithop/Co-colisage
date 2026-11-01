@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Check, Clock, FileCheck2, Landmark, MapPin, Plane, Radio, ShieldCheck } from "lucide-react";
+import {
+  Check,
+  Clock,
+  FileCheck2,
+  Landmark,
+  MapPin,
+  Plane,
+  Radio,
+  ShieldCheck,
+} from "lucide-react";
 import { Dialog } from "./Dialog";
 import { createMessage, type ConversationData } from "./Conversation";
 import {
@@ -11,6 +20,11 @@ import { WaybillModal } from "../logistics/WaybillModal";
 import { CustomsModal } from "../logistics/CustomsModal";
 import { LiveRadarModal } from "../logistics/LiveRadarModal";
 import { type TransportContext } from "../../services/transportDocuments";
+import {
+  LogisticsActions,
+  LogisticsToolModal,
+  type LogisticsTool,
+} from "../logistics/LogisticsTools";
 
 export function FlightDelayDialog({
   conversation: c,
@@ -91,6 +105,7 @@ export function OrderTracking({
   const [waybillOpen, setWaybillOpen] = useState(false);
   const [customsOpen, setCustomsOpen] = useState(false);
   const [radarOpen, setRadarOpen] = useState(false);
+  const [logisticsTool, setLogisticsTool] = useState<LogisticsTool>();
 
   const transportContext: TransportContext = providedContext || {
     id: c.id,
@@ -274,8 +289,19 @@ export function OrderTracking({
       </div>
 
       <p className="demo-note">
-        Chiffrement matériel AES-256 · Protocole de remise cryptographique conforme aux normes IATA.
+        Chiffrement matériel AES-256 · Protocole de remise cryptographique
+        conforme aux normes IATA.
       </p>
+
+      <LogisticsActions onSelect={setLogisticsTool} />
+      {logisticsTool && (
+        <LogisticsToolModal
+          key={`${transportContext.id}-${logisticsTool}`}
+          tool={logisticsTool}
+          context={transportContext}
+          onClose={() => setLogisticsTool(undefined)}
+        />
+      )}
 
       {waybillOpen && (
         <WaybillModal
