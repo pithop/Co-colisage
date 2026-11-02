@@ -509,16 +509,6 @@ function Marketplace() {
       navigate("messages");
     }
   };
-  const navItems = [
-    { id: "explore", label: "Explorer", Icon: Search },
-    { id: "publish", label: "Publier", Icon: CirclePlus },
-    { id: "messages", label: "Messages", Icon: MessageCircle },
-    { id: "profile", label: "Profil", Icon: UserRound },
-  ];
-  const activate = (id: string) =>
-    id === "publish"
-      ? (setPublishKind(undefined), setPublish(true))
-      : navigate(id);
   if (!storageReady)
     return (
       <main className="storage-loading">
@@ -784,19 +774,6 @@ function Marketplace() {
           </div>
         </div>
       )}
-      <nav className="mobile-nav" aria-label="Navigation mobile">
-        {navItems.map(({ id, label, Icon }) => (
-          <button
-            key={id}
-            aria-current={route === id ? "page" : undefined}
-            className={route === id ? "active" : ""}
-            onClick={() => activate(id)}
-          >
-            <Icon size={23} strokeWidth={route === id ? 2.3 : 1.7} />
-            <span>{label}</span>
-          </button>
-        ))}
-      </nav>
       {currencyOpen && (
         <CurrencyConverterModal onClose={() => setCurrencyOpen(false)} />
       )}

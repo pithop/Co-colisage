@@ -190,6 +190,31 @@ export function MarketplaceHeader(props: Props) {
               <Compass size={18} />
             </button>
 
+            <a
+              className="header-tool mobile-header-link"
+              href="#tracking"
+              aria-label="Mes expéditions"
+              title="Mes expéditions"
+            >
+              <Package size={18} />
+            </a>
+            <a
+              className="header-tool mobile-header-link"
+              href="#radar"
+              aria-label="Radar Mondial"
+              title="Radar Mondial"
+            >
+              <Globe2 size={18} />
+            </a>
+            <button
+              className="header-tool mobile-header-link"
+              aria-label="Arbitrage Vols"
+              title="Arbitrage Vols"
+              onClick={() => navigate("arbitrage")}
+            >
+              <Plane size={18} />
+            </button>
+
             {props.showAdmin && (
               <button
                 className="header-tool"

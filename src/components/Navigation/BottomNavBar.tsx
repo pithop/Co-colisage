@@ -1,4 +1,4 @@
-import { Compass, Globe2, MessageCircle, Package, Plane } from "lucide-react";
+import { Compass, Globe2, MessageCircle, Package, Plane, UserRound } from "lucide-react";
 
 interface Props {
   route: string;
@@ -47,6 +47,12 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate }: Props
       targetRoute: "messages",
       badge: unreadMessagesCount,
     },
+    {
+      key: "profile",
+      label: "Profil",
+      icon: UserRound,
+      targetRoute: "profile",
+    },
   ];
 
   const isCurrent = (key: string) => {
@@ -55,6 +61,7 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate }: Props
     if (key === "arbitrage" && route.startsWith("arbitrage")) return true;
     if (key === "tracking" && route === "tracking") return true;
     if (key === "messages" && route === "messages") return true;
+    if (key === "profile" && route === "profile") return true;
     return false;
   };
 
