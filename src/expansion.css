@@ -4315,3 +4315,1009 @@
 @media (max-width: 700px) {
   .bv-map-viewport .bv-interactive-map { min-width: 640px; height: 440px; }
 }
+
+/* ==========================================================================
+   MOBILE BOTTOM NAVIGATION BAR (Apple HIG & Linear Mobile Standard)
+   ========================================================================== */
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 74px;
+  }
+
+  .mobile-bottom-nav {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 900;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 -4px 18px rgba(15, 23, 42, 0.06);
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+  }
+
+  .mobile-bottom-nav-inner {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 58px;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 0 4px;
+  }
+
+  .mobile-nav-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    flex: 1;
+    height: 100%;
+    min-height: 48px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 500;
+    position: relative;
+    transition: color 150ms ease, transform 150ms cubic-bezier(0.25, 1, 0.5, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-nav-tab:active {
+    transform: scale(0.92);
+    opacity: 0.85;
+  }
+
+  .mobile-nav-tab.active {
+    color: #2563eb;
+    font-weight: 650;
+  }
+
+  .nav-tab-icon-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 24px;
+  }
+
+  .nav-tab-badge {
+    position: absolute;
+    top: -4px;
+    right: -8px;
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 9.5px;
+    font-weight: 750;
+    height: 16px;
+    min-width: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #ffffff;
+    box-shadow: 0 1px 3px rgba(239, 68, 68, 0.3);
+  }
+
+  .nav-tab-label {
+    letter-spacing: -0.2px;
+  }
+
+  .nav-tab-active-pill {
+    position: absolute;
+    bottom: 2px;
+    width: 14px;
+    height: 3px;
+    background: #2563eb;
+    border-radius: 999px;
+  }
+}
+
+/* ==========================================================================
+   NETWORK STATUS INDICATOR PILL
+   ========================================================================== */
+.network-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 180ms ease;
+  background: transparent;
+}
+
+.network-status-pill.status-online {
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+
+.network-status-pill.status-online:hover {
+  background: #d1fae5;
+}
+
+.network-status-pill.status-offline {
+  background: #fffbeb;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+/* ==========================================================================
+   LOGISTICS TOOLS MODALS BASE STRUCTURE (Linear / Stripe Standard)
+   ========================================================================== */
+.bv-tool-modal {
+  background: #ffffff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90dvh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 100px rgba(10, 17, 40, 0.2);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.bv-tool-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  flex-shrink: 0;
+  gap: 16px;
+}
+
+.bv-tool-header-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bv-tool-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 150ms ease;
+}
+
+.bv-tool-close-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.bv-tool-content {
+  padding: 20px 24px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  flex: 1;
+  min-height: 0;
+}
+
+.bv-tool-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #f1f5f9;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   IATA RESOLUTION 792 (BCBP) SCANNER MODAL
+   ========================================================================== */
+.iata-scanner-modal {
+  max-width: 680px !important;
+}
+
+.iata-scanner-viewfinder-card {
+  background: #0f172a;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid #1e293b;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25);
+}
+
+.iata-viewfinder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: #1e293b;
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.iata-viewfinder-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.dot-active {
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.dot-idle {
+  background: #64748b;
+}
+
+.btn-text-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  color: #60a5fa;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 150ms ease;
+}
+
+.btn-text-action:hover {
+  background: rgba(96, 165, 250, 0.15);
+}
+
+.iata-viewfinder-screen {
+  height: 180px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, #1e293b 0%, #090d16 100%);
+  overflow: hidden;
+}
+
+.viewfinder-frame {
+  width: 260px;
+  height: 120px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.viewfinder-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: #3b82f6;
+  border-style: solid;
+}
+
+.viewfinder-corner.top-left {
+  top: 0; left: 0;
+  border-width: 3px 0 0 3px;
+  border-top-left-radius: 4px;
+}
+
+.viewfinder-corner.top-right {
+  top: 0; right: 0;
+  border-width: 3px 3px 0 0;
+  border-top-right-radius: 4px;
+}
+
+.viewfinder-corner.bottom-left {
+  bottom: 0; left: 0;
+  border-width: 0 0 3px 3px;
+  border-bottom-left-radius: 4px;
+}
+
+.viewfinder-corner.bottom-right {
+  bottom: 0; right: 0;
+  border-width: 0 3px 3px 0;
+  border-bottom-right-radius: 4px;
+}
+
+.viewfinder-laser-line {
+  position: absolute;
+  top: 0;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #38bdf8 50%, transparent 100%);
+  box-shadow: 0 0 10px #38bdf8;
+  animation: laser-scan 2.2s infinite ease-in-out;
+}
+
+@keyframes laser-scan {
+  0%, 100% { top: 10px; opacity: 0.3; }
+  50% { top: 110px; opacity: 1; }
+}
+
+.viewfinder-instruction {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 11.5px;
+  max-width: 210px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.viewfinder-instruction-icon {
+  color: #60a5fa;
+  opacity: 0.75;
+}
+
+.iata-presets-section {
+  margin-bottom: 14px;
+}
+
+.iata-preset-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.preset-flight-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.preset-flight-pill:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+.preset-flight-pill.active {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+  font-weight: 650;
+}
+
+.iata-raw-textarea {
+  width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11.5px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  resize: none;
+}
+
+.iata-result-card {
+  margin-top: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+.iata-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.iata-flight-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #0f172a;
+}
+
+.iata-flight-number {
+  font-size: 16px;
+  font-weight: 750;
+  letter-spacing: -0.3px;
+}
+
+.iata-carrier-name {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.iata-pnr-badge {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #475569;
+}
+
+.iata-route-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 8px;
+}
+
+.route-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.airport-code {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #0f172a;
+}
+
+.airport-tag {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.route-separator-line {
+  flex: 1;
+  height: 2px;
+  background: #e2e8f0;
+  margin: 0 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flight-dot {
+  width: 8px;
+  height: 8px;
+  background: #2563eb;
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px #dbeafe;
+}
+
+.iata-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.iata-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detail-label {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.detail-value {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.detail-value.highlight {
+  color: #059669;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.iata-compliance-note {
+  margin-top: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11.5px;
+  color: #475569;
+  line-height: 1.5;
+  background: #f8fafc;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.iata-compliance-note svg {
+  color: #2563eb;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.iata-error-banner {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+
+.iata-success-banner {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  font-size: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+
+/* ==========================================================================
+   DIGITAL CARGO PASS (Apple Wallet / Passbook Style)
+   ========================================================================== */
+.cargo-pass-modal {
+  max-width: 480px !important;
+}
+
+.wallet-pass-card {
+  background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 20px;
+  color: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wallet-pass-top {
+  padding: 20px 22px 14px;
+}
+
+.pass-brand-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.pass-brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.5px;
+  color: #60a5fa;
+}
+
+.pass-type-indicator {
+  font-size: 10.5px;
+  font-weight: 650;
+  letter-spacing: 0.6px;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #e2e8f0;
+}
+
+.pass-flight-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0 10px;
+}
+
+.pass-station {
+  display: flex;
+  flex-direction: column;
+}
+
+.pass-station.end {
+  align-items: flex-end;
+}
+
+.station-code {
+  font-size: 28px;
+  font-weight: 850;
+  letter-spacing: -0.8px;
+  line-height: 1;
+}
+
+.station-city {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.pass-flight-vector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.pass-plane-icon {
+  color: #38bdf8;
+}
+
+.pass-flight-number {
+  font-size: 12px;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+.wallet-pass-notch-row {
+  position: relative;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.notch {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: #f8fafc;
+  border-radius: 999px;
+  top: 0;
+}
+
+.notch.left {
+  left: -12px;
+}
+
+.notch.right {
+  right: -12px;
+}
+
+.notch-line {
+  width: 100%;
+  height: 1px;
+  border-top: 1.5px dashed rgba(255, 255, 255, 0.2);
+  margin: 0 16px;
+}
+
+.wallet-pass-bottom {
+  padding: 14px 22px 20px;
+}
+
+.pass-metadata-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.pass-meta-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.meta-label {
+  font-size: 10px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.meta-value {
+  font-size: 13.5px;
+  font-weight: 650;
+  color: #f8fafc;
+}
+
+.meta-value.highlight-green {
+  color: #34d399;
+}
+
+.pass-barcode-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+
+.pass-barcode-bars {
+  width: 200px;
+  height: 54px;
+  background: repeating-linear-gradient(
+    90deg,
+    #0f172a 0px,
+    #0f172a 2px,
+    transparent 2px,
+    transparent 4px,
+    #0f172a 4px,
+    #0f172a 7px,
+    transparent 7px,
+    transparent 9px,
+    #0f172a 9px,
+    #0f172a 10px,
+    transparent 10px,
+    transparent 14px,
+    #0f172a 14px,
+    #0f172a 18px,
+    transparent 18px,
+    transparent 21px
+  );
+}
+
+.pass-barcode-number {
+  font-size: 11px;
+  color: #475569;
+  letter-spacing: 1.5px;
+}
+
+.pass-guarantee-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 10.5px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.pass-guarantee-footer svg {
+  color: #60a5fa;
+}
+
+/* ==========================================================================
+   OFFLINE AIRPORT HANDOVER PROTOCOL MODAL
+   ========================================================================== */
+.offline-handover-modal {
+  max-width: 580px !important;
+}
+
+.bv-tool-tag.offline-tag {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.handover-role-switch {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
+
+.role-tab-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.role-tab-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+.qr-certificate-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+}
+
+.qr-certificate-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.mock-dynamic-qr {
+  color: #0f172a;
+}
+
+.qr-nonce {
+  font-size: 11px;
+  color: #64748b;
+  letter-spacing: 0.5px;
+}
+
+.qr-info-column {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.qr-badge-status {
+  font-size: 11.5px;
+  font-weight: 750;
+  color: #059669;
+  background: #ecfdf5;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid #a7f3d0;
+}
+
+.qr-explanation {
+  font-size: 12.5px;
+  color: #475569;
+  line-height: 1.5;
+  max-width: 380px;
+}
+
+.pin-highlight-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+
+.pin-label {
+  font-size: 12px;
+  color: #1e40af;
+  font-weight: 500;
+}
+
+.pin-digits {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1d4ed8;
+  letter-spacing: 2px;
+}
+
+.scanner-status-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  color: #065f46;
+  font-size: 12px;
+  font-weight: 550;
+  margin-bottom: 14px;
+}
+
+.pin-input-field {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  text-align: center;
+  border: 2px solid #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.pin-input-field:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.checkbox-row-styled {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12.5px;
+  color: #334155;
+  line-height: 1.5;
+  cursor: pointer;
+  margin-top: 14px;
+}
+
+.checkbox-row-styled input {
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
+  accent-color: #2563eb;
+}
+
+.handover-success-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  margin-top: 14px;
+}
+
+.handover-success-card .success-icon {
+  color: #16a34a;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.handover-success-card h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #166534;
+  margin: 0 0 4px;
+}
+
+.handover-success-card p {
+  font-size: 12px;
+  color: #15803d;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.offline-security-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}

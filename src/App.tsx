@@ -62,6 +62,10 @@ import { localAdminEnabled } from "./services/adminOperations";
 import { LanguageProvider } from "./context/LanguageContext";
 import { LiveRadarModal } from "./components/logistics/LiveRadarModal";
 import { TrustVerificationModal } from "./components/Trust/TrustVerificationModal";
+import { BottomNavBar } from "./components/Navigation/BottomNavBar";
+import { BoardingPassScannerModal } from "./components/logistics/BoardingPassScannerModal";
+import { DigitalCargoPassModal } from "./components/logistics/DigitalCargoPassModal";
+import { OfflineHandoverModal } from "./components/logistics/OfflineHandoverModal";
 const AwwwardsLanding = lazy(() =>
   import("./components/LandingPage/AwwwardsLanding").then((module) => ({
     default: module.AwwwardsLanding,
@@ -111,6 +115,24 @@ function Marketplace() {
   const [anonymousId] = useState(localActorId);
   const actorId = user?.id || anonymousId;
   const [proOnboarding, setProOnboarding] = useState(false);
+  const [isOnline, setIsOnline] = useState<boolean>(() =>
+    typeof navigator !== "undefined" ? navigator.onLine : true,
+  );
+  const [iataScannerOpen, setIataScannerOpen] = useState(false);
+  const [cargoPassOpen, setCargoPassOpen] = useState(false);
+  const [offlineHandoverOpen, setOfflineHandoverOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
   const [publishKind, setPublishKind] = useState<
     "requests" | "trips" | "parcel" | undefined
   >();
@@ -531,12 +553,16 @@ function Marketplace() {
         route={route} balance={money(balance.available)} unreadCount={unreadCount}
         notificationsOpen={notificationsOpen} userName={user?.name}
         showAdmin={localAdminEnabled} canShare={!!(selectedRequest || selectedTrip)}
+        isOnline={isOnline}
         navigate={navigate}
         onPublish={() => { setPublishKind(undefined); setPublish(true); }}
         onCurrency={() => setCurrencyOpen(true)} onRadar={() => setRadarOpen(true)}
         onNotifications={() => setNotificationsOpen(true)}
         onLogin={() => user ? navigate("profile") : setAuth("email")}
         onPreview={() => setPreview(true)} onShare={() => void share()}
+        onScanBoardingPass={() => setIataScannerOpen(true)}
+        onCargoPass={() => setCargoPassOpen(true)}
+        onOfflineHandover={() => setOfflineHandoverOpen(true)}
       />
       <main
         id="main-content"
@@ -946,6 +972,26 @@ function Marketplace() {
           />
         </Dialog>
       )}
+      <BottomNavBar
+        route={route}
+        unreadMessagesCount={unreadCount}
+        navigate={navigate}
+      />
+      <BoardingPassScannerModal
+        isOpen={iataScannerOpen}
+        onClose={() => setIataScannerOpen(false)}
+        onFlightImported={(flight) => {
+          setNotice(`Vol ${flight.flightNumber} importé avec succès (${flight.fromAirport} -> ${flight.toAirport})`);
+        }}
+      />
+      <DigitalCargoPassModal
+        isOpen={cargoPassOpen}
+        onClose={() => setCargoPassOpen(false)}
+      />
+      <OfflineHandoverModal
+        isOpen={offlineHandoverOpen}
+        onClose={() => setOfflineHandoverOpen(false)}
+      />
     </div>
   );
 }
