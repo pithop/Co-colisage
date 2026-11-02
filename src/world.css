@@ -19,11 +19,13 @@
 .unified-header .desktop-nav :is(button, a) { display: inline-flex; align-items: center; gap: 6px; padding: 10px 9px; color: #5e6674; white-space: nowrap; font-size: 12px; font-weight: 550; border-radius: 7px; text-decoration: none; }
 .unified-header .desktop-nav [aria-current="page"] { color: #172438; background: #f1f4f7; }
 .header-utilities { display: flex; flex-shrink: 0; align-items: center; gap: 3px; }
+.header-primary-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; order: 1; }
+.header-tool-label { display: none; }
 .unified-header .header-tool { display: inline-flex; justify-content: center; align-items: center; width: 34px; height: 38px; flex-shrink: 0; color: #606c7b; border-radius: 7px; }
 .unified-header :is(.header-tool, .desktop-nav button, .desktop-nav a):hover { background: #f1f4f7; color: #14263b; }
 .unified-header .currency-rate-pill { color: #606c7b; background: none; border: 0; box-shadow: none; min-height: 38px; padding: 6px; gap: 5px; font-size: 11px; }
 .unified-header .currency-rate-pill svg { color: inherit; }
-.unified-header .bv-language { color: #606c7b; gap: 0; min-height: 38px; }
+.unified-header .bv-language { position: relative; color: #606c7b; gap: 0; min-height: 38px; }
 .unified-header .bv-language svg { display: none; }
 .unified-header .bv-language select { color: #606c7b; font-size: 11px; width: 48px; padding: 6px 2px; min-height: 38px; }
 .unified-header .wallet-pill { border: 0; background: #f4f6f8; color: #26384c; padding: 5px 8px; gap: 5px; min-height: 34px; border-radius: 7px; font-size: 11px; white-space: nowrap; margin-inline: 4px; }
@@ -51,14 +53,82 @@
   .unified-header .currency-rate-compact span { display: none; }
 }
 @media (max-width: 760px) {
-  .unified-header .header-inner { padding: 0 12px; gap: 12px; }
-  .unified-header .bagvoyage-wordmark, .unified-header .header-back { display: none; }
+  .unified-header.site-header { position: relative; margin-bottom: 56px; }
+  .unified-header .header-inner { padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); gap: 8px; }
+  .unified-header .brand { min-height: 44px; }
+  .unified-header .bagvoyage-wordmark { display: inline; font-size: 17px; }
+  .unified-header .bagvoyage-insignia { width: 26px; height: 28px; }
+  .unified-header .header-back { display: none; }
   .unified-header .desktop-nav, .unified-header .desktop-account { display: none; }
-  .header-rail { gap: 0; }
-  .header-utilities { gap: 3px; }
-  .unified-header .header-tool { width: 34px; height: 44px; }
+  .header-rail { display: contents; }
+  .header-primary-actions { gap: 0; margin-inline-start: auto; }
+  .unified-header .network-status-pill { width: 44px; height: 44px; padding: 0; justify-content: center; border: 0; background: transparent; }
+  .unified-header .network-status-pill svg { width: 18px; height: 18px; }
+  .unified-header .network-status-label { display: none; }
+  .unified-header .header-tool { width: 44px; height: 44px; border-radius: 12px; }
+  .unified-header .header-profile { background: #f1f5f9; color: #334155; }
+  .unified-header .header-profile[aria-current="page"] { background: #eff6ff; color: #2563eb; }
+  .unified-header .notification-count { right: 6px; top: 5px; }
+  .unified-header .mobile-tools-scroll {
+    position: absolute;
+    top: 100%;
+    inset-inline: 0;
+    height: 56px;
+    min-width: 0;
+    max-width: 100%;
+    gap: 8px;
+    padding: 6px max(16px, env(safe-area-inset-right)) 6px max(16px, env(safe-area-inset-left));
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    scroll-padding-inline: 16px;
+    background: #fff;
+    border-bottom: 1px solid #e8ebef;
+  }
+  .mobile-tools-scroll::-webkit-scrollbar { display: none; }
+  .unified-header .mobile-tools-scroll .header-tool { width: auto; min-width: 44px; gap: 6px; padding: 0 10px; background: #f8fafc; border: 1px solid #e8ebef; }
+  .unified-header .header-tool-label { display: inline; white-space: nowrap; font-size: 11px; font-weight: 600; }
+  .unified-header .mobile-tools-scroll :is(.currency-rate-pill, .wallet-pill, .login-button, .bv-language, .bv-language select) { min-height: 44px; flex-shrink: 0; }
+  .unified-header .bv-language select { width: 104px; }
+  .unified-header :is(.header-tool, .network-status-pill):active { transform: scale(.94); }
+  .unified-header :focus-visible { outline-offset: -3px; }
   .unified-header .mobile-header-link { display: inline-flex; }
   .unified-header .login-button { display: inline-flex; }
-  .catalogue-scope { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .catalogue-scope { gap: 8px; margin: 8px 0; padding: 0; border: 0; background: transparent; }
+  .catalogue-scope > div:first-child { display: none; }
+  .catalogue-scope [role="group"] { width: 100%; }
+  .catalogue-scope button { min-height: 44px; flex: 1; }
   .radar-corridor { flex-wrap: wrap; }
+}
+
+/* Keep the catalogue first in the mobile reading and keyboard order. */
+.explorer-page { display: flex; flex-direction: column; min-width: 0; }
+.explorer-page > .explore-heading { order: 0; }
+.explorer-page > .express-arbitrage { order: 1; }
+.explorer-page > .discovery-bento { order: 2; }
+.explorer-page > .explore-layout { order: 3; }
+.publish-label-mobile { display: none; }
+
+@media (max-width: 760px) {
+  .explorer-page > .explore-layout { order: 1; }
+  .explorer-page > .express-arbitrage { order: 2; margin: 24px 0 0; padding: 16px; background: #fff; border-radius: 16px; box-shadow: none; }
+  .explorer-page > .discovery-bento { order: 3; margin: 16px 0 0; }
+  .explorer-page .search-field { margin-top: 8px; }
+  .explorer-page .filter-row { flex-wrap: wrap; gap: 8px; }
+  .explorer-page .filter-pill { min-height: 44px; }
+  .explorer-page .results-heading { margin-top: 16px; }
+  .explorer-page .discovery-column { display: grid; gap: 12px; }
+  .explorer-page .arbitrage-teaser { min-height: 0; padding: 20px; border-radius: 16px; }
+  .explorer-page .arbitrage-teaser h2 { font-size: 20px; margin: 0 0 8px; }
+  .explorer-page .arbitrage-teaser h2 br { display: none; }
+  .explorer-page .arbitrage-teaser h2 em { font-style: normal; }
+  .explorer-page :is(.teaser-tag, .teaser-orbit, .trust-note) { display: none; }
+  .explorer-page :is(.luggage-visualizer, .express-scan-card, .market-guarantees) { padding: 16px; border-radius: 16px; background: #fff; box-shadow: none; }
+  .explorer-page .express-scan-card h2 { font-size: 20px; }
+  .publish-label-desktop { display: none; }
+  .publish-label-mobile { display: inline; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .unified-header button { transition: none; }
 }

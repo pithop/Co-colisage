@@ -119,7 +119,7 @@ export function Explorer({
         { label: "Dimensions", value: size },
       ];
   return (
-    <>
+    <div className="explorer-page">
       <section className="explore-heading">
         <div className="eyebrow">
           <span /> LES BONS TRAJETS FONT LES BONNES RENCONTRES
@@ -143,114 +143,6 @@ export function Explorer({
             : "Consultez les offres ou proposez la vôtre."}
         </p>
       </section>
-      <section className="express-arbitrage" aria-labelledby="express-title">
-        <div className="express-heading">
-          <span className="finance-icon">
-            <Plane size={22} />
-          </span>
-          <div>
-            <span className="eyebrow">ARBITRAGE EXPRESS</span>
-            <h2 id="express-title">Calculateur de vol gratuit</h2>
-            <p>Une destination. Des missions. Votre billet financé.</p>
-          </div>
-        </div>
-        <div className="express-controls">
-          <label htmlFor="express-destination">Votre destination</label>
-          <select
-            id="express-destination"
-            value={flightRouteId}
-            onChange={(e) => setFlightRouteId(e.target.value)}
-          >
-            {flightRoutes
-              .filter((item) => item.id !== "par-alg")
-              .map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.destination} · depuis {item.origin}
-                </option>
-              ))}
-          </select>
-        </div>
-        <div
-          className="express-result"
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          <span>Gain net estimé</span>
-          <strong>+{euro(demoCommission - flightPrice)}</strong>
-          <small>
-            {euro(demoCommission)} de commissions − {euro(flightPrice)} de vol
-          </small>
-        </div>
-        <button
-          className="primary-button"
-          onClick={() => onArbitrage(flightRouteId)}
-        >
-          Estimer ce voyage <ArrowRight size={17} />
-        </button>
-        <p className="express-disclaimer">
-          Données tarifaires indicatives · Optimisation de fret avec références IATA.
-        </p>
-      </section>
-      <div className="discovery-bento">
-        <LuggageVisualizer
-          parcelWeights={requests.filter(r => (worldwide || !r.market) && (!r.status || r.status === "available")).flatMap((r) =>
-            r.weightKg === undefined ? [] : [r.weightKg],
-          )}
-          onSelectCapacity={(kg) => {
-            onMode("requests");
-            reset();
-            setWorldwide(worldwide);
-            setCapacity(kg);
-            document
-              .getElementById("capacity-results")
-              ?.scrollIntoView({ behavior: "smooth", block: "start" });
-            document
-              .getElementById("capacity-results")
-              ?.focus({ preventScroll: true });
-          }}
-        />
-        <section
-          className="express-scan-card"
-          aria-labelledby="express-scan-title"
-        >
-          <span className="express-scan-icon">
-            <ScanLine size={28} strokeWidth={1.5} />
-          </span>
-          <span className="eyebrow">VOTRE VOYAGE COMMENCE ICI</span>
-          <h2 id="express-scan-title">Scanner mon billet d’avion express</h2>
-          <p>
-            Votre vol, votre franchise, votre prochaine mission. Retrouvez les
-            informations de votre billet en un scan.
-          </p>
-          <button className="primary-button" onClick={onScan}>
-            Lancer le scan express <ArrowRight size={17} />
-          </button>
-        </section>
-        <section
-          className="market-guarantees"
-          aria-labelledby="market-guarantees-title"
-        >
-          <h2 id="market-guarantees-title">
-            <ShieldCheck size={20} /> Votre réseau, en chiffres
-          </h2>
-          <dl>
-            <div>
-              <dt>Demandes d’achat</dt>
-              <dd>{requests.length}</dd>
-            </div>
-            <div>
-              <dt>Trajets proposés</dt>
-              <dd>{trips.length}</dd>
-            </div>
-            <div>
-              <dt>Modes de transport</dt>
-              <dd>{new Set(trips.map((trip) => trip.transportType)).size}</dd>
-            </div>
-          </dl>
-          <p>Estimez vos gains et convenez des modalités avant de réserver.</p>
-        </section>
-      </div>
       <div className="explore-layout">
         <section className="listing-column" aria-label="Explorer les annonces">
           <div className="segment" aria-label="Type d’annonces">
@@ -656,6 +548,114 @@ export function Explorer({
           </div>
         </aside>
       </div>
-    </>
+      <section className="express-arbitrage" aria-labelledby="express-title">
+        <div className="express-heading">
+          <span className="finance-icon">
+            <Plane size={22} />
+          </span>
+          <div>
+            <span className="eyebrow">ARBITRAGE EXPRESS</span>
+            <h2 id="express-title">Calculateur de vol gratuit</h2>
+            <p>Une destination. Des missions. Votre billet financé.</p>
+          </div>
+        </div>
+        <div className="express-controls">
+          <label htmlFor="express-destination">Votre destination</label>
+          <select
+            id="express-destination"
+            value={flightRouteId}
+            onChange={(e) => setFlightRouteId(e.target.value)}
+          >
+            {flightRoutes
+              .filter((item) => item.id !== "par-alg")
+              .map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.destination} · depuis {item.origin}
+                </option>
+              ))}
+          </select>
+        </div>
+        <div
+          className="express-result"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <span>Gain net estimé</span>
+          <strong>+{euro(demoCommission - flightPrice)}</strong>
+          <small>
+            {euro(demoCommission)} de commissions − {euro(flightPrice)} de vol
+          </small>
+        </div>
+        <button
+          className="primary-button"
+          onClick={() => onArbitrage(flightRouteId)}
+        >
+          Estimer ce voyage <ArrowRight size={17} />
+        </button>
+        <p className="express-disclaimer">
+          Données tarifaires indicatives · Optimisation de fret avec références IATA.
+        </p>
+      </section>
+      <div className="discovery-bento">
+        <LuggageVisualizer
+          parcelWeights={requests.filter(r => (worldwide || !r.market) && (!r.status || r.status === "available")).flatMap((r) =>
+            r.weightKg === undefined ? [] : [r.weightKg],
+          )}
+          onSelectCapacity={(kg) => {
+            onMode("requests");
+            reset();
+            setWorldwide(worldwide);
+            setCapacity(kg);
+            document
+              .getElementById("capacity-results")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+            document
+              .getElementById("capacity-results")
+              ?.focus({ preventScroll: true });
+          }}
+        />
+        <section
+          className="express-scan-card"
+          aria-labelledby="express-scan-title"
+        >
+          <span className="express-scan-icon">
+            <ScanLine size={28} strokeWidth={1.5} />
+          </span>
+          <span className="eyebrow">VOTRE VOYAGE COMMENCE ICI</span>
+          <h2 id="express-scan-title">Scanner mon billet d’avion express</h2>
+          <p>
+            Votre vol, votre franchise, votre prochaine mission. Retrouvez les
+            informations de votre billet en un scan.
+          </p>
+          <button className="primary-button" onClick={onScan}>
+            Lancer le scan express <ArrowRight size={17} />
+          </button>
+        </section>
+        <section
+          className="market-guarantees"
+          aria-labelledby="market-guarantees-title"
+        >
+          <h2 id="market-guarantees-title">
+            <ShieldCheck size={20} /> Votre réseau, en chiffres
+          </h2>
+          <dl>
+            <div>
+              <dt>Demandes d’achat</dt>
+              <dd>{requests.length}</dd>
+            </div>
+            <div>
+              <dt>Trajets proposés</dt>
+              <dd>{trips.length}</dd>
+            </div>
+            <div>
+              <dt>Modes de transport</dt>
+              <dd>{new Set(trips.map((trip) => trip.transportType)).size}</dd>
+            </div>
+          </dl>
+          <p>Estimez vos gains et convenez des modalités avant de réserver.</p>
+        </section>
+      </div>
+    </div>
   );
 }

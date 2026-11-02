@@ -1,4 +1,4 @@
-import { Compass, Globe2, MessageCircle, Package, Plane, UserRound } from "lucide-react";
+import { Compass, Globe2, MessageCircle, Package, Plane } from "lucide-react";
 
 interface Props {
   route: string;
@@ -47,12 +47,6 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate }: Props
       targetRoute: "messages",
       badge: unreadMessagesCount,
     },
-    {
-      key: "profile",
-      label: "Profil",
-      icon: UserRound,
-      targetRoute: "profile",
-    },
   ];
 
   const isCurrent = (key: string) => {
@@ -61,7 +55,6 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate }: Props
     if (key === "arbitrage" && route.startsWith("arbitrage")) return true;
     if (key === "tracking" && route === "tracking") return true;
     if (key === "messages" && route === "messages") return true;
-    if (key === "profile" && route === "profile") return true;
     return false;
   };
 
@@ -88,14 +81,14 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate }: Props
                 }
               }}
             >
-              <div className="nav-tab-icon-wrap">
-                <IconComponent size={20} className="nav-tab-icon" />
+              <span className="nav-tab-icon-wrap">
+                <IconComponent size={20} className="nav-tab-icon" aria-hidden="true" />
                 {item.badge !== undefined && item.badge > 0 && (
                   <span className="nav-tab-badge" aria-label={`${item.badge} messages non lus`}>
                     {item.badge > 99 ? "99+" : item.badge}
                   </span>
                 )}
-              </div>
+              </span>
               <span className="nav-tab-label">{item.label}</span>
               {active && <span className="nav-tab-active-pill" aria-hidden="true" />}
             </button>

@@ -107,25 +107,7 @@ export function MarketplaceHeader(props: Props) {
           </nav>
 
           {/* Outils et services */}
-          <nav className="header-utilities" aria-label="Navigation et services">
-            {/* Indicateur de connectivité Réseau / Mode Aéroport Hors-ligne */}
-            <button
-              type="button"
-              className={`network-status-pill ${isOnline ? "status-online" : "status-offline"}`}
-              title={
-                isOnline
-                  ? "Réseau actif · Mode connecté"
-                  : "Zone blanche · Mode aéroport hors-ligne actif (cliquez pour la remise hors-ligne)"
-              }
-              aria-label={isOnline ? "Connexion réseau active" : "Mode aéroport hors-ligne actif"}
-              onClick={props.onOfflineHandover}
-            >
-              {isOnline ? <Wifi size={13} /> : <WifiOff size={13} />}
-              <span className="network-status-label">
-                {isOnline ? "En ligne" : "Aéroport"}
-              </span>
-            </button>
-
+          <nav className="header-utilities mobile-tools-scroll" aria-label="Navigation et services">
             {/* Outils logistiques IATA et Fret */}
             {props.onScanBoardingPass && (
               <button
@@ -136,6 +118,7 @@ export function MarketplaceHeader(props: Props) {
                 onClick={props.onScanBoardingPass}
               >
                 <Scan size={18} />
+                <span className="header-tool-label">Scanner</span>
               </button>
             )}
 
@@ -148,6 +131,7 @@ export function MarketplaceHeader(props: Props) {
                 onClick={props.onCargoPass}
               >
                 <Ticket size={18} />
+                <span className="header-tool-label">Passe fret</span>
               </button>
             )}
 
@@ -158,15 +142,6 @@ export function MarketplaceHeader(props: Props) {
               onClick={props.onPublish}
             >
               <CirclePlus size={18} />
-            </button>
-
-            <button
-              className="header-tool desktop-account"
-              aria-label="Profil"
-              title="Profil"
-              onClick={() => navigate("profile")}
-            >
-              <UserRound size={18} />
             </button>
 
             <CurrencyRatePill compact onClick={props.onCurrency} />
@@ -197,6 +172,7 @@ export function MarketplaceHeader(props: Props) {
               title="Mes expéditions"
             >
               <Package size={18} />
+                <span className="header-tool-label">Expéditions</span>
             </a>
             <a
               className="header-tool mobile-header-link"
@@ -205,6 +181,7 @@ export function MarketplaceHeader(props: Props) {
               title="Radar Mondial"
             >
               <Globe2 size={18} />
+                <span className="header-tool-label">Radar</span>
             </a>
             <button
               className="header-tool mobile-header-link"
@@ -213,6 +190,7 @@ export function MarketplaceHeader(props: Props) {
               onClick={() => navigate("arbitrage")}
             >
               <Plane size={18} />
+                <span className="header-tool-label">Arbitrage</span>
             </button>
 
             {props.showAdmin && (
@@ -233,24 +211,6 @@ export function MarketplaceHeader(props: Props) {
             >
               <Wallet size={17} />
               <span>{props.balance}</span>
-            </button>
-
-            <button
-              className="header-tool notification-bell"
-              aria-label={`Notifications, ${props.unreadCount} non lues`}
-              aria-expanded={props.notificationsOpen}
-              aria-haspopup="dialog"
-              aria-controls={
-                props.notificationsOpen ? "notifications-drawer" : undefined
-              }
-              onClick={props.onNotifications}
-            >
-              <Bell size={18} />
-              {props.unreadCount > 0 && (
-                <span className="notification-count" aria-hidden="true">
-                  {props.unreadCount}
-                </span>
-              )}
             </button>
 
             {props.canShare ? (
@@ -279,6 +239,55 @@ export function MarketplaceHeader(props: Props) {
             </button>
           </nav>
         </div>
+        <nav className="header-primary-actions" aria-label="Navigation du compte">
+          {/* Indicateur de connectivité Réseau / Mode Aéroport Hors-ligne */}
+          <button
+            type="button"
+            className={`network-status-pill ${isOnline ? "status-online" : "status-offline"}`}
+            title={
+              isOnline
+                ? "Réseau actif · Mode connecté"
+                : "Zone blanche · Mode aéroport hors-ligne actif (cliquez pour la remise hors-ligne)"
+            }
+            aria-label={isOnline ? "Connexion réseau active" : "Mode aéroport hors-ligne actif"}
+            onClick={props.onOfflineHandover}
+          >
+            {isOnline ? <Wifi size={13} /> : <WifiOff size={13} />}
+            <span className="network-status-label">
+              {isOnline ? "En ligne" : "Aéroport"}
+            </span>
+          </button>
+
+          <button
+            className="header-tool notification-bell"
+            aria-label={`Notifications, ${props.unreadCount} non lues`}
+            aria-expanded={props.notificationsOpen}
+            aria-haspopup="dialog"
+            aria-controls={
+              props.notificationsOpen ? "notifications-drawer" : undefined
+            }
+            onClick={props.onNotifications}
+          >
+            <Bell size={18} />
+            {props.unreadCount > 0 && (
+              <span className="notification-count" aria-hidden="true">
+                {props.unreadCount}
+              </span>
+            )}
+          </button>
+
+          <button
+            className="header-tool header-profile"
+            aria-label="Profil"
+            title="Profil"
+            aria-current={route === "profile" ? "page" : undefined}
+            onClick={() => navigate("profile")}
+          >
+            <UserRound size={18} />
+          </button>
+
+        </nav>
+
       </div>
     </header>
   );

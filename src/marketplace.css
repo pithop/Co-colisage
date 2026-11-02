@@ -1954,7 +1954,8 @@ img.vehicle-illustration {
     padding-bottom: 0;
   }
   .marketplace:has(.publish-dock) .main-container {
-    margin-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
+    margin-bottom: var(--nav-height);
+    padding-bottom: 88px;
   }
   .site-header {
     height: 68px;
@@ -1992,23 +1993,22 @@ img.vehicle-illustration {
     min-height: 0;
     width: 100%;
     margin-bottom: var(--nav-height);
-    padding: 0 20px 24px;
+    padding: 0 max(16px, env(safe-area-inset-right)) 24px max(16px, env(safe-area-inset-left));
     overflow-y: auto;
     overscroll-behavior-y: contain;
     scroll-padding: 16px;
   }
   .explore-heading {
-    padding: 28px 0;
+    padding: 24px 0 20px;
   }
   .explore-heading .eyebrow {
-    font-size: 8px;
-    letter-spacing: 1px;
+    display: none;
   }
   .explore-heading h1 {
-    font-size: 33px;
-    line-height: 1.22;
-    letter-spacing: -1.5px;
-    margin: 16px 0 12px;
+    font-size: 28px;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    margin: 0 0 8px;
   }
   .explore-heading > p {
     font-size: 12px;
@@ -2121,12 +2121,12 @@ img.vehicle-illustration {
     border-radius: 10px;
   }
   .publish-dock {
-    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
-    left: 20px;
-    right: 20px;
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+    left: auto;
+    right: max(16px, env(safe-area-inset-right));
     padding: 0;
     border: 0;
-    border-radius: 14px;
+    border-radius: 999px;
     background: transparent;
     box-shadow:
       0 4px 10px #0a112810,
@@ -2136,9 +2136,12 @@ img.vehicle-illustration {
     display: none;
   }
   .publish-dock .primary-button {
-    width: 100%;
-    min-height: 52px;
-    border-radius: 14px;
+    width: auto;
+    min-height: 48px;
+    padding: 0 16px;
+    gap: 8px;
+    border-radius: 999px;
+    font-size: 12px;
   }
   .mobile-nav {
     position: fixed;

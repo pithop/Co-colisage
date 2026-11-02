@@ -4323,31 +4323,28 @@
   display: none;
 }
 
-@media (max-width: 768px) {
-  body {
-    padding-bottom: 74px;
-  }
-
+@media (max-width: 760px) {
   .mobile-bottom-nav {
     display: block;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 900;
+    z-index: 50;
     background: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-top: 1px solid rgba(226, 232, 240, 0.9);
     box-shadow: 0 -4px 18px rgba(15, 23, 42, 0.06);
-    padding-bottom: max(6px, env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
   }
 
   .mobile-bottom-nav-inner {
     display: flex;
-    justify-content: space-around;
     align-items: center;
-    height: 58px;
+    height: 63px;
     max-width: 520px;
     margin: 0 auto;
     padding: 0 4px;
@@ -4360,6 +4357,8 @@
     justify-content: center;
     gap: 3px;
     flex: 1;
+    min-width: 0;
+    padding: 0 2px;
     height: 100%;
     min-height: 48px;
     border: none;
@@ -4373,8 +4372,8 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  .mobile-nav-tab:active {
-    transform: scale(0.92);
+  .marketplace .mobile-nav-tab:active:not(:disabled) {
+    transform: scale(0.94);
     opacity: 0.85;
   }
 
@@ -4412,16 +4411,30 @@
   }
 
   .nav-tab-label {
+    font-size: 10px;
+    font-weight: 600;
     letter-spacing: -0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    max-width: 100%;
+    line-height: 16px;
   }
 
   .nav-tab-active-pill {
     position: absolute;
-    bottom: 2px;
+    bottom: 3px;
     width: 14px;
     height: 3px;
     background: #2563eb;
     border-radius: 999px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marketplace .mobile-nav-tab {
+    transition: none;
   }
 }
 

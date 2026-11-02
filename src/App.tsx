@@ -761,15 +761,19 @@ function Marketplace() {
             </span>
             <button
               className="primary-button"
+              aria-label={mode === "requests" ? "Publier une demande" : "Proposer mon trajet"}
               onClick={() => {
                 setPublishKind(undefined);
                 setPublish(true);
               }}
             >
               <CirclePlus size={19} />
-              {mode === "requests"
-                ? "Publier une demande"
-                : "Proposer mon trajet"}
+              <span className="publish-label-desktop">
+                {mode === "requests" ? "Publier une demande" : "Proposer mon trajet"}
+              </span>
+              <span className="publish-label-mobile" aria-hidden="true">
+                {mode === "requests" ? "Publier" : "Proposer"}
+              </span>
             </button>
           </div>
         </div>
