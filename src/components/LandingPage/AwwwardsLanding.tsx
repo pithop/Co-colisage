@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -14,6 +14,16 @@ import {
   Smartphone,
   Ticket,
   WifiOff,
+  LockKeyhole,
+  Check,
+  Fingerprint,
+  Signal,
+  BatteryFull,
+  ChevronLeft,
+  ChevronRight,
+  ReceiptText,
+  CircleCheck,
+  CircleMinus,
 } from "lucide-react";
 import { AppStoreBadges } from "./AppStoreBadges";
 import {
@@ -152,6 +162,42 @@ const faqs = {
     ],
   ],
 };
+// Decorative specimen: this preview is not a scannable boarding credential.
+// A single SVG path keeps both pass previews lightweight during slider updates.
+const barcodePath = Array.from({ length: 12 }, (_, row) =>
+  Array.from({ length: 80 }, (_, column) =>
+    column < 3 ||
+    column > 76 ||
+    (column * 17 + row * 31 + column * row * 7) % 11 < 6
+      ? `M${column * 3} ${row * 4}h2v3h-2z`
+      : "",
+  ).join(""),
+).join("");
+
+function PassBarcode() {
+  return (
+    <svg
+      className="pass-barcode"
+      viewBox="0 0 240 48"
+      fill="currentColor"
+      aria-hidden="true"
+      shapeRendering="crispEdges"
+    >
+      <path d={barcodePath} />
+    </svg>
+  );
+}
+
+const airportCodes: Record<string, string> = {
+  Paris: "CDG",
+  Alger: "ALG",
+  Marseille: "MRS",
+  Oran: "ORN",
+  Montréal: "YUL",
+  Lyon: "LYS",
+  Constantine: "CZL",
+};
+
 export function AwwwardsLanding({
   initialLanguage = "fr",
   mobileLaunchOpen = false,
@@ -170,6 +216,8 @@ export function AwwwardsLanding({
   const [weight, setWeight] = useState(5);
   const [competitor, setCompetitor] = useState("DHL");
   const [quote, setQuote] = useState(140);
+  const activityRef = useRef<HTMLDivElement>(null);
+  const [routeTurns, setRouteTurns] = useState(0);
   const c = copy[language];
   const routeRate =
     destination === "Montréal" || origin === "Montréal"
@@ -227,23 +275,32 @@ export function AwwwardsLanding({
         <a href="/#landing" className="landing-wordmark">
           BagVoyage<span>.</span>
         </a>
-        <nav
-          className="landing-nav"
-          aria-label={text("Présentation de BagVoyage", "About BagVoyage")}
-        >
-          <a href="#features">{text("Fonctionnalités", "Features")}</a>
-          <a href="#simulator">{text("Simulateur", "Simulator")}</a>
-          <a href="#mobile">{text("Application Mobile", "Mobile App")}</a>
-        </nav>
-        <div className="landing-account-actions">
-          <a href="/#login">{text("Connexion", "Log in")}</a>
-          <a href="/#register" className="landing-register">
-            {text("Inscription", "Sign up")}
-          </a>
-          <a href="/#explore" className="landing-nav-launch">
-            {c.cta}
-            <ArrowUpRight size={16} aria-hidden="true" />
-          </a>
+        <div className="landing-header-scroll">
+          <nav
+            className="landing-nav"
+            aria-label={text("Présentation de BagVoyage", "About BagVoyage")}
+          >
+            <a href="#features">{text("Fonctionnalités", "Features")}</a>
+            <a href="#simulator">{text("Simulateur", "Simulator")}</a>
+            <a href="#mobile">{text("Application Mobile", "Mobile App")}</a>
+          </nav>
+          <div className="landing-account-actions">
+            <a href="/#login">{text("Connexion", "Log in")}</a>
+            <a href="/#register" className="landing-register">
+              {text("Inscription", "Sign up")}
+            </a>
+            <a
+              href="/#explore"
+              className="landing-nav-launch"
+              aria-label={c.cta}
+            >
+              <span className="nav-launch-full">{c.cta}</span>
+              <span className="nav-launch-short">
+                {text("Lancer l’app", "Open app")}
+              </span>
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+          </div>
         </div>
         <label className="landing-language">
           <Globe2 size={16} />
@@ -295,72 +352,273 @@ export function AwwwardsLanding({
                 "Connection across borders",
               )}
             </span>
+            <span>
+              <ShieldCheck size={16} />
+              {text("Protection séquestre 100 %", "100% escrow protection")}
+            </span>
           </div>
         </div>
         <div
           className="journey-art"
           aria-label={text(
-            "Illustration du corridor Paris–Alger",
-            "Illustration of the Paris–Algiers corridor",
+            "Aperçu du pass de vol et fret Paris–Alger. Scénario de démonstration.",
+            "Flight and cargo pass preview Paris–Algiers. Demonstration scenario.",
           )}
           role="img"
         >
-          <div className="journey-orbit orbit-one" />
-          <div className="journey-orbit orbit-two" />
-          <div className="journey-orbit orbit-three" />
-          <svg
-            className="journey-route"
-            viewBox="0 0 440 480"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M108 116 C400 65 400 380 165 365"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeDasharray="5 7"
-            />
-            <circle cx="108" cy="116" r="6" fill="currentColor" />
-            <circle cx="165" cy="365" r="6" fill="currentColor" />
-          </svg>
-          <span className="journey-city city-paris">
-            48°51′ N<br />
-            <strong>Paris</strong>
-          </span>
-          <span className="journey-city city-alger">
-            36°45′ N<br />
-            <strong>Alger</strong>
-          </span>
-          <div className="journey-pass">
-            <span>BAGVOYAGE / BOARDING TOGETHER</span>
-            <div>
-              <strong>CDG</strong>
-              <Plane size={32} strokeWidth={1.3} />
-              <strong>ALG</strong>
-            </div>
-            <p>
-              {text("Une place pour ce qui compte.", "Room for what matters.")}
-            </p>
-            <footer>
-              <span>
-                {text("VOTRE PROCHAIN DÉPART", "YOUR NEXT DEPARTURE")}
-              </span>
-              <span>01 / ∞</span>
-            </footer>
+          <div className="journey-grid" aria-hidden="true" />
+          <div className="journey-caption">
+            <span className="live-dot" />
+            {text("LE VOYAGE DEVIENT UN LIEN", "EVERY JOURNEY CONNECTS")}
+            <span>01 / 03</span>
           </div>
-          <div className="journey-stamp">
-            <Package size={24} strokeWidth={1.4} />
-            <span>
-              HANDLE
-              <br />
-              WITH CARE
+          <div className="journey-pass">
+            <header className="pass-header">
+              <span className="pass-brand">
+                <Plane size={20} /> BagVoyage<span>air</span>
+              </span>
+              <span className="pass-type">
+                {text("PASS VOL & FRET", "FLIGHT & CARGO PASS")}
+              </span>
+            </header>
+            <div className="pass-flight">
+              <div className="pass-live">
+                <span className="live-dot" />
+                {text("Embarquement dans 2h15", "Boarding in 2h15")}
+              </div>
+              <div className="pass-route">
+                <div>
+                  <strong>{airportCodes.Paris}</strong>
+                  <span>Paris</span>
+                </div>
+                <div className="pass-airway">
+                  <span />
+                  <Plane size={24} />
+                  <span />
+                </div>
+                <div>
+                  <strong>{airportCodes.Alger}</strong>
+                  <span>Alger</span>
+                </div>
+              </div>
+              <div className="pass-flight-meta">
+                <span>
+                  {text("VOL", "FLIGHT")}
+                  <b>AH1000</b>
+                </span>
+                <span>
+                  {text("TERMINAL", "TERMINAL")}
+                  <b>2E</b>
+                </span>
+                <span>
+                  {text("PORTE", "GATE")}
+                  <b>K34</b>
+                </span>
+                <span>
+                  {text("SIÈGE", "SEAT")}
+                  <b>12A</b>
+                </span>
+              </div>
+            </div>
+            <div className="pass-cargo">
+              <div className="pass-cargo-title">
+                <span className="pass-package">
+                  <Package size={22} />
+                </span>
+                <div>
+                  <strong>{text("Colis vérifié", "Verified parcel")}</strong>
+                  <span>
+                    {text("Scellé OACI STEB-447B", "ICAO seal STEB-447B")}
+                  </span>
+                </div>
+                <ShieldCheck size={21} />
+              </div>
+              <div className="pass-cargo-stats">
+                <span>
+                  {text("Poids", "Weight")}
+                  <b>5 kg</b>
+                </span>
+                <span>
+                  {text("Gain voyageur", "Traveller earnings")}
+                  <b>
+                    +85 € <small>net</small>
+                  </b>
+                </span>
+              </div>
+            </div>
+            <div className="pass-stub">
+              <PassBarcode />
+              <div className="pass-signature">
+                <Fingerprint size={16} />
+                <span>Ed25519 · 7f2a…447b</span>
+                <LockKeyhole size={13} />
+              </div>
+              <span className="pass-specimen">
+                {text(
+                  "APERÇU DU PASS · SPÉCIMEN IATA 2D",
+                  "PASS PREVIEW · IATA 2D SPECIMEN",
+                )}
+              </span>
+            </div>
+          </div>
+          <div className="journey-escrow">
+            <span className="escrow-icon">
+              <ShieldCheck size={23} />
+            </span>
+            <div>
+              <span>
+                {text("Séquestre Stripe Connect", "Stripe Connect escrow")}
+              </span>
+              <strong>
+                {text(
+                  "145 € garantis sous séquestre",
+                  "€145 secured in escrow",
+                )}
+              </strong>
+              <small>
+                {text("Scénario de démonstration", "Demonstration scenario")}
+              </small>
+            </div>
+            <Check size={16} />
+          </div>
+          <div className="journey-note">
+            <LockKeyhole size={13} />
+            {text(
+              "Un trajet. Deux remises. Un lien de confiance.",
+              "One journey. Two handovers. A trusted connection.",
+            )}
+          </div>
+        </div>
+      </section>
+      <section
+        className="landing-activity"
+        aria-label={text(
+          "Activité du réseau en démonstration",
+          "Network activity demonstration",
+        )}
+      >
+        <div className="activity-heading">
+          <div>
+            <span className="live-dot" aria-hidden="true" />
+            <strong>
+              {text(
+                "EN DIRECT SUR LE RÉSEAU BAGVOYAGE",
+                "LIVE ON THE BAGVOYAGE NETWORK",
+              )}
+            </strong>
+            <span className="activity-demo">
+              {text("Démonstration", "Demo")}
             </span>
           </div>
+          <div className="activity-arrows">
+            <button
+              type="button"
+              aria-label={text("Activités précédentes", "Previous activity")}
+              onClick={() =>
+                activityRef.current?.scrollBy({
+                  left: -400,
+                  behavior: "smooth",
+                })
+              }
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              type="button"
+              aria-label={text("Activités suivantes", "Next activity")}
+              onClick={() =>
+                activityRef.current?.scrollBy({ left: 400, behavior: "smooth" })
+              }
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
+        <div
+          className="activity-track"
+          ref={activityRef}
+          tabIndex={0}
+          role="group"
+          aria-label={text(
+            "Exemples de remises, faites défiler",
+            "Example handovers, scroll to explore",
+          )}
+        >
+          {[
+            {
+              name: "Sofia M.",
+              route: "AH1000 · CDG / ALG",
+              initials: "SM",
+              detail: text(
+                "Colis 4 kg scellé remis à la porte K34",
+                "Sealed 4 kg parcel handed over at gate K34",
+              ),
+              time: text("Il y a 14 min", "14 min ago"),
+              Icon: Package,
+            },
+            {
+              name: "Mehdi K.",
+              route: "TO7240 · MRS / ORN",
+              initials: "MK",
+              detail: text(
+                "Commande Shop & Go Sephora livrée sous séquestre",
+                "Sephora Shop & Go order delivered with escrow",
+              ),
+              time: text("Il y a 32 min", "32 min ago"),
+              Icon: ShoppingBag,
+            },
+            {
+              name: "Yacine T.",
+              route: "AH1461 · LYS / CZL",
+              initials: "YT",
+              detail: text(
+                "Dossier médical d’urgence remis",
+                "Urgent medical documents handed over",
+              ),
+              time: text("Il y a 1 h", "1 hour ago"),
+              Icon: ReceiptText,
+            },
+            {
+              name: "Nadia Transport",
+              route: text(
+                "Fret certifié · Lille / Alger",
+                "Certified freight · Lille / Algiers",
+              ),
+              initials: "NT",
+              detail: text(
+                "Fret utilitaire certifié · 25 kg en transit",
+                "Certified cargo transport · 25 kg in transit",
+              ),
+              time: text("En transit", "In transit"),
+              Icon: Package,
+            },
+          ].map(({ name, route, initials, detail, time, Icon }) => (
+            <article className="activity-event" key={name}>
+              <span className="activity-avatar" aria-hidden="true">
+                {initials}
+              </span>
+              <div>
+                <div className="activity-person">
+                  <strong>{name}</strong>
+                  <span>{time}</span>
+                </div>
+                <span className="activity-route">
+                  <Plane size={12} aria-hidden="true" />
+                  {route}
+                </span>
+                <p>
+                  <Icon size={14} aria-hidden="true" />
+                  {detail}
+                </p>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
       <section
         id="simulator"
         className="landing-simulator"
+        role="region"
         aria-labelledby="simulator-title"
       >
         <div>
@@ -369,8 +627,54 @@ export function AwwwardsLanding({
           </span>
           <h2 id="simulator-title">{c.simulate}</h2>
           <p>{c.estimated}</p>
+          <div className="simulator-explainer" aria-hidden="true">
+            <span>
+              <Plane size={20} />
+            </span>
+            <i />
+            <span>
+              <Package size={20} />
+            </span>
+            <i />
+            <span>
+              <Check size={20} />
+            </span>
+          </div>
+          <div className="simulator-caption">
+            <ShieldCheck size={15} />
+            {text(
+              "Vos kilos disponibles ont de la valeur.",
+              "Your spare luggage space has value.",
+            )}
+          </div>
         </div>
         <div className="simulator-controls">
+          <div
+            className="simulator-presets route-presets"
+            role="group"
+            aria-label={text("Lignes populaires", "Popular routes")}
+          >
+            {[
+              ["Paris", "Alger"],
+              ["Marseille", "Oran"],
+              ["Lyon", "Constantine"],
+              ["Montréal", "Alger"],
+            ].map(([from, to]) => (
+              <button
+                type="button"
+                key={from}
+                aria-pressed={origin === from && destination === to}
+                onClick={() => {
+                  setOrigin(from);
+                  setDestination(to);
+                }}
+              >
+                {from}
+                <ArrowLeftRight size={12} aria-hidden="true" />
+                {to}
+              </button>
+            ))}
+          </div>
           <div className="simulator-route">
             <label>
               {c.from}
@@ -379,11 +683,17 @@ export function AwwwardsLanding({
                 value={origin}
                 onChange={(event) => setOrigin(event.target.value)}
               >
-                {["Paris", "Marseille", "Alger", "Oran", "Montréal"].map(
-                  (city) => (
-                    <option key={city}>{city}</option>
-                  ),
-                )}
+                {[
+                  "Paris",
+                  "Marseille",
+                  "Alger",
+                  "Oran",
+                  "Montréal",
+                  "Lyon",
+                  "Constantine",
+                ].map((city) => (
+                  <option key={city}>{city}</option>
+                ))}
               </select>
             </label>
             <button
@@ -391,9 +701,13 @@ export function AwwwardsLanding({
               onClick={() => {
                 setOrigin(destination);
                 setDestination(origin);
+                setRouteTurns((turns) => turns + 1);
               }}
             >
-              <ArrowLeftRight size={19} />
+              <ArrowLeftRight
+                size={19}
+                style={{ transform: `rotate(${routeTurns * 180}deg)` }}
+              />
             </button>
             <label>
               {c.to}
@@ -402,11 +716,17 @@ export function AwwwardsLanding({
                 value={destination}
                 onChange={(event) => setDestination(event.target.value)}
               >
-                {["Alger", "Oran", "Paris", "Marseille", "Montréal"].map(
-                  (city) => (
-                    <option key={city}>{city}</option>
-                  ),
-                )}
+                {[
+                  "Alger",
+                  "Oran",
+                  "Paris",
+                  "Marseille",
+                  "Montréal",
+                  "Lyon",
+                  "Constantine",
+                ].map((city) => (
+                  <option key={city}>{city}</option>
+                ))}
               </select>
             </label>
           </div>
@@ -433,6 +753,9 @@ export function AwwwardsLanding({
             {c.weight}
             <strong>{weight} kg</strong>
             <input
+              style={{
+                background: `linear-gradient(to right, #2563eb ${((weight - 1) / 29) * 100}%, #e2e8f0 ${((weight - 1) / 29) * 100}%)`,
+              }}
               type="range"
               min="1"
               max="30"
@@ -440,6 +763,27 @@ export function AwwwardsLanding({
               onChange={(event) => setWeight(Number(event.target.value))}
             />
           </label>
+          <div
+            className="simulator-presets weight-presets"
+            role="group"
+            aria-label={text("Gabarits de bagages", "Luggage presets")}
+          >
+            {[
+              { label: text("Documents", "Documents"), kg: 1 },
+              { label: text("Cadeaux", "Gifts"), kg: 5 },
+              { label: text("Valise", "Suitcase"), kg: 15 },
+              { label: text("Max Soute", "Checked max"), kg: 23 },
+            ].map(({ label, kg }) => (
+              <button
+                type="button"
+                key={kg}
+                aria-pressed={weight === kg}
+                onClick={() => setWeight(kg)}
+              >
+                {label} <span>({kg} kg)</span>
+              </button>
+            ))}
+          </div>
           {origin === destination && (
             <p role="alert">
               {text(
@@ -464,6 +808,90 @@ export function AwwwardsLanding({
               "Platform fee: 15% of gross service. Shop & Go purchases are additional.",
             )}
           </small>
+        </div>
+        <div className="landing-comparison">
+          <div>
+            <span className="eyebrow">
+              {text(
+                "VOTRE BUDGET, EN PERSPECTIVE",
+                "PUT YOUR BUDGET IN PERSPECTIVE",
+              )}
+            </span>
+            <h2>{c.compare}</h2>
+            <p>{c.compareText}</p>
+            <div className="savings-number" aria-live="polite">
+              <strong>{percent}%</strong>
+              <span>{c.saving}</span>
+            </div>
+          </div>
+          <div className="comparison-panel">
+            <label>
+              {c.competitor}
+              <select
+                value={competitor}
+                onChange={(event) => setCompetitor(event.target.value)}
+              >
+                {[
+                  "DHL",
+                  "FedEx",
+                  text("Fret aérien classique", "Air freight"),
+                ].map((name) => (
+                  <option key={name}>{name}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              {c.quote}
+              <input
+                type="number"
+                min="0"
+                max="100000"
+                step="0.01"
+                value={quote || ""}
+                onChange={(event) =>
+                  setQuote(Math.max(0, Number(event.target.value)))
+                }
+              />
+            </label>
+            <div className="comparison-row">
+              <span>
+                BagVoyage<strong>{gross} €</strong>
+              </span>
+              <div>
+                <i
+                  style={{
+                    width: `${Math.min(100, (gross / Math.max(1, quote, gross)) * 100)}%`,
+                  }}
+                />
+              </div>
+              <small>
+                {text(
+                  "24–48 h envisageables selon le trajet",
+                  "24–48 h possible depending on route",
+                )}
+              </small>
+            </div>
+            <div className="comparison-row competitor">
+              <span>
+                {competitor}
+                <strong>{quote} €</strong>
+              </span>
+              <div>
+                <i
+                  style={{
+                    width: `${Math.min(100, (quote / Math.max(1, quote, gross)) * 100)}%`,
+                  }}
+                />
+              </div>
+              <small>
+                {text(
+                  "Délai et services selon votre devis",
+                  "Timing and services as quoted",
+                )}
+              </small>
+            </div>
+            <p>{c.source}</p>
+          </div>
         </div>
       </section>
       <section
@@ -534,11 +962,111 @@ export function AwwwardsLanding({
           ].map(({ Icon, number, title, copy: description, action, kind }) => (
             <article key={number} className={`universe universe-${number}`}>
               <header>
-                <Icon size={38} strokeWidth={1.2} />
-                <span>{number}</span>
+                <span>
+                  {number} ·{" "}
+                  {kind === "parcel"
+                    ? text("EXPÉDITION EXPRESS", "EXPRESS DELIVERY")
+                    : kind === "requests"
+                      ? "PERSONAL SHOPPING"
+                      : text("VOYAGEURS DIASPORA", "DIASPORA TRAVELLERS")}
+                </span>
+                <Icon size={22} strokeWidth={1.5} aria-hidden="true" />
               </header>
               <h3>{title}</h3>
               <p>{description}</p>
+              <div className={`universe-specimen specimen-${kind}`}>
+                {kind === "parcel" ? (
+                  <div className="parcel-label">
+                    <div>
+                      <Package size={20} />
+                      <span>
+                        {text("EXPÉDITION SÉCURISÉE", "SECURE DELIVERY")}
+                      </span>
+                      <ShieldCheck size={18} />
+                    </div>
+                    <strong>{text("Colis #DZ-8491", "Parcel #DZ-8491")}</strong>
+                    <p>
+                      Paris CDG <ArrowRight size={15} /> Alger ALG
+                    </p>
+                    <PassBarcode />
+                    <span className="specimen-verified">
+                      <CircleCheck size={14} />
+                      {text(
+                        "Scellé STEB inviolable vérifié",
+                        "Verified tamper-evident STEB seal",
+                      )}
+                    </span>
+                    <footer>
+                      {text("Livraison 24h–48h", "24–48h delivery")}
+                      <span>4.0 KG</span>
+                    </footer>
+                  </div>
+                ) : kind === "requests" ? (
+                  <>
+                    <div className="brand-chips">
+                      {["Sephora", "Decathlon", "Apple Store", "Zara"].map(
+                        (brand) => (
+                          <span key={brand}>{brand}</span>
+                        ),
+                      )}
+                    </div>
+                    <div className="shopping-receipt">
+                      <ReceiptText size={24} />
+                      <strong>
+                        {text(
+                          "Une envie. Un reçu. C’est tout.",
+                          "Your wish. Your receipt. All set.",
+                        )}
+                      </strong>
+                      <span>
+                        {text(
+                          "Reçu officiel avec TVA certifiée",
+                          "Official receipt with certified VAT",
+                        )}
+                      </span>
+                      <div>
+                        <LockKeyhole size={14} />
+                        {text(
+                          "Budget sous séquestre",
+                          "Budget secured in escrow",
+                        )}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="traveller-receipt">
+                    <span className="receipt-check">
+                      <Check size={22} />
+                    </span>
+                    <span>
+                      {text(
+                        "VOTRE VOYAGE A DE LA VALEUR",
+                        "YOUR JOURNEY HAS VALUE",
+                      )}
+                    </span>
+                    <strong>
+                      +120 € <small>net</small>
+                    </strong>
+                    <p>
+                      {text(
+                        "Vol AH1000 · 15 kg partagés",
+                        "Flight AH1000 · 15 kg shared",
+                      )}
+                    </p>
+                    <div>
+                      <CircleCheck size={14} />
+                      {text("Versés directement", "Paid directly")}
+                    </div>
+                    <footer>
+                      <ShieldCheck size={14} />
+                      {text(
+                        "Assurance bagages incluse",
+                        "Luggage insurance included",
+                      )}
+                    </footer>
+                  </div>
+                )}
+              </div>
               <a href={`/#publish/${kind}`}>
                 {action}
                 <ArrowUpRight size={19} />
@@ -547,106 +1075,19 @@ export function AwwwardsLanding({
           ))}
         </div>
       </section>
-      <section className="landing-comparison">
-        <div>
-          <span className="eyebrow">
-            03 / {text("UNE AUTRE FAÇON D’ACHEMINER", "ANOTHER WAY TO DELIVER")}
-          </span>
-          <h2>{c.compare}</h2>
-          <p>{c.compareText}</p>
-          <div className="savings-number">
-            <strong>{percent}%</strong>
-            <span>{c.saving}</span>
-          </div>
-          <p>
-            {text(
-              "Exemple : 42 € face à un devis de 140 € = 70 % d’économie.",
-              "Example: €42 compared with a €140 quote = 70% savings.",
-            )}
-          </p>
-        </div>
-        <div className="comparison-panel">
-          <label>
-            {c.competitor}
-            <select
-              value={competitor}
-              onChange={(event) => setCompetitor(event.target.value)}
-            >
-              {[
-                "DHL",
-                "FedEx",
-                text("Fret aérien classique", "Air freight"),
-              ].map((name) => (
-                <option key={name}>{name}</option>
-              ))}
-            </select>
-          </label>
-          <label>
-            {c.quote}
-            <input
-              type="number"
-              min="0"
-              max="100000"
-              step="0.01"
-              value={quote || ""}
-              onChange={(event) =>
-                setQuote(Math.max(0, Number(event.target.value)))
-              }
-            />
-          </label>
-          <div className="comparison-row">
-            <span>
-              BagVoyage<strong>{gross} €</strong>
-            </span>
-            <div>
-              <i
-                style={{
-                  width: `${Math.min(100, (gross / Math.max(1, quote, gross)) * 100)}%`,
-                }}
-              />
-            </div>
-            <small>
-              {text(
-                "24–48 h envisageables selon le trajet",
-                "24–48 h possible depending on route",
-              )}
-            </small>
-          </div>
-          <div className="comparison-row competitor">
-            <span>
-              {competitor}
-              <strong>{quote} €</strong>
-            </span>
-            <div>
-              <i
-                style={{
-                  width: `${Math.min(100, (quote / Math.max(1, quote, gross)) * 100)}%`,
-                }}
-              />
-            </div>
-            <small>
-              {text(
-                "Délai et services selon votre devis",
-                "Timing and services as quoted",
-              )}
-            </small>
-          </div>
-          <p>{c.source}</p>
-        </div>
-      </section>
       <section className="landing-assurance">
         <span className="eyebrow">
           04 / {text("LE VOYAGE COMMENCE PAR LA CONFIANCE", "START WITH TRUST")}
         </span>
         <h2>{c.trust}</h2>
-        <div>
+        <div className="assurance-pillars">
           {[
             [
               ShieldCheck,
               "Stripe Connect",
               text(
-                "Paiement prévu avec Stripe Connect. Aucun fonds réel n’est conservé tant que ce service n’est pas activé.",
-                "Payments are planned with Stripe Connect. No real funds are held until this service is activated.",
+                "Séquestre sécurisé. Zéro argent liquide dans la rue. Activation de Stripe Connect prévue avant les paiements réels.",
+                "Secure escrow. No cash exchanged in the street. Stripe Connect activation is planned before real payments.",
               ),
             ],
             [
@@ -661,16 +1102,16 @@ export function AwwwardsLanding({
               Video,
               text("Preuve vidéo 15 s", "15-second video evidence"),
               text(
-                "Documentez la remise et l’état du colis. La valeur probatoire dépend du contexte et du droit applicable.",
-                "Document the handover and parcel condition. Evidentiary value depends on context and applicable law.",
+                "L’état du colis documenté en 15 secondes. Une preuve horodatée accompagne chaque remise.",
+                "Parcel condition documented in 15 seconds. Timestamped evidence accompanies each handover.",
               ),
             ],
             [
               Globe2,
               text("Repères douaniers", "Customs guidance"),
               text(
-                "France–Algérie : contenu, valeur et justificatifs. Les règles se vérifient avant chaque départ.",
-                "France–Algeria: contents, value and documents. Check the rules before every departure.",
+                "Repères OACI, contenu déclaré et franchises à vérifier. Préparez vos justificatifs avant chaque départ.",
+                "ICAO guidance, declared contents and allowances to check. Prepare your documents before departure.",
               ),
             ],
           ].map(([Icon, title, description]) => {
@@ -683,6 +1124,60 @@ export function AwwwardsLanding({
               </article>
             );
           })}
+        </div>
+        <div className="trust-comparison">
+          <div className="trust-comparison-intro">
+            <LockKeyhole size={24} />
+            <h3>
+              {text(
+                "Pourquoi BagVoyage remplace les groupes informels",
+                "Why BagVoyage replaces informal groups",
+              )}
+            </h3>
+            <p>
+              {text(
+                "Le lien humain mérite un cadre de confiance.",
+                "Human connection deserves a trusted framework.",
+              )}
+            </p>
+          </div>
+          <div className="trust-informal">
+            <span>{text("Groupes Facebook", "Facebook groups")}</span>
+            {[
+              text("Risque d’arnaque", "Risk of scams"),
+              text("Zéro garantie", "No guarantees"),
+              text("Espèces non protégées", "Unprotected cash"),
+              text("Aucune traçabilité", "No traceability"),
+            ].map((item) => (
+              <p key={item}>
+                <CircleMinus size={16} />
+                {item}
+              </p>
+            ))}
+          </div>
+          <div className="trust-bagvoyage">
+            <span>
+              BagVoyage
+              <small>{text("Protocole cible", "Target protocol")}</small>
+            </span>
+            {[
+              text(
+                "Séquestre bancaire 100 % garanti",
+                "100% guaranteed bank escrow",
+              ),
+              text("Pièce d’identité vérifiée", "Verified identity"),
+              text(
+                "Scellé inviolable numéroté",
+                "Numbered tamper-evident seal",
+              ),
+              text("Assistance dédiée", "Dedicated support"),
+            ].map((item) => (
+              <p key={item}>
+                <CircleCheck size={16} />
+                {item}
+              </p>
+            ))}
+          </div>
         </div>
       </section>
       <section
@@ -728,6 +1223,100 @@ export function AwwwardsLanding({
             )}
             <ArrowUpRight size={18} aria-hidden="true" />
           </a>
+        </div>
+        <div
+          className="mobile-device-stage"
+          role="img"
+          aria-label={text(
+            "Aperçu de l’application mobile BagVoyage et de son pass hors-ligne",
+            "Preview of the BagVoyage mobile app and its offline pass",
+          )}
+        >
+          <div className="mobile-device">
+            <div className="device-status">
+              <span>9:41</span>
+              <i />
+              <Signal size={14} />
+              <BatteryFull size={18} />
+            </div>
+            <div className="device-app-header">
+              <strong>
+                BagVoyage<span>.</span>
+              </strong>
+              <Bell size={18} />
+            </div>
+            <p className="device-greeting">
+              {text("Bon voyage, Sarah.", "Have a great trip, Sarah.")}
+            </p>
+            <div className="device-flight">
+              <span>
+                <Plane size={15} />
+                {text("VOTRE PROCHAIN VOL", "YOUR NEXT FLIGHT")}
+              </span>
+              <div>
+                <strong>CDG</strong>
+                <ArrowRight size={22} />
+                <strong>ALG</strong>
+              </div>
+              <p>
+                Paris <span>Alger</span>
+              </p>
+              <footer>
+                <span>AH1000 · 14:30</span>
+                <span>{text("Aujourd’hui", "Today")}</span>
+              </footer>
+            </div>
+            <div className="device-cargo">
+              <span>
+                <Package size={18} />
+                {text("Votre colis est prêt", "Your parcel is ready")}
+              </span>
+              <strong>
+                STEB-447B <Check size={15} />
+              </strong>
+              <p>
+                {text(
+                  "5 kg · Remise à la porte K34",
+                  "5 kg · Handover at gate K34",
+                )}
+              </p>
+            </div>
+            <div className="device-wallet">
+              <span>
+                <Ticket size={16} />
+                {text("Passe de fret", "Cargo pass")}
+              </span>
+              <PassBarcode />
+              <small>
+                <WifiOff size={12} />
+                {text("Disponible hors-ligne", "Available offline")}
+              </small>
+            </div>
+            <div className="device-nav">
+              <Plane size={18} />
+              <Package size={18} />
+              <ScanLine size={22} />
+              <Bell size={18} />
+            </div>
+            <div className="device-home" />
+          </div>
+          <div className="device-notification">
+            <span>
+              <Check size={18} />
+            </span>
+            <div>
+              <strong>{text("Remise enregistrée", "Handover recorded")}</strong>
+              <small>
+                {text(
+                  "Même sans réseau. Vous pouvez décoller.",
+                  "Even offline. You’re ready for takeoff.",
+                )}
+              </small>
+            </div>
+          </div>
+          <span className="device-preview-label">
+            {text("APERÇU DE L’EXPÉRIENCE NATIVE", "NATIVE EXPERIENCE PREVIEW")}
+          </span>
         </div>
         <div className="landing-mobile-features">
           <div className="landing-mobile-feature-heading">
@@ -818,7 +1407,7 @@ export function AwwwardsLanding({
           <MobileWaitlistForm language={language} />
         </div>
       </section>
-      <section className="landing-faq">
+      <section id="faq" className="landing-faq">
         <div>
           <span className="eyebrow">
             06 / {text("LES RÉPONSES", "YOUR QUESTIONS")}
@@ -852,10 +1441,40 @@ export function AwwwardsLanding({
           {c.cta}
           <ArrowUpRight size={20} />
         </a>
+        <nav
+          className="landing-footer-links"
+          aria-label={text("Liens de pied de page", "Footer links")}
+        >
+          <a href="#features">{text("Fonctionnalités", "Features")}</a>
+          <a href="#simulator">{text("Simulateur", "Simulator")}</a>
+          <a href="#mobile">{text("Application Mobile", "Mobile App")}</a>
+          <a
+            href="#faq"
+            onClick={(event) => {
+              event.preventDefault();
+              document
+                .getElementById("faq")
+                ?.scrollIntoView({ block: "start" });
+            }}
+          >
+            FAQ
+          </a>
+        </nav>
+        <details className="landing-legal">
+          <summary>
+            {text("Mentions & données personnelles", "Legal & personal data")}
+          </summary>
+          <p>
+            {text(
+              "BagVoyage · Version de démonstration. Les estimations sont indicatives. L’adresse e-mail de la liste prioritaire est conservée localement dans ce navigateur. Aucun paiement réel n’est traité dans cette version.",
+              "BagVoyage · Demonstration version. Estimates are indicative. Your priority list email is stored locally in this browser. No real payments are processed in this version.",
+            )}
+          </p>
+        </details>
         <div>
           <strong>BagVoyage</strong>
           <span>FRANCE / ALGÉRIE / INTERNATIONAL</span>
-          <span>© {new Date().getFullYear()} BagVoyage</span>
+          <span>Copyright {new Date().getFullYear()} BagVoyage</span>
           {showAdmin && (
             <button
               type="button"
