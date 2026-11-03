@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("currency converts both ways, switches rates and restores keyboard focus", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   const trigger = page.getByRole("button", {
     name: "1 EUR = 242.50 DZD · Square Port-Saïd",
   });
@@ -42,7 +42,7 @@ test("currency converts both ways, switches rates and restores keyboard focus", 
 test("shopping suggestions remain editable and update the basket total", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await page
     .getByRole("button", { name: "Publier une demande", exact: true })
     .click();
@@ -162,7 +162,7 @@ test("voice capture cancels cleanly and persists a sent message without changing
 test("luggage compartment buttons and slider remain synchronized", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   const slider = page.getByRole("slider", {
     name: "Kilos disponibles dans vos bagages",
   });

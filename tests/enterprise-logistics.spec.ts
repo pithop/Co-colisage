@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("language selector switches language and toggles rtl direction for Arabic", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/app");
   const selector = page.locator(".bv-language select").first();
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
   await expect(page.locator("html")).toHaveAttribute("lang", "fr");
@@ -23,7 +23,7 @@ test("language selector switches language and toggles rtl direction for Arabic",
 });
 
 test("radar modal displays flights, changes corridor and shows live status", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await page.getByRole("button", { name: "Radar Méditerranée" }).click();
   const modal = page.getByRole("dialog", { name: "Corridors Méditerranée" });
   await expect(modal).toContainText("RADAR OPÉRATIONNEL BAGVOYAGE");

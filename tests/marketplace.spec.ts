@@ -5,14 +5,14 @@ const nav = (page: Page, name: string) =>
     .getByRole("button", { name, exact: true })
     .filter({ visible: true });
 async function openRequest(page: Page) {
-  await page.goto("/");
+  await page.goto("/app");
   await page.getByRole("button", { name: "Voir la demande" }).first().click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Nike Air Max · pointure 42",
   );
 }
 test("search, combined filters, reset and empty state", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await expect(page.locator(".request-card")).toHaveCount(2);
   await page
     .getByRole("textbox", { name: "Rechercher une annonce" })
@@ -33,7 +33,7 @@ test("search, combined filters, reset and empty state", async ({ page }) => {
 test("transport routes, vehicle filters and detail contact", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await page.getByRole("button", { name: "Transports", exact: true }).click();
   await expect(page.locator(".trip-card")).toHaveCount(9);
   await expect(page.locator(".trip-card").first()).toContainText(
@@ -57,7 +57,7 @@ test("transport routes, vehicle filters and detail contact", async ({
 test("profile supports multiple intentions and preserves choices", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await nav(page, "Profil").click();
   await page.getByLabel("Je transporte").check();
   await page.getByLabel("J’achète et je livre").check();
@@ -75,7 +75,7 @@ test("profile supports multiple intentions and preserves choices", async ({
   await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 test("publish a purchase request and persist its details", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await page
     .getByRole("button", { name: "Publier une demande", exact: true })
     .click();
@@ -174,7 +174,7 @@ test("request chat, PIN rejection, both QR stages and four ratings", async ({
 test("scanner enforces 10 kg allowance => 9 kg offer and publishes", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await page.getByRole("button", { name: /Un billet, de la place/ }).click();
   await page.getByRole("button", { name: /Air Algérie/ }).click();
   await expect(page.getByRole("dialog")).toContainText("9 kg", {
@@ -197,7 +197,7 @@ test("scanner enforces 10 kg allowance => 9 kg offer and publishes", async ({
 test("arbitrage remains available and starts the relevant conversation", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await page.getByRole("button", { name: /Votre prochain voyage/ }).click();
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     "Voyager gratuit",
@@ -229,7 +229,7 @@ test("four screens fit viewport without runtime errors", async ({
       fullPage: true,
     });
   }
-  await page.goto("/");
+  await page.goto("/app");
   await page.getByRole("button", { name: "Transports", exact: true }).click();
   expect(
     await page.evaluate(

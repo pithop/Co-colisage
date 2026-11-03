@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("capacity updates estimates, filters requests and preserves direct actions", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   const visualizer = page.locator(".luggage-visualizer");
   const slider = page.getByRole("slider", {
     name: "Kilos disponibles dans vos bagages",
@@ -33,7 +33,7 @@ test("capacity updates estimates, filters requests and preserves direct actions"
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     "Nike Air Max",
   );
-  await page.goto("/");
+  await page.goto("/app");
   await page.getByRole("button", { name: "Lancer le scan express" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
 });
@@ -107,7 +107,7 @@ test("reputation details and saved preference flow into a published flight", asy
   await preference.check();
   await page.reload();
   await expect(preference).toBeChecked();
-  await page.goto("/");
+  await page.goto("/app");
   await page.getByRole("button", { name: "Transports", exact: true }).click();
   await expect(
     page.locator(".trip-card").first().locator(".instant-badge"),

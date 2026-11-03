@@ -14,7 +14,7 @@ const pdf = {
   buffer: Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF"),
 };
 async function signInLocal(page: Page) {
-  await page.goto("/");
+  await page.goto("/app");
   await expect(page.locator(".request-card")).toHaveCount(2);
   await page.evaluate(async () => {
     const dbPath = "/src/services/productionDb.ts";
@@ -224,7 +224,7 @@ test("professional application uploads, fleet, review and badge survive reload",
 test("parcel photos, flexible dates, dimensions and customs warning persist", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await page
     .getByRole("button", { name: "Publier une demande", exact: true })
     .click();
@@ -290,7 +290,7 @@ test("parcel photos, flexible dates, dimensions and customs warning persist", as
 test("Shop & Go multi-item basket calculates purchases, net reward and platform fee", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await page
     .getByRole("button", { name: "Publier une demande", exact: true })
     .click();
@@ -436,7 +436,7 @@ test("new destinations fit the viewport and keep navigation accessible", async (
 test("version one upgrades without reseeding changed records", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await expect(page.locator(".request-card")).toHaveCount(2);
   await page.evaluate(async () => {
     const dbPath = "/src/services/productionDb.ts";

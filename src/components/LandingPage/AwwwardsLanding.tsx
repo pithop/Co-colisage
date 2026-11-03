@@ -10,7 +10,16 @@ import {
   Video,
   Globe2,
   ArrowLeftRight,
+  Bell,
+  Smartphone,
+  Ticket,
+  WifiOff,
 } from "lucide-react";
+import { AppStoreBadges } from "./AppStoreBadges";
+import {
+  MobileAppLaunchModal,
+  MobileWaitlistForm,
+} from "./MobileAppLaunchModal";
 const copy = {
   fr: {
     eyebrow: "LES DISTANCES CHANGENT. LES LIENS RESTENT.",
@@ -145,8 +154,14 @@ const faqs = {
 };
 export function AwwwardsLanding({
   initialLanguage = "fr",
+  mobileLaunchOpen = false,
+  section,
+  showAdmin = false,
 }: {
   initialLanguage?: "fr" | "en";
+  mobileLaunchOpen?: boolean;
+  section?: string;
+  showAdmin?: boolean;
 }) {
   const [language, setLanguage] = useState<"fr" | "en">(initialLanguage);
   const [origin, setOrigin] = useState("Paris");
@@ -170,6 +185,13 @@ export function AwwwardsLanding({
   const saving = origin === destination ? 0 : Math.max(0, quote - gross);
   const percent = quote > 0 ? Math.round((saving / quote) * 100) : 0;
   const text = (fr: string, en: string) => (language === "fr" ? fr : en);
+  const openMobileLaunch = () => {
+    window.location.hash = "download";
+  };
+  useEffect(() => {
+    if (section)
+      document.getElementById(section)?.scrollIntoView({ block: "start" });
+  }, [section]);
   useEffect(() => {
     const title = document.title;
     const previousLanguage = document.documentElement.lang;
@@ -201,11 +223,28 @@ export function AwwwardsLanding({
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <div className="landing-masthead">
+      <header className="landing-masthead">
         <a href="/#landing" className="landing-wordmark">
           BagVoyage<span>.</span>
         </a>
-        <span>PARIS / ALGER / EVERYWHERE</span>
+        <nav
+          className="landing-nav"
+          aria-label={text("Présentation de BagVoyage", "About BagVoyage")}
+        >
+          <a href="#features">{text("Fonctionnalités", "Features")}</a>
+          <a href="#simulator">{text("Simulateur", "Simulator")}</a>
+          <a href="#mobile">{text("Application Mobile", "Mobile App")}</a>
+        </nav>
+        <div className="landing-account-actions">
+          <a href="/#login">{text("Connexion", "Log in")}</a>
+          <a href="/#register" className="landing-register">
+            {text("Inscription", "Sign up")}
+          </a>
+          <a href="/#explore" className="landing-nav-launch">
+            {c.cta}
+            <ArrowUpRight size={16} aria-hidden="true" />
+          </a>
+        </div>
         <label className="landing-language">
           <Globe2 size={16} />
           <select
@@ -219,7 +258,7 @@ export function AwwwardsLanding({
             <option value="en">EN</option>
           </select>
         </label>
-      </div>
+      </header>
       <section className="landing-hero">
         <div className="landing-hero-copy">
           <span className="eyebrow">{c.eyebrow}</span>
@@ -229,10 +268,21 @@ export function AwwwardsLanding({
             <em>{c.accent}</em>
           </h1>
           <p>{c.intro}</p>
-          <a className="landing-cta" href="/#explore">
-            {c.cta}
-            <ArrowUpRight size={21} />
-          </a>
+          <div className="landing-hero-actions">
+            <a className="landing-cta" href="/#explore">
+              {c.cta}
+              <ArrowUpRight size={21} />
+            </a>
+            <div className="landing-store-preview">
+              <AppStoreBadges language={language} onClick={openMobileLaunch} />
+              <span>
+                {text(
+                  "iPhone & Android · Bientôt disponible",
+                  "iPhone & Android · Coming soon",
+                )}
+              </span>
+            </div>
+          </div>
           <div className="landing-trust-chips">
             <span>
               <ScanLine size={16} />
@@ -308,7 +358,11 @@ export function AwwwardsLanding({
           </div>
         </div>
       </section>
-      <section className="landing-simulator" aria-labelledby="simulator-title">
+      <section
+        id="simulator"
+        className="landing-simulator"
+        aria-labelledby="simulator-title"
+      >
         <div>
           <span className="eyebrow">
             01 / {text("FAITES LE CALCUL", "DO THE MATH")}
@@ -426,7 +480,7 @@ export function AwwwardsLanding({
           ))}
         </div>
       </section>
-      <section className="landing-universes">
+      <section id="features" className="landing-universes">
         <div className="landing-section-heading">
           <span className="eyebrow">
             02 / {text("À CHACUN SON VOYAGE", "EVERY JOURNEY IS DIFFERENT")}
@@ -631,10 +685,143 @@ export function AwwwardsLanding({
           })}
         </div>
       </section>
+      <section
+        id="mobile"
+        className="landing-mobile"
+        aria-labelledby="mobile-title"
+      >
+        <div className="landing-mobile-intro">
+          <span className="eyebrow">
+            05 /{" "}
+            {text(
+              "LE VOYAGE, DANS VOTRE POCHE",
+              "YOUR JOURNEY, IN YOUR POCKET",
+            )}
+          </span>
+          <h2 id="mobile-title">
+            {text("Application Mobile Native", "Native Mobile App")}
+            <em>
+              {text(
+                "Prête pour vos prochains départs.",
+                "Made for your next departure.",
+              )}
+            </em>
+          </h2>
+          <p>
+            {text(
+              "BagVoyage sur iPhone & Android. Votre billet, vos colis et vos échanges au même endroit, du départ à la remise.",
+              "BagVoyage on iPhone & Android. Your boarding pass, parcels and conversations together, from departure to handover.",
+            )}
+          </p>
+          <div className="landing-mobile-status">
+            <span aria-hidden="true" />
+            {text(
+              "Bientôt sur l’App Store et Google Play",
+              "Coming soon to the App Store and Google Play",
+            )}
+          </div>
+          <AppStoreBadges language={language} onClick={openMobileLaunch} />
+          <a className="landing-mobile-details" href="#download">
+            {text(
+              "Découvrir le lancement mobile",
+              "Discover the mobile launch",
+            )}
+            <ArrowUpRight size={18} aria-hidden="true" />
+          </a>
+        </div>
+        <div className="landing-mobile-features">
+          <div className="landing-mobile-feature-heading">
+            <Smartphone size={22} aria-hidden="true" />
+            <span>
+              {text("PENSÉE POUR LE TERRAIN", "BUILT FOR THE JOURNEY")}
+            </span>
+            <span>iOS / Android</span>
+          </div>
+          {[
+            {
+              Icon: ScanLine,
+              title: text(
+                "Scanner IATA BCBP par caméra",
+                "IATA BCBP camera scanner",
+              ),
+              description: text(
+                "Scannez votre carte d’embarquement pour retrouver les informations de votre vol.",
+                "Scan your boarding pass to retrieve your flight information.",
+              ),
+            },
+            {
+              Icon: Ticket,
+              title: text(
+                "Passe de fret Apple Wallet",
+                "Apple Wallet cargo pass",
+              ),
+              description: text(
+                "Gardez les références de votre colis à portée de main, avec vos titres de voyage.",
+                "Keep parcel references close at hand, alongside your travel passes.",
+              ),
+            },
+            {
+              Icon: WifiOff,
+              title: text(
+                "Remise hors-ligne en zone blanche",
+                "Offline handover without coverage",
+              ),
+              description: text(
+                "Enregistrez la remise sans réseau. La synchronisation reprend au retour de la connexion.",
+                "Record handovers without a network. Sync resumes when you reconnect.",
+              ),
+            },
+            {
+              Icon: Bell,
+              title: text("Push notifications", "Push notifications"),
+              description: text(
+                "Un nouveau message, un départ ou une remise : restez informé au bon moment.",
+                "New messages, departures and handovers: stay informed at the right moment.",
+              ),
+            },
+          ].map(({ Icon, title, description }) => (
+            <article key={title}>
+              <div>
+                <Icon size={22} strokeWidth={1.5} aria-hidden="true" />
+              </div>
+              <div>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
+            </article>
+          ))}
+          <p className="landing-mobile-roadmap">
+            {text(
+              "Fonctionnalités prévues pour l’application native, disponibles progressivement au lancement.",
+              "Planned native app features, rolling out progressively at launch.",
+            )}
+          </p>
+        </div>
+        <div className="landing-mobile-signup">
+          <div>
+            <span className="eyebrow">
+              {text("ACCÈS PRIORITAIRE", "PRIORITY ACCESS")}
+            </span>
+            <h3>
+              {text(
+                "Votre prochaine escale commence ici.",
+                "Your next stop starts here.",
+              )}
+            </h3>
+            <p>
+              {text(
+                "Rejoignez la liste de lancement. En attendant, la version web est déjà accessible.",
+                "Join the launch list. In the meantime, the web app is already available.",
+              )}
+            </p>
+          </div>
+          <MobileWaitlistForm language={language} />
+        </div>
+      </section>
       <section className="landing-faq">
         <div>
           <span className="eyebrow">
-            05 / {text("LES RÉPONSES", "YOUR QUESTIONS")}
+            06 / {text("LES RÉPONSES", "YOUR QUESTIONS")}
           </span>
           <h2>{c.faq}</h2>
         </div>
@@ -669,8 +856,26 @@ export function AwwwardsLanding({
           <strong>BagVoyage</strong>
           <span>FRANCE / ALGÉRIE / INTERNATIONAL</span>
           <span>© {new Date().getFullYear()} BagVoyage</span>
+          {showAdmin && (
+            <button
+              type="button"
+              onClick={() => {
+                window.location.hash = "admin";
+              }}
+            >
+              Super Admin
+            </button>
+          )}
         </div>
       </footer>
+      {mobileLaunchOpen && (
+        <MobileAppLaunchModal
+          language={language}
+          onClose={() => {
+            window.location.hash = section || "landing";
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -2,7 +2,7 @@
   "name": "BagVoyage · Entre particuliers",
   "short_name": "BagVoyage",
   "description": "Plateforme de co-colisage et shopping collaboratif sécurisé entre particuliers.",
-  "start_url": "/",
+  "start_url": "/app",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#2563EB",

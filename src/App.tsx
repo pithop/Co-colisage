@@ -110,6 +110,16 @@ const SmartFlightArbitrage = lazy(() =>
   })),
 );
 
+function routeFromLocation() {
+  const hash = window.location.hash.slice(1);
+  if (hash) return hash === "app" ? "explore" : hash;
+  const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
+  if (pathname === "/app") return "explore";
+  if (pathname === "/download") return "download";
+  if (pathname === "/" || /\/landing$/.test(pathname)) return "landing";
+  return "explore";
+}
+
 function Marketplace() {
   const { user, logout } = useAuth();
   const [anonymousId] = useState(localActorId);
@@ -136,11 +146,8 @@ function Marketplace() {
   const [publishKind, setPublishKind] = useState<
     "requests" | "trips" | "parcel" | undefined
   >();
-  const [route, setRoute] = useState(
-    () =>
-      window.location.hash.slice(1) ||
-      (/\/landing\/?$/.test(window.location.pathname) ? "landing" : "explore"),
-  );
+  const [route, setRoute] = useState(routeFromLocation);
+  const previousRoute = useRef(route);
   const [mode, setMode] = useState<"requests" | "trips">("requests");
   const [requests, setRequests, requestsReady, requestsError, retryRequests] =
     useProductionStore("purchase_requests", "ep-requests-v1", initialRequests);
@@ -333,7 +340,10 @@ function Marketplace() {
   const registerPage = route === "register";
   const tracking = route === "tracking";
   const expansionPage = radar || loginPage || registerPage || tracking;
-  const landing = route === "landing";
+  const landingSection = ["features", "simulator", "mobile"].includes(route)
+    ? route
+    : undefined;
+  const landing = route === "landing" || route === "download" || !!landingSection;
   const admin = route === "admin";
   const wallet = route === "wallet";
   const profile = route === "profile";
@@ -346,15 +356,13 @@ function Marketplace() {
     setRoute(next);
   };
   useEffect(() => {
-    const update = () =>
-      setRoute(
-        window.location.hash.slice(1) ||
-          (/\/landing\/?$/.test(window.location.pathname)
-            ? "landing"
-            : "explore"),
-      );
+    const update = () => setRoute(routeFromLocation());
     window.addEventListener("hashchange", update);
-    return () => window.removeEventListener("hashchange", update);
+    window.addEventListener("popstate", update);
+    return () => {
+      window.removeEventListener("hashchange", update);
+      window.removeEventListener("popstate", update);
+    };
   }, []);
   useEffect(() => {
     if (route.startsWith("publish/")) {
@@ -366,9 +374,16 @@ function Marketplace() {
     }
   }, [route]);
   useEffect(() => {
+    const previous = previousRoute.current;
+    previousRoute.current = route;
+    if (
+      landingSection ||
+      route === "download" ||
+      (previous === "download" && landing)
+    ) return;
     window.scrollTo(0, 0);
     document.getElementById("main-content")?.scrollTo(0, 0);
-  }, [route]);
+  }, [route, landing, landingSection]);
   useEffect(() => {
     if (!notice) return;
     const timer = setTimeout(() => setNotice(""), 4500);
@@ -509,7 +524,7 @@ function Marketplace() {
       navigate("messages");
     }
   };
-  if (!storageReady)
+  if (!storageReady && !landing)
     return (
       <main className="storage-loading">
         <ShieldCheck size={32} />
@@ -528,7 +543,7 @@ function Marketplace() {
       </main>
     );
   return (
-    <div className="marketplace">
+    <div className={`marketplace${landing ? " public-landing" : ""}`}>
       <a
         className="skip-link"
         href="#main-content"
@@ -539,21 +554,23 @@ function Marketplace() {
       >
         Aller au contenu
       </a>
-      <MarketplaceHeader
-        route={route} balance={money(balance.available)} unreadCount={unreadCount}
-        notificationsOpen={notificationsOpen} userName={user?.name}
-        showAdmin={localAdminEnabled} canShare={!!(selectedRequest || selectedTrip)}
-        isOnline={isOnline}
-        navigate={navigate}
-        onPublish={() => { setPublishKind(undefined); setPublish(true); }}
-        onCurrency={() => setCurrencyOpen(true)} onRadar={() => setRadarOpen(true)}
-        onNotifications={() => setNotificationsOpen(true)}
-        onLogin={() => user ? navigate("profile") : setAuth("email")}
-        onPreview={() => setPreview(true)} onShare={() => void share()}
-        onScanBoardingPass={() => setIataScannerOpen(true)}
-        onCargoPass={() => setCargoPassOpen(true)}
-        onOfflineHandover={() => setOfflineHandoverOpen(true)}
-      />
+      {!landing && (
+        <MarketplaceHeader
+          route={route} balance={money(balance.available)} unreadCount={unreadCount}
+          notificationsOpen={notificationsOpen} userName={user?.name}
+          showAdmin={localAdminEnabled} canShare={!!(selectedRequest || selectedTrip)}
+          isOnline={isOnline}
+          navigate={navigate}
+          onPublish={() => { setPublishKind(undefined); setPublish(true); }}
+          onCurrency={() => setCurrencyOpen(true)} onRadar={() => setRadarOpen(true)}
+          onNotifications={() => setNotificationsOpen(true)}
+          onLogin={() => user ? navigate("profile") : setAuth("email")}
+          onPreview={() => setPreview(true)} onShare={() => void share()}
+          onScanBoardingPass={() => setIataScannerOpen(true)}
+          onCargoPass={() => setCargoPassOpen(true)}
+          onOfflineHandover={() => setOfflineHandoverOpen(true)}
+        />
+      )}
       <main
         id="main-content"
         tabIndex={-1}
@@ -586,6 +603,9 @@ function Marketplace() {
         {landing && (
           <Suspense fallback={<p role="status">Chargement de BagVoyage…</p>}>
             <AwwwardsLanding
+              mobileLaunchOpen={route === "download"}
+              section={landingSection}
+              showAdmin={localAdminEnabled}
               initialLanguage={
                 window.location.pathname.startsWith("/en/") ? "en" : "fr"
               }
@@ -953,11 +973,13 @@ function Marketplace() {
           />
         </Dialog>
       )}
-      <BottomNavBar
-        route={route}
-        unreadMessagesCount={unreadCount}
-        navigate={navigate}
-      />
+      {!landing && (
+        <BottomNavBar
+          route={route}
+          unreadMessagesCount={unreadCount}
+          navigate={navigate}
+        />
+      )}
       <BoardingPassScannerModal
         isOpen={iataScannerOpen}
         onClose={() => setIataScannerOpen(false)}

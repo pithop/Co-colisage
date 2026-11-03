@@ -9,7 +9,7 @@ const bell = (page: Page) =>
 test("wallet opens from header and profile with escrow, cash rule and filterable history", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await walletButton(page).click();
   await expect(page).toHaveURL(/#wallet$/);
   await expect(
@@ -174,7 +174,7 @@ test("deposit only releases after final handover and never credits twice on relo
 test("notifications support reading, filtering, persistence, focus trapping and closing", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await expect(bell(page)).toHaveAccessibleName("Notifications, 4 non lues");
   await bell(page).click();
   const drawer = page.getByRole("dialog", { name: /Notifications/ });
@@ -224,7 +224,7 @@ test("notifications support reading, filtering, persistence, focus trapping and 
 test("each alert navigates to its relevant simulation, conversation or profile", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   for (const [summary, action, destination] of [
     [/Arbitrage IA.*Voyagez gratuit/, "Estimer ce vol", "arbitrage/mrs-alg"],
     [/Suivi de commande.*Sarah/, "Ouvrir le suivi avec Sarah", "messages"],
@@ -258,7 +258,7 @@ test("each alert navigates to its relevant simulation, conversation or profile",
 test("express calculator updates all destinations and preserves the chosen flight on reload", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   const widget = page.getByRole("region", {
     name: "Calculateur de vol gratuit",
   });

@@ -52,11 +52,12 @@ try {
       )
       .replace(
         '<div id="root"></div>',
-        `<div id="root"><div class="marketplace"><main class="main-container destination-container">${body}</main></div></div>`,
+        `<div id="root"><div class="marketplace public-landing"><main class="main-container destination-container">${body}</main></div></div>`,
       );
     const directory = `dist${pathname}`;
     await mkdir(directory, { recursive: true });
     await writeFile(`${directory}index.html`, html);
+    if (locale === "fr") await writeFile("dist/index.html", html);
     console.log(`Prerendered ${pathname} (${locale})`);
   }
 } finally {

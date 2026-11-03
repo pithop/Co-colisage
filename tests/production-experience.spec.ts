@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("visual transport, corridors, earnings and preview persist without the legacy cache", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await page.getByRole("button", { name: "Transports", exact: true }).click();
   await page.locator(".publish-dock button").click();
   const dialog = page.getByRole("dialog");
@@ -85,10 +85,10 @@ test("IndexedDB CRUD is atomic, idempotent and updates another open tab", async 
   page,
   context,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await expect(page.locator(".request-card")).toHaveCount(2);
   const other = await context.newPage();
-  await other.goto("/");
+  await other.goto("/app");
   await expect(other.locator(".request-card")).toHaveCount(2);
   const result = await page.evaluate(async () => {
     const modulePath = "/src/services/productionDb.ts";

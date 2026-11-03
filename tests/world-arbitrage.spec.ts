@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("the single header and international catalogue keep every corridor reachable", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await expect(page.locator(".request-card")).toHaveCount(2);
   expect((await page.locator(".site-header").boundingBox())!.height).toBe(68);
   await expect(page.locator(".header-destinations")).toHaveCount(0);

@@ -165,7 +165,7 @@ test("seeded chats reply after 800 ms and preserve agreements across navigation"
 test("card surfaces open details and demo PIN helper follows both delivery stages", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await page
     .locator(".request-card")
     .first()

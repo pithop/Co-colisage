@@ -5334,3 +5334,651 @@
   padding-top: 12px;
   border-top: 1px solid #f1f5f9;
 }
+
+/* Public entry, native app launch and vector store badges. */
+.marketplace.public-landing {
+  display: block;
+  height: auto;
+  min-height: 100dvh;
+  padding-bottom: 0;
+  background: #f3f1ec;
+}
+.public-landing .main-container.destination-container {
+  width: 100%;
+  max-width: 1600px;
+  margin-bottom: 0;
+  overflow: visible;
+  padding: 0;
+}
+.public-landing .awwwards-landing {
+  margin: 0;
+}
+.landing-masthead {
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  padding: 24px 5%;
+}
+.landing-nav,
+.landing-account-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.landing-nav {
+  margin-left: auto;
+}
+.landing-nav a,
+.landing-account-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    color 160ms,
+    background 160ms;
+}
+.landing-nav a:hover,
+.landing-account-actions > a:first-child:hover {
+  color: #2149d8;
+}
+.landing-register {
+  border: 1px solid #15243730;
+  border-radius: 8px;
+  padding: 0 16px;
+}
+.landing-register:hover {
+  background: #fff;
+}
+.landing-nav-launch {
+  gap: 12px;
+  background: #151d2b;
+  color: #fff;
+  padding: 0 16px;
+  border-radius: 8px;
+}
+.landing-nav-launch:hover {
+  background: #2149d8;
+}
+.landing-language select {
+  min-height: 44px;
+}
+.awwwards-landing :is(a, button, input, select):focus-visible,
+.mobile-launch-modal :is(a, button, input):focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 4px;
+}
+.landing-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 32px;
+}
+.landing-hero-actions .landing-cta {
+  margin-top: 0;
+  min-height: 56px;
+  gap: 16px;
+}
+.landing-store-preview {
+  display: grid;
+  gap: 8px;
+}
+.landing-store-preview > span {
+  color: #536071;
+  font-size: 11px;
+}
+.app-store-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.app-store-badge {
+  display: block;
+  width: 180px;
+  min-width: 144px;
+  min-height: 44px;
+  border-radius: 8px;
+  background: #000;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+.app-store-badge svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.app-store-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px #0002;
+}
+.app-store-badge:active {
+  transform: scale(0.96);
+}
+.landing-hero-actions .app-store-badges {
+  gap: 8px;
+}
+.landing-hero-actions .app-store-badge {
+  width: 148px;
+}
+.landing-hero-actions .landing-store-preview {
+  padding-top: 5px;
+}
+:is(#features, #simulator, #mobile) {
+  scroll-margin-top: 24px;
+}
+.landing-mobile {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  padding: 80px 5%;
+  background: #0a1128;
+  color: #fff;
+}
+.landing-mobile .eyebrow {
+  color: #9aafff;
+}
+.landing-mobile h2 {
+  margin: 24px 0;
+  font-size: clamp(30px, 3.4vw, 48px);
+  line-height: 1.15;
+  letter-spacing: -1.8px;
+}
+.landing-mobile h2 em {
+  display: block;
+  margin-top: 12px;
+  font-family: Georgia, serif;
+  font-weight: 400;
+  color: #a9beff;
+}
+.landing-mobile-intro > p {
+  max-width: 440px;
+  color: #c1c9db;
+  font-size: 15px;
+  line-height: 1.8;
+}
+.landing-mobile-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 32px 0 16px;
+  font-size: 12px;
+  color: #d8e0f5;
+}
+.landing-mobile-status > span {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #a9beff;
+}
+.landing-mobile-details {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 12px;
+  color: #c2d0ff;
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.landing-mobile-features {
+  align-self: center;
+  border: 1px solid #ffffff24;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ffffff0d, #ffffff03);
+  padding: 24px;
+}
+.landing-mobile-feature-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 24px;
+  color: #a9beff;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.landing-mobile-feature-heading > span:last-child {
+  margin-left: auto;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: #bac4db;
+}
+.landing-mobile-features article {
+  display: flex;
+  gap: 16px;
+  padding: 20px 0;
+  border-top: 1px solid #ffffff1a;
+}
+.landing-mobile-features article > div:first-child {
+  display: grid;
+  place-items: center;
+  align-self: flex-start;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  background: #a9beff15;
+  color: #b9caff;
+  border-radius: 12px;
+}
+.landing-mobile-features h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 650;
+}
+.landing-mobile-features article p {
+  margin: 0;
+  color: #bac4db;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.landing-mobile-roadmap {
+  font-size: 11px;
+  color: #a9b5d0;
+  margin: 0;
+}
+.landing-mobile-signup {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  align-items: center;
+  gap: 48px;
+  padding-top: 40px;
+  border-top: 1px solid #ffffff24;
+}
+.landing-mobile-signup h3 {
+  font-size: 23px;
+  line-height: 1.4;
+  margin: 12px 0 8px;
+  letter-spacing: -0.6px;
+}
+.landing-mobile-signup > div > p {
+  color: #bac4db;
+  font-size: 13px;
+  margin: 0;
+}
+.mobile-waitlist {
+  min-width: 0;
+}
+.mobile-waitlist label {
+  display: block;
+  font-size: 12px;
+  font-weight: 650;
+  margin-bottom: 8px;
+}
+.mobile-waitlist-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.mobile-waitlist input {
+  flex: 1 1 180px;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #0a1128;
+  font-size: 16px;
+}
+.mobile-waitlist input::placeholder {
+  color: #64748b;
+}
+.mobile-waitlist button,
+.mobile-web-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 48px;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: #2149d8;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 650;
+  transition:
+    background 160ms,
+    transform 160ms;
+}
+.mobile-waitlist button:hover,
+.mobile-web-cta:hover {
+  background: #1736a7;
+}
+.mobile-waitlist button:active,
+.mobile-web-cta:active {
+  transform: scale(0.98);
+}
+.mobile-waitlist-note {
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.6;
+  margin: 12px 0 0;
+}
+.landing-mobile .mobile-waitlist-note {
+  color: #bac4db;
+}
+.mobile-waitlist-success:not(:empty) {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  margin-top: 16px;
+  border: 1px solid #05966940;
+  border-radius: 8px;
+  background: #ecfdf5;
+  color: #065f46;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.mobile-waitlist-success svg {
+  flex-shrink: 0;
+}
+.mobile-waitlist-error {
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff1f2;
+  color: #9f1239;
+  font-size: 12px;
+}
+.mobile-launch-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #0a112899;
+  backdrop-filter: blur(8px);
+}
+.mobile-launch-modal {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 40px;
+  border: 1px solid #fff8;
+  border-radius: 24px;
+  background: #fff;
+  color: #0a1128;
+  box-shadow: 0 32px 96px #0004;
+  animation: mobile-launch-enter 200ms ease-out;
+}
+.mobile-launch-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: #475569;
+  background: #f1f5f9;
+}
+.mobile-launch-close:hover {
+  background: #e2e8f0;
+}
+.mobile-launch-symbol {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 24px;
+  border: 1px solid #dbe5ff;
+  border-radius: 20px;
+  background: #eef3ff;
+  color: #2149d8;
+}
+.mobile-launch-kicker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  color: #2149d8;
+}
+.awwwards-landing .mobile-launch-modal h2 {
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  margin: 12px 0 20px;
+}
+.mobile-launch-modal h2 span {
+  display: block;
+  margin-top: 12px;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.2px;
+  font-weight: 500;
+  color: #536071;
+}
+.mobile-launch-modal > p {
+  color: #536071;
+  font-size: 13px;
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+.mobile-web-cta {
+  width: 100%;
+}
+.mobile-pwa-guide {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  margin: 24px 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+.mobile-pwa-guide > svg {
+  flex-shrink: 0;
+  color: #2149d8;
+}
+.mobile-pwa-guide h3 {
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 650;
+  margin: 0 0 16px;
+}
+.mobile-pwa-guide p {
+  display: grid;
+  gap: 4px;
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: #536071;
+}
+.mobile-pwa-guide strong {
+  color: #0a1128;
+}
+.mobile-launch-waitlist h3 {
+  font-size: 16px;
+  margin: 0 0 16px;
+}
+.mobile-launch-handle {
+  display: none;
+}
+@keyframes mobile-launch-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 1100px) {
+  .landing-masthead {
+    gap: 12px 16px;
+  }
+  .landing-nav {
+    order: 4;
+    width: 100%;
+    justify-content: center;
+    border-top: 1px solid #15243715;
+    padding-top: 8px;
+  }
+  .landing-account-actions {
+    margin-left: auto;
+    gap: 12px;
+  }
+  .landing-mobile {
+    gap: 32px;
+  }
+  .landing-mobile-signup {
+    gap: 32px;
+  }
+}
+@media (max-width: 640px) {
+  .landing-masthead {
+    padding: 16px;
+    gap: 8px 12px;
+  }
+  .landing-masthead .landing-wordmark {
+    margin-right: auto;
+  }
+  .landing-language {
+    order: 1;
+  }
+  .landing-account-actions {
+    order: 2;
+    width: 100%;
+    margin-left: 0;
+    gap: 12px;
+  }
+  .landing-account-actions a {
+    font-size: 11px;
+  }
+  .landing-nav-launch {
+    margin-left: auto;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .landing-register {
+    padding: 0 12px;
+  }
+  .landing-nav {
+    gap: 16px;
+    justify-content: space-between;
+    padding-top: 4px;
+  }
+  .landing-nav a {
+    font-size: 11px;
+  }
+  .landing-hero-actions {
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .landing-hero-actions .landing-cta {
+    width: 100%;
+  }
+  .landing-hero-actions .landing-store-preview {
+    padding: 0;
+  }
+  .landing-hero-actions .app-store-badge {
+    width: 148px;
+  }
+  .landing-mobile {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 48px 6%;
+    gap: 32px;
+  }
+  .landing-mobile h2 {
+    font-size: 32px;
+  }
+  .landing-mobile-intro > p {
+    font-size: 13px;
+  }
+  .landing-mobile .app-store-badge {
+    width: 148px;
+  }
+  .landing-mobile .app-store-badges {
+    gap: 8px;
+  }
+  .landing-mobile-features {
+    padding: 20px 16px;
+  }
+  .landing-mobile-feature-heading {
+    gap: 8px;
+    font-size: 9px;
+  }
+  .landing-mobile-signup {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    padding-top: 32px;
+  }
+  .mobile-waitlist-fields {
+    flex-direction: column;
+  }
+  .mobile-waitlist input {
+    flex-basis: auto;
+  }
+  .mobile-waitlist button {
+    width: 100%;
+  }
+  .mobile-launch-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .mobile-launch-modal {
+    max-height: calc(100dvh - 16px);
+    padding: 32px max(20px, env(safe-area-inset-left))
+      max(24px, env(safe-area-inset-bottom))
+      max(20px, env(safe-area-inset-right));
+    border-radius: 24px 24px 0 0;
+  }
+  .mobile-launch-handle {
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: #cbd5e1;
+    border-radius: 8px;
+    margin: -20px auto 24px;
+  }
+  .awwwards-landing .mobile-launch-modal h2 {
+    font-size: 26px;
+  }
+  .mobile-pwa-guide {
+    padding: 16px;
+    gap: 12px;
+  }
+}
+@media (max-width: 359px) {
+  .app-store-badges {
+    gap: 8px;
+  }
+  .landing-mobile .app-store-badge,
+  .landing-hero-actions .app-store-badge {
+    width: 140px;
+    min-width: 140px;
+  }
+  .landing-nav-launch {
+    padding: 0 8px;
+    gap: 4px;
+  }
+  .landing-account-actions {
+    gap: 8px;
+  }
+  .landing-mobile-feature-heading > span:last-child {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-store-badge,
+  .mobile-waitlist button,
+  .mobile-web-cta {
+    transition: none;
+  }
+  .mobile-launch-modal {
+    animation: none;
+  }
+}
