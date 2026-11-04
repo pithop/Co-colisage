@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, 
   KeyRound, 
-  ShieldCheck, 
   CheckCircle2, 
-  Sparkles, 
+  AlertCircle,
   ArrowRight,
-  CreditCard,
   Building,
   RotateCcw
 } from 'lucide-react';
@@ -27,7 +25,17 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
   const [pin, setPin] = useState<string[]>(['', '', '', '']);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [error, setError] = useState('');
+  const verificationTimer = useRef<ReturnType<typeof setTimeout>>();
   const correctPin = '4821';
+
+  useEffect(() => {
+    setPin(['', '', '', '']);
+    setIsSuccess(false);
+    setIsVerifying(false);
+    setError('');
+    return () => clearTimeout(verificationTimer.current);
+  }, [product?.id]);
 
   if (!product) return null;
 
@@ -35,6 +43,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
 
   const handleDigitPress = (digit: string) => {
     if (isSuccess || isVerifying) return;
+    setError('');
 
     const nextEmptyIndex = pin.findIndex(d => d === '');
     if (nextEmptyIndex !== -1) {
@@ -51,6 +60,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
 
   const handleBackspace = () => {
     if (isSuccess || isVerifying) return;
+    setError('');
     const lastFilledIndex = [...pin].reverse().findIndex(d => d !== '');
     if (lastFilledIndex !== -1) {
       const actualIndex = 3 - lastFilledIndex;
@@ -61,13 +71,16 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
   };
 
   const handleReset = () => {
+    if (isVerifying) return;
     setPin(['', '', '', '']);
     setIsSuccess(false);
+    setError('');
   };
 
   const verifyPin = (enteredPin: string) => {
     setIsVerifying(true);
-    setTimeout(() => {
+    setError('');
+    verificationTimer.current = setTimeout(() => {
       setIsVerifying(false);
       if (enteredPin === correctPin) {
         setIsSuccess(true);
@@ -79,7 +92,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
           colors: ['#2563EB', '#10B981', '#06B6D4', '#F59E0B']
         });
       } else {
-        alert("Code PIN invalide ! Utilisez le code de démonstration : 4821");
+        setError('Code PIN invalide. Veuillez vérifier le code à 4 chiffres fourni par le destinataire.');
         setPin(['', '', '', '']);
       }
     }, 600);
@@ -89,15 +102,18 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
       <div 
         className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pin-delivery-title"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <KeyRound className="w-4 h-4 text-blue-600" />
-            <h3 className="font-bold text-sm text-slate-900">Remise Sécurisée par Code PIN</h3>
+            <h3 id="pin-delivery-title" className="font-bold text-sm text-slate-900">Remise Sécurisée par Code PIN</h3>
           </div>
-          <button onClick={onClose} className="p-1 rounded-full text-slate-400 hover:text-slate-600">
+          <button onClick={onClose} aria-label="Fermer" className="p-1 rounded-full text-slate-400 hover:text-slate-600">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -118,11 +134,14 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
                   L'acheteur à <strong>{product.destination}</strong> vous a communiqué son code PIN unique reçu par SMS.
                 </p>
 
-                {/* Demonstration helper note */}
-                <div className="mt-2.5 py-1.5 px-3 bg-amber-50 border border-amber-200/80 rounded-xl text-[11px] text-amber-800 font-semibold inline-block">
-                  Code PIN de démo : <span className="font-extrabold text-amber-950">4 8 2 1</span>
-                </div>
               </div>
+
+              {error && (
+                <p role="alert" className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-left text-sm text-red-800">
+                  <AlertCircle size={18} className="shrink-0" aria-hidden="true" />
+                  <span>{error}</span>
+                </p>
+              )}
 
               {/* 4 Digit Boxes */}
               <div className="flex justify-center gap-3">
@@ -146,6 +165,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
                   <button
                     key={digit}
                     type="button"
+                    disabled={isVerifying}
                     onClick={() => handleDigitPress(digit)}
                     className="h-12 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-blue-100 active:text-blue-700 text-slate-800 font-bold text-lg transition-all"
                   >
@@ -155,6 +175,8 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
                 <button
                   type="button"
                   onClick={handleReset}
+                  aria-label="Réinitialiser le code PIN"
+                  disabled={isVerifying}
                   className="h-12 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-xs flex items-center justify-center transition-all"
                 >
                   <RotateCcw className="w-4 h-4" />
@@ -162,6 +184,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
                 <button
                   type="button"
                   onClick={() => handleDigitPress('0')}
+                  disabled={isVerifying}
                   className="h-12 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-lg transition-all"
                 >
                   0
@@ -169,6 +192,8 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
                 <button
                   type="button"
                   onClick={handleBackspace}
+                  aria-label="Effacer le dernier chiffre"
+                  disabled={isVerifying}
                   className="h-12 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-sm transition-all"
                 >
                   DEL

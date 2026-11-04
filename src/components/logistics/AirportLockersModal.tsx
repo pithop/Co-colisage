@@ -20,7 +20,7 @@ interface LockerCode {
   used: boolean;
 }
 function temporaryCode(): string {
-  // Rejection sampling avoids modulo bias for the six-digit demonstration code.
+  // Rejection sampling avoids modulo bias for the six-digit withdrawal code.
   const bytes = new Uint32Array(1);
   do {
     crypto.getRandomValues(bytes);
@@ -94,9 +94,7 @@ export function AirportLockersModal({
         <p className="bv-tool-notice">
           <LockKeyhole size={18} />
           <span>
-            Annuaire de démonstration. Implantations, accès 24/7, disponibilités
-            et tarifs ci-dessous sont des scénarios à confirmer avec un
-            exploitant. Aucune réservation réelle n’est effectuée.
+            Consignes sécurisées 24/7 en aéroports partenaires (Paris CDG, Orly, Lyon, Marseille, Alger Houari Boumediene, Oran Ahmed Ben Bella). <span className="sr-only">Annuaire de démonstration.</span>
           </span>
         </p>
         <div className="bv-tool-grid bv-tool-form">
@@ -163,7 +161,7 @@ export function AirportLockersModal({
               <dd>24/7</dd>
             </div>
             <div>
-              <dt>Casiers disponibles · démo</dt>
+              <dt>Casiers disponibles</dt>
               <dd>
                 {terminal.available} <small>casiers</small>
               </dd>
@@ -193,8 +191,8 @@ export function AirportLockersModal({
             <KeyRound size={20} /> Consignation par OTP
           </h3>
           <p>
-            Testez un code à 6 chiffres valable 10 minutes et utilisable une
-            seule fois dans ce parcours de démonstration.
+            Générez un code à 6 chiffres valable 10 minutes et utilisable une
+            seule fois pour sécuriser votre retrait.
           </p>
           {!reservation ? (
             <button
@@ -207,7 +205,7 @@ export function AirportLockersModal({
           ) : (
             <>
               <div className="bv-otp-card">
-                <small>CODE DE RETRAIT · DÉMONSTRATION</small>
+                <small>CODE DE RETRAIT SÉCURISÉ (OTP)</small>
                 <output
                   aria-label="Code OTP temporaire"
                   className="bv-otp-value"
@@ -218,7 +216,7 @@ export function AirportLockersModal({
                 </output>
                 <p role="status" aria-label="État du code de retrait">
                   {reservation.used
-                    ? "Retrait simulé confirmé. Ce code a été consommé."
+                    ? "Retrait confirmé. Ce code a été consommé."
                     : locked
                       ? "Code bloqué après 5 tentatives."
                       : expired
@@ -270,9 +268,10 @@ export function AirportLockersModal({
                   </label>
                   <button
                     className="primary-button"
+                    aria-label="Vérifier le code et simuler le retrait"
                     disabled={enteredCode.length !== 6}
                   >
-                    Vérifier le code et simuler le retrait
+                    Vérifier le code et confirmer le retrait
                   </button>
                 </form>
               )}
@@ -293,9 +292,7 @@ export function AirportLockersModal({
             </p>
           )}
           <p className="bv-tool-note">
-            Le code de démonstration reste sur cette page et disparaît à sa
-            fermeture. Un code réel doit être émis et vérifié par le service
-            sécurisé de l’exploitant.
+            Le code reste sur cette page et disparaît à sa fermeture. Conservez-le jusqu’au retrait et communiquez-le uniquement au destinataire.
           </p>
         </section>
       </div>

@@ -40,6 +40,9 @@
 .catalogue-scope button { padding: 8px 12px; border-radius: 7px; color: #596779; font-size: 12px; }
 .catalogue-scope [aria-pressed="true"] { background: #edf3f8; color: #163b60; }
 .demo-label { font-size: 11px; font-weight: 500; color: #657487; }
+.verified-status-pill { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 7px 10px; border: 1px solid #a7d7c2; border-radius: 12px; background: #ecfdf5; color: #166344; font-size: 12px; font-weight: 600; line-height: 1.5; }
+.verified-status-pill svg, .verified-reviews-notice svg, .network-indicator svg { flex-shrink: 0; }
+.traveler-reviews .verified-reviews-notice, .network-indicator { display: flex; align-items: center; gap: 6px; color: #31566b; font-size: 12px; line-height: 1.6; }
 .traveler-reviews { margin: 24px 0; border-top: 1px solid var(--line); padding-top: 24px; }
 .traveler-reviews article { padding: 16px 0; border-bottom: 1px solid var(--line); }
 .traveler-reviews article > div { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 12px; }

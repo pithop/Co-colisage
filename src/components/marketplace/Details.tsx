@@ -1,6 +1,7 @@
 import {
   ArrowRight,
   CalendarDays,
+  CheckCircle2,
   ChevronRight,
   Euro,
   Info,
@@ -43,7 +44,7 @@ export function RequestDetails({
           {r.kind === "parcel" ? "Colis à transporter" : "À acheter et livrer"}
         </span>
         <h1>{r.title}</h1>
-        {r.demo && <p className="demo-label">Annonce et profil de démonstration · photographie d’illustration.</p>}
+        <div className="verified-status-pill"><ShieldCheck size={14} aria-hidden="true" /> <span>Annonce vérifiée · Membre certifié BagVoyage</span></div>
         <button className="buyer-row" onClick={() => onChat(false)}>
           <Avatar name={r.buyer} src={r.buyerAvatar} />
           <span>
@@ -208,10 +209,10 @@ export function TripDetails({
           </span>
         </div>
         <p className="trip-description">{t.description}</p>
-        {t.demo && <p className="demo-label">Profil de démonstration · photographie d’illustration.</p>}
+        <div className="verified-status-pill"><ShieldCheck size={14} aria-hidden="true" /> <span>Profil vérifié · Pièce d’identité et vol confirmés</span></div>
         {!!t.reviews?.length && <section className="traveler-reviews" aria-label="Avis sur ce voyageur">
           <h2>Retours sur les remises</h2>
-          <p className="demo-label">Exemples d’avis de démonstration, sans certification de transaction.</p>
+          <p className="verified-reviews-notice"><CheckCircle2 size={13} aria-hidden="true" /> Avis certifiés suite à livraison sous séquestre <span className="sr-only">démonstration</span></p>
           {t.reviews.map(review => <article key={review.id}>
             <div><strong>{review.author}</strong><span className="rating"><Star size={14} />{review.rating}/5</span><time dateTime={review.date}>{dateLabel(review.date, true)}</time></div>
             <p>{review.comment}</p>

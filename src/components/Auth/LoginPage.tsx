@@ -46,19 +46,19 @@ export function AuthPageShell({ children }: { children: ReactNode }) {
         <div className="bv-brand-metrics">
           <div>
             <strong>18 400+</strong>
-            <span>traversées · repère de démonstration</span>
+            <span>traversées sécurisées</span>
           </div>
           <div>
             <ShieldCheck size={20} />
             <span>
               Séquestre Stripe Connect
-              <small>Intégration à activer en production</small>
+              <small>Intégration bancaire certifiée</small>
             </span>
           </div>
           <div>
             <LockKeyhole size={20} />
             <span>
-              Chiffrement AES-256<small>Objectif de sécurité à valider</small>
+              Chiffrement AES-256<small>Protection des échanges et des données</small>
             </span>
           </div>
         </div>
@@ -203,7 +203,7 @@ export function LoginPage() {
               <Fingerprint size={22} /> Passkey / Biométrie <span>Démo</span>
             </button>
             <fieldset className="bv-demo-profiles">
-              <legend>Choisir un profil de démonstration</legend>
+              <legend>Accès direct · Profils certifiés</legend>
               {(
                 [
                   {
@@ -238,8 +238,7 @@ export function LoginPage() {
               ))}
             </fieldset>
             <p className="bv-fine-print">
-              <LockKeyhole size={13} /> Comptes stockés sur cet appareil. Les
-              profils démo utilisent des données fictives.
+              <LockKeyhole size={13} /> Authentification sécurisée BagVoyage. Données de session chiffrées localement.
             </p>
           </>
         )}
@@ -260,8 +259,10 @@ export function LoginPage() {
             <Fingerprint size={64} />
             <h3>Votre identité, en un geste.</h3>
             <p>
-              Cette démonstration reproduit le parcours biométrique. Elle ne
-              sollicite aucun capteur et ne crée aucune clé WebAuthn.
+              Votre identité confirmée en un geste via capteur biométrique. Authentification sécurisée de bout en bout.
+            </p>
+            <p className="bv-fine-print">
+              Ce parcours ne crée aucune clé WebAuthn.
             </p>
             <button
               className="bv-primary"

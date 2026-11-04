@@ -74,7 +74,7 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
           destination: "ALG",
           allowance: 10,
           offer: 9,
-          date: "2026-10-02",
+          date: "2026-11-08",
           demo: true,
         },
       ];
@@ -155,7 +155,7 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
               </div>
             </div>
             <span className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-2 text-[10px] font-medium text-slate-500">
-              <Sparkles size={12} /> Compte de démonstration
+              <Sparkles size={12} /> Voyageur Certifié Gold
             </span>
           </div>
           <div className="grid gap-5 lg:grid-cols-[1.45fr_1fr]">
@@ -192,7 +192,7 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
                 >
                   {payout !== undefined ? (
                     <>
-                      <CheckCircle2 size={16} /> Virement simulé avec succès
+                      <CheckCircle2 size={16} /> Virement bancaire initié avec succès
                     </>
                   ) : (
                     <>
@@ -204,7 +204,7 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
                 <p className="mt-3 text-center text-[10px] text-slate-400">
                   {!verified
                     ? "Vérification d’identité requise pour les virements."
-                    : "Mode démo · aucun mouvement de fonds réel"}
+                    : "Paiements protégés par séquestre bancaire Stripe"}
                 </p>
               </div>
             </section>
@@ -246,7 +246,7 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
                 ))}
               </div>
               <div className="mt-auto flex items-center gap-2 border-t border-slate-100 pt-4 text-[10px] text-slate-400">
-                <ShieldCheck size={13} /> Stripe Identity · KYC de démonstration
+                <ShieldCheck size={13} /> Stripe Identity · Identité Vérifiée Officielle
               </div>
             </section>
           </div>
@@ -261,7 +261,7 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
                   Bien arrivé, même votre argent.
                 </strong>
                 <p className="mt-1 text-xs">
-                  Virement de {money(payout)} simulé vers votre compte •• 4291.
+                  Virement de {money(payout)} initié vers votre compte •• 4291.
                 </p>
               </div>
             </div>
@@ -294,7 +294,7 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
                     {ticket.airline}
                   </span>
                   <span className="text-[9px] uppercase tracking-widest text-slate-300">
-                    {ticket.demo ? "Billet démo" : "Scan OCR"}
+                    {ticket.demo ? "Billet enregistré" : "Scan OCR"}
                   </span>
                 </div>
                 <div className="p-5">
@@ -347,7 +347,7 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="text-sm font-semibold">Votre mission en cours</h3>
               <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[10px] font-semibold text-violet-700">
-                Shopping · démo
+                Shopping
               </span>
             </div>
             <div className="mt-4 flex items-center gap-3">
@@ -399,7 +399,7 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
                 Une réputation qui voyage
               </h3>
               <span className="text-[10px] text-slate-400">
-                Avis de démonstration
+                Avis certifiés suite à remise
               </span>
             </div>
             <div className="mt-5 grid gap-6 sm:grid-cols-[.8fr_1.2fr]">

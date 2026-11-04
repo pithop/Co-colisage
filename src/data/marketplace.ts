@@ -70,6 +70,12 @@ export interface Trip extends FreightItem {
   isSuperTraveler?: boolean;
   acceptedCategories?: AcceptedCategory[];
 }
+function upcomingDate(days: number): string {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
 export const requests: PurchaseRequest[] = [
   {
     id: "nike-air-max",
@@ -77,7 +83,7 @@ export const requests: PurchaseRequest[] = [
     title: "Nike Air Max · pointure 42",
     origin: "Paris",
     destination: "Lyon",
-    date: "2026-10-12",
+    date: upcomingDate(6),
     budget: 120,
     reward: 25,
     image: "/images/nike.jpg",
@@ -92,7 +98,7 @@ export const requests: PurchaseRequest[] = [
     title: "Parfum Dior Sauvage · 100 ml",
     origin: "Nice",
     destination: "Marseille",
-    date: "2026-10-12",
+    date: upcomingDate(6),
     budget: 100,
     reward: 20,
     image: "/images/perfume.jpg",
@@ -150,7 +156,7 @@ export const trips: Trip[] = [
     "Thomas",
     "Paris",
     "Lille",
-    "2026-10-10",
+    upcomingDate(2),
     "09:00",
     "voiture",
     "Peugeot 208",
@@ -167,7 +173,7 @@ export const trips: Trip[] = [
     "Lucas",
     "Lyon",
     "Grenoble",
-    "2026-10-11",
+    upcomingDate(4),
     "14:00",
     "camion",
     "Camionnette",
@@ -179,7 +185,7 @@ export const trips: Trip[] = [
     "Emma",
     "Nice",
     "Paris",
-    "2026-10-12",
+    upcomingDate(6),
     "16:00",
     "avion",
     "Valise",
@@ -191,7 +197,7 @@ export const trips: Trip[] = [
     "Karim",
     "Marseille",
     "Alger",
-    "2026-10-14",
+    upcomingDate(8),
     "08:30",
     "avion",
     "Air Algérie · AH1021",
@@ -212,7 +218,7 @@ export const trips: Trip[] = [
     "Inès",
     "Marseille",
     "Alger",
-    "2026-10-15",
+    upcomingDate(11),
     "11:00",
     "bateau",
     "Traversée en bateau",

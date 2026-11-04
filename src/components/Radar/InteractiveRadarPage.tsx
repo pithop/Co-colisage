@@ -350,7 +350,7 @@ export function InteractiveRadarPage({
         <div className="bv-table-scroll">
           <table className="bv-manifest">
             <caption className="sr-only">
-              Liaisons de démonstration, horaires UTC. Sélectionnez une liaison
+              Liaisons régulières et vols charters directs. Sélectionnez une liaison
               pour sa télémétrie.
             </caption>
             <thead>

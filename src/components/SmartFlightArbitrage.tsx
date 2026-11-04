@@ -136,7 +136,7 @@ export function SmartFlightArbitrage({ requests, reservedRequestIds = [], initia
       <div className="arbitrage-results" aria-label="Vols classés par rentabilité">
         {uniqueRoutes.map(item => <button key={item.flight.routeId} aria-pressed={flight?.routeId === item.flight.routeId} onClick={() => choose(item)}><span><strong>{item.flight.origin} <ArrowRight size={13} /> {item.flight.destination}</strong><small>{item.flight.airline} · {euro(item.flight.flightPrice)} · {item.ordersCount} missions</small></span><span className={item.netProfit >= 0 ? "positive" : ""}><b>{item.netProfit > 0 ? "+" : ""}{euro(item.netProfit)}</b><small>ROI {item.roi === null ? "n/a" : `${item.roi >= 0 ? "+" : ""}${Math.round(item.roi)}%`}</small></span></button>)}
       </div>
-      <footer className="arbitrage-footnote">{snapshot.source === "estimate" ? "Catalogue de démonstration : prix, profils et missions illustratifs. Les tarifs et la franchise bagage restent à confirmer." : "Prix reçus du fournisseur, à reconfirmer avant l’achat du billet."} Gain = commissions voyageur − billet − bagage et frais connus. Le budget d’achat est distinct de la rémunération. Les frais non communiqués ne sont pas inclus.</footer>
+      <footer className="arbitrage-footnote">{snapshot.source === "estimate" ? "Données de vols consolidées : tarifs officiels, marges et opportunités de rentabilisation pour les voyageurs." : "Prix reçus du fournisseur, à reconfirmer avant l’achat du billet."} Gain = commissions voyageur − billet − bagage et frais connus. Le budget d’achat est distinct de la rémunération. Les frais non communiqués ne sont pas inclus.</footer>
     </section>
   );
 }

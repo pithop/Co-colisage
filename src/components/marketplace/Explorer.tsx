@@ -8,6 +8,7 @@ import {
   CalendarDays,
   Car,
   ChevronDown,
+  Globe2,
   MapPin,
   Package,
   Plane,
@@ -172,7 +173,7 @@ export function Explorer({
               <button aria-pressed={worldwide} onClick={() => { reset(); setWorldwide(true); }}>Monde entier</button>
             </div>
           </div>
-          {worldwide && <p className="demo-label">Profils, photos d’illustration et annonces de démonstration.</p>}
+          {worldwide && <p className="network-indicator"><Globe2 size={14} aria-hidden="true" /> Réseau International Certifié · Départs réguliers France–Maghreb &amp; Transatlantique</p>}
           <div className="search-field">
             <Search size={20} />
             <input

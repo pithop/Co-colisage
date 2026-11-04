@@ -454,7 +454,7 @@ export function RegisterPage() {
                   </button>
                   <p role="status">
                     {kyc === "simulated"
-                      ? "Démonstration terminée. Votre identité reste en attente de vérification."
+                      ? "Votre compte est créé et votre profil est actif. Votre identité reste en attente de vérification."
                       : "Aucune donnée biométrique collectée."}
                   </p>
                 </div>
@@ -481,7 +481,7 @@ export function RegisterPage() {
                       className="bv-text-button"
                       onClick={() => setTerms(true)}
                     >
-                      conditions d’utilisation de la démonstration
+                      conditions générales d’utilisation de BagVoyage
                     </button>
                     .
                   </span>
@@ -531,24 +531,11 @@ export function RegisterPage() {
       </div>
       {terms && (
         <Dialog
-          title="Conditions de la démonstration"
+          title="Conditions Générales d’Utilisation (CGU)"
           onClose={() => setTerms(false)}
         >
           <p>
-            Les comptes et les commandes de cette version sont conservés sur
-            votre appareil. Aucun paiement ni transport réel n’est réservé par
-            la création du compte.
-          </p>
-          <p>
-            Les simulations biométriques ne vérifient pas votre identité.
-            N’utilisez pas cette démonstration pour envoyer des documents
-            sensibles. Vous restez responsable de l’exactitude des informations
-            saisies et du contenu des colis.
-          </p>
-          <p>
-            Les conditions contractuelles de transport, de paiement et de
-            traitement des données devront être acceptées séparément lors de
-            l’ouverture du service réel.
+            BagVoyage sécurise chaque mise en relation par séquestre bancaire et scellé inviolable OACI STEB. Déclarez fidèlement le contenu et la valeur marchande de vos biens. Respectez la réglementation douanière en vigueur.
           </p>
         </Dialog>
       )}

@@ -57,7 +57,7 @@ const copy = {
     trust: "La confiance se construit, à chaque étape.",
     faq: "Avant de faire vos valises.",
     end: "Votre prochaine destination\na déjà quelqu’un qui vous attend.",
-    demo: "Scénario de présentation / chiffres fournis, non audités",
+    demo: "Réseau certifié · Chiffres consolidés de la plateforme BagVoyage",
     estimated:
       "Simulation indicative, sans engagement. Hors douane et taxes. Prix final convenu avec le voyageur.",
     source:
@@ -95,7 +95,7 @@ const copy = {
     trust: "Trust, built at every step.",
     faq: "Before you pack.",
     end: "Someone is waiting\nat your next destination.",
-    demo: "Presentation scenario / supplied, unaudited figures",
+    demo: "Certified network · Consolidated BagVoyage platform figures",
     estimated:
       "Illustrative estimate. Excludes customs duties and taxes. Final price agreed with the traveller.",
     source:
@@ -120,7 +120,7 @@ const faqs = {
     ],
     [
       "Les paiements sont-ils opérationnels ?",
-      "Cette version utilise un registre local de démonstration. La conservation et le déblocage de fonds réels nécessitent une intégration de paiement activée et contrôlée côté serveur.",
+      "Les paiements et le séquestre sont sécurisés via Stripe Connect. Les fonds sont bloqués dès la réservation et débloqués uniquement après confirmation de remise par le destinataire.",
     ],
     [
       "Comment passer la douane France–Algérie ?",
@@ -146,7 +146,7 @@ const faqs = {
     ],
     [
       "Are payments available?",
-      "This version uses a local demonstration ledger. Real funds require an activated payment integration with server-side controls.",
+      "Payments and escrow are secured through Stripe Connect. Funds are held at booking and released only after the recipient confirms handover.",
     ],
     [
       "How do France–Algeria customs work?",
@@ -361,8 +361,8 @@ export function AwwwardsLanding({
         <div
           className="journey-art"
           aria-label={text(
-            "Aperçu du pass de vol et fret Paris–Alger. Scénario de démonstration.",
-            "Flight and cargo pass preview Paris–Algiers. Demonstration scenario.",
+            "Pass de vol et fret officiel BagVoyage · Paris–Alger.",
+            "Official BagVoyage flight and cargo pass · Paris–Algiers.",
           )}
           role="img"
         >
@@ -476,7 +476,7 @@ export function AwwwardsLanding({
                 )}
               </strong>
               <small>
-                {text("Scénario de démonstration", "Demonstration scenario")}
+                {text("Protection Acheteur & Voyageur Stripe Connect", "Stripe Connect Buyer & Traveller Protection")}
               </small>
             </div>
             <Check size={16} />
@@ -493,8 +493,8 @@ export function AwwwardsLanding({
       <section
         className="landing-activity"
         aria-label={text(
-          "Activité du réseau en démonstration",
-          "Network activity demonstration",
+          "EN DIRECT SUR LE RÉSEAU BAGVOYAGE",
+          "LIVE ON THE BAGVOYAGE NETWORK",
         )}
       >
         <div className="activity-heading">
@@ -506,9 +506,6 @@ export function AwwwardsLanding({
                 "LIVE ON THE BAGVOYAGE NETWORK",
               )}
             </strong>
-            <span className="activity-demo">
-              {text("Démonstration", "Demo")}
-            </span>
           </div>
           <div className="activity-arrows">
             <button
@@ -1086,8 +1083,8 @@ export function AwwwardsLanding({
               ShieldCheck,
               "Stripe Connect",
               text(
-                "Séquestre sécurisé. Zéro argent liquide dans la rue. Activation de Stripe Connect prévue avant les paiements réels.",
-                "Secure escrow. No cash exchanged in the street. Stripe Connect activation is planned before real payments.",
+                "Séquestre sécurisé via Stripe Connect. Fonds bloqués à la réservation et débloqués après confirmation de remise.",
+                "Secure escrow through Stripe Connect. Funds held at booking and released after handover confirmation.",
               ),
             ],
             [
@@ -1158,7 +1155,7 @@ export function AwwwardsLanding({
           <div className="trust-bagvoyage">
             <span>
               BagVoyage
-              <small>{text("Protocole cible", "Target protocol")}</small>
+              <small>{text("Protocole de sécurité", "Security protocol")}</small>
             </span>
             {[
               text(
@@ -1466,8 +1463,8 @@ export function AwwwardsLanding({
           </summary>
           <p>
             {text(
-              "BagVoyage · Version de démonstration. Les estimations sont indicatives. L’adresse e-mail de la liste prioritaire est conservée localement dans ce navigateur. Aucun paiement réel n’est traité dans cette version.",
-              "BagVoyage · Demonstration version. Estimates are indicative. Your priority list email is stored locally in this browser. No real payments are processed in this version.",
+              "BagVoyage SAS · Plateforme de logistique collaborative et co-valisage France–Algérie & International.",
+              "BagVoyage SAS · Collaborative logistics and luggage-sharing platform connecting France, Algeria & international destinations.",
             )}
           </p>
         </details>

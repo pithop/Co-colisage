@@ -14,7 +14,18 @@ export function useProductionStore<K extends StoreName>(
   legacyKey: string,
   initial: DatabaseSchema[K][],
 ) {
-  const [items, setItems] = useState(initial);
+  const [items, setItems] = useState<DatabaseSchema[K][]>(() => {
+    try {
+      const cached = typeof localStorage !== "undefined" ? localStorage.getItem(legacyKey) : null;
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length) return parsed;
+      }
+    } catch {
+      /* IndexedDB will hydrate */
+    }
+    return initial;
+  });
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
   const [attempt, setAttempt] = useState(0);
