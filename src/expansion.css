@@ -7348,3 +7348,226 @@
   padding-top: 12px;
   border-top: 1px solid #f1f5f9;
 }
+
+/* ==========================================================================
+   CITY AUTOCOMPLETE & WORLD ROUTE FINDER
+   ========================================================================== */
+.city-autocomplete-container {
+  position: relative;
+  width: 100%;
+}
+
+.city-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.city-autocomplete-input {
+  width: 100%;
+  padding-left: 36px !important;
+  font-size: 14px;
+}
+
+.city-input-icon {
+  position: absolute;
+  left: 12px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.city-autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  max-height: 280px;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  scrollbar-width: thin;
+}
+
+.city-autocomplete-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 120ms ease;
+  user-select: none;
+}
+
+.city-autocomplete-item:hover,
+.city-autocomplete-item.highlighted {
+  background: #f1f5f9;
+}
+
+.city-autocomplete-item.selected {
+  background: #eff6ff;
+}
+
+.city-item-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.city-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.city-item-country {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.city-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.city-item-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  background: #e2e8f0;
+  color: #334155;
+  border-radius: 6px;
+}
+
+.city-item-check {
+  color: #2563eb;
+}
+
+/* ==========================================================================
+   QUICK CORRIDORS IN EXPLORER
+   ========================================================================== */
+.quick-corridor-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-top: -6px;
+  margin-bottom: 8px;
+  scrollbar-width: none;
+}
+
+.quick-corridor-row::-webkit-scrollbar {
+  display: none;
+}
+
+.quick-corridor-chip {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 550;
+  color: #475569;
+  cursor: pointer;
+  transition: all 150ms ease;
+  white-space: nowrap;
+}
+
+.quick-corridor-chip:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.quick-corridor-chip.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+/* ==========================================================================
+   ANIMATED METRICS & REAL-TIME ACTIVITY PULSE
+   ========================================================================== */
+.landing-metrics-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.landing-metrics-header p {
+  margin: 0;
+}
+
+.metrics-live-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #059669;
+  letter-spacing: 0.02em;
+}
+
+.live-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulse-ring 2.2s infinite;
+}
+
+.live-pulse-dot.pulsing {
+  animation: pulse-flash 0.8s ease-out;
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+@keyframes pulse-flash {
+  0% {
+    transform: scale(1);
+    background: #10b981;
+  }
+  50% {
+    transform: scale(1.6);
+    background: #059669;
+    box-shadow: 0 0 10px #10b981;
+  }
+  100% {
+    transform: scale(1);
+    background: #10b981;
+  }
+}
+

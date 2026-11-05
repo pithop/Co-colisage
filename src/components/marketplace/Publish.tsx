@@ -26,6 +26,7 @@ import { Dialog } from "./Dialog";
 import { PhotoGallery } from "./PhotoGallery";
 import { ParcelComposer } from "./ParcelComposer";
 import { localActorId } from "../../services/uploads";
+import { CityAutocomplete } from "../common/CityAutocomplete";
 const shoppingSuggestions = [
   {
     name: "Dior Sauvage 100ml",
@@ -674,24 +675,22 @@ export function Publish({
           <div className="form-grid">
             <label>
               Départ
-              <input
+              <CityAutocomplete
                 name="origin"
                 value={origin}
-                onChange={(e) => setOrigin(e.target.value)}
+                onChange={setOrigin}
+                placeholder="Ex. Paris, Marseille, Alger..."
                 required
-                maxLength={80}
-                placeholder="Paris"
               />
             </label>
             <label>
               Destination
-              <input
+              <CityAutocomplete
                 name="destination"
                 value={destination}
-                onChange={(e) => setDestination(e.target.value)}
+                onChange={setDestination}
+                placeholder="Ex. Alger, Oran, Montréal..."
                 required
-                maxLength={80}
-                placeholder="Lyon"
               />
             </label>
           </div>

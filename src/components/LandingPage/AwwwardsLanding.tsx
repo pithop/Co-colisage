@@ -198,6 +198,64 @@ const airportCodes: Record<string, string> = {
   Constantine: "CZL",
 };
 
+function AnimatedMetricNumber({
+  target,
+  prefix = "",
+  suffix = "",
+  decimals = 0,
+  liveIncrement = 0,
+  isVisible,
+}: {
+  target: number;
+  prefix?: string;
+  suffix?: string;
+  decimals?: number;
+  liveIncrement?: number;
+  isVisible: boolean;
+}) {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    if (!isVisible) return;
+    let startTime: number | null = null;
+    const duration = 1600;
+    let frameId: number;
+
+    const animate = (time: number) => {
+      if (startTime === null) startTime = time;
+      const elapsed = time - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      setCurrent(ease * target);
+
+      if (progress < 1) {
+        frameId = requestAnimationFrame(animate);
+      } else {
+        setCurrent(target);
+      }
+    };
+
+    frameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frameId);
+  }, [isVisible, target]);
+
+  const valueToDisplay =
+    current >= target && liveIncrement > 0 ? target + liveIncrement : current;
+
+  const formatted =
+    decimals > 0
+      ? valueToDisplay.toFixed(decimals)
+      : Math.round(valueToDisplay).toLocaleString("fr-FR");
+
+  return (
+    <strong>
+      {prefix}
+      {formatted}
+      {suffix}
+    </strong>
+  );
+}
+
 export function AwwwardsLanding({
   initialLanguage = "fr",
   mobileLaunchOpen = false,
@@ -215,21 +273,81 @@ export function AwwwardsLanding({
   const [need, setNeed] = useState("parcel");
   const [weight, setWeight] = useState(5);
   const [competitor, setCompetitor] = useState("DHL");
-  const [quote, setQuote] = useState(140);
+  const [customQuote, setCustomQuote] = useState<number | null>(null);
+  const [hasCustomQuote, setHasCustomQuote] = useState(false);
   const activityRef = useRef<HTMLDivElement>(null);
+  const metricsRef = useRef<HTMLElement>(null);
+  const [metricsVisible, setMetricsVisible] = useState(false);
+  const [liveMetricsOffset, setLiveMetricsOffset] = useState({ volume: 0, weight: 0 });
+  const [hasNewTick, setHasNewTick] = useState(false);
   const [routeTurns, setRouteTurns] = useState(0);
+
+  useEffect(() => {
+    const el = metricsRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setMetricsVisible(true);
+        }
+      },
+      { threshold: 0.15 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveMetricsOffset((prev) => ({
+        volume: prev.volume + (Math.floor(Math.random() * 3) + 1) * 15,
+        weight: prev.weight + Math.floor(Math.random() * 2) + 1,
+      }));
+      setHasNewTick(true);
+      const timer = setTimeout(() => setHasNewTick(false), 900);
+      return () => clearTimeout(timer);
+    }, 3800);
+    return () => clearInterval(interval);
+  }, []);
+
   const c = copy[language];
-  const routeRate =
-    destination === "Montréal" || origin === "Montréal"
-      ? 12
-      : destination === "Paris" || origin === "Paris"
-        ? 8
-        : 7;
+
+  const routeRate = (() => {
+    const isTransatlantic =
+      destination === "Montréal" ||
+      origin === "Montréal" ||
+      ["New York", "Toronto", "Québec", "Miami", "Los Angeles", "Chicago", "Mexico", "São Paulo"].includes(origin) ||
+      ["New York", "Toronto", "Québec", "Miami", "Los Angeles", "Chicago", "Mexico", "São Paulo"].includes(destination);
+    if (isTransatlantic) return 12;
+
+    const isMiddleEastOrAsia =
+      ["Dubaï", "Doha", "Riyad", "Beyrouth", "Tokyo", "Séoul", "Singapour", "Bangkok"].includes(origin) ||
+      ["Dubaï", "Doha", "Riyad", "Beyrouth", "Tokyo", "Séoul", "Singapour", "Bangkok"].includes(destination);
+    if (isMiddleEastOrAsia) return 11;
+
+    const isSubSahara =
+      ["Dakar", "Abidjan", "Bamako", "Douala", "Kinshasa", "Johannesburg"].includes(origin) ||
+      ["Dakar", "Abidjan", "Bamako", "Douala", "Kinshasa", "Johannesburg"].includes(destination);
+    if (isSubSahara) return 10;
+
+    if (destination === "Paris" || origin === "Paris") return 8;
+    return 7;
+  })();
+
   const gross =
     origin === destination
       ? 0
       : weight * routeRate + (need === "shop" ? 20 : 0);
   const net = Math.round(gross * 85) / 100;
+
+  const baselineCompetitorQuote =
+    competitor === "DHL"
+      ? Math.round(40 + weight * 20)
+      : competitor === "FedEx"
+        ? Math.round(45 + weight * 21)
+        : Math.round(50 + weight * 12);
+
+  const quote = hasCustomQuote && customQuote !== null ? customQuote : baselineCompetitorQuote;
   const saving = origin === destination ? 0 : Math.max(0, quote - gross);
   const percent = quote > 0 ? Math.round((saving / quote) * 100) : 0;
   const text = (fr: string, en: string) => (language === "fr" ? fr : en);
@@ -681,15 +799,53 @@ export function AwwwardsLanding({
                 onChange={(event) => setOrigin(event.target.value)}
               >
                 {[
-                  "Paris",
-                  "Marseille",
-                  "Alger",
-                  "Oran",
-                  "Montréal",
-                  "Lyon",
-                  "Constantine",
-                ].map((city) => (
-                  <option key={city}>{city}</option>
+                  {
+                    group: text("Lignes Fréquentes", "Frequent Lines"),
+                    cities: ["Paris", "Marseille", "Alger", "Oran", "Montréal", "Lyon", "Constantine"],
+                  },
+                  {
+                    group: text("France & Europe", "France & Europe"),
+                    cities: [
+                      "Nice", "Toulouse", "Nantes", "Bordeaux", "Lille", "Strasbourg", "Montpellier",
+                      "Bruxelles", "Genève", "Londres", "Madrid", "Barcelone", "Rome", "Milan",
+                      "Berlin", "Francfort", "Amsterdam", "Lisbonne", "Istanbul",
+                    ],
+                  },
+                  {
+                    group: text("Maghreb", "Maghreb"),
+                    cities: [
+                      "Annaba", "Sétif", "Batna", "Tlemcen", "Béjaïa", "Biskra",
+                      "Casablanca", "Rabat", "Marrakech", "Fès", "Tanger", "Agadir",
+                      "Tunis", "Sfax", "Djerba",
+                    ],
+                  },
+                  {
+                    group: text("Amériques", "Americas"),
+                    cities: [
+                      "Québec", "Toronto", "Vancouver", "New York", "Los Angeles", "Miami",
+                      "Chicago", "San Francisco", "Boston", "Washington", "Mexico", "São Paulo", "Buenos Aires",
+                    ],
+                  },
+                  {
+                    group: text("Afrique & Égypte", "Africa & Egypt"),
+                    cities: [
+                      "Dakar", "Abidjan", "Bamako", "Conakry", "Douala", "Yaoundé",
+                      "Libreville", "Kinshasa", "Lagos", "Accra", "Nairobi", "Johannesburg", "Le Caire",
+                    ],
+                  },
+                  {
+                    group: text("Moyen-Orient & Asie", "Middle East & Asia"),
+                    cities: [
+                      "Dubaï", "Abou Dabi", "Doha", "Riyad", "Djeddah", "Beyrouth",
+                      "Tokyo", "Séoul", "Pékin", "Shanghai", "Singapour", "Bangkok", "New Delhi", "Sydney",
+                    ],
+                  },
+                ].map((g) => (
+                  <optgroup key={g.group} label={g.group}>
+                    {g.cities.map((city) => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
             </label>
@@ -714,15 +870,53 @@ export function AwwwardsLanding({
                 onChange={(event) => setDestination(event.target.value)}
               >
                 {[
-                  "Alger",
-                  "Oran",
-                  "Paris",
-                  "Marseille",
-                  "Montréal",
-                  "Lyon",
-                  "Constantine",
-                ].map((city) => (
-                  <option key={city}>{city}</option>
+                  {
+                    group: text("Lignes Fréquentes", "Frequent Lines"),
+                    cities: ["Alger", "Oran", "Paris", "Marseille", "Montréal", "Lyon", "Constantine"],
+                  },
+                  {
+                    group: text("France & Europe", "France & Europe"),
+                    cities: [
+                      "Nice", "Toulouse", "Nantes", "Bordeaux", "Lille", "Strasbourg", "Montpellier",
+                      "Bruxelles", "Genève", "Londres", "Madrid", "Barcelone", "Rome", "Milan",
+                      "Berlin", "Francfort", "Amsterdam", "Lisbonne", "Istanbul",
+                    ],
+                  },
+                  {
+                    group: text("Maghreb", "Maghreb"),
+                    cities: [
+                      "Annaba", "Sétif", "Batna", "Tlemcen", "Béjaïa", "Biskra",
+                      "Casablanca", "Rabat", "Marrakech", "Fès", "Tanger", "Agadir",
+                      "Tunis", "Sfax", "Djerba",
+                    ],
+                  },
+                  {
+                    group: text("Amériques", "Americas"),
+                    cities: [
+                      "Québec", "Toronto", "Vancouver", "New York", "Los Angeles", "Miami",
+                      "Chicago", "San Francisco", "Boston", "Washington", "Mexico", "São Paulo", "Buenos Aires",
+                    ],
+                  },
+                  {
+                    group: text("Afrique & Égypte", "Africa & Egypt"),
+                    cities: [
+                      "Dakar", "Abidjan", "Bamako", "Conakry", "Douala", "Yaoundé",
+                      "Libreville", "Kinshasa", "Lagos", "Accra", "Nairobi", "Johannesburg", "Le Caire",
+                    ],
+                  },
+                  {
+                    group: text("Moyen-Orient & Asie", "Middle East & Asia"),
+                    cities: [
+                      "Dubaï", "Abou Dabi", "Doha", "Riyad", "Djeddah", "Beyrouth",
+                      "Tokyo", "Séoul", "Pékin", "Shanghai", "Singapour", "Bangkok", "New Delhi", "Sydney",
+                    ],
+                  },
+                ].map((g) => (
+                  <optgroup key={g.group} label={g.group}>
+                    {g.cities.map((city) => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
             </label>
@@ -845,9 +1039,10 @@ export function AwwwardsLanding({
                 max="100000"
                 step="0.01"
                 value={quote || ""}
-                onChange={(event) =>
-                  setQuote(Math.max(0, Number(event.target.value)))
-                }
+                onChange={(event) => {
+                  setHasCustomQuote(true);
+                  setCustomQuote(Math.max(0, Number(event.target.value)));
+                }}
               />
             </label>
             <div className="comparison-row">
@@ -892,17 +1087,62 @@ export function AwwwardsLanding({
         </div>
       </section>
       <section
+        ref={metricsRef}
         className="landing-metrics"
         aria-label={text("Indicateurs de présentation", "Presentation metrics")}
       >
-        <p>{c.demo}</p>
+        <div className="landing-metrics-header">
+          <p>{c.demo}</p>
+          <div className="metrics-live-status">
+            <span
+              className={`live-pulse-dot ${hasNewTick ? "pulsing" : ""}`}
+              aria-hidden="true"
+            />
+            <span>
+              {text(
+                "Activité réseau en direct · Flux sécurisé",
+                "Live network activity · Secured flow",
+              )}
+            </span>
+          </div>
+        </div>
         <div>
-          {["+180 000 €", "14 250 kg", "36 h", "99.8 %"].map((value, index) => (
-            <article key={value}>
-              <strong>{value}</strong>
-              <span>{c.metricLabels[index]}</span>
-            </article>
-          ))}
+          <article>
+            <AnimatedMetricNumber
+              target={180000}
+              prefix="+"
+              suffix=" €"
+              liveIncrement={liveMetricsOffset.volume}
+              isVisible={metricsVisible}
+            />
+            <span>{c.metricLabels[0]}</span>
+          </article>
+          <article>
+            <AnimatedMetricNumber
+              target={14250}
+              suffix=" kg"
+              liveIncrement={liveMetricsOffset.weight}
+              isVisible={metricsVisible}
+            />
+            <span>{c.metricLabels[1]}</span>
+          </article>
+          <article>
+            <AnimatedMetricNumber
+              target={36}
+              suffix=" h"
+              isVisible={metricsVisible}
+            />
+            <span>{c.metricLabels[2]}</span>
+          </article>
+          <article>
+            <AnimatedMetricNumber
+              target={99.8}
+              suffix=" %"
+              decimals={1}
+              isVisible={metricsVisible}
+            />
+            <span>{c.metricLabels[3]}</span>
+          </article>
         </div>
       </section>
       <section id="features" className="landing-universes">

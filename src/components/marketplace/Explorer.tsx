@@ -78,7 +78,7 @@ export function Explorer({
     setCapacity(null);
   };
   const words = normalize(query)
-    .split(/[\s→→]+/)
+    .split(/[\s→\->–—\/:|]+/)
     .filter(Boolean);
   const matches = (text: string) =>
     words.every((word) => normalize(text).includes(word));
@@ -195,6 +195,32 @@ export function Explorer({
               </button>
             )}
           </div>
+          <div
+            className="quick-corridor-row"
+            role="group"
+            aria-label="Trajets populaires mondiaux"
+          >
+            {[
+              "Paris → Alger",
+              "Marseille → Oran",
+              "Montréal → Alger",
+              "Lyon → Constantine",
+              "Paris → Casablanca",
+              "Paris → Dubaï",
+            ].map((route) => (
+              <button
+                key={route}
+                type="button"
+                className={`quick-corridor-chip ${query === route ? "active" : ""}`}
+                onClick={() => {
+                  setWorldwide(true);
+                  setQuery(query === route ? "" : route);
+                }}
+              >
+                {route}
+              </button>
+            ))}
+          </div>
           <div className="filter-row">
             {capacity !== null && (
               <button
@@ -243,9 +269,19 @@ export function Explorer({
                   onChange={(e) => setDestination(e.target.value)}
                 >
                   <option value="">Toutes les destinations</option>
-                  {[...new Set(requests.map((r) => r.destination))].map((d) => (
-                    <option key={d}>{d}</option>
-                  ))}
+                  {[
+                    ...new Set([
+                      ...requests.map((r) => r.destination),
+                      ...trips.map((t) => t.destination),
+                    ]),
+                  ]
+                    .filter(Boolean)
+                    .sort()
+                    .map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
                 </select>
               )}
               {filter === "Date" && (
