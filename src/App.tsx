@@ -60,6 +60,7 @@ import { prepareArbitrageDeal } from "./services/arbitrageBooking";
 import { localActorId } from "./services/uploads";
 import { localAdminEnabled } from "./services/adminOperations";
 import { LanguageProvider } from "./context/LanguageContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import { LiveRadarModal } from "./components/logistics/LiveRadarModal";
 import { TrustVerificationModal } from "./components/Trust/TrustVerificationModal";
 import { BottomNavBar } from "./components/Navigation/BottomNavBar";
@@ -77,6 +78,26 @@ import { products } from "./data/mockData";
 const AwwwardsLanding = lazy(() =>
   import("./components/LandingPage/AwwwardsLanding").then((module) => ({
     default: module.AwwwardsLanding,
+  })),
+);
+const HowItWorksPage = lazy(() =>
+  import("./components/Pages/HowItWorksPage").then((m) => ({
+    default: m.HowItWorksPage,
+  })),
+);
+const PricingPage = lazy(() =>
+  import("./components/Pages/PricingPage").then((m) => ({
+    default: m.PricingPage,
+  })),
+);
+const TrustPage = lazy(() =>
+  import("./components/Pages/TrustPage").then((m) => ({
+    default: m.TrustPage,
+  })),
+);
+const FaqPage = lazy(() =>
+  import("./components/Pages/FaqPage").then((m) => ({
+    default: m.FaqPage,
   })),
 );
 const AdminDashboard = lazy(() =>
@@ -120,10 +141,21 @@ const SmartFlightArbitrage = lazy(() =>
 
 function routeFromLocation() {
   const hash = window.location.hash.slice(1);
-  if (hash) return hash === "app" ? "explore" : hash;
+  if (hash) {
+    if (hash === "app") return "explore";
+    if (hash === "how-it-works" || hash === "comment-ca-marche") return "how-it-works";
+    if (hash === "pricing" || hash === "tarifs") return "pricing";
+    if (hash === "trust" || hash === "securite") return "trust";
+    if (hash === "faq") return "faq";
+    return hash;
+  }
   const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
   if (pathname === "/app") return "explore";
   if (pathname === "/download") return "download";
+  if (pathname.includes("/comment-ca-marche") || pathname.includes("/how-it-works")) return "how-it-works";
+  if (pathname.includes("/tarifs") || pathname.includes("/pricing")) return "pricing";
+  if (pathname.includes("/securite") || pathname.includes("/trust")) return "trust";
+  if (pathname.includes("/faq")) return "faq";
   if (pathname === "/" || /\/landing$/.test(pathname)) return "landing";
   return "explore";
 }
@@ -359,6 +391,11 @@ function Marketplace() {
     ? route
     : undefined;
   const landing = route === "landing" || route === "download" || !!landingSection;
+  const howItWorks = route === "how-it-works";
+  const pricing = route === "pricing";
+  const trust = route === "trust";
+  const faq = route === "faq";
+  const isSeoPage = howItWorks || pricing || trust || faq;
   const admin = route === "admin";
   const wallet = route === "wallet";
   const profile = route === "profile";
@@ -539,7 +576,7 @@ function Marketplace() {
       navigate("messages");
     }
   };
-  if (!storageReady && !landing)
+  if (!storageReady && !landing && !isSeoPage)
     return (
       <main className="storage-loading">
         <ShieldCheck size={32} />
@@ -558,7 +595,7 @@ function Marketplace() {
       </main>
     );
   return (
-    <div className={`marketplace${landing ? " public-landing" : ""}`}>
+    <div className={`marketplace${landing || isSeoPage ? " public-landing" : ""}`}>
       <a
         className="skip-link"
         href="#main-content"
@@ -569,7 +606,7 @@ function Marketplace() {
       >
         Aller au contenu
       </a>
-      {!landing && (
+      {!landing && !isSeoPage && (
         <MarketplaceHeader
           route={route} balance={money(balance.available)} unreadCount={unreadCount}
           notificationsOpen={notificationsOpen} userName={user?.name}
@@ -589,7 +626,7 @@ function Marketplace() {
       <main
         id="main-content"
         tabIndex={-1}
-        className={`main-container ${messages ? "messages-container" : ""} ${landing || admin || loginPage || registerPage ? "destination-container" : ""}`}
+        className={`main-container ${messages ? "messages-container" : ""} ${landing || isSeoPage || admin || loginPage || registerPage ? "destination-container" : ""}`}
       >
         {expansionPage && (
           <Suspense fallback={<p role="status">Chargement de votre espace…</p>}>
@@ -624,6 +661,38 @@ function Marketplace() {
               initialLanguage={
                 window.location.pathname.startsWith("/en/") ? "en" : "fr"
               }
+            />
+          </Suspense>
+        )}
+        {howItWorks && (
+          <Suspense fallback={<p role="status">Chargement...</p>}>
+            <HowItWorksPage
+              language={window.location.pathname.startsWith("/en/") ? "en" : "fr"}
+              navigate={navigate}
+            />
+          </Suspense>
+        )}
+        {pricing && (
+          <Suspense fallback={<p role="status">Chargement...</p>}>
+            <PricingPage
+              language={window.location.pathname.startsWith("/en/") ? "en" : "fr"}
+              navigate={navigate}
+            />
+          </Suspense>
+        )}
+        {trust && (
+          <Suspense fallback={<p role="status">Chargement...</p>}>
+            <TrustPage
+              language={window.location.pathname.startsWith("/en/") ? "en" : "fr"}
+              navigate={navigate}
+            />
+          </Suspense>
+        )}
+        {faq && (
+          <Suspense fallback={<p role="status">Chargement...</p>}>
+            <FaqPage
+              language={window.location.pathname.startsWith("/en/") ? "en" : "fr"}
+              navigate={navigate}
             />
           </Suspense>
         )}
@@ -774,6 +843,7 @@ function Marketplace() {
           !messages &&
           !arbitrage &&
           !landing &&
+          !isSeoPage &&
           !admin &&
           !expansionPage && (
             <div className="empty-state">
@@ -991,7 +1061,7 @@ function Marketplace() {
           />
         </Dialog>
       )}
-      {!landing && (
+      {!landing && !isSeoPage && (
         <BottomNavBar
           route={route}
           unreadMessagesCount={unreadCount}
@@ -1085,10 +1155,12 @@ function InfoIcon() {
 }
 export default function App() {
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <Marketplace />
-      </AuthProvider>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <Marketplace />
+        </AuthProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 }

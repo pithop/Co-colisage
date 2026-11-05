@@ -22,6 +22,7 @@ import {
 import { BrandMark } from "./BrandMark";
 import { CurrencyRatePill } from "./CurrencyConverter/CurrencyConverterModal";
 import { LanguageSelector } from "../context/LanguageContext";
+import { ThemeToggle } from "./common/ThemeToggle";
 
 interface Props {
   route: string;
@@ -146,6 +147,7 @@ export function MarketplaceHeader(props: Props) {
 
             <CurrencyRatePill compact onClick={props.onCurrency} />
             <LanguageSelector location="header" />
+            <ThemeToggle className="header-tool" />
 
             <button
               className="header-tool"

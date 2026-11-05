@@ -30,6 +30,7 @@ import {
   MobileAppLaunchModal,
   MobileWaitlistForm,
 } from "./MobileAppLaunchModal";
+import { ThemeToggle } from "../common/ThemeToggle";
 const copy = {
   fr: {
     eyebrow: "LES DISTANCES CHANGENT. LES LIENS RESTENT.",
@@ -408,9 +409,11 @@ export function AwwwardsLanding({
             className="landing-nav"
             aria-label={text("Présentation de BagVoyage", "About BagVoyage")}
           >
-            <a href="#features">{text("Fonctionnalités", "Features")}</a>
+            <a href="/#how-it-works">{text("Comment ça marche", "How it works")}</a>
+            <a href="/#pricing">{text("Tarifs", "Pricing")}</a>
+            <a href="/#trust">{text("Sécurité", "Security")}</a>
+            <a href="/#faq">FAQ</a>
             <a href="#simulator">{text("Simulateur", "Simulator")}</a>
-            <a href="#mobile">{text("Application Mobile", "Mobile App")}</a>
           </nav>
           <div className="landing-account-actions">
             <a href="/#login">{text("Connexion", "Log in")}</a>
@@ -430,19 +433,22 @@ export function AwwwardsLanding({
             </a>
           </div>
         </div>
-        <label className="landing-language">
-          <Globe2 size={16} />
-          <select
-            aria-label="Langue / Language"
-            value={language}
-            onChange={(event) =>
-              setLanguage(event.target.value as typeof language)
-            }
-          >
-            <option value="fr">FR</option>
-            <option value="en">EN</option>
-          </select>
-        </label>
+        <div className="landing-masthead-controls">
+          <ThemeToggle />
+          <label className="landing-language">
+            <Globe2 size={16} />
+            <select
+              aria-label="Langue / Language"
+              value={language}
+              onChange={(event) =>
+                setLanguage(event.target.value as typeof language)
+              }
+            >
+              <option value="fr">FR</option>
+              <option value="en">EN</option>
+            </select>
+          </label>
+        </div>
       </header>
       <section className="landing-hero">
         <div className="landing-hero-copy">
@@ -1702,7 +1708,10 @@ export function AwwwardsLanding({
           className="landing-footer-links"
           aria-label={text("Liens de pied de page", "Footer links")}
         >
-          <a href="#features">{text("Fonctionnalités", "Features")}</a>
+          <a href="/#how-it-works">{text("Comment ça marche", "How it works")}</a>
+          <a href="/#pricing">{text("Tarifs & Comparateur", "Pricing & Comparison")}</a>
+          <a href="/#trust">{text("Sécurité & Séquestre", "Security & Escrow")}</a>
+          <a href="/#faq">{text("Centre d'Aide FAQ", "Help Center FAQ")}</a>
           <a href="#simulator">{text("Simulateur", "Simulator")}</a>
           <a href="#mobile">{text("Application Mobile", "Mobile App")}</a>
           <a
@@ -1717,6 +1726,9 @@ export function AwwwardsLanding({
             FAQ
           </a>
         </nav>
+        <div className="landing-footer-theme">
+          <ThemeToggle showLabel />
+        </div>
         <details className="landing-legal">
           <summary>
             {text("Mentions & données personnelles", "Legal & personal data")}

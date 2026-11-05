@@ -146,3 +146,99 @@ p, body, input, select, textarea {
 @media (prefers-reduced-motion: reduce) {
   .luxury-surface *, .luxury-surface *::before, .luxury-surface *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* ==========================================================================
+   APPLE PRO DARK MODE FOUNDATIONS:
+   Tokens, Surface Hierarchy, Dynamic Contrast & Translucency
+   ========================================================================== */
+:root {
+  --theme-bg: #f8fafc;
+  --theme-bg-subtle: #f1f5f9;
+  --theme-card-bg: #ffffff;
+  --theme-glass-bg: rgba(255, 255, 255, 0.82);
+  --theme-border: rgba(0, 0, 0, 0.06);
+  --theme-border-subtle: rgba(0, 0, 0, 0.04);
+  --theme-text-primary: #0f172a;
+  --theme-text-secondary: #475569;
+  --theme-text-muted: #64748b;
+  --theme-input-bg: #ffffff;
+  --theme-shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.03);
+}
+
+html[data-theme="dark"],
+.dark {
+  --theme-bg: #0b0f19;
+  --theme-bg-subtle: #111827;
+  --theme-card-bg: #141d2e;
+  --theme-glass-bg: rgba(15, 23, 42, 0.82);
+  --theme-border: rgba(255, 255, 255, 0.08);
+  --theme-border-subtle: rgba(255, 255, 255, 0.05);
+  --theme-text-primary: #f8fafc;
+  --theme-text-secondary: #cbd5e1;
+  --theme-text-muted: #94a3b8;
+  --theme-input-bg: #1a2436;
+  --theme-shadow-card: 0 4px 24px -2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) {
+    --theme-bg: #0b0f19;
+    --theme-bg-subtle: #111827;
+    --theme-card-bg: #141d2e;
+    --theme-glass-bg: rgba(15, 23, 42, 0.82);
+    --theme-border: rgba(255, 255, 255, 0.08);
+    --theme-border-subtle: rgba(255, 255, 255, 0.05);
+    --theme-text-primary: #f8fafc;
+    --theme-text-secondary: #cbd5e1;
+    --theme-text-muted: #94a3b8;
+    --theme-input-bg: #1a2436;
+    --theme-shadow-card: 0 4px 24px -2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    color-scheme: dark;
+  }
+}
+
+html[data-theme="dark"] body,
+.dark body {
+  background-color: var(--theme-bg);
+  color: var(--theme-text-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) body {
+    background-color: var(--theme-bg);
+    color: var(--theme-text-primary);
+  }
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid var(--theme-border, rgba(0, 0, 0, 0.06));
+  background: var(--theme-card-bg, #ffffff);
+  color: var(--theme-text-secondary, #475569);
+  cursor: pointer;
+  transition: transform 160ms var(--ease-apple-spring), background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+  flex-shrink: 0;
+}
+.theme-toggle-btn:hover {
+  background: var(--theme-bg-subtle, #f1f5f9);
+  color: var(--theme-text-primary, #0f172a);
+}
+.theme-toggle-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 260ms var(--ease-apple-bounce);
+}
+.theme-toggle-btn:active .theme-toggle-icon-wrap {
+  transform: rotate(30deg) scale(0.9);
+}
+
