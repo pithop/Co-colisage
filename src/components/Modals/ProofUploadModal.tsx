@@ -51,6 +51,9 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
       <div 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="proof-title"
         className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
@@ -58,9 +61,9 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-400" />
-            <h3 className="font-bold text-sm">Validation Obligatoire du Shopper</h3>
+            <h3 id="proof-title" className="font-bold text-sm">Validation Obligatoire du Shopper</h3>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-white">
+          <button onClick={onClose} aria-label="Fermer" className="text-slate-400 hover:text-white">
             <X className="w-5 h-5" />
           </button>
         </div>

@@ -31,6 +31,9 @@ export const CarrierDashboard: React.FC<CarrierDashboardProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
       <div 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="carrier-title"
         className="relative w-full max-w-4xl bg-slate-50 rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 text-slate-900"
         onClick={(e) => e.stopPropagation()}
       >
@@ -42,7 +45,7 @@ export const CarrierDashboard: React.FC<CarrierDashboardProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-extrabold text-base text-white">{user.companyName || user.name}</h3>
+                <h3 id="carrier-title" className="font-extrabold text-base text-white">{user.companyName || user.name}</h3>
                 <span className="text-[10px] bg-blue-500/30 text-blue-300 border border-blue-400/30 px-2 py-0.5 rounded-full font-bold">
                   PRO SIRET Vérifié
                 </span>
@@ -53,7 +56,7 @@ export const CarrierDashboard: React.FC<CarrierDashboardProps> = ({
             </div>
           </div>
 
-          <button onClick={onClose} className="p-1 rounded-full text-slate-400 hover:text-white">
+          <button onClick={onClose} aria-label="Fermer le tableau de bord" className="p-1 rounded-full text-slate-400 hover:text-white">
             <X className="w-5 h-5" />
           </button>
         </div>

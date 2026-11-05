@@ -35,6 +35,9 @@ export function Profile({
   autoAccept,
   onAutoAcceptChange,
   onTrust,
+  onOpenVoyageurDashboard,
+  onOpenExpediteurDashboard,
+  onOpenCarrierDashboard,
 }: {
   actorId: string;
   userEmail?: string;
@@ -55,6 +58,9 @@ export function Profile({
   autoAccept: boolean;
   onAutoAcceptChange: (enabled: boolean) => void;
   onTrust?: () => void;
+  onOpenVoyageurDashboard?: () => void;
+  onOpenExpediteurDashboard?: () => void;
+  onOpenCarrierDashboard?: () => void;
 }) {
   const [activeRole, setActiveRole] = useState<
     "carry" | "send" | "request" | "receive"
@@ -168,29 +174,49 @@ export function Profile({
           ) : (
             <p>Aucune activité pour ce rôle pour le moment.</p>
           )}
-          <button
-            className="primary-button"
-            onClick={() =>
-              activeRole === "receive"
-                ? onMessages()
-                : onPublishRole(
-                    activeRole === "carry"
-                      ? "trips"
-                      : activeRole === "send"
-                        ? "parcel"
-                        : "requests",
-                  )
-            }
-          >
-            {activeRole === "receive"
-              ? "Valider une livraison"
-              : activeRole === "carry"
-                ? "Proposer un trajet"
-                : activeRole === "send"
-                  ? "Envoyer un colis"
-                  : "Créer une liste d’achats"}
-            <ChevronRight size={17} />
-          </button>
+          <div className="role-actions-group">
+            <button
+              className="primary-button"
+              onClick={() =>
+                activeRole === "receive"
+                  ? onMessages()
+                  : onPublishRole(
+                      activeRole === "carry"
+                        ? "trips"
+                        : activeRole === "send"
+                          ? "parcel"
+                          : "requests",
+                    )
+              }
+            >
+              {activeRole === "receive"
+                ? "Valider une livraison"
+                : activeRole === "carry"
+                  ? "Proposer un trajet"
+                  : activeRole === "send"
+                    ? "Envoyer un colis"
+                    : "Créer une liste d’achats"}
+              <ChevronRight size={17} />
+            </button>
+            {activeRole === "carry" && onOpenVoyageurDashboard && (
+              <button
+                type="button"
+                className="role-dashboard-button"
+                onClick={onOpenVoyageurDashboard}
+              >
+                Tableau de bord Voyageur
+              </button>
+            )}
+            {activeRole === "send" && onOpenExpediteurDashboard && (
+              <button
+                type="button"
+                className="role-dashboard-button"
+                onClick={onOpenExpediteurDashboard}
+              >
+                Tableau de bord Expéditeur
+              </button>
+            )}
+          </div>
         </div>
       </section>
       <div className="pro-entry">
@@ -211,6 +237,11 @@ export function Profile({
                   : "Entreprise, documents et flotte en un seul dossier."}
             </p>
           </div>
+          {application?.status === "approved" && onOpenCarrierDashboard && (
+            <button type="button" onClick={onOpenCarrierDashboard}>
+              Tableau de bord Pro
+            </button>
+          )}
           {(!application || application.status === "rejected") && (
             <button onClick={onPro}>Devenir transporteur pro</button>
           )}

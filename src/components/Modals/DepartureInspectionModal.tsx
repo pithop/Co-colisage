@@ -47,6 +47,9 @@ export const DepartureInspectionModal: React.FC<DepartureInspectionModalProps> =
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
       <div 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="inspection-title"
         className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
@@ -54,9 +57,9 @@ export const DepartureInspectionModal: React.FC<DepartureInspectionModalProps> =
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
           <div className="flex items-center gap-2">
             <Camera className="w-4 h-4 text-emerald-400" />
-            <h3 className="font-bold text-sm">Contrôle Physique & Vidéo de 15s au RDV (UC11)</h3>
+            <h3 id="inspection-title" className="font-bold text-sm">Contrôle Physique & Vidéo de 15s au RDV (UC11)</h3>
           </div>
-          <button onClick={onClose} className="p-1 rounded-full text-slate-400 hover:text-white">
+          <button onClick={onClose} aria-label="Fermer" className="p-1 rounded-full text-slate-400 hover:text-white">
             <X className="w-5 h-5" />
           </button>
         </div>

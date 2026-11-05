@@ -66,6 +66,14 @@ import { BottomNavBar } from "./components/Navigation/BottomNavBar";
 import { BoardingPassScannerModal } from "./components/logistics/BoardingPassScannerModal";
 import { DigitalCargoPassModal } from "./components/logistics/DigitalCargoPassModal";
 import { OfflineHandoverModal } from "./components/logistics/OfflineHandoverModal";
+import { VoyageurDashboard } from "./components/Dashboards/VoyageurDashboard";
+import { ExpediteurDashboard } from "./components/Dashboards/ExpediteurDashboard";
+import { CarrierDashboard } from "./components/Dashboards/CarrierDashboard";
+import { DepartureInspectionModal } from "./components/Modals/DepartureInspectionModal";
+import { ProofUploadModal } from "./components/Modals/ProofUploadModal";
+import { GpsTrackingModal } from "./components/Modals/GpsTrackingModal";
+import { PinDeliveryModal } from "./components/Modals/PinDeliveryModal";
+import { products } from "./data/mockData";
 const AwwwardsLanding = lazy(() =>
   import("./components/LandingPage/AwwwardsLanding").then((module) => ({
     default: module.AwwwardsLanding,
@@ -131,6 +139,13 @@ function Marketplace() {
   const [iataScannerOpen, setIataScannerOpen] = useState(false);
   const [cargoPassOpen, setCargoPassOpen] = useState(false);
   const [offlineHandoverOpen, setOfflineHandoverOpen] = useState(false);
+  const [voyageurDashboardOpen, setVoyageurDashboardOpen] = useState(false);
+  const [expediteurDashboardOpen, setExpediteurDashboardOpen] = useState(false);
+  const [carrierDashboardOpen, setCarrierDashboardOpen] = useState(false);
+  const [inspectionOpen, setInspectionOpen] = useState(false);
+  const [proofUploadOpen, setProofUploadOpen] = useState(false);
+  const [gpsTrackingOpen, setGpsTrackingOpen] = useState(false);
+  const [pinModalOpen, setPinModalOpen] = useState(false);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -708,6 +723,9 @@ function Marketplace() {
             kycStatus={user?.kycStatus}
             onLogout={logout}
             onTrust={() => setTrustOpen(true)}
+            onOpenVoyageurDashboard={() => (user ? setVoyageurDashboardOpen(true) : setAuth("email"))}
+            onOpenExpediteurDashboard={() => (user ? setExpediteurDashboardOpen(true) : setAuth("email"))}
+            onOpenCarrierDashboard={() => (user ? setCarrierDashboardOpen(true) : setAuth("register"))}
           />
         )}
         {messages && (
@@ -995,6 +1013,70 @@ function Marketplace() {
         isOpen={offlineHandoverOpen}
         onClose={() => setOfflineHandoverOpen(false)}
       />
+      {voyageurDashboardOpen && (
+        <VoyageurDashboard
+          isOpen={voyageurDashboardOpen}
+          onClose={() => setVoyageurDashboardOpen(false)}
+          onOpenUploadProof={() => setProofUploadOpen(true)}
+          onOpenPinModal={() => setPinModalOpen(true)}
+          onOpenInspection={() => setInspectionOpen(true)}
+          onOpenPublish={() => {
+            setPublishKind("trips");
+            setPublish(true);
+          }}
+          tickets={trips}
+        />
+      )}
+      {expediteurDashboardOpen && (
+        <ExpediteurDashboard
+          isOpen={expediteurDashboardOpen}
+          onClose={() => setExpediteurDashboardOpen(false)}
+          onOpenGps={() => setGpsTrackingOpen(true)}
+          onOpenMessaging={() => navigate("messages")}
+        />
+      )}
+      {carrierDashboardOpen && (
+        <CarrierDashboard
+          isOpen={carrierDashboardOpen}
+          onClose={() => setCarrierDashboardOpen(false)}
+          onOpenPublish={() => {
+            setPublishKind("trips");
+            setPublish(true);
+          }}
+        />
+      )}
+      {inspectionOpen && (
+        <DepartureInspectionModal
+          isOpen={inspectionOpen}
+          onClose={() => setInspectionOpen(false)}
+        />
+      )}
+      {proofUploadOpen && (
+        <ProofUploadModal
+          product={products[0] || null}
+          onClose={() => setProofUploadOpen(false)}
+          onProceedToDelivery={() => {
+            setProofUploadOpen(false);
+            navigate("messages");
+          }}
+        />
+      )}
+      {gpsTrackingOpen && (
+        <GpsTrackingModal
+          isOpen={gpsTrackingOpen}
+          onClose={() => setGpsTrackingOpen(false)}
+        />
+      )}
+      {pinModalOpen && (
+        <PinDeliveryModal
+          product={products[0] || null}
+          onClose={() => setPinModalOpen(false)}
+          onSuccessFinished={() => {
+            setPinModalOpen(false);
+            setNotice("Remise confirmée par code PIN.");
+          }}
+        />
+      )}
     </div>
   );
 }
