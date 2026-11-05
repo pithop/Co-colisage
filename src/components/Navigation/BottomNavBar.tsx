@@ -58,6 +58,16 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate }: Props
     return false;
   };
 
+  const triggerHaptic = () => {
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+      try {
+        navigator.vibrate(8);
+      } catch {
+        // Safe fallback
+      }
+    }
+  };
+
   return (
     <nav className="mobile-bottom-nav" aria-label="Navigation mobile principale">
       <div className="mobile-bottom-nav-inner">
@@ -72,6 +82,7 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate }: Props
               aria-current={active ? "page" : undefined}
               aria-label={item.label}
               onClick={() => {
+                triggerHaptic();
                 if (item.key === "radar") {
                   window.location.hash = "radar";
                 } else if (item.key === "tracking") {

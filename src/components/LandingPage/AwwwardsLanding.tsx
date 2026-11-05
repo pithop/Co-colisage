@@ -282,6 +282,16 @@ export function AwwwardsLanding({
   const [hasNewTick, setHasNewTick] = useState(false);
   const [routeTurns, setRouteTurns] = useState(0);
 
+  const triggerHaptic = (ms = 8) => {
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+      try {
+        navigator.vibrate(ms);
+      } catch {
+        // Safe fallback
+      }
+    }
+  };
+
   useEffect(() => {
     const el = metricsRef.current;
     if (!el) return;
@@ -852,6 +862,7 @@ export function AwwwardsLanding({
             <button
               aria-label={text("Inverser le trajet", "Reverse route")}
               onClick={() => {
+                triggerHaptic(8);
                 setOrigin(destination);
                 setDestination(origin);
                 setRouteTurns((turns) => turns + 1);
@@ -859,7 +870,10 @@ export function AwwwardsLanding({
             >
               <ArrowLeftRight
                 size={19}
-                style={{ transform: `rotate(${routeTurns * 180}deg)` }}
+                style={{
+                  transform: `rotate(${routeTurns * 180}deg)`,
+                  transition: "transform 360ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+                }}
               />
             </button>
             <label>
@@ -926,14 +940,20 @@ export function AwwwardsLanding({
             <div className="simulator-segment">
               <button
                 aria-pressed={need === "parcel"}
-                onClick={() => setNeed("parcel")}
+                onClick={() => {
+                  triggerHaptic(6);
+                  setNeed("parcel");
+                }}
               >
                 <Package size={17} />
                 {c.parcel}
               </button>
               <button
                 aria-pressed={need === "shop"}
-                onClick={() => setNeed("shop")}
+                onClick={() => {
+                  triggerHaptic(6);
+                  setNeed("shop");
+                }}
               >
                 <ShoppingBag size={17} />
                 {c.shop}

@@ -12,11 +12,94 @@
   }
 }
 
+:root {
+  --font-apple-system: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-apple-mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --ease-apple-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-apple-press: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-apple-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html, body {
+  font-family: var(--font-apple-system);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeLegibility;
+}
+
 body {
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   EMIL KOWALSKI APPLE DESIGN FOUNDATIONS:
+   1. Response & Latency: Instant physical touch feedback on press
+   ========================================================================== */
+button:active:not(:disabled),
+[role="button"]:active:not([aria-disabled="true"]),
+.button:active,
+.mobile-nav-tab:active:not(:disabled),
+.touch-scale:active {
+  transform: scale(0.972);
+  transition: transform 80ms var(--ease-apple-press) !important;
+}
+
+button,
+[role="button"],
+.button,
+.mobile-nav-tab {
+  transition: transform 180ms var(--ease-apple-spring), background-color 160ms ease, color 160ms ease, box-shadow 180ms ease, border-color 160ms ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ==========================================================================
+   15. Optical Typography (Optical sizing, dynamic tracking, tight leading)
+   ========================================================================== */
+h1, .apple-display-lg {
+  letter-spacing: -0.038em;
+  line-height: 1.08;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+h2, .apple-display-md {
+  letter-spacing: -0.026em;
+  line-height: 1.18;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+h3, .apple-display-sm {
+  letter-spacing: -0.018em;
+  line-height: 1.28;
+}
+
+h4, h5, h6 {
+  letter-spacing: -0.012em;
+  line-height: 1.35;
+}
+
+p, body, input, select, textarea {
+  letter-spacing: -0.006em;
+}
+
+/* Small uppercase labels and badges: positive tracking for legibility */
+.badge, .pill, .eyebrow, .meta-label, [data-badge] {
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   12. Translucent Materials (Vibrant backdrop blur & soft depth)
+   ========================================================================== */
+.apple-glass {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 @keyframes ticket-scan-sweep {
