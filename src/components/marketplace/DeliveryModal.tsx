@@ -507,16 +507,6 @@ export function DeliveryModal({
                 </button>
               ))}
             </div>
-            <button
-              type="button"
-              className="outline-button demo-fill-button"
-              onClick={() => {
-                setCode(expected);
-                setError("");
-              }}
-            >
-              Utiliser le code affiché
-            </button>
             {error && (
               <p role="alert" className="error-message">
                 {error}
@@ -545,14 +535,6 @@ export function DeliveryModal({
               onClick={() => chooseFile("qr")}
             >
               <QrCode size={18} /> Scanner ou importer un QR code
-            </button>
-            <button
-              type="button"
-              className="handover-demo-button"
-              disabled={busy}
-              onClick={() => validate(payload, "pin")}
-            >
-              Confirmer avec le code affiché
             </button>
             {busy && <p role="status">Analyse de l’image en cours…</p>}
           </form>

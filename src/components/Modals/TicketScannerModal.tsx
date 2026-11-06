@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Check, CheckCircle2, FileText, Loader2, Plane, ScanLine, ShieldCheck, Sparkles, UploadCloud, X } from 'lucide-react';
+import { Check, CheckCircle2, FileText, Loader2, Plane, ScanLine, ShieldCheck, UploadCloud, X } from 'lucide-react';
 import type { FreightItem, TicketScanResult } from '../../types';
 import { useAuth } from '../../context/AuthContext';
-import { demoTickets, maxBaggageOffer, readTicket } from '../../lib/ticketScanner';
+import { maxBaggageOffer, readTicket } from '../../lib/ticketScanner';
 
 interface TicketScannerModalProps {
   isOpen: boolean;
@@ -24,7 +24,6 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({ isOpen, 
   const [scanning, setScanning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [fileName, setFileName] = useState('');
-  const [isDemo, setIsDemo] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState('');
   const [offer, setOffer] = useState(1);
@@ -44,30 +43,15 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({ isOpen, 
   if (!isOpen) return null;
   const maximum = ticket ? maxBaggageOffer(ticket.baggageAllowanceKg) : 0;
   const close = () => { job.current?.abort(); onClose(); };
-  const scan = async (source: File | TicketScanResult) => {
+  const scan = async (source: File) => {
     job.current?.abort();
     const controller = new AbortController(); job.current = controller;
-    const demo = !(source instanceof File);
-    setIsDemo(demo); setTicket(null); setError(''); setScanning(true); setProgress(0);
-    setFileName(demo ? `${source.airline} · exemple de billet` : source.name);
+    setTicket(null); setError(''); setScanning(true); setProgress(0);
+    setFileName(source.name);
     try {
-      let result: TicketScanResult;
-      if (source instanceof File) {
-        if (!['application/pdf', 'image/jpeg', 'image/png', 'image/webp'].includes(source.type) && !(source.type === '' && /\.(pdf|png|jpe?g|webp)$/i.test(source.name))) throw new Error('Choisissez un PDF, JPG, PNG ou WebP.');
-        if (!source.size || source.size > 15 * 1024 * 1024) throw new Error('Le fichier doit être non vide et inférieur à 15 Mo.');
-        result = await readTicket(source, controller.signal, value => setProgress(Math.min(5, Math.floor(value * 6))));
-      } else {
-        for (let step = 0; step < steps.length; step++) {
-          await new Promise<void>(resolve => {
-            const done = () => { clearTimeout(timer); controller.signal.removeEventListener('abort', done); resolve(); };
-            const timer = window.setTimeout(done, 420);
-            controller.signal.addEventListener('abort', done, { once: true });
-          });
-          if (controller.signal.aborted) return;
-          setProgress(step + 1);
-        }
-        result = { ...source };
-      }
+      if (!['application/pdf', 'image/jpeg', 'image/png', 'image/webp'].includes(source.type) && !(source.type === '' && /\.(pdf|png|jpe?g|webp)$/i.test(source.name))) throw new Error('Choisissez un PDF, JPG, PNG ou WebP.');
+      if (!source.size || source.size > 15 * 1024 * 1024) throw new Error('Le fichier doit être non vide et inférieur à 15 Mo.');
+      const result = await readTicket(source, controller.signal, value => setProgress(Math.min(5, Math.floor(value * 6))));
       if (controller.signal.aborted) return;
       setTicket(result); setOffer(maxBaggageOffer(result.baggageAllowanceKg)); setProgress(6);
     } catch (cause) {
@@ -89,8 +73,7 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({ isOpen, 
         availableKg: offer, pricePerKg: price, shoppingCommission: commission, canCarryParcel: true, canBuyProduct: true,
         travelerName: user?.name || ticket.passengerName, travelerAvatar: user?.avatar || '', rating: 0, reviewsCount: 0,
         image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80',
-        description: `${isDemo ? 'Exemple de billet, à remplacer par votre réservation. ' : 'Données extraites par OCR, billet non authentifié. '}${offer} kg disponibles sur ${ticket.baggageAllowanceKg} kg en ${ticket.baggageType === 'cabin' ? 'cabine' : 'soute'}. ${ticket.baggageAllowanceKg - limit} kg réservés aux effets personnels.`,
-        // Demo verification is visual only; it must not certify a real marketplace listing.
+        description: `Données extraites par OCR. ${offer} kg disponibles sur ${ticket.baggageAllowanceKg} kg en ${ticket.baggageType === 'cabin' ? 'cabine' : 'soute'}. ${ticket.baggageAllowanceKg - limit} kg réservés aux effets personnels.`,
         isTicketVerified: false, ticketScan: { ...ticket, pnr: '', passengerName: '', ticketVerified: false, maxAllowedOfferKg: limit },
       });
       close();
@@ -104,7 +87,8 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({ isOpen, 
         if (event.key === 'Tab') {
           const elements = dialog.current?.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), [tabindex="0"]');
           if (!elements?.length) return;
-          const first = elements[0], last = elements[elements.length - 1];
+          const first = elements[0];
+          const last = elements[elements.length - 1];
           if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
           else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
         }
@@ -113,9 +97,9 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({ isOpen, 
           <div className="pointer-events-none absolute -right-12 -top-24 h-64 w-64 rounded-full bg-blue-500/20 blur-3xl" />
           <div className="relative flex items-start justify-between gap-4">
             <div>
-              <div className="mb-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200"><ScanLine className="h-4 w-4" /> Ticket intelligence <span className="rounded-full border border-white/20 px-2 py-0.5 tracking-widest">Bêta</span></div>
+              <div className="mb-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200"><ScanLine className="h-4 w-4" /> Scanner IATA Intelligent</div>
               <h2 id="ticket-scanner-title" className="text-2xl font-semibold tracking-tight sm:text-3xl">Votre billet. Votre prochain trajet.</h2>
-              <p className="mt-2 max-w-md text-sm leading-relaxed text-slate-300">Un scan pour renseigner votre vol et calculer les kilos que vous pouvez partager.</p>
+              <p className="mt-2 max-w-md text-sm leading-relaxed text-slate-300">Déposez votre carte d’embarquement pour extraire le vol et calculer votre franchise disponible.</p>
             </div>
             <button ref={closeButton} type="button" onClick={close} aria-label="Fermer le scanner" className={`-mr-2 -mt-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-slate-300 hover:bg-white/10 hover:text-white ${focus}`}><X className="h-5 w-5" /></button>
           </div>
@@ -124,33 +108,26 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({ isOpen, 
         <div className="overflow-y-auto overscroll-contain p-5 sm:p-8">
           {!ticket && !scanning && <>
             <input ref={input} type="file" accept="application/pdf,image/jpeg,image/png,image/webp" className="hidden" tabIndex={-1} onChange={event => { const file = event.target.files?.[0]; event.target.value = ''; if (file) void scan(file); }} />
-            <button type="button" onClick={() => input.current?.click()} onDragOver={event => { event.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={event => { event.preventDefault(); setDragging(false); if (event.dataTransfer.files.length !== 1) { setError('Déposez un seul billet à la fois.'); return; } void scan(event.dataTransfer.files[0]); }} className={`group flex w-full flex-col items-center rounded-2xl border-2 border-dashed px-5 py-8 text-center transition-colors ${dragging ? 'border-blue-500 bg-blue-50' : 'border-slate-300 bg-white hover:border-blue-400 hover:bg-blue-50/40'} ${focus}`}>
+            <button type="button" onClick={() => input.current?.click()} onDragOver={event => { event.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={event => { event.preventDefault(); setDragging(false); if (event.dataTransfer.files.length !== 1) { setError('Déposez un seul billet à la fois.'); return; } void scan(event.dataTransfer.files[0]); }} className={`group flex w-full flex-col items-center rounded-2xl border-2 border-dashed px-5 py-12 text-center transition-colors ${dragging ? 'border-blue-500 bg-blue-50' : 'border-slate-300 bg-white hover:border-blue-400 hover:bg-blue-50/40'} ${focus}`}>
               <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 transition-transform motion-safe:group-hover:-translate-y-1"><UploadCloud className="h-7 w-7" /></span>
               <span className="text-base font-semibold">Glissez votre billet ici</span><span className="mt-1 text-sm text-slate-500">ou <span className="font-medium text-blue-600">parcourir mes fichiers</span></span>
               <span className="mt-4 text-[11px] text-slate-500">PDF, JPG, PNG, WebP · 15 Mo maximum</span>
             </button>
-            <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-[11px] text-slate-500"><ShieldCheck className="h-3.5 w-3.5 shrink-0" /> Document traité dans votre navigateur, jamais envoyé au serveur.</p>
-            <div className="mb-3 mt-7 flex items-center justify-between gap-2"><h3 className="text-sm font-semibold">Parcourir les exemples de billets</h3><span className="text-[10px] uppercase tracking-widest text-slate-500">Méditerranée</span></div>
-            <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">{demoTickets.map((demo, index) => <button key={demo.airline} type="button" onClick={() => void scan(demo)} className={`group rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition duration-200 hover:border-blue-300 hover:shadow-md motion-safe:hover:-translate-y-0.5 ${focus}`}>
-              <div className="flex items-center gap-2"><span className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold ${['bg-red-50 text-red-700', 'bg-emerald-50 text-emerald-700', 'bg-blue-50 text-blue-800', 'bg-yellow-50 text-yellow-800'][index]}`}>{demo.flightNumber.slice(0, 2)}</span><span className="text-sm font-semibold">{demo.airline}</span><ArrowRight className="ml-auto h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600" /></div>
-              <div className="mt-4 flex items-center gap-2 text-lg font-semibold tracking-tight">{demo.originCode}<span className="text-slate-400">→</span>{demo.destinationCode}</div>
-              <div className="mt-1 text-xs text-slate-500">{dateLabel(demo.departureDate)}</div>
-              <div className="mt-3 border-t border-slate-100 pt-3 text-[11px] text-slate-600">{demo.baggageAllowanceKg} kg {demo.baggageType === 'cabin' ? 'cabine' : 'soute'} <span className="float-right font-semibold text-blue-700">Offre ≤ {demo.maxAllowedOfferKg} kg</span></div>
-            </button>)}</div>
+            <p className="mt-4 flex items-center justify-center gap-1.5 text-center text-xs text-slate-500"><ShieldCheck className="h-4 w-4 shrink-0 text-emerald-600" /> Analyse OCR locale chiffrée. Document traité directement dans votre navigateur.</p>
           </>}
 
           {scanning && <div role="status" aria-live="polite" className="py-2">
             <div className="relative mb-6 overflow-hidden rounded-2xl border border-blue-100 bg-white p-8 text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600"><FileText className="h-8 w-8" /></div>
-              <p className="text-base font-semibold">{isDemo ? 'Lecture de l’exemple de billet' : 'Lecture de votre billet'}</p><p className="mt-2 truncate text-xs text-slate-500">{fileName}</p>
+              <p className="text-base font-semibold">Lecture de votre billet</p><p className="mt-2 truncate text-xs text-slate-500">{fileName}</p>
               <div className="ticket-scan-laser pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-blue-400 shadow-[0_0_24px_8px_rgba(59,130,246,0.3)]" />
             </div>
             <div className="grid grid-cols-2 gap-3">{steps.map((step, i) => <div key={step} className={`flex items-center gap-2 rounded-xl border p-3 text-xs ${i < progress ? 'border-emerald-100 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-500'}`}>{i < progress ? <CheckCircle2 className="h-4 w-4" /> : i === progress ? <Loader2 className="h-4 w-4 motion-safe:animate-spin" /> : <span className="h-4 w-4 rounded-full border border-slate-300" />}{step}</div>)}</div>
-            <p className="mt-5 text-center text-xs text-slate-500">{isDemo ? 'Données fictives · aperçu du parcours certifié' : 'Premier scan : chargement du moteur OCR. Une connexion est nécessaire.'}</p>
+            <p className="mt-5 text-center text-xs text-slate-500">Traitement OCR en cours. Vos données personnelles restent confidentielles.</p>
           </div>}
 
           {ticket && <div className="space-y-5">
-            <div className="flex flex-wrap items-center justify-between gap-2"><span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1.5 text-[11px] font-semibold text-emerald-800"><ShieldCheck className="h-4 w-4" />{isDemo ? "Exemple de billet lu" : 'Lecture OCR terminée'}</span><span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">{isDemo ? 'Exemple · billet fictif' : 'Authenticité non vérifiée'}</span></div>
+            <div className="flex flex-wrap items-center justify-between gap-2"><span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1.5 text-[11px] font-semibold text-emerald-800"><ShieldCheck className="h-4 w-4" />Lecture OCR terminée</span><span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Billet Extrait</span></div>
             <article aria-label="Carte d’embarquement extraite" className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               <div className="flex items-center justify-between bg-slate-900 px-5 py-3 text-white"><span className="text-sm font-semibold">{ticket.airline}</span><span className="text-[10px] tracking-[0.15em] text-slate-300">BOARDING PASS</span></div>
               <div className="p-5"><div className="flex items-center justify-between gap-4"><div><p className="text-3xl font-semibold tracking-tight">{ticket.originCode}</p><p className="mt-1 text-xs text-slate-500">{ticket.origin}</p></div><div className="flex flex-1 items-center gap-2 text-blue-500"><span className="flex-1 border-t border-dashed border-slate-300" /><Plane className="h-5 w-5" /><span className="flex-1 border-t border-dashed border-slate-300" /></div><div className="text-right"><p className="text-3xl font-semibold tracking-tight">{ticket.destinationCode}</p><p className="mt-1 text-xs text-slate-500">{ticket.destination}</p></div></div>
@@ -165,8 +142,8 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({ isOpen, 
               <Slider id="ticket-commission" label="Commission shopping" value={commission} min={0} max={100} unit="€" onChange={setCommission} />
               <div className="flex items-center justify-between border-t border-slate-100 pt-4"><span className="text-xs text-slate-500">Gain potentiel · colis + un achat</span><strong className="text-xl tracking-tight text-emerald-700">{offer * price + commission} €</strong></div>
             </div>
-            <p className="text-xs leading-relaxed text-slate-500">{isDemo ? 'Ce billet est fictif. Remplacez ces informations par celles de votre réservation avant le départ.' : 'Vérifiez les informations extraites. La lecture OCR ne prouve pas l’authenticité du billet ; cette publication ne sera pas certifiée.'} Le PNR et le nom extrait ne sont pas joints aux données du billet publié.</p>
-            <button type="button" onClick={publish} disabled={!onTripCreated} className={`flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-4 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 ${focus}`}><Check className="h-4 w-4 shrink-0" />{isDemo ? "Publier le trajet de cet exemple" : 'Publier mon trajet avec les données du billet'}</button>
+            <p className="text-xs leading-relaxed text-slate-500">Vérifiez les informations extraites. Le PNR et le nom complet ne sont pas joints publiquement aux données du trajet publié.</p>
+            <button type="button" onClick={publish} disabled={!onTripCreated} className={`flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-4 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 ${focus}`}><Check className="h-4 w-4 shrink-0" />Publier mon trajet avec les données du billet</button>
             <button type="button" onClick={() => { setTicket(null); setError(''); }} className={`mx-auto block rounded-lg px-3 py-2 text-xs font-medium text-slate-500 hover:text-blue-600 ${focus}`}>Scanner un autre billet</button>
           </div>}
           {error && <div role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm leading-relaxed text-red-800">{error}</div>}

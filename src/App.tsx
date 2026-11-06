@@ -990,7 +990,7 @@ function Marketplace() {
           initialKind={publishKind}
           defaultAutoAccept={autoAccept}
           mode={mode}
-          name={user?.name || "Camille"}
+          name={user?.name || "Voyageur"}
           onClose={() => {
             setPublish(false);
             setRadarBooking(undefined);

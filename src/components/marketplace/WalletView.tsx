@@ -395,13 +395,6 @@ function TransferDialog({
                   aria-describedby={error ? "transfer-error" : undefined}
                 />
               </label>
-              <button
-                type="button"
-                className="transfer-demo-button"
-                onClick={() => setIban("FR76 3000 6000 0112 3456 7890 189")}
-              >
-                Préremplir un exemple d’IBAN
-              </button>
               <label>
                 Code BIC/SWIFT
                 <input

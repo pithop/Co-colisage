@@ -155,6 +155,23 @@ server.listen(PORT, async () => {
       console.log("Captured 25_kyc_verification_modal.jpg");
     }
 
+    // 6. Ticket Scanner Modal (Clean without demo tickets)
+    const pageScan = await desktopContext.newPage();
+    await pageScan.goto(`http://localhost:${PORT}/#shopandgo`, { waitUntil: "networkidle" });
+    await pageScan.waitForTimeout(800);
+    const scanBtn = pageScan.locator("button:has-text('Scanner billet IATA')").first();
+    if (await scanBtn.isVisible().catch(() => false)) {
+      await scanBtn.click();
+      await pageScan.waitForTimeout(800);
+      await pageScan.screenshot({
+        path: path.join(outputDir, "17_ticket_scanner_modal.jpg"),
+        type: "jpeg",
+        quality: 90,
+        fullPage: false,
+      });
+      console.log("Captured 17_ticket_scanner_modal.jpg");
+    }
+
     console.log("All new platform screenshots successfully generated!");
   } finally {
     await browser.close();
