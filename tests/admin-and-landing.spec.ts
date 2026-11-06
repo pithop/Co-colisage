@@ -488,3 +488,48 @@ test("version one upgrades without reseeding changed records", async ({
     "Données historiques préservées",
   );
 });
+
+test("landing mobile menu covers all pages and application retains dedicated in-app menu", async ({
+  page,
+  isMobile,
+}) => {
+  await page.goto("/#landing");
+  if (isMobile) {
+    const menuTrigger = page.locator(".landing-mobile-menu-trigger");
+    await expect(menuTrigger).toBeVisible();
+    await menuTrigger.click();
+
+    const overlay = page.locator(".landing-mobile-menu-overlay");
+    await expect(overlay).toBeVisible();
+
+    // Verify all pages are accessible
+    await expect(page.getByRole("button", { name: "Comment ça marche" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Tarifs & Simulateur" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Sécurité & Confiance" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "FAQ & Douanes" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Radar Méditerranéen" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Suivi des expéditions" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Arbitrage de vols" })).toBeVisible();
+
+    // Navigate to How It Works via mobile menu
+    await page.getByRole("button", { name: "Comment ça marche" }).click();
+    await expect(page).toHaveURL(/#how-it-works/);
+    await expect(overlay).toHaveCount(0);
+    await expect(page.locator(".seo-mobile-menu-trigger")).toBeVisible();
+
+    // Verify in-app view (/app) has dedicated in-app navigation
+    await page.goto("/app");
+    await expect(page.locator(".mobile-bottom-nav")).toBeVisible();
+    await expect(page.locator(".landing-mobile-menu-trigger")).toHaveCount(0);
+    await expect(page.locator(".mobile-bottom-nav")).toContainText("Explorer");
+    await expect(page.locator(".mobile-bottom-nav")).toContainText("Radar");
+    await expect(page.locator(".mobile-bottom-nav")).toContainText("Arbitrage");
+    await expect(page.locator(".mobile-bottom-nav")).toContainText("Expéditions");
+    await expect(page.locator(".mobile-bottom-nav")).toContainText("Messages");
+  } else {
+    await expect(page.locator(".landing-nav")).toBeVisible();
+    await page.goto("/app");
+    await expect(page.locator(".desktop-nav")).toBeVisible();
+  }
+});
+

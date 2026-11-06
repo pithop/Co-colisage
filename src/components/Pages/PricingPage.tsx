@@ -8,9 +8,11 @@ import {
   Scale,
   ShieldAlert,
   Zap,
+  Menu,
 } from "lucide-react";
 import { BrandMark } from "../BrandMark";
 import { ThemeToggle } from "../common/ThemeToggle";
+import { LandingMobileMenu } from "../Navigation/LandingMobileMenu";
 
 export function PricingPage({
   language = "fr",
@@ -21,6 +23,7 @@ export function PricingPage({
 }) {
   const [weight, setWeight] = useState(5);
   const [corridor, setCorridor] = useState<"algeria" | "canada" | "middle_east" | "africa">("algeria");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isFr = language === "fr";
 
@@ -69,9 +72,25 @@ export function PricingPage({
               {isFr ? "Ouvrir l'application" : "Open App"}
               <ArrowRight size={15} />
             </button>
+            <button
+              type="button"
+              className="seo-mobile-menu-trigger"
+              aria-label={isFr ? "Ouvrir le menu de navigation" : "Open navigation menu"}
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <Menu size={20} aria-hidden="true" />
+            </button>
           </div>
         </div>
       </header>
+      <LandingMobileMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        language={isFr ? "fr" : "en"}
+        currentRoute="pricing"
+        navigate={navigate}
+      />
 
       <main className="seo-main-content">
         <div className="seo-hero-banner">

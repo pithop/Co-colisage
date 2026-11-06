@@ -24,6 +24,7 @@ import {
   ReceiptText,
   CircleCheck,
   CircleMinus,
+  Menu,
 } from "lucide-react";
 import { AppStoreBadges } from "./AppStoreBadges";
 import {
@@ -31,6 +32,7 @@ import {
   MobileWaitlistForm,
 } from "./MobileAppLaunchModal";
 import { ThemeToggle } from "../common/ThemeToggle";
+import { LandingMobileMenu } from "../Navigation/LandingMobileMenu";
 const copy = {
   fr: {
     eyebrow: "LES DISTANCES CHANGENT. LES LIENS RESTENT.",
@@ -269,6 +271,7 @@ export function AwwwardsLanding({
   showAdmin?: boolean;
 }) {
   const [language, setLanguage] = useState<"fr" | "en">(initialLanguage);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [origin, setOrigin] = useState("Paris");
   const [destination, setDestination] = useState("Alger");
   const [need, setNeed] = useState("parcel");
@@ -448,8 +451,25 @@ export function AwwwardsLanding({
               <option value="en">EN</option>
             </select>
           </label>
+          <button
+            type="button"
+            className="landing-mobile-menu-trigger"
+            aria-label={mobileMenuOpen ? text("Fermer le menu", "Close menu") : text("Ouvrir le menu de navigation", "Open navigation menu")}
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <Menu size={20} aria-hidden="true" />
+            <span>{text("Menu", "Menu")}</span>
+          </button>
         </div>
       </header>
+      <LandingMobileMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        language={language}
+        onLanguageChange={setLanguage}
+        currentRoute="landing"
+      />
       <section className="landing-hero">
         <div className="landing-hero-copy">
           <span className="eyebrow">{c.eyebrow}</span>

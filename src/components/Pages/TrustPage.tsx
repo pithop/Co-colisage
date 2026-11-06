@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ArrowRight,
   CheckCircle,
@@ -7,9 +8,11 @@ import {
   Scale,
   ShieldCheck,
   UserCheck,
+  Menu,
 } from "lucide-react";
 import { BrandMark } from "../BrandMark";
 import { ThemeToggle } from "../common/ThemeToggle";
+import { LandingMobileMenu } from "../Navigation/LandingMobileMenu";
 
 export function TrustPage({
   language = "fr",
@@ -18,6 +21,7 @@ export function TrustPage({
   language?: "fr" | "en";
   navigate: (route: string) => void;
 }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isFr = language === "fr";
 
   const trustPillars = isFr
@@ -116,9 +120,25 @@ export function TrustPage({
               {isFr ? "Ouvrir l'application" : "Open App"}
               <ArrowRight size={15} />
             </button>
+            <button
+              type="button"
+              className="seo-mobile-menu-trigger"
+              aria-label={isFr ? "Ouvrir le menu de navigation" : "Open navigation menu"}
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <Menu size={20} aria-hidden="true" />
+            </button>
           </div>
         </div>
       </header>
+      <LandingMobileMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        language={isFr ? "fr" : "en"}
+        currentRoute="trust"
+        navigate={navigate}
+      />
 
       <main className="seo-main-content">
         <div className="seo-hero-banner">
