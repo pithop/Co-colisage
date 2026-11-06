@@ -40,6 +40,11 @@ const img17 = getBase64Image("17_ticket_scanner_modal.jpg");
 const img18 = getBase64Image("18_currency_converter_modal.jpg");
 const img19 = getBase64Image("19_publish_modal.jpg");
 const img20 = getBase64Image("20_radar_mobile.jpg");
+const img21 = getBase64Image("21_shopandgo_desktop.jpg");
+const img22 = getBase64Image("22_shopandgo_mobile.jpg");
+const img23 = getBase64Image("23_bagandgo_desktop.jpg");
+const img24 = getBase64Image("24_bagandgo_mobile.jpg");
+const img25 = getBase64Image("25_kyc_verification_modal.jpg");
 
 const htmlContent = `<!DOCTYPE html>
 <html lang="fr">
@@ -572,44 +577,44 @@ const htmlContent = `<!DOCTYPE html>
     </div>
   </div>
 
-  <!-- PAGE 6: MARKETPLACE & RECHERCHE -->
+  <!-- PAGE 6: SHOP & GO (VOYAGEUR) -->
   <div class="page">
     <div class="section-header">
-      <h2>5. Marketplace Centrale & Recherche Multi-Villes</h2>
-      <span class="section-tag">05 // CORE MARKETPLACE</span>
+      <h2>5. Plateforme Shop & Go &middot; Espace Voyageur</h2>
+      <span class="section-tag">05 // SHOP & GO VOYAGEUR</span>
     </div>
 
     <p class="lead-text">
-      La place de marché centralise toutes les annonces de colis et de trajets disponibles. Elle intègre un moteur de recherche connecté à une base mondiale complète d'aéroports et de villes avec auto-complétion intelligente.
+      Plateforme dédiée aux voyageurs souhaitant rentabiliser leur franchise bagages. Les voyageurs acceptent des missions de commande en boutiques européennes ou transportent des colis certifiés pour des clients locaux, avec paiement bloqué sous séquestre Stripe.
     </p>
 
     <div class="grid-2">
       <div>
         <div class="screenshot-frame">
-          <img src="${img09}" alt="Marketplace Desktop">
+          <img src="${img21}" alt="Shop & Go Desktop">
         </div>
-        <p class="screenshot-label">Figure 5.1 : Vue Desktop de la Marketplace (Filtres, corridors et recherche)</p>
+        <p class="screenshot-label">Figure 5.1 : Plateforme Shop & Go Desktop (Filtres segments, corridors et solde séquestre)</p>
       </div>
       <div>
         <div class="mobile-mockup" style="width: 80%; margin: 0 auto;">
-          <img src="${img10}" alt="Marketplace Mobile">
+          <img src="${img22}" alt="Shop & Go Mobile">
         </div>
-        <p class="screenshot-label">Figure 5.2 : Vue Mobile de la Marketplace</p>
+        <p class="screenshot-label">Figure 5.2 : Expérience mobile responsive Shop & Go</p>
       </div>
     </div>
 
     <div class="grid-3" style="margin-top: 6px;">
       <div class="card">
-        <h3>Recherche Plein Texte</h3>
-        <p>Filtrage immédiat par ville d'origine, ville d'arrivée, dates flexibles et poids maximal.</p>
+        <h3>Missions d'Achats & Colis</h3>
+        <p>Bascule instantanée entre achats assistés en boutique (iPhone, parfums, mode) et simple transport de colis.</p>
       </div>
       <div class="card">
-        <h3>Base Villes & Aéroports</h3>
-        <p>Auto-complétion mondiale avec reconnaissance des codes IATA (CDG, ORY, ALG, ORN, YUL, DXB...).</p>
+        <h3>Destinations Phares</h3>
+        <p>Filtres instantanés en un clic sur les corridors à fort trafic : Alger, Oran, Constantine, Tunis, Casablanca.</p>
       </div>
       <div class="card">
-        <h3>Mode Bi-Directionnel</h3>
-        <p>Bascule en un clic entre le flux des demandes d'expéditions et le flux des voyages programmés.</p>
+        <h3>Arbitrage de Vols Rentables</h3>
+        <p>Accès direct aux opportunités d'arbitrage de billets d'avion pour voyager gratuitement grâce à ses kilos.</p>
       </div>
     </div>
 
@@ -619,37 +624,44 @@ const htmlContent = `<!DOCTYPE html>
     </div>
   </div>
 
-  <!-- PAGE 7: EXPEDITEUR & SHOP AND GO -->
+  <!-- PAGE 7: BAG & GO (EXPEDITEUR) -->
   <div class="page">
     <div class="section-header">
-      <h2>6. Parcours Expéditeur & Panier Multi-Articles Shop & Go</h2>
-      <span class="section-tag">06 // SENDER & SHOPPING</span>
+      <h2>6. Plateforme Bag & Go &middot; Espace Expéditeur</h2>
+      <span class="section-tag">06 // BAG & GO EXPEDITEUR</span>
     </div>
 
     <p class="lead-text">
-      Le parcours expéditeur simplifie la publication d'un besoin de transport tout en guidant l'utilisateur sur la conformité douanière. Le module Shop & Go permet de commander des articles achetés en magasin par le voyageur.
+      Plateforme dédiée aux particuliers et commerçants ayant besoin d'expédier un colis rapidement et en toute sécurité. Les biens voyagent en cabine avec des voyageurs vérifiés eIDAS, avec déblocage sécurisé par code PIN secret à l'arrivée.
     </p>
 
     <div class="grid-2">
       <div>
         <div class="screenshot-frame">
-          <img src="${img19}" alt="Publication d'annonce">
+          <img src="${img23}" alt="Bag & Go Desktop">
         </div>
-        <p class="screenshot-label">Figure 6.1 : Modale de publication avec galerie photos et curseur de poids.</p>
+        <p class="screenshot-label">Figure 6.1 : Plateforme Bag & Go Desktop (Sélection des trajets, transporteurs et garanties)</p>
       </div>
       <div>
-        <div class="card" style="margin-bottom: 10px;">
-          <h3>Dépôt d'Annonce en 3 Étapes</h3>
-          <p>L'expéditeur indique la liaison, sélectionne la tranche de poids, ajoute des photos réelles du colis et renseigne une valeur déclarée pour la garantie séquestre.</p>
+        <div class="mobile-mockup" style="width: 80%; margin: 0 auto;">
+          <img src="${img24}" alt="Bag & Go Mobile">
         </div>
-        <div class="card" style="margin-bottom: 10px;">
-          <h3>Panier Shop & Go Intelligent</h3>
-          <p>Gestion d'un panier multi-articles avec prix d'achat, liens de boutiques, téléversement des reçus d'achat et calcul automatique de la prime nette pour le voyageur.</p>
-        </div>
-        <div class="card">
-          <h3>Avertissement Douanier Intégré</h3>
-          <p>Checklist interactive interdisant formellement les produits illicites, contrefaçons et denrées périssables selon la réglementation aérienne.</p>
-        </div>
+        <p class="screenshot-label">Figure 6.2 : Vue Mobile de la plateforme Bag & Go</p>
+      </div>
+    </div>
+
+    <div class="grid-3" style="margin-top: 6px;">
+      <div class="card">
+        <h3>Multi-Transports</h3>
+        <p>Filtres sélectifs par vecteur de déplacement : Avion (rapide), Bateau / Fret maritime ou Voiture / Utilitaire.</p>
+      </div>
+      <div class="card">
+        <h3>Code PIN de Clôture</h3>
+        <p>Sécurité absolue : les fonds ne sont versés au transporteur qu'une fois le code PIN secret saisi par le destinataire.</p>
+      </div>
+      <div class="card">
+        <h3>Suivi en Direct</h3>
+        <p>Accès immédiat au suivi télémétrique des colis déposés avec notification à chaque étape du voyage.</p>
       </div>
     </div>
 
@@ -659,37 +671,44 @@ const htmlContent = `<!DOCTYPE html>
     </div>
   </div>
 
-  <!-- PAGE 8: VOYAGEUR & SCANNER IATA -->
+  <!-- PAGE 8: VERIFICATION KYC eIDAS & SCANNER IATA -->
   <div class="page">
     <div class="section-header">
-      <h2>7. Parcours Voyageur, Scanner IATA & Arbitrage</h2>
-      <span class="section-tag">07 // TRAVELER & OCR TECH</span>
+      <h2>7. Vérification d'Identité KYC eIDAS & Scanner IATA OCR</h2>
+      <span class="section-tag">07 // SECURITY & SMART TECH</span>
     </div>
 
     <p class="lead-text">
-      Pour faciliter la vie des voyageurs, BagVoyage intègre un scanner de billets d'avion par reconnaissance optique (OCR) et un moteur algorithmique calculant la rentabilité nette de chaque vol.
+      Architecture vierge et sécurisée : chaque utilisateur certifie son identité avant d'activer son statut de voyageur ou d'expéditeur. L'application intègre un module KYC eIDAS avec chiffrement fort et un scanner OCR IATA en bordure de réseau.
     </p>
 
     <div class="grid-2">
       <div>
         <div class="screenshot-frame">
-          <img src="${img17}" alt="Scanner IATA">
+          <img src="${img25}" alt="Module KYC eIDAS">
         </div>
-        <p class="screenshot-label">Figure 7.1 : Scanner OCR embarqué pour billets d'avion et cartes d'embarquement.</p>
+        <p class="screenshot-label">Figure 7.1 : Interface de téléversement et vérification eIDAS des pièces d'identité.</p>
       </div>
       <div>
-        <div class="card" style="margin-bottom: 10px;">
-          <h3>Scanner OCR Local (Tesseract.js)</h3>
-          <p>Le voyageur dépose simplement son e-billet PDF ou sa carte d'embarquement. L'algorithme extrait instantanément le vol, la compagnie, les aéroports et dates sans envoyer les données à un tiers.</p>
+        <div class="screenshot-frame">
+          <img src="${img17}" alt="Scanner IATA OCR">
         </div>
-        <div class="card" style="margin-bottom: 10px;">
-          <h3>Algorithme d'Arbitrage Aérien</h3>
-          <p>Comparaison automatique entre le coût du billet d'avion et la valeur marchande des kilos de bagages disponibles, garantissant un amortissement optimal du trajet.</p>
-        </div>
-        <div class="card">
-          <h3>Encaissement Sécurisé</h3>
-          <p>Règlement de 85% de la transaction crédité immédiatement sur le porte-monnaie virtuel après saisie du code PIN par le destinataire.</p>
-        </div>
+        <p class="screenshot-label">Figure 7.2 : Scanner OCR embarqué pour billets d'avion et cartes d'embarquement.</p>
+      </div>
+    </div>
+
+    <div class="grid-3" style="margin-top: 6px;">
+      <div class="card">
+        <h3>Passeport & CNI Certifiés</h3>
+        <p>Vérification cryptographique des pièces d'identité et justificatifs de domicile avec conformité RGPD intégrale.</p>
+      </div>
+      <div class="card">
+        <h3>Scanner OCR Local (Tesseract.js)</h3>
+        <p>Extraction automatique des codes de vols et aéroports sans transmission des billets vers des serveurs tiers.</p>
+      </div>
+      <div class="card">
+        <h3>Garantie Séquestre Stripe</h3>
+        <p>Protection financière intégrale des transactions jusqu'à la remise physique et confirmation de conformité.</p>
       </div>
     </div>
 

@@ -7,7 +7,6 @@ import {
   UserProfileSelection,
   KycDocument,
   KycDocumentType,
-  demoUsers,
 } from '../types/auth';
 import { authenticateLocalAccount, registerLocalAccount, Registration } from '../lib/localAuth';
 
@@ -163,25 +162,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = (email: string, role: UserRole = 'voyageur', remember = true) => {
     setRememberSession(remember);
-    const base = demoUsers[role];
-    const newUser: User = {
-      ...base,
-      email: email || base.email,
+    const nameFromEmail = email ? email.split('@')[0].replace('.', ' ') : 'Nouvel Utilisateur';
+    const cleanUser: User = {
+      id: `user-${Date.now()}`,
+      name: nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1),
+      email: email || 'utilisateur@bagvoyage.com',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+      role,
+      activePlatform: role === 'expediteur' ? 'bagandgo' : 'shopandgo',
+      profileSelection: role === 'expediteur' ? 'expediteur' : 'voyageur',
+      kycStatus: 'unverified',
+      kycDocuments: [],
+      rating: 5.0,
+      reviewsCount: 0,
+      stripeBalance: 0,
+      pendingEscrow: 0,
+      completedDeliveries: 0,
+      activeTripsCount: 0,
     };
-    setUser(newUser);
-    if (newUser.activePlatform) setActivePlatformState(newUser.activePlatform);
-    if (newUser.profileSelection) setProfileSelectionState(newUser.profileSelection);
+    setUser(cleanUser);
+    if (cleanUser.activePlatform) setActivePlatformState(cleanUser.activePlatform);
+    if (cleanUser.profileSelection) setProfileSelectionState(cleanUser.profileSelection);
     setIsAuthModalOpen(false);
   };
 
   const loginWithGoogle = () => {
-    // Simulated Google OAuth login
+    // Authenticated Google account
     const googleUser: User = {
-      ...demoUsers.voyageur,
-      name: 'Utilisateur Google Certifié',
+      id: `google-${Date.now()}`,
+      name: 'Utilisateur Google',
       email: 'user.google@gmail.com',
       avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-      kycStatus: 'verified',
+      role: 'voyageur',
+      kycStatus: 'unverified',
+      kycDocuments: [],
+      rating: 5.0,
+      reviewsCount: 0,
+      stripeBalance: 0,
+      pendingEscrow: 0,
+      completedDeliveries: 0,
+      activeTripsCount: 0,
       activePlatform: 'shopandgo',
       profileSelection: 'both'
     };

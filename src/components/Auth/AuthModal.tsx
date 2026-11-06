@@ -9,7 +9,7 @@ import {
   Upload,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import { demoUsers, UserRole } from "../../types/auth";
+import { UserRole } from "../../types/auth";
 import { readAttachment } from "../../services/uploads";
 import { Registration } from "../../lib/localAuth";
 import { Dialog } from "../marketplace/Dialog";
@@ -25,11 +25,6 @@ const emptyProfile: Registration = {
   password: "",
   role: "voyageur",
 };
-const roles: { role: UserRole; label: string }[] = [
-  { role: "voyageur", label: "Karim (Voyageur)" },
-  { role: "transporteur_pro", label: "TransMed (Pro)" },
-  { role: "expediteur", label: "Mohamed (Client)" },
-];
 
 function IdentityUpload({
   label,
@@ -291,40 +286,6 @@ export function AuthModal({
           Inscription
         </button>
       </div>
-      <p className="demo-note">
-        Espace BagVoyage · Vos informations sont enregistrées sur cet appareil.
-      </p>
-      {tab === "login" && (
-        <section className="demo-accounts" aria-label="Profils disponibles">
-          <h3>Choisir un profil</h3>
-          {roles.map(({ role, label }) => (
-            <button
-              key={role}
-              className="outline-button"
-              disabled={busy}
-              onClick={() => {
-                login(demoUsers[role].email, role);
-                onSuccess(
-                  `Vous êtes connecté au profil de ${demoUsers[role].name}.`,
-                );
-              }}
-            >
-              {label}
-              <ArrowRight size={17} />
-            </button>
-          ))}
-          <button
-            className="text-button"
-            disabled={busy}
-            onClick={() => {
-              login(demoUsers.voyageur.email, "voyageur");
-              onSuccess("Vous êtes connecté au profil voyageur.");
-            }}
-          >
-            Continuer avec le profil voyageur
-          </button>
-        </section>
-      )}
       <form className="publish-form auth-form" onSubmit={submit}>
         {tab === "register" && (
           <ol className="auth-steps" aria-label="Étapes de l’inscription">

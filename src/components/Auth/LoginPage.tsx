@@ -11,9 +11,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import { demoUsers, type UserRole } from "../../types/auth";
 import { BrandMark } from "../BrandMark";
-import { Dialog } from "../marketplace/Dialog";
 
 export function AuthPageShell({ children }: { children: ReactNode }) {
   return (
@@ -79,13 +77,8 @@ export function LoginPage() {
   const [remember, setRemember] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [passkey, setPasskey] = useState(false);
   const finish = () => {
     window.location.hash = "tracking";
-  };
-  const demo = (role: UserRole) => {
-    login(demoUsers[role].email, role, remember);
-    finish();
   };
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -192,51 +185,6 @@ export function LoginPage() {
                 <ArrowRight size={18} />
               </button>
             </form>
-            <div className="bv-divider">
-              <span>ou explorer autrement</span>
-            </div>
-            <button
-              className="bv-secondary bv-passkey"
-              disabled={busy}
-              onClick={() => setPasskey(true)}
-            >
-              <Fingerprint size={22} /> Passkey / Biométrie <span>Démo</span>
-            </button>
-            <fieldset className="bv-demo-profiles">
-              <legend>Accès direct · Profils certifiés</legend>
-              {(
-                [
-                  {
-                    role: "voyageur",
-                    name: "Karim",
-                    detail: "Voyageur",
-                    initials: "KB",
-                  },
-                  {
-                    role: "transporteur_pro",
-                    name: "TransMed",
-                    detail: "Flotte pro",
-                    initials: "TM",
-                  },
-                  {
-                    role: "expediteur",
-                    name: "Mohamed",
-                    detail: "Expéditeur",
-                    initials: "MT",
-                  },
-                ] as const
-              ).map((profile) => (
-                <button
-                  key={profile.role}
-                  disabled={busy}
-                  onClick={() => demo(profile.role)}
-                >
-                  <span>{profile.initials}</span>
-                  <strong>{profile.name}</strong>
-                  <small>{profile.detail}</small>
-                </button>
-              ))}
-            </fieldset>
             <p className="bv-fine-print">
               <LockKeyhole size={13} /> Authentification sécurisée BagVoyage. Données de session chiffrées localement.
             </p>
@@ -250,36 +198,6 @@ export function LoginPage() {
           <ArrowUpRight size={14} />
         </a>
       </footer>
-      {passkey && (
-        <Dialog
-          title="Simulation Passkey / WebAuthn"
-          onClose={() => setPasskey(false)}
-        >
-          <div className="bv-expansion bv-biometric-demo">
-            <Fingerprint size={64} />
-            <h3>Votre identité, en un geste.</h3>
-            <p>
-              Votre identité confirmée en un geste via capteur biométrique. Authentification sécurisée de bout en bout.
-            </p>
-            <p className="bv-fine-print">
-              Ce parcours ne crée aucune clé WebAuthn.
-            </p>
-            <button
-              className="bv-primary"
-              onClick={() => {
-                setPasskey(false);
-                demo("voyageur");
-              }}
-            >
-              Simuler la connexion de Karim
-              <ArrowRight size={18} />
-            </button>
-            <button className="bv-secondary" onClick={() => setPasskey(false)}>
-              Annuler
-            </button>
-          </div>
-        </Dialog>
-      )}
     </AuthPageShell>
   );
 }
