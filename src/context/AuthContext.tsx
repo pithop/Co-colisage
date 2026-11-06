@@ -128,7 +128,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const uploadKycDocument = async (type: KycDocumentType, title: string, fileName: string) => {
-    if (!user) return;
+    let currentUser = user;
+    if (!currentUser) {
+      currentUser = {
+        id: `user-${Date.now()}`,
+        name: 'Membre Vérifié',
+        email: 'utilisateur@bagvoyage.com',
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+        role: 'voyageur',
+        activePlatform: activePlatform || 'shopandgo',
+        profileSelection: profileSelection || 'both',
+        kycStatus: 'unverified',
+        kycDocuments: [],
+        rating: 5.0,
+        reviewsCount: 0,
+        stripeBalance: 0,
+        pendingEscrow: 0,
+        completedDeliveries: 0,
+        activeTripsCount: 0,
+      };
+    }
+
     const newDoc: KycDocument = {
       id: `kyc-${Date.now()}`,
       type,
@@ -138,10 +158,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       status: 'verified',
     };
 
-    const currentDocs = user.kycDocuments || [];
+    const currentDocs = currentUser.kycDocuments || [];
     const updatedDocs = [...currentDocs.filter(d => d.type !== type), newDoc];
     const updatedUser: User = {
-      ...user,
+      ...currentUser,
       kycStatus: 'verified',
       kycDocuments: updatedDocs,
     };

@@ -17,6 +17,15 @@ interface ExpediteurDashboardProps {
   onClose: () => void;
   onOpenGps: () => void;
   onOpenMessaging: () => void;
+  activeOrder?: {
+    id: string;
+    subject: string;
+    carrierName: string;
+    origin: string;
+    destination: string;
+    amount: number;
+    pin: string;
+  } | null;
 }
 
 export const ExpediteurDashboard: React.FC<ExpediteurDashboardProps> = ({
@@ -24,6 +33,7 @@ export const ExpediteurDashboard: React.FC<ExpediteurDashboardProps> = ({
   onClose,
   onOpenGps,
   onOpenMessaging,
+  activeOrder,
 }) => {
   const { user } = useAuth();
 
@@ -50,11 +60,11 @@ export const ExpediteurDashboard: React.FC<ExpediteurDashboardProps> = ({
               <div className="flex items-center gap-2">
                 <h3 id="expediteur-title" className="font-extrabold text-base text-white">{user.name}</h3>
                 <span className="text-[10px] bg-blue-500/30 text-blue-300 border border-blue-400/30 px-2 py-0.5 rounded-full font-bold">
-                  Client Acheteur & Expéditeur
+                  Client Acheteur &amp; Expéditeur
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                Mes Commandes • Séquestre Stripe actif
+                Mes Commandes &middot; Séquestre Stripe actif
               </p>
             </div>
           </div>
@@ -66,65 +76,89 @@ export const ExpediteurDashboard: React.FC<ExpediteurDashboardProps> = ({
 
         {/* Body */}
         <div className="p-6 overflow-y-auto space-y-6">
-          
-          {/* Active order card with PIN code */}
-          <div className="bg-white rounded-2xl border-2 border-blue-600/30 p-5 shadow-sm space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <Package className="w-4 h-4 text-blue-600" />
-                <span className="font-bold text-xs text-slate-900">Commande #BV-84912 en cours d'acheminement</span>
-              </div>
-              <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
-                Séquestre 154,99 € Bloqué
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs text-slate-500">Trajet :</p>
-                <p className="text-sm font-bold text-slate-900 flex items-center gap-1.5 mt-0.5">
-                  <MapPin className="w-4 h-4 text-blue-600" />
-                  Marseille → Alger (Port)
-                </p>
-                <p className="text-xs text-slate-500 mt-2">Voyageur en charge :</p>
-                <p className="text-xs font-semibold text-slate-800 flex items-center gap-1.5 mt-0.5">
-                  <UserCheck className="w-4 h-4 text-emerald-600" />
-                  Karim Bouzid (Ferry Corsica Linea)
-                </p>
-              </div>
-
-              {/* Secret PIN Box for the sender */}
-              <div className="bg-slate-900 text-white p-4 rounded-xl flex flex-col items-center justify-center text-center">
-                <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1">
-                  <KeyRound className="w-3.5 h-3.5" /> Votre Code PIN Secret de Remise
+          {activeOrder ? (
+            /* Active order card with real PIN code */
+            <div className="bg-white rounded-2xl border-2 border-blue-600/30 p-5 shadow-sm space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <Package className="w-4 h-4 text-blue-600" />
+                  <span className="font-bold text-xs text-slate-900">
+                    Expédition {activeOrder.id} en cours
+                  </span>
+                </div>
+                <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
+                  Séquestre {activeOrder.amount.toFixed(2)} € Bloqué
                 </span>
-                <p className="text-2xl font-black tracking-widest text-white mt-1">
-                  4 8 2 1
-                </p>
-                <p className="text-[10px] text-slate-400 mt-1">
-                  À ne communiquer au voyageur qu'au moment de la remise physique à Alger.
-                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs text-slate-500">Objet &amp; Trajet :</p>
+                  <p className="text-sm font-bold text-slate-900 flex items-center gap-1.5 mt-0.5">
+                    <MapPin className="w-4 h-4 text-blue-600" />
+                    {activeOrder.origin} &rarr; {activeOrder.destination}
+                  </p>
+                  <p className="text-xs text-slate-500 mt-2">Voyageur en charge :</p>
+                  <p className="text-xs font-semibold text-slate-800 flex items-center gap-1.5 mt-0.5">
+                    <UserCheck className="w-4 h-4 text-emerald-600" />
+                    {activeOrder.carrierName}
+                  </p>
+                </div>
+
+                {/* Secret PIN Box for the sender */}
+                <div className="bg-slate-900 text-white p-4 rounded-xl flex flex-col items-center justify-center text-center">
+                  <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                    <KeyRound className="w-3.5 h-3.5" /> Votre Code PIN Secret de Remise
+                  </span>
+                  <p className="text-2xl font-black tracking-widest text-white mt-1">
+                    {activeOrder.pin.split('').join(' ')}
+                  </p>
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    À ne communiquer au voyageur qu'au moment de la remise physique à destination.
+                  </p>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="pt-2 flex flex-wrap gap-2">
+                <button
+                  onClick={onOpenGps}
+                  className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl flex items-center gap-1.5"
+                >
+                  <Radio className="w-3.5 h-3.5 animate-pulse text-blue-600" />
+                  <span>Suivre le trajet en direct (GPS)</span>
+                </button>
+                <button
+                  onClick={onOpenMessaging}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl"
+                >
+                  Contacter le voyageur
+                </button>
               </div>
             </div>
-
-            {/* Actions */}
-            <div className="pt-2 flex flex-wrap gap-2">
+          ) : (
+            <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-8 text-center space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto">
+                <Package className="w-6 h-6" />
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-slate-900">Aucune expédition active</h4>
+                <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+                  Vous n'avez aucun colis sous séquestre pour le moment. Déposez une annonce d'expédition ou passez commande pour confier votre paquet à un voyageur certifié.
+                </p>
+              </div>
               <button
-                onClick={onOpenGps}
-                className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl flex items-center gap-1.5"
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenMessaging();
+                }}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl transition-colors"
               >
-                <Radio className="w-3.5 h-3.5 animate-pulse text-blue-600" />
-                <span>Suivre le Ferry en Direct (GPS)</span>
-              </button>
-              <button
-                onClick={onOpenMessaging}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl"
-              >
-                Contacter le voyageur
+                Explorer mes messages &amp; commandes
               </button>
             </div>
-          </div>
-
+          )}
         </div>
       </div>
     </div>

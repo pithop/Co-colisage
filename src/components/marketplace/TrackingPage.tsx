@@ -58,11 +58,11 @@ export function TrackingPage({
     tool: LogisticsTool;
     context: TransportContext;
   }>();
-  const mine = user
-    ? conversations.filter(
-        (c) => c.stage !== "discussion" && c.participantIds?.includes(user.id),
-      )
-    : [];
+  const mine = conversations.filter(
+    (c) =>
+      c.stage !== "discussion" &&
+      (!user || !c.participantIds || c.participantIds.includes(user.id) || c.participantIds.length === 0),
+  );
   const active = mine.filter((c) => c.stage !== "delivered" && !c.resolution);
   const complete = mine.filter((c) => c.stage === "delivered" || c.resolution);
   const visible = (

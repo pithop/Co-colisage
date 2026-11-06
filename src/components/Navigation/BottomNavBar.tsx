@@ -53,7 +53,11 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate }: Props
   ];
 
   const isCurrent = (key: string) => {
-    if (key === "explore" && (route === "explore" || route === "")) return true;
+    if (
+      key === "explore" &&
+      (route === "explore" || route === "" || route === "shopandgo" || route === "bagandgo")
+    )
+      return true;
     if (key === "radar" && route.startsWith("radar")) return true;
     if (key === "arbitrage" && route.startsWith("arbitrage")) return true;
     if (key === "tracking" && route === "tracking") return true;
@@ -87,9 +91,11 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate }: Props
               onClick={() => {
                 triggerHaptic();
                 if (item.key === "radar") {
-                  window.location.hash = "radar";
+                  navigate("radar");
                 } else if (item.key === "tracking") {
-                  window.location.hash = "tracking";
+                  navigate("tracking");
+                } else if (item.key === "explore") {
+                  navigate(activePlatform === "shopandgo" ? "shopandgo" : "bagandgo");
                 } else {
                   navigate(item.targetRoute);
                 }

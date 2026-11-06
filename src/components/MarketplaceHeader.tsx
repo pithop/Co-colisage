@@ -142,30 +142,38 @@ export function MarketplaceHeader(props: Props) {
           {/* Navigation Desktop */}
           <nav className="desktop-nav" aria-label="Navigation principale">
             <button
-              aria-current={route === "explore" ? "page" : undefined}
-              onClick={() => navigate("explore")}
+              aria-current={
+                route === "explore" || route === "shopandgo" || route === "bagandgo"
+                  ? "page"
+                  : undefined
+              }
+              onClick={() => navigate(activePlatform === "shopandgo" ? "shopandgo" : "bagandgo")}
             >
-              {activePlatform === 'shopandgo' ? 'Shop & Go' : 'Bag & Go'}
+              {activePlatform === "shopandgo" ? "Shop & Go" : "Bag & Go"}
             </button>
-            <a
-              href="#radar"
+            <button
+              type="button"
               aria-current={route.startsWith("radar") ? "page" : undefined}
+              onClick={() => navigate("radar")}
             >
               Radar Mondial
-            </a>
+            </button>
             <button
+              type="button"
               aria-current={route.startsWith("arbitrage") ? "page" : undefined}
               onClick={() => navigate("arbitrage")}
             >
               Arbitrage Vols
             </button>
-            <a
-              href="#tracking"
+            <button
+              type="button"
               aria-current={route === "tracking" ? "page" : undefined}
+              onClick={() => navigate("tracking")}
             >
               Mes expéditions
-            </a>
+            </button>
             <button
+              type="button"
               aria-current={route === "messages" ? "page" : undefined}
               onClick={() => navigate("messages")}
             >
@@ -234,24 +242,26 @@ export function MarketplaceHeader(props: Props) {
               <Compass size={18} />
             </button>
 
-            <a
+            <button
+              type="button"
               className="header-tool mobile-header-link"
-              href="#tracking"
               aria-label="Mes expéditions"
               title="Mes expéditions"
+              onClick={() => navigate("tracking")}
             >
               <Package size={18} />
-                <span className="header-tool-label">Expéditions</span>
-            </a>
-            <a
+              <span className="header-tool-label">Expéditions</span>
+            </button>
+            <button
+              type="button"
               className="header-tool mobile-header-link"
-              href="#radar"
               aria-label="Radar Mondial"
               title="Radar Mondial"
+              onClick={() => navigate("radar")}
             >
               <Globe2 size={18} />
-                <span className="header-tool-label">Radar</span>
-            </a>
+              <span className="header-tool-label">Radar</span>
+            </button>
             <button
               className="header-tool mobile-header-link"
               aria-label="Arbitrage Vols"

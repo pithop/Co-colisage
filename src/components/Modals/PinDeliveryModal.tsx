@@ -10,14 +10,17 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { ProductItem } from '../../types';
+import type { ConversationData } from '../marketplace/Conversation';
 
 interface PinDeliveryModalProps {
-  product: ProductItem | null;
+  conversation?: ConversationData | null;
+  product?: ProductItem | null;
   onClose: () => void;
-  onSuccessFinished: () => void;
+  onSuccessFinished?: (releasedAmount: number) => void;
 }
 
 export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
+  conversation,
   product,
   onClose,
   onSuccessFinished,
@@ -27,7 +30,19 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
   const [isVerifying, setIsVerifying] = useState(false);
   const [error, setError] = useState('');
   const verificationTimer = useRef<ReturnType<typeof setTimeout>>();
-  const correctPin = '4821';
+
+  // Dynamic PIN derived from real conversation or fallback
+  const correctPin =
+    conversation?.deliveryCode ||
+    conversation?.pickupCode ||
+    '4821';
+
+  const payoutNumber =
+    conversation?.amount ||
+    (product ? product.price + product.gain : 75);
+  const totalPayout = payoutNumber.toFixed(2);
+  const subjectLabel = conversation?.subject || product?.name || 'Mission BagVoyage';
+  const destinationLabel = conversation?.subject || product?.destination || 'Destination';
 
   useEffect(() => {
     setPin(['', '', '', '']);
@@ -35,11 +50,9 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
     setIsVerifying(false);
     setError('');
     return () => clearTimeout(verificationTimer.current);
-  }, [product?.id]);
+  }, [conversation?.id, product?.id]);
 
-  if (!product) return null;
-
-  const totalPayout = (product.price + product.gain).toFixed(2);
+  if (!conversation && !product) return null;
 
   const handleDigitPress = (digit: string) => {
     if (isSuccess || isVerifying) return;
@@ -131,7 +144,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
                   Validation de remise en main propre
                 </h4>
                 <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto leading-relaxed">
-                  L'acheteur à <strong>{product.destination}</strong> vous a communiqué son code PIN unique reçu par SMS.
+                  L'acheteur à <strong>{destinationLabel}</strong> vous a communiqué son code PIN unique de confirmation.
                 </p>
 
               </div>
@@ -233,7 +246,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
                     +{totalPayout} €
                   </p>
                   <p className="text-xs text-slate-300 mt-0.5">
-                    Remboursement achat ({product.price.toFixed(2)}€) + Gain net (+{product.gain.toFixed(2)}€)
+                    Rémunération pour la mission : {subjectLabel}
                   </p>
                 </div>
 
@@ -247,7 +260,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
               </div>
 
               <button
-                onClick={onSuccessFinished}
+                onClick={() => onSuccessFinished ? onSuccessFinished(payoutNumber) : onClose()}
                 className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm shadow-md transition-all flex items-center justify-center gap-2"
               >
                 <span>Terminer et retourner à l'accueil</span>

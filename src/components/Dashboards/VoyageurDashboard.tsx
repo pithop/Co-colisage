@@ -51,33 +51,19 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
   const available = payout === undefined ? user.stripeBalance : 0;
   const verified = user.kycStatus === "verified";
   const scanned = tickets.filter(
-    (t) => t.ticketScan && t.travelerName === user.name,
+    (t) => t.ticketScan && (t.travelerName === user.name || !t.travelerName),
   );
-  const boardingPasses = scanned.length
-    ? scanned.map((t) => ({
-        id: t.id,
-        airline: t.ticketScan!.airline,
-        flight: t.ticketScan!.flightNumber,
-        origin: t.originCode,
-        destination: t.destinationCode,
-        allowance: t.ticketScan!.baggageAllowanceKg,
-        offer: t.availableKg,
-        date: t.departureDate,
-        demo: t.title.startsWith("[Démo]"),
-      }))
-    : [
-        {
-          id: "demo",
-          airline: "Air Algérie",
-          flight: "AH1021",
-          origin: "MRS",
-          destination: "ALG",
-          allowance: 10,
-          offer: 9,
-          date: "2026-11-08",
-          demo: true,
-        },
-      ];
+  const boardingPasses = scanned.map((t) => ({
+    id: t.id,
+    airline: t.ticketScan!.airline,
+    flight: t.ticketScan!.flightNumber,
+    origin: t.originCode,
+    destination: t.destinationCode,
+    allowance: t.ticketScan!.baggageAllowanceKg,
+    offer: t.availableKg,
+    date: t.departureDate,
+    demo: false,
+  }));
   const handlePayout = () => {
     if (available <= 0 || !verified) return;
     setPaid((old) => ({ ...old, [user.id]: available }));
@@ -283,65 +269,86 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
             </button>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            {boardingPasses.map((ticket) => (
-              <article
-                key={ticket.id}
-                className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm"
-              >
-                <div className="flex items-center justify-between bg-slate-900 px-5 py-3.5 text-white">
-                  <span className="flex items-center gap-2 text-xs font-semibold">
-                    <Plane size={16} className="text-slate-300" />
-                    {ticket.airline}
-                  </span>
-                  <span className="text-[9px] uppercase tracking-widest text-slate-300">
-                    {ticket.demo ? "Billet enregistré" : "Scan OCR"}
-                  </span>
+            {boardingPasses.length === 0 ? (
+              <div className="sm:col-span-2 p-8 rounded-[24px] border border-dashed border-slate-200 bg-white text-center space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto">
+                  <Plane size={24} />
                 </div>
-                <div className="p-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-3xl font-semibold tracking-tight">
-                        {ticket.origin}
-                      </p>
-                      <p className="mt-1 text-[10px] text-slate-500">Départ</p>
-                    </div>
-                    <div className="mx-5 flex flex-1 items-center gap-2 text-slate-300">
-                      <span className="flex-1 border-t border-dashed" />
-                      <Plane size={18} className="text-blue-500" />
-                      <span className="flex-1 border-t border-dashed" />
-                    </div>
-                    <div className="text-right">
-                      <p className="text-3xl font-semibold tracking-tight">
-                        {ticket.destination}
-                      </p>
-                      <p className="mt-1 text-[10px] text-slate-500">Arrivée</p>
-                    </div>
-                  </div>
-                  <div className="mt-5 flex justify-between text-xs">
-                    <span className="font-medium">{ticket.flight}</span>
-                    <span className="text-slate-500">
-                      {new Intl.DateTimeFormat("fr-FR", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                        timeZone: "UTC",
-                      }).format(new Date(`${ticket.date}T12:00:00Z`))}
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-900">Aucun billet ou vol importé</h4>
+                  <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+                    Scannez votre billet d'avion ou carte d'embarquement IATA pour enregistrer votre vol et proposer vos kilos disponibles.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={onOpenPublish}
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
+                >
+                  Scanner un billet IATA
+                </button>
+              </div>
+            ) : (
+              boardingPasses.map((ticket) => (
+                <article
+                  key={ticket.id}
+                  className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm"
+                >
+                  <div className="flex items-center justify-between bg-slate-900 px-5 py-3.5 text-white">
+                    <span className="flex items-center gap-2 text-xs font-semibold">
+                      <Plane size={16} className="text-slate-300" />
+                      {ticket.airline}
+                    </span>
+                    <span className="text-[9px] uppercase tracking-widest text-slate-300">
+                      Scan OCR
                     </span>
                   </div>
-                </div>
-                <div className="relative flex items-center justify-between border-t border-dashed border-slate-200 bg-slate-50 px-5 py-4">
-                  <span className="text-[11px] text-slate-500">
-                    Franchise{" "}
-                    <strong className="text-slate-700">
-                      {ticket.allowance} kg
-                    </strong>
-                  </span>
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-[11px] font-semibold text-blue-800">
-                    {ticket.offer} kg offerts
-                  </span>
-                </div>
-              </article>
-            ))}
+                  <div className="p-5">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-3xl font-semibold tracking-tight">
+                          {ticket.origin}
+                        </p>
+                        <p className="mt-1 text-[10px] text-slate-500">Départ</p>
+                      </div>
+                      <div className="mx-5 flex flex-1 items-center gap-2 text-slate-300">
+                        <span className="flex-1 border-t border-dashed" />
+                        <Plane size={18} className="text-blue-500" />
+                        <span className="flex-1 border-t border-dashed" />
+                      </div>
+                      <div className="text-right">
+                        <p className="text-3xl font-semibold tracking-tight">
+                          {ticket.destination}
+                        </p>
+                        <p className="mt-1 text-[10px] text-slate-500">Arrivée</p>
+                      </div>
+                    </div>
+                    <div className="mt-5 flex justify-between text-xs">
+                      <span className="font-medium">{ticket.flight}</span>
+                      <span className="text-slate-500">
+                        {new Intl.DateTimeFormat("fr-FR", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                          timeZone: "UTC",
+                        }).format(new Date(`${ticket.date}T12:00:00Z`))}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="relative flex items-center justify-between border-t border-dashed border-slate-200 bg-slate-50 px-5 py-4">
+                    <span className="text-[11px] text-slate-500">
+                      Franchise{" "}
+                      <strong className="text-slate-700">
+                        {ticket.allowance} kg
+                      </strong>
+                    </span>
+                    <span className="rounded-full bg-blue-100 px-3 py-1 text-[11px] font-semibold text-blue-800">
+                      {ticket.offer} kg offerts
+                    </span>
+                  </div>
+                </article>
+              ))
+            )}
           </div>
           <section className="mt-6 rounded-[24px] border border-slate-200 bg-white p-5 sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-2">

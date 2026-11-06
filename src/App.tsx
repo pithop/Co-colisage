@@ -168,7 +168,7 @@ function routeFromLocation() {
 }
 
 function Marketplace() {
-  const { user, logout, activePlatform, setActivePlatform } = useAuth();
+  const { user, logout, activePlatform, setActivePlatform, isKycVerified } = useAuth();
   const [anonymousId] = useState(localActorId);
   const actorId = user?.id || anonymousId;
   const [proOnboarding, setProOnboarding] = useState(false);
@@ -1111,7 +1111,51 @@ function Marketplace() {
         isOpen={iataScannerOpen}
         onClose={() => setIataScannerOpen(false)}
         onFlightImported={(flight) => {
-          setNotice(`Vol ${flight.flightNumber} importé avec succès (${flight.fromAirport} -> ${flight.toAirport})`);
+          const originCity = flight.fromAirport || "Paris";
+          const destinationCity = flight.toAirport || "Alger";
+          const newTrip: FreightItem = {
+            id: crypto.randomUUID(),
+            title: `${originCity} → ${destinationCity}`,
+            travelerName: user?.name || flight.passengerName || "Voyageur Certifié",
+            travelerAvatar: user?.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
+            rating: 5.0,
+            reviewsCount: 1,
+            origin: originCity,
+            destination: destinationCity,
+            originCode: flight.fromAirport || "CDG",
+            destinationCode: flight.toAirport || "ALG",
+            departureDate: new Date(Date.now() + 86400000 * 3).toISOString().split("T")[0],
+            departureTime: "10:30",
+            transportType: "avion",
+            transportLabel: `${flight.carrier || "Vol IATA"} ${flight.flightNumber || ""}`.trim(),
+            availableKg: 10,
+            pricePerKg: 9,
+            image: "",
+            description: `Billet IATA certifié (PNR: ${flight.pnr || "VERIFIE"}). Siège ${flight.seat || "Réservé"}, classe ${flight.cabinClass || "Y"}.`,
+            canCarryParcel: true,
+            canBuyProduct: true,
+            isTicketVerified: true,
+            isIdentityVerified: isKycVerified,
+            ticketScan: {
+              airline: flight.carrier || "Compagnie Aérienne",
+              flightNumber: flight.flightNumber || "IATA",
+              pnr: flight.pnr || "CONFIRMED",
+              passengerName: flight.passengerName || user?.name || "Passager",
+              origin: originCity,
+              originCode: flight.fromAirport || "CDG",
+              destination: destinationCity,
+              destinationCode: flight.toAirport || "ALG",
+              departureDate: new Date(Date.now() + 86400000 * 3).toISOString().split("T")[0],
+              departureTime: "10:30",
+              baggageAllowanceKg: 23,
+              baggageType: "cabin",
+              maxAllowedOfferKg: 10,
+              ticketVerified: true,
+            },
+          };
+          addTrip(newTrip);
+          setIataScannerOpen(false);
+          setNotice(`Billet IATA ${flight.flightNumber || ""} validé ! Trajet créé avec 10 kg disponibles.`);
         }}
       />
       <DigitalCargoPassModal
@@ -1142,6 +1186,21 @@ function Marketplace() {
           onClose={() => setExpediteurDashboardOpen(false)}
           onOpenGps={() => setGpsTrackingOpen(true)}
           onOpenMessaging={() => navigate("messages")}
+          activeOrder={(() => {
+            const active = conversations.find(
+              (c) => c.stage === "secured" || c.stage === "collected",
+            );
+            if (!active) return null;
+            return {
+              id: active.id,
+              subject: active.subject,
+              carrierName: active.name,
+              origin: "France",
+              destination: "Algérie",
+              amount: active.amount,
+              pin: active.deliveryCode || "4821",
+            };
+          })()}
         />
       )}
       {carrierDashboardOpen && (
@@ -1178,11 +1237,35 @@ function Marketplace() {
       )}
       {pinModalOpen && (
         <PinDeliveryModal
+          conversation={conversations.find((c) => c.stage === "secured" || c.stage === "collected") || conversations[0] || null}
           product={products[0] || null}
           onClose={() => setPinModalOpen(false)}
-          onSuccessFinished={() => {
+          onSuccessFinished={(releasedAmount) => {
+            const activeOrder = conversations.find((c) => c.stage === "secured" || c.stage === "collected") || conversations[0];
+            if (activeOrder) {
+              updateConversation({
+                ...activeOrder,
+                stage: "delivered",
+                messages: [
+                  ...activeOrder.messages,
+                  createMessage(
+                    `Remise confirmée par code PIN. Montant de ${euro(releasedAmount)} libéré avec succès.`,
+                    false,
+                  ),
+                ],
+              });
+            }
+            if (user) {
+              const updatedUser = {
+                ...user,
+                stripeBalance: (user.stripeBalance || 0) + releasedAmount,
+                pendingEscrow: Math.max(0, (user.pendingEscrow || 0) - releasedAmount),
+                completedDeliveries: (user.completedDeliveries || 0) + 1,
+              };
+              void saveRecord("users", updatedUser);
+            }
             setPinModalOpen(false);
-            setNotice("Remise confirmée par code PIN.");
+            setNotice(`Remise validée ! ${euro(releasedAmount)} crédités sur votre solde disponible.`);
           }}
         />
       )}
