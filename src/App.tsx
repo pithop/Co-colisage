@@ -32,6 +32,8 @@ import {
   type WalletTransaction,
 } from "./data/wallet";
 import { Explorer } from "./components/marketplace/Explorer";
+import { ShopAndGoPlatform } from "./components/ShopAndGo/ShopAndGoPlatform";
+import { BagAndGoPlatform } from "./components/BagAndGo/BagAndGoPlatform";
 import { RequestDetails, TripDetails } from "./components/marketplace/Details";
 import { Profile, Intention } from "./components/marketplace/Profile";
 import { Publish } from "./components/marketplace/Publish";
@@ -45,6 +47,7 @@ import {
 } from "./components/CurrencyConverter/CurrencyConverterModal";
 import { Dialog } from "./components/marketplace/Dialog";
 import { AuthModal } from "./components/Auth/AuthModal";
+import { KycDocumentsModal } from "./components/Auth/KycDocumentsModal";
 import {
   createCodes,
   initialConversations,
@@ -143,6 +146,8 @@ function routeFromLocation() {
   const hash = window.location.hash.slice(1);
   if (hash) {
     if (hash === "app") return "explore";
+    if (hash === "shopandgo" || hash === "shop-and-go") return "shopandgo";
+    if (hash === "bagandgo" || hash === "bag-and-go") return "bagandgo";
     if (hash === "how-it-works" || hash === "comment-ca-marche") return "how-it-works";
     if (hash === "pricing" || hash === "tarifs") return "pricing";
     if (hash === "trust" || hash === "securite") return "trust";
@@ -151,6 +156,8 @@ function routeFromLocation() {
   }
   const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
   if (pathname === "/app") return "explore";
+  if (pathname === "/shopandgo" || pathname === "/shop-and-go") return "shopandgo";
+  if (pathname === "/bagandgo" || pathname === "/bag-and-go") return "bagandgo";
   if (pathname === "/download") return "download";
   if (pathname.includes("/comment-ca-marche") || pathname.includes("/how-it-works")) return "how-it-works";
   if (pathname.includes("/tarifs") || pathname.includes("/pricing")) return "pricing";
@@ -161,7 +168,7 @@ function routeFromLocation() {
 }
 
 function Marketplace() {
-  const { user, logout } = useAuth();
+  const { user, logout, activePlatform, setActivePlatform } = useAuth();
   const [anonymousId] = useState(localActorId);
   const actorId = user?.id || anonymousId;
   const [proOnboarding, setProOnboarding] = useState(false);
@@ -402,11 +409,22 @@ function Marketplace() {
   const messages = route === "messages";
   const arbitrage = route === "arbitrage" || route.startsWith("arbitrage/");
   const arbitrageRoute = route.split("/")[1];
-  const exploring = route === "explore" || route.startsWith("publish/");
+  const exploring =
+    route === "explore" ||
+    route === "shopandgo" ||
+    route === "bagandgo" ||
+    route.startsWith("publish/");
   const navigate = (next: string) => {
     window.location.hash = next;
     setRoute(next);
   };
+  useEffect(() => {
+    if (route === "shopandgo" && activePlatform !== "shopandgo") {
+      setActivePlatform("shopandgo");
+    } else if (route === "bagandgo" && activePlatform !== "bagandgo") {
+      setActivePlatform("bagandgo");
+    }
+  }, [route, activePlatform, setActivePlatform]);
   useEffect(() => {
     const update = () => setRoute(routeFromLocation());
     window.addEventListener("hashchange", update);
@@ -704,16 +722,36 @@ function Marketplace() {
           </Suspense>
         )}
         {exploring && (
-          <Explorer
-            mode={mode}
-            onMode={setMode}
-            requests={requests}
-            trips={trips}
-            onRequest={(r) => navigate(`request/${r.id}`)}
-            onTrip={(t) => navigate(`trip/${t.id}`)}
-            onArbitrage={openArbitrage}
-            onScan={() => setScanner(true)}
-          />
+          activePlatform === "shopandgo" ? (
+            <ShopAndGoPlatform
+              requests={requests}
+              trips={trips}
+              onRequest={(r) => navigate(`request/${r.id}`)}
+              onTrip={(t) => navigate(`trip/${t.id}`)}
+              onPublishTrip={() => {
+                setPublishKind("trips");
+                setPublish(true);
+              }}
+              onScanBoardingPass={() => setIataScannerOpen(true)}
+              onArbitrage={openArbitrage}
+            />
+          ) : (
+            <BagAndGoPlatform
+              trips={trips}
+              requests={requests}
+              onTrip={(t) => navigate(`trip/${t.id}`)}
+              onRequest={(r) => navigate(`request/${r.id}`)}
+              onPublishParcel={() => {
+                setPublishKind("parcel");
+                setPublish(true);
+              }}
+              onPublishRequest={() => {
+                setPublishKind("requests");
+                setPublish(true);
+              }}
+              onTracking={() => navigate("tracking")}
+            />
+          )
         )}
         {selectedRequest && (
           <RequestDetails
@@ -996,6 +1034,7 @@ function Marketplace() {
           }}
         />
       )}
+      <KycDocumentsModal />
       {deal && (
         <Dialog
           title="Votre voyage, vos possibilités"

@@ -1,4 +1,5 @@
-import { Compass, Globe2, MessageCircle, Package, Plane } from "lucide-react";
+import { Compass, Globe2, MessageCircle, Package, Plane, ShoppingBag } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 interface Props {
   route: string;
@@ -15,11 +16,13 @@ interface NavItem {
 }
 
 export function BottomNavBar({ route, unreadMessagesCount = 0, navigate }: Props) {
+  const { activePlatform } = useAuth();
+
   const items: NavItem[] = [
     {
       key: "explore",
-      label: "Explorer",
-      icon: Compass,
+      label: activePlatform === "shopandgo" ? "Shop & Go" : "Bag & Go",
+      icon: activePlatform === "shopandgo" ? ShoppingBag : Package,
       targetRoute: "explore",
     },
     {
@@ -30,13 +33,13 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate }: Props
     },
     {
       key: "arbitrage",
-      label: "Arbitrage",
+      label: activePlatform === "shopandgo" ? "Arbitrage IA" : "Vols",
       icon: Plane,
       targetRoute: "arbitrage",
     },
     {
       key: "tracking",
-      label: "Expéditions",
+      label: activePlatform === "shopandgo" ? "Missions" : "Expéditions",
       icon: Package,
       targetRoute: "tracking",
     },

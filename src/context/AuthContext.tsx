@@ -1,11 +1,29 @@
-import { getRecord, subscribeToDatabase } from '../services/productionDb';
+import { getRecord, saveRecord, subscribeToDatabase } from '../services/productionDb';
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, UserRole, demoUsers } from '../types/auth';
+import {
+  User,
+  UserRole,
+  ActivePlatform,
+  UserProfileSelection,
+  KycDocument,
+  KycDocumentType,
+  demoUsers,
+} from '../types/auth';
 import { authenticateLocalAccount, registerLocalAccount, Registration } from '../lib/localAuth';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  activePlatform: ActivePlatform;
+  setActivePlatform: (platform: ActivePlatform) => void;
+  profileSelection: UserProfileSelection;
+  setProfileSelection: (selection: UserProfileSelection) => { success: boolean; requiresKyc?: boolean; };
+  isKycVerified: boolean;
+  kycDocuments: KycDocument[];
+  uploadKycDocument: (type: KycDocumentType, title: string, fileName: string) => Promise<void>;
+  isKycModalOpen: boolean;
+  openKycModal: () => void;
+  closeKycModal: () => void;
   login: (email: string, role?: UserRole, remember?: boolean) => void;
   signIn: (email: string, password: string, remember?: boolean) => Promise<void>;
   register: (input: Registration) => Promise<void>;
@@ -49,7 +67,88 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [user?.id]);
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isKycModalOpen, setIsKycModalOpen] = useState(false);
   const [activeDashboard, setActiveDashboard] = useState<'none' | 'voyageur' | 'transporteur' | 'expediteur'>('none');
+
+  const [activePlatform, setActivePlatformState] = useState<ActivePlatform>(() => {
+    try {
+      const saved = localStorage.getItem('bagvoyage_platform');
+      if (saved === 'shopandgo' || saved === 'bagandgo') return saved;
+    } catch { /* ignore storage errors */ }
+    return user?.activePlatform || 'shopandgo';
+  });
+
+  const [profileSelection, setProfileSelectionState] = useState<UserProfileSelection>(() => {
+    return user?.profileSelection || 'both';
+  });
+
+  // Keep state synchronized with user record when switching users
+  useEffect(() => {
+    if (user?.profileSelection && user.profileSelection !== profileSelection) {
+      setProfileSelectionState(user.profileSelection);
+    }
+    if (user?.activePlatform && user.activePlatform !== activePlatform) {
+      setActivePlatformState(user.activePlatform);
+    }
+  }, [user?.id, user?.profileSelection, user?.activePlatform]);
+
+  const isKycVerified = !!(
+    user &&
+    (user.kycStatus === 'verified' ||
+      (user.kycDocuments && user.kycDocuments.some(d => d.status === 'verified')))
+  );
+
+  const kycDocuments: KycDocument[] = user?.kycDocuments || [];
+
+  const setActivePlatform = (platform: ActivePlatform) => {
+    setActivePlatformState(platform);
+    try {
+      localStorage.setItem('bagvoyage_platform', platform);
+    } catch { /* ignore */ }
+    if (user) {
+      const updated: User = { ...user, activePlatform: platform };
+      setUser(updated);
+      void saveRecord('users', updated).catch(() => undefined);
+    }
+  };
+
+  const setProfileSelection = (selection: UserProfileSelection) => {
+    // If switching to voyageur or both, KYC document verification is required
+    if ((selection === 'voyageur' || selection === 'both') && !isKycVerified) {
+      setIsKycModalOpen(true);
+      return { success: false, requiresKyc: true };
+    }
+
+    setProfileSelectionState(selection);
+    if (user) {
+      const updated: User = { ...user, profileSelection: selection };
+      setUser(updated);
+      void saveRecord('users', updated).catch(() => undefined);
+    }
+    return { success: true };
+  };
+
+  const uploadKycDocument = async (type: KycDocumentType, title: string, fileName: string) => {
+    if (!user) return;
+    const newDoc: KycDocument = {
+      id: `kyc-${Date.now()}`,
+      type,
+      title,
+      fileName,
+      uploadedAt: new Date().toISOString().split('T')[0],
+      status: 'verified',
+    };
+
+    const currentDocs = user.kycDocuments || [];
+    const updatedDocs = [...currentDocs.filter(d => d.type !== type), newDoc];
+    const updatedUser: User = {
+      ...user,
+      kycStatus: 'verified',
+      kycDocuments: updatedDocs,
+    };
+    setUser(updatedUser);
+    await saveRecord('users', updatedUser);
+  };
 
   useEffect(() => {
     try {
@@ -70,6 +169,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       email: email || base.email,
     };
     setUser(newUser);
+    if (newUser.activePlatform) setActivePlatformState(newUser.activePlatform);
+    if (newUser.profileSelection) setProfileSelectionState(newUser.profileSelection);
     setIsAuthModalOpen(false);
   };
 
@@ -80,9 +181,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       name: 'Utilisateur Google Certifié',
       email: 'user.google@gmail.com',
       avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-      kycStatus: 'verified'
+      kycStatus: 'verified',
+      activePlatform: 'shopandgo',
+      profileSelection: 'both'
     };
     setUser(googleUser);
+    setActivePlatformState('shopandgo');
+    setProfileSelectionState('both');
     setIsAuthModalOpen(false);
   };
 
@@ -100,15 +205,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         isAuthenticated: !!user,
+        activePlatform,
+        setActivePlatform,
+        profileSelection,
+        setProfileSelection,
+        isKycVerified,
+        kycDocuments,
+        uploadKycDocument,
+        isKycModalOpen,
+        openKycModal: () => setIsKycModalOpen(true),
+        closeKycModal: () => setIsKycModalOpen(false),
         login,
         signIn: async (email, password, remember = true) => {
           const authenticated = await authenticateLocalAccount(email, password);
           setRememberSession(remember);
           setUser(authenticated);
+          if (authenticated.activePlatform) setActivePlatformState(authenticated.activePlatform);
+          if (authenticated.profileSelection) setProfileSelectionState(authenticated.profileSelection);
           setIsAuthModalOpen(false);
         },
         register: async (input) => {
-          setUser(await registerLocalAccount(input));
+          const created = await registerLocalAccount(input);
+          setUser(created);
+          if (created.activePlatform) setActivePlatformState(created.activePlatform);
+          if (created.profileSelection) setProfileSelectionState(created.profileSelection);
           setIsAuthModalOpen(false);
         },
         loginWithGoogle,

@@ -12,6 +12,7 @@ import {
   Scan,
   Share2,
   ShieldCheck,
+  ShoppingBag,
   Smartphone,
   Ticket,
   UserRound,
@@ -23,6 +24,7 @@ import { BrandMark } from "./BrandMark";
 import { CurrencyRatePill } from "./CurrencyConverter/CurrencyConverterModal";
 import { LanguageSelector } from "../context/LanguageContext";
 import { ThemeToggle } from "./common/ThemeToggle";
+import { useAuth } from "../context/AuthContext";
 
 interface Props {
   route: string;
@@ -48,6 +50,28 @@ interface Props {
 
 export function MarketplaceHeader(props: Props) {
   const { route, navigate, isOnline = true } = props;
+  const {
+    activePlatform,
+    setActivePlatform,
+    profileSelection,
+    isKycVerified,
+    openKycModal,
+  } = useAuth();
+
+  const handleSelectPlatform = (platform: 'shopandgo' | 'bagandgo') => {
+    if (platform === 'shopandgo') {
+      if (!isKycVerified && profileSelection === 'expediteur') {
+        openKycModal();
+        return;
+      }
+      setActivePlatform('shopandgo');
+    } else {
+      setActivePlatform('bagandgo');
+    }
+    if (route !== 'explore' && route !== 'shopandgo' && route !== 'bagandgo') {
+      navigate('explore');
+    }
+  };
 
   return (
     <header className="site-header unified-header">
@@ -69,6 +93,49 @@ export function MarketplaceHeader(props: Props) {
           >
             <BrandMark />
           </button>
+
+          {/* Platform Switcher Desktop */}
+          <div
+            className="hidden md:flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 ml-2 shadow-inner"
+            role="radiogroup"
+            aria-label="Choisir la plateforme"
+          >
+            <button
+              type="button"
+              role="radio"
+              aria-checked={activePlatform === 'shopandgo'}
+              onClick={() => handleSelectPlatform('shopandgo')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                activePlatform === 'shopandgo'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <ShoppingBag size={13} />
+              <span>Shop &amp; Go</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-black/15 dark:bg-white/10 uppercase tracking-wider font-semibold">
+                Voyageur
+              </span>
+            </button>
+
+            <button
+              type="button"
+              role="radio"
+              aria-checked={activePlatform === 'bagandgo'}
+              onClick={() => handleSelectPlatform('bagandgo')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                activePlatform === 'bagandgo'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Package size={13} />
+              <span>Bag &amp; Go</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-black/15 dark:bg-white/10 uppercase tracking-wider font-semibold">
+                Expéditeur
+              </span>
+            </button>
+          </div>
         </div>
 
         <div className="header-rail">
@@ -78,7 +145,7 @@ export function MarketplaceHeader(props: Props) {
               aria-current={route === "explore" ? "page" : undefined}
               onClick={() => navigate("explore")}
             >
-              Explorer
+              {activePlatform === 'shopandgo' ? 'Shop & Go' : 'Bag & Go'}
             </button>
             <a
               href="#radar"
@@ -279,6 +346,16 @@ export function MarketplaceHeader(props: Props) {
           </button>
 
           <button
+            type="button"
+            className={`header-tool ${isKycVerified ? "text-emerald-500" : "text-amber-500"}`}
+            aria-label="Vérification KYC"
+            title={isKycVerified ? "Identité KYC Vérifiée" : "Vérification d'identité requise"}
+            onClick={openKycModal}
+          >
+            <ShieldCheck size={18} />
+          </button>
+
+          <button
             className="header-tool header-profile"
             aria-label="Profil"
             title="Profil"
@@ -287,9 +364,48 @@ export function MarketplaceHeader(props: Props) {
           >
             <UserRound size={18} />
           </button>
-
         </nav>
+      </div>
 
+      {/* Mobile Platform Switcher Strip */}
+      <div className="md:hidden flex items-center justify-center px-4 py-2 bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200/60 dark:border-slate-800">
+        <div
+          className="flex items-center w-full max-w-xs p-1 rounded-2xl bg-slate-200/80 dark:bg-slate-800 border border-slate-300/80 dark:border-slate-700 shadow-inner"
+          role="radiogroup"
+          aria-label="Choisir la plateforme mobile"
+        >
+          <button
+            type="button"
+            role="radio"
+            aria-checked={activePlatform === 'shopandgo'}
+            onClick={() => handleSelectPlatform('shopandgo')}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              activePlatform === 'shopandgo'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'text-slate-600 dark:text-slate-400'
+            }`}
+          >
+            <ShoppingBag size={13} />
+            <span>Shop &amp; Go</span>
+            <span className="text-[9px] px-1 rounded bg-black/15 uppercase font-medium">Voyageur</span>
+          </button>
+
+          <button
+            type="button"
+            role="radio"
+            aria-checked={activePlatform === 'bagandgo'}
+            onClick={() => handleSelectPlatform('bagandgo')}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              activePlatform === 'bagandgo'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-600 dark:text-slate-400'
+            }`}
+          >
+            <Package size={13} />
+            <span>Bag &amp; Go</span>
+            <span className="text-[9px] px-1 rounded bg-black/15 uppercase font-medium">Expéditeur</span>
+          </button>
+        </div>
       </div>
     </header>
   );
