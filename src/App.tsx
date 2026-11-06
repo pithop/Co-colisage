@@ -898,7 +898,7 @@ function Marketplace() {
             </div>
           )}
       </main>
-      {exploring && (
+      {exploring && activePlatform !== "shopandgo" && activePlatform !== "bagandgo" && (
         <div className="publish-dock">
           <div>
             <span>

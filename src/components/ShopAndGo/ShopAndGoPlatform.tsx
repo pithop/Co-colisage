@@ -69,28 +69,28 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
   }, [requests, activeTab, selectedDestination, searchQuery]);
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-10 animate-fadeIn text-slate-900 dark:text-slate-100">
+    <div className="w-full max-w-6xl mx-auto px-3.5 sm:px-6 pt-3 pb-32 sm:py-8 space-y-5 sm:space-y-8 animate-fadeIn text-slate-900 dark:text-slate-100">
       {/* Header Section */}
-      <header className="border-b border-slate-200/80 dark:border-slate-800/80 pb-8">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      <header className="border-b border-slate-200/80 dark:border-slate-800/80 pb-4 sm:pb-8">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 tracking-wide uppercase font-mono">
+            <div className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 tracking-wide uppercase font-mono">
               <ShoppingBag size={14} />
               <span>Shop &amp; Go &middot; Espace Voyageur</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
               Monétisez votre franchise bagages
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-none">
               Achetez des articles demandés en Europe ou transportez des colis certifiés pour des clients locaux.
               Paiement sous séquestre Stripe libéré à la remise en main propre.
             </p>
 
-            <div className="pt-2 flex flex-wrap items-center gap-3">
+            <div className="pt-1 sm:pt-2 flex items-center gap-2 overflow-x-auto sm:flex-wrap no-scrollbar pb-1">
               <button
                 type="button"
                 onClick={onPublishTrip}
-                className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs font-semibold transition-all shadow-sm flex items-center gap-2"
+                className="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs font-semibold transition-all shadow-sm flex items-center gap-1.5 shrink-0"
               >
                 <PlusCircle size={15} />
                 <span>Proposer mes kilos</span>
@@ -98,24 +98,24 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
               <button
                 type="button"
                 onClick={onScanBoardingPass}
-                className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-slate-700 transition-all flex items-center gap-2"
+                className="px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-slate-700 transition-all flex items-center gap-1.5 shrink-0"
               >
                 <ScanLine size={15} />
-                <span>Scanner un billet IATA</span>
+                <span>Scanner billet IATA</span>
               </button>
               <button
                 type="button"
                 onClick={() => onArbitrage('mrs-alg')}
-                className="px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs font-semibold transition-colors flex items-center gap-1.5"
+                className="px-2.5 py-2 sm:px-3.5 sm:py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs font-semibold transition-colors flex items-center gap-1 shrink-0"
               >
-                <span>Opportunités de vols rentables</span>
+                <span>Vols rentables</span>
                 <ChevronRight size={14} />
               </button>
             </div>
           </div>
 
-          {/* Account status card */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 w-full sm:w-72 shrink-0 space-y-3">
+          {/* Account status card - Desktop */}
+          <div className="hidden lg:block p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 w-72 shrink-0 space-y-3">
             <div className="flex items-center justify-between text-xs">
               <span className="text-slate-500 dark:text-slate-400 font-medium">Solde disponible</span>
               <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400 text-sm">
@@ -146,6 +146,42 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
               )}
             </div>
           </div>
+
+          {/* Account status strip - Mobile */}
+          <div className="lg:hidden p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between text-xs gap-2">
+            <div className="flex items-center gap-3">
+              <div>
+                <span className="text-[10px] text-slate-400 block font-medium">Solde</span>
+                <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs">
+                  {euro(user?.stripeBalance || 0)}
+                </span>
+              </div>
+              <div className="h-5 w-px bg-slate-200 dark:bg-slate-800" />
+              <div>
+                <span className="text-[10px] text-slate-400 block font-medium">Séquestre</span>
+                <span className="font-mono font-semibold text-slate-700 dark:text-slate-300 text-xs">
+                  {euro(user?.pendingEscrow || 0)}
+                </span>
+              </div>
+            </div>
+            <div>
+              {isKycVerified ? (
+                <span className="py-1 px-2 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-[10px] font-semibold flex items-center gap-1">
+                  <CheckCircle2 size={11} />
+                  <span>Vérifié</span>
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={openKycModal}
+                  className="py-1 px-2 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-[10px] font-semibold flex items-center gap-1"
+                >
+                  <AlertCircle size={11} />
+                  <span>Activer KYC</span>
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </header>
 
@@ -153,7 +189,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
       <section className="space-y-4">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           {/* Segmented Tabs */}
-          <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs overflow-x-auto">
+          <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs overflow-x-auto no-scrollbar">
             {[
               { id: 'all' as const, label: 'Toutes les missions', count: requests.length },
               {
@@ -191,7 +227,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
           </div>
 
           {/* Destination Quick Filter */}
-          <div className="flex items-center gap-1.5 overflow-x-auto text-xs">
+          <div className="flex items-center gap-1.5 overflow-x-auto text-xs no-scrollbar pb-0.5">
             {[
               { id: 'all', label: 'Toutes villes' },
               { id: 'Alger', label: 'Alger' },

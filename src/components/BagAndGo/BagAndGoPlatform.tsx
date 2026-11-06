@@ -66,28 +66,28 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
   }, [trips, activeTransport, selectedDestination, searchQuery]);
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-10 animate-fadeIn text-slate-900 dark:text-slate-100">
+    <div className="w-full max-w-6xl mx-auto px-3.5 sm:px-6 pt-3 pb-32 sm:py-8 space-y-5 sm:space-y-8 animate-fadeIn text-slate-900 dark:text-slate-100">
       {/* Header Section */}
-      <header className="border-b border-slate-200/80 dark:border-slate-800/80 pb-8">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      <header className="border-b border-slate-200/80 dark:border-slate-800/80 pb-4 sm:pb-8">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 dark:text-blue-400 tracking-wide uppercase font-mono">
+            <div className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 dark:text-blue-400 tracking-wide uppercase font-mono">
               <Package size={14} />
               <span>Bag &amp; Go &middot; Espace Expéditeur</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
               Expédiez vos colis avec des voyageurs vérifiés
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-none">
               Vos biens voyagent en cabine avec des voyageurs certifiés.
               Paiement bloqué sous séquestre bancaire Stripe et libéré uniquement sur remise en main propre avec code PIN secret.
             </p>
 
-            <div className="pt-2 flex flex-wrap items-center gap-3">
+            <div className="pt-1 sm:pt-2 flex items-center gap-2 overflow-x-auto sm:flex-wrap no-scrollbar pb-1">
               <button
                 type="button"
                 onClick={onPublishParcel}
-                className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white text-xs font-semibold transition-all shadow-sm flex items-center gap-2"
+                className="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white text-xs font-semibold transition-all shadow-sm flex items-center gap-1.5 shrink-0"
               >
                 <Send size={15} />
                 <span>Déposer un colis</span>
@@ -95,24 +95,24 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
               <button
                 type="button"
                 onClick={onPublishRequest}
-                className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-slate-700 transition-all flex items-center gap-2"
+                className="px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-slate-700 transition-all flex items-center gap-1.5 shrink-0"
               >
                 <ShoppingBag size={15} />
-                <span>Commander un achat</span>
+                <span>Commander achat</span>
               </button>
               <button
                 type="button"
                 onClick={onTracking}
-                className="px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs font-semibold transition-colors flex items-center gap-1.5"
+                className="px-2.5 py-2 sm:px-3.5 sm:py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs font-semibold transition-colors flex items-center gap-1 shrink-0"
               >
-                <span>Suivre mes envois</span>
+                <span>Suivre envois</span>
                 <ChevronRight size={14} />
               </button>
             </div>
           </div>
 
-          {/* Senders Trust Overview Card */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 w-full sm:w-72 shrink-0 space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+          {/* Senders Trust Overview Card - Desktop */}
+          <div className="hidden lg:block p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 w-72 shrink-0 space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
             <div className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white text-xs pb-1 border-b border-slate-200/50 dark:border-slate-800/50">
               <ShieldCheck size={15} className="text-blue-600 dark:text-blue-400" />
               <span>Garanties expéditeur</span>
@@ -130,6 +130,24 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
               <span>Passeports et billets vérifiés eIDAS</span>
             </div>
           </div>
+
+          {/* Senders Trust Overview Strip - Mobile */}
+          <div className="lg:hidden p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-300 gap-2 overflow-x-auto no-scrollbar">
+            <span className="flex items-center gap-1 shrink-0">
+              <Lock size={12} className="text-blue-600 dark:text-blue-400" />
+              <span>Séquestre Stripe</span>
+            </span>
+            <span className="text-slate-300 dark:text-slate-700">&middot;</span>
+            <span className="flex items-center gap-1 shrink-0">
+              <KeyRound size={12} className="text-amber-500" />
+              <span>PIN secret</span>
+            </span>
+            <span className="text-slate-300 dark:text-slate-700">&middot;</span>
+            <span className="flex items-center gap-1 shrink-0">
+              <CheckCircle2 size={12} className="text-emerald-500" />
+              <span>Profils eIDAS</span>
+            </span>
+          </div>
         </div>
       </header>
 
@@ -137,7 +155,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
       <section className="space-y-4">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           {/* Segmented Mode Tabs */}
-          <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs overflow-x-auto">
+          <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs overflow-x-auto no-scrollbar">
             {[
               { id: 'all' as const, label: 'Tous', count: trips.length, icon: Luggage },
               {
@@ -182,7 +200,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
           </div>
 
           {/* Destination Quick Filter */}
-          <div className="flex items-center gap-1.5 overflow-x-auto text-xs">
+          <div className="flex items-center gap-1.5 overflow-x-auto text-xs no-scrollbar pb-0.5">
             {[
               { id: 'all', label: 'Toutes villes' },
               { id: 'Alger', label: 'Alger' },

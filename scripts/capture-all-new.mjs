@@ -75,7 +75,8 @@ server.listen(PORT, async () => {
     // 1. Shop & Go Desktop
     const pageShopDesk = await desktopContext.newPage();
     await pageShopDesk.goto(`http://localhost:${PORT}/#shopandgo`, { waitUntil: "networkidle" });
-    await pageShopDesk.waitForTimeout(1000);
+    await pageShopDesk.waitForSelector("h1", { timeout: 15000 });
+    await pageShopDesk.waitForTimeout(1500);
     await pageShopDesk.screenshot({
       path: path.join(outputDir, "21_shopandgo_desktop.jpg"),
       type: "jpeg",
@@ -94,7 +95,8 @@ server.listen(PORT, async () => {
     // 2. Shop & Go Mobile
     const pageShopMob = await mobileContext.newPage();
     await pageShopMob.goto(`http://localhost:${PORT}/#shopandgo`, { waitUntil: "networkidle" });
-    await pageShopMob.waitForTimeout(1000);
+    await pageShopMob.waitForSelector("h1", { timeout: 15000 });
+    await pageShopMob.waitForTimeout(1200);
     await pageShopMob.screenshot({
       path: path.join(outputDir, "22_shopandgo_mobile.jpg"),
       type: "jpeg",
@@ -113,7 +115,8 @@ server.listen(PORT, async () => {
     // 3. Bag & Go Desktop
     const pageBagDesk = await desktopContext.newPage();
     await pageBagDesk.goto(`http://localhost:${PORT}/#bagandgo`, { waitUntil: "networkidle" });
-    await pageBagDesk.waitForTimeout(1000);
+    await pageBagDesk.waitForSelector("h1", { timeout: 15000 });
+    await pageBagDesk.waitForTimeout(1200);
     await pageBagDesk.screenshot({
       path: path.join(outputDir, "23_bagandgo_desktop.jpg"),
       type: "jpeg",
@@ -125,7 +128,8 @@ server.listen(PORT, async () => {
     // 4. Bag & Go Mobile
     const pageBagMob = await mobileContext.newPage();
     await pageBagMob.goto(`http://localhost:${PORT}/#bagandgo`, { waitUntil: "networkidle" });
-    await pageBagMob.waitForTimeout(1000);
+    await pageBagMob.waitForSelector("h1", { timeout: 15000 });
+    await pageBagMob.waitForTimeout(1200);
     await pageBagMob.screenshot({
       path: path.join(outputDir, "24_bagandgo_mobile.jpg"),
       type: "jpeg",
