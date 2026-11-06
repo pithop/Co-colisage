@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { MainPillar, FreightItem } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { CityAutocomplete } from './common/CityAutocomplete';
 import './HeroSection.css';
 
 interface HeroSectionProps {
@@ -192,9 +193,29 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <form onSubmit={handlePublishTripSubmit} className="hero-trip-form">
                   <div className="hero-section-label"><span>01</span> Votre itinéraire</div>
                   <div className="hero-city-grid">
-                    <div className="hero-field"><label htmlFor="voyage-origin"><MapPin size={15} /> VILLE DE DÉPART</label><input id="voyage-origin" required value={voyageOrigin} onChange={e => setVoyageOrigin(e.target.value)} placeholder="Ville ou aéroport" /><div className="hero-suggestions">{cities.map(city => <button key={city.name} type="button" onClick={() => setVoyageOrigin(city.value)}>{city.name}</button>)}</div></div>
+                    <div className="hero-field">
+                      <label htmlFor="voyage-origin"><MapPin size={15} /> VILLE DE DÉPART</label>
+                      <CityAutocomplete
+                        name="voyage-origin"
+                        id="voyage-origin"
+                        value={voyageOrigin}
+                        onChange={setVoyageOrigin}
+                        placeholder="Ex: Paris (CDG), Marseille..."
+                        required
+                      />
+                    </div>
                     <button type="button" className="hero-swap" aria-label="Inverser les villes de départ et d’arrivée" onClick={() => { setVoyageOrigin(voyageDestination); setVoyageDestination(voyageOrigin); }}>⇄</button>
-                    <div className="hero-field"><label htmlFor="voyage-destination"><MapPin size={15} /> VILLE D’ARRIVÉE</label><input id="voyage-destination" required value={voyageDestination} onChange={e => setVoyageDestination(e.target.value)} placeholder="Ville ou aéroport" /><div className="hero-suggestions">{cities.map(city => <button key={city.name} type="button" onClick={() => setVoyageDestination(city.value)}>{city.name}</button>)}</div></div>
+                    <div className="hero-field">
+                      <label htmlFor="voyage-destination"><MapPin size={15} /> VILLE D’ARRIVÉE</label>
+                      <CityAutocomplete
+                        name="voyage-destination"
+                        id="voyage-destination"
+                        value={voyageDestination}
+                        onChange={setVoyageDestination}
+                        placeholder="Ex: Alger (ALG), Oran..."
+                        required
+                      />
+                    </div>
                   </div>
                   <div className="hero-schedule-grid">
                     <div className="hero-field"><label htmlFor="voyage-date"><Calendar size={15} /> DATE DU VOYAGE</label><input id="voyage-date" type="date" required value={voyageDate} onChange={e => setVoyageDate(e.target.value)} /><span className="hero-field-note">{formatFullDate(voyageDate)}</span></div>
@@ -219,8 +240,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               {activePillar === 'expediteur' && (
                 <div className="hero-secondary-panel">
                   <form onSubmit={handleSenderSearch} className="hero-search-grid">
-                    <div className="hero-field"><label htmlFor="sender-origin"><MapPin size={15} /> VILLE DE DÉPART</label><input id="sender-origin" value={senderOrigin} onChange={e => setSenderOrigin(e.target.value)} placeholder="Marseille" /></div>
-                    <div className="hero-field"><label htmlFor="sender-destination"><MapPin size={15} /> VILLE D’ARRIVÉE</label><input id="sender-destination" value={senderDestination} onChange={e => setSenderDestination(e.target.value)} placeholder="Alger" /></div>
+                    <div className="hero-field">
+                      <label htmlFor="sender-origin"><MapPin size={15} /> VILLE DE DÉPART</label>
+                      <CityAutocomplete
+                        name="sender-origin"
+                        id="sender-origin"
+                        value={senderOrigin}
+                        onChange={setSenderOrigin}
+                        placeholder="Ex: Marseille, Paris..."
+                      />
+                    </div>
+                    <div className="hero-field">
+                      <label htmlFor="sender-destination"><MapPin size={15} /> VILLE D’ARRIVÉE</label>
+                      <CityAutocomplete
+                        name="sender-destination"
+                        id="sender-destination"
+                        value={senderDestination}
+                        onChange={setSenderDestination}
+                        placeholder="Ex: Alger, Oran..."
+                      />
+                    </div>
                     <button type="submit" className="hero-cta"><Search size={18} /><span>Trouver les voyageurs disponibles</span></button>
                   </form>
                   <div className="hero-secondary-footer"><div className="hero-security"><ShieldCheck size={22} /><span><strong>Un trajet partagé, une remise en confiance.</strong><span>Marseille, Alger, Oran et le Maghreb.</span></span></div><button type="button" className="hero-outline-button" onClick={onOpenPublishParcel}><PlusCircle size={17} /> Déposer un colis <ArrowRight size={16} /></button></div>
@@ -230,7 +269,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               {activePillar === 'destinataire' && (
                 <div className="hero-secondary-panel">
                   <div className="hero-search-grid hero-receiver-grid">
-                    <div className="hero-field"><label htmlFor="receiver-city"><MapPin size={15} /> VILLE DE RÉCEPTION</label><input id="receiver-city" value={receiverCity} onChange={e => setReceiverCity(e.target.value)} placeholder="Alger, Oran…" /></div>
+                    <div className="hero-field">
+                      <label htmlFor="receiver-city"><MapPin size={15} /> VILLE DE RÉCEPTION</label>
+                      <CityAutocomplete
+                        name="receiver-city"
+                        id="receiver-city"
+                        value={receiverCity}
+                        onChange={setReceiverCity}
+                        placeholder="Ex: Alger, Oran, Constantine..."
+                      />
+                    </div>
                     <div className="hero-field"><label htmlFor="product-search"><ShoppingBag size={15} /> VOTRE PROCHAINE ENVIE</label><input id="product-search" value={productSearch} onChange={e => setProductSearch(e.target.value)} placeholder="Parfum, iPhone, sneakers…" /></div>
                     <button type="button" className="hero-cta hero-cta-green" onClick={() => { const offres = document.getElementById('section-resultats'); if (offres) offres.scrollIntoView({ behavior: 'smooth' }); }}><Search size={18} /><span>Explorer le catalogue</span></button>
                   </div>

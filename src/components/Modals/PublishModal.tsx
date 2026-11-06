@@ -16,6 +16,7 @@ import {
 import { MainPillar, FreightItem, SenderParcelRequest, ReceiverShoppingRequest } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { TicketScannerModal } from './TicketScannerModal';
+import { CityAutocomplete } from '../common/CityAutocomplete';
 
 interface PublishModalProps {
   isOpen: boolean;
@@ -241,22 +242,22 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-[11px] font-bold text-slate-600 mb-1">Ville de départ</label>
-                      <input
-                        type="text"
-                        required
+                      <CityAutocomplete
+                        name="travelOrigin"
                         value={travelOrigin}
-                        onChange={(e) => setTravelOrigin(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
+                        onChange={setTravelOrigin}
+                        placeholder="Ex: Paris (CDG), Marseille..."
+                        required
                       />
                     </div>
                     <div>
                       <label className="block text-[11px] font-bold text-slate-600 mb-1">Ville d'arrivée</label>
-                      <input
-                        type="text"
-                        required
+                      <CityAutocomplete
+                        name="travelDestination"
                         value={travelDestination}
-                        onChange={(e) => setTravelDestination(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
+                        onChange={setTravelDestination}
+                        placeholder="Ex: Alger (ALG), Oran..."
+                        required
                       />
                     </div>
                   </div>
@@ -350,22 +351,22 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-[11px] font-bold text-slate-600 mb-1">Ville d'expédition</label>
-                      <input
-                        type="text"
-                        required
+                      <CityAutocomplete
+                        name="parcelOrigin"
                         value={parcelOrigin}
-                        onChange={(e) => setParcelOrigin(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
+                        onChange={setParcelOrigin}
+                        placeholder="Ex: Paris, Lyon..."
+                        required
                       />
                     </div>
                     <div>
                       <label className="block text-[11px] font-bold text-slate-600 mb-1">Ville de destination</label>
-                      <input
-                        type="text"
-                        required
+                      <CityAutocomplete
+                        name="parcelDestination"
                         value={parcelDestination}
-                        onChange={(e) => setParcelDestination(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
+                        onChange={setParcelDestination}
+                        placeholder="Ex: Alger, Constantine..."
+                        required
                       />
                     </div>
                   </div>
@@ -436,12 +437,12 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                     </div>
                     <div>
                       <label className="block text-[11px] font-bold text-slate-600 mb-1">Ville de réception</label>
-                      <input
-                        type="text"
-                        required
+                      <CityAutocomplete
+                        name="receiverCity"
                         value={receiverCity}
-                        onChange={(e) => setReceiverCity(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
+                        onChange={setReceiverCity}
+                        placeholder="Ex: Alger (ALG), Oran..."
+                        required
                       />
                     </div>
                   </div>

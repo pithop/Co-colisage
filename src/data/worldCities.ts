@@ -9,9 +9,12 @@ export interface WorldCity {
 }
 
 export const worldCities: WorldCity[] = [
-  // --- France ---
+  // ==========================================
+  // --- FRANCE (Aéroports & Métropoles) ---
+  // ==========================================
   { name: "Paris", asciiName: "Paris", country: "France", countryCode: "FR", region: "France", code: "CDG", popular: true },
   { name: "Paris Orly", asciiName: "Paris Orly", country: "France", countryCode: "FR", region: "France", code: "ORY", popular: true },
+  { name: "Paris Beauvais", asciiName: "Paris Beauvais", country: "France", countryCode: "FR", region: "France", code: "BVA" },
   { name: "Marseille", asciiName: "Marseille", country: "France", countryCode: "FR", region: "France", code: "MRS", popular: true },
   { name: "Lyon", asciiName: "Lyon", country: "France", countryCode: "FR", region: "France", code: "LYS", popular: true },
   { name: "Toulouse", asciiName: "Toulouse", country: "France", countryCode: "FR", region: "France", code: "TLS", popular: true },
@@ -48,45 +51,81 @@ export const worldCities: WorldCity[] = [
   { name: "Poitiers", asciiName: "Poitiers", country: "France", countryCode: "FR", region: "France", code: "PIS" },
   { name: "Pau", asciiName: "Pau", country: "France", countryCode: "FR", region: "France", code: "PUF" },
   { name: "La Rochelle", asciiName: "La Rochelle", country: "France", countryCode: "FR", region: "France", code: "LRH" },
+  { name: "Béziers", asciiName: "Beziers", country: "France", countryCode: "FR", region: "France", code: "BZR" },
+  { name: "Cannes", asciiName: "Cannes", country: "France", countryCode: "FR", region: "France", code: "CEQ" },
+  { name: "Calais", asciiName: "Calais", country: "France", countryCode: "FR", region: "France" },
   { name: "Ajaccio", asciiName: "Ajaccio", country: "France", countryCode: "FR", region: "France", code: "AJA" },
   { name: "Bastia", asciiName: "Bastia", country: "France", countryCode: "FR", region: "France", code: "BIA" },
+  { name: "Figari", asciiName: "Figari", country: "France", countryCode: "FR", region: "France", code: "FSC" },
+  { name: "Le Havre", asciiName: "Le Havre", country: "France", countryCode: "FR", region: "France" },
+  { name: "Le Mans", asciiName: "Le Mans", country: "France", countryCode: "FR", region: "France" },
 
-  // --- Algérie ---
+  // ==========================================
+  // --- ALGÉRIE (Les 58 Wilayas & Aéroports) ---
+  // ==========================================
   { name: "Alger", asciiName: "Alger", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "ALG", popular: true },
   { name: "Oran", asciiName: "Oran", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "ORN", popular: true },
   { name: "Constantine", asciiName: "Constantine", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "CZL", popular: true },
   { name: "Annaba", asciiName: "Annaba", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "AAE", popular: true },
   { name: "Sétif", asciiName: "Setif", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "QSF", popular: true },
-  { name: "Batna", asciiName: "Batna", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "BLJ" },
+  { name: "Batna", asciiName: "Batna", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "BLJ", popular: true },
   { name: "Tlemcen", asciiName: "Tlemcen", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "TLM", popular: true },
   { name: "Béjaïa", asciiName: "Bejaia", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "BJA", popular: true },
-  { name: "Biskra", asciiName: "Biskra", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "BSK" },
+  { name: "Biskra", asciiName: "Biskra", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "BSK", popular: true },
+  { name: "Chlef", asciiName: "Chlef", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "CFK", popular: true },
   { name: "Blida", asciiName: "Blida", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
-  { name: "Chlef", asciiName: "Chlef", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "CFK" },
-  { name: "Djelfa", asciiName: "Djelfa", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
-  { name: "Sidi Bel Abbès", asciiName: "Sidi Bel Abbes", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
-  { name: "Mostaganem", asciiName: "Mostaganem", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
-  { name: "Tiaret", asciiName: "Tiaret", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "TID" },
+  { name: "Bouira", asciiName: "Bouira", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Tamanrasset", asciiName: "Tamanrasset", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "TMR", popular: true },
   { name: "Tébessa", asciiName: "Tebessa", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "TEE" },
-  { name: "Skikda", asciiName: "Skikda", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
-  { name: "Tizi Ouzou", asciiName: "Tizi Ouzou", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
-  { name: "Bordj Bou Arreridj", asciiName: "Bordj Bou Arreridj", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
-  { name: "Ouargla", asciiName: "Ouargla", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "OGX" },
-  { name: "Ghardaïa", asciiName: "Ghardaia", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "GHA" },
-  { name: "Médéa", asciiName: "Medea", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
-  { name: "Béchar", asciiName: "Bechar", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "CBH" },
-  { name: "El Oued", asciiName: "El Oued", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "ELU" },
+  { name: "Tiaret", asciiName: "Tiaret", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "TID" },
+  { name: "Tizi Ouzou", asciiName: "Tizi Ouzou", country: "Algérie", countryCode: "DZ", region: "Maghreb", popular: true },
+  { name: "Djelfa", asciiName: "Djelfa", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Jijel", asciiName: "Jijel", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "GJL", popular: true },
+  { name: "Sidi Bel Abbès", asciiName: "Sidi Bel Abbes", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
   { name: "Guelma", asciiName: "Guelma", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
-  { name: "Jijel", asciiName: "Jijel", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "GJL" },
+  { name: "Médéa", asciiName: "Medea", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Mostaganem", asciiName: "Mostaganem", country: "Algérie", countryCode: "DZ", region: "Maghreb", popular: true },
+  { name: "M'Sila", asciiName: "M'Sila", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Mascara", asciiName: "Mascara", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Ouargla", asciiName: "Ouargla", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "OGX" },
+  { name: "Hassi Messaoud", asciiName: "Hassi Messaoud", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "HME", popular: true },
+  { name: "El Bayadh", asciiName: "El Bayadh", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "EBH" },
+  { name: "Illizi", asciiName: "Illizi", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "VVZ" },
+  { name: "Djanet", asciiName: "Djanet", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "DJG" },
+  { name: "Bordj Bou Arreridj", asciiName: "Bordj Bou Arreridj", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Boumerdès", asciiName: "Boumerdes", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "El Tarf", asciiName: "El Tarf", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Tindouf", asciiName: "Tindouf", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "TIN" },
+  { name: "Tissemsilt", asciiName: "Tissemsilt", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "El Oued", asciiName: "El Oued", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "ELU" },
+  { name: "Khenchela", asciiName: "Khenchela", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
   { name: "Souk Ahras", asciiName: "Souk Ahras", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
   { name: "Tipaza", asciiName: "Tipaza", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
-  { name: "Boumerdès", asciiName: "Boumerdes", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Mila", asciiName: "Mila", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Aïn Defla", asciiName: "Ain Defla", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Naâma", asciiName: "Naama", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Aïn Témouchent", asciiName: "Ain Temouchent", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Ghardaïa", asciiName: "Ghardaia", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "GHA", popular: true },
+  { name: "Relizane", asciiName: "Relizane", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Timimoun", asciiName: "Timimoun", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "TMX" },
+  { name: "Bordj Badji Mokhtar", asciiName: "Bordj Badji Mokhtar", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Ouled Djellal", asciiName: "Ouled Djellal", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Béni Abbès", asciiName: "Beni Abbes", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "In Salah", asciiName: "In Salah", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "INZ" },
+  { name: "In Guezzam", asciiName: "In Guezzam", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "INF" },
+  { name: "Touggourt", asciiName: "Touggourt", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "TGR" },
+  { name: "El M'Ghair", asciiName: "El M'Ghair", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "El Meniaa", asciiName: "El Meniaa", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "ELG" },
+  { name: "Adrar", asciiName: "Adrar", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "AZR" },
+  { name: "Béchar", asciiName: "Bechar", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "CBH" },
   { name: "Laghouat", asciiName: "Laghouat", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "LOO" },
-  { name: "Mascara", asciiName: "Mascara", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
-  { name: "Hassi Messaoud", asciiName: "Hassi Messaoud", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "HME" },
-  { name: "Tamanrasset", asciiName: "Tamanrasset", country: "Algérie", countryCode: "DZ", region: "Maghreb", code: "TMR" },
+  { name: "Oum El Bouaghi", asciiName: "Oum El Bouaghi", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Skikda", asciiName: "Skikda", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
+  { name: "Saïda", asciiName: "Saida", country: "Algérie", countryCode: "DZ", region: "Maghreb" },
 
-  // --- Maroc ---
+  // ==========================================
+  // --- MAROC ---
+  // ==========================================
   { name: "Casablanca", asciiName: "Casablanca", country: "Maroc", countryCode: "MA", region: "Maghreb", code: "CMN", popular: true },
   { name: "Rabat", asciiName: "Rabat", country: "Maroc", countryCode: "MA", region: "Maghreb", code: "RBA", popular: true },
   { name: "Marrakech", asciiName: "Marrakech", country: "Maroc", countryCode: "MA", region: "Maghreb", code: "RAK", popular: true },
@@ -99,102 +138,42 @@ export const worldCities: WorldCity[] = [
   { name: "Tétouan", asciiName: "Tetouan", country: "Maroc", countryCode: "MA", region: "Maghreb", code: "TTU" },
   { name: "Nador", asciiName: "Nador", country: "Maroc", countryCode: "MA", region: "Maghreb", code: "NDR" },
   { name: "Essaouira", asciiName: "Essaouira", country: "Maroc", countryCode: "MA", region: "Maghreb", code: "ESU" },
+  { name: "Ouarzazate", asciiName: "Ouarzazate", country: "Maroc", countryCode: "MA", region: "Maghreb", code: "OZZ" },
   { name: "Dakhla", asciiName: "Dakhla", country: "Maroc", countryCode: "MA", region: "Maghreb", code: "VIL" },
+  { name: "Laâyoune", asciiName: "Laayoune", country: "Maroc", countryCode: "MA", region: "Maghreb", code: "EUN" },
 
-  // --- Tunisie ---
+  // ==========================================
+  // --- TUNISIE ---
+  // ==========================================
   { name: "Tunis", asciiName: "Tunis", country: "Tunisie", countryCode: "TN", region: "Maghreb", code: "TUN", popular: true },
-  { name: "Sfax", asciiName: "Sfax", country: "Tunisie", countryCode: "TN", region: "Maghreb", code: "SFA", popular: true },
+  { name: "Sfax", asciiName: "Sfax", country: "Tunisie", countryCode: "TN", region: "Maghreb", code: "SFA" },
   { name: "Sousse", asciiName: "Sousse", country: "Tunisie", countryCode: "TN", region: "Maghreb" },
   { name: "Djerba", asciiName: "Djerba", country: "Tunisie", countryCode: "TN", region: "Maghreb", code: "DJE", popular: true },
   { name: "Monastir", asciiName: "Monastir", country: "Tunisie", countryCode: "TN", region: "Maghreb", code: "MIR" },
+  { name: "Enfidha", asciiName: "Enfidha", country: "Tunisie", countryCode: "TN", region: "Maghreb", code: "NBE" },
   { name: "Bizerte", asciiName: "Bizerte", country: "Tunisie", countryCode: "TN", region: "Maghreb" },
-  { name: "Gabès", asciiName: "Gabes", country: "Tunisie", countryCode: "TN", region: "Maghreb", code: "GAE" },
   { name: "Tozeur", asciiName: "Tozeur", country: "Tunisie", countryCode: "TN", region: "Maghreb", code: "TOE" },
 
-  // --- Égypte & Libye ---
-  { name: "Le Caire", asciiName: "Le Caire", country: "Égypte", countryCode: "EG", region: "Afrique", code: "CAI", popular: true },
-  { name: "Alexandrie", asciiName: "Alexandrie", country: "Égypte", countryCode: "EG", region: "Afrique", code: "HBE" },
-  { name: "Charm el-Cheikh", asciiName: "Charm el-Cheikh", country: "Égypte", countryCode: "EG", region: "Afrique", code: "SSH" },
-  { name: "Tripoli", asciiName: "Tripoli", country: "Libye", countryCode: "LY", region: "Afrique", code: "TIP" },
-  { name: "Benghazi", asciiName: "Benghazi", country: "Libye", countryCode: "LY", region: "Afrique", code: "BEN" },
-
-  // --- Afrique Subsaharienne ---
-  { name: "Dakar", asciiName: "Dakar", country: "Sénégal", countryCode: "SN", region: "Afrique", code: "DSS", popular: true },
-  { name: "Abidjan", asciiName: "Abidjan", country: "Côte d'Ivoire", countryCode: "CI", region: "Afrique", code: "ABJ", popular: true },
-  { name: "Bamako", asciiName: "Bamako", country: "Mali", countryCode: "ML", region: "Afrique", code: "BKO" },
-  { name: "Conakry", asciiName: "Conakry", country: "Guinée", countryCode: "GN", region: "Afrique", code: "CKY" },
-  { name: "Lomé", asciiName: "Lome", country: "Togo", countryCode: "TG", region: "Afrique", code: "LFW" },
-  { name: "Cotonou", asciiName: "Cotonou", country: "Bénin", countryCode: "BJ", region: "Afrique", code: "COO" },
-  { name: "Douala", asciiName: "Douala", country: "Cameroun", countryCode: "CM", region: "Afrique", code: "DLA" },
-  { name: "Yaoundé", asciiName: "Yaounde", country: "Cameroun", countryCode: "CM", region: "Afrique", code: "NSI" },
-  { name: "Libreville", asciiName: "Libreville", country: "Gabon", countryCode: "GA", region: "Afrique", code: "LBV" },
-  { name: "Brazzaville", asciiName: "Brazzaville", country: "Congo", countryCode: "CG", region: "Afrique", code: "BZV" },
-  { name: "Kinshasa", asciiName: "Kinshasa", country: "RDC", countryCode: "CD", region: "Afrique", code: "FIH" },
-  { name: "Luanda", asciiName: "Luanda", country: "Angola", countryCode: "AO", region: "Afrique", code: "LAD" },
-  { name: "Lagos", asciiName: "Lagos", country: "Nigeria", countryCode: "NG", region: "Afrique", code: "LOS", popular: true },
-  { name: "Abuja", asciiName: "Abuja", country: "Nigeria", countryCode: "NG", region: "Afrique", code: "ABV" },
-  { name: "Accra", asciiName: "Accra", country: "Ghana", countryCode: "GH", region: "Afrique", code: "ACC" },
-  { name: "Nairobi", asciiName: "Nairobi", country: "Kenya", countryCode: "KE", region: "Afrique", code: "NBO", popular: true },
-  { name: "Addis-Abeba", asciiName: "Addis-Abeba", country: "Éthiopie", countryCode: "ET", region: "Afrique", code: "ADD" },
-  { name: "Kigali", asciiName: "Kigali", country: "Rwanda", countryCode: "RW", region: "Afrique", code: "KGL" },
-  { name: "Johannesburg", asciiName: "Johannesburg", country: "Afrique du Sud", countryCode: "ZA", region: "Afrique", code: "JNB", popular: true },
-  { name: "Le Cap", asciiName: "Le Cap", country: "Afrique du Sud", countryCode: "ZA", region: "Afrique", code: "CPT" },
-  { name: "Port-Louis", asciiName: "Port-Louis", country: "Maurice", countryCode: "MU", region: "Afrique", code: "MRU" },
-  { name: "Antananarivo", asciiName: "Antananarivo", country: "Madagascar", countryCode: "MG", region: "Afrique", code: "TNR" },
-
-  // --- Europe ---
-  { name: "Bruxelles", asciiName: "Bruxelles", country: "Belgique", countryCode: "BE", region: "Europe", code: "BRU", popular: true },
-  { name: "Liège", asciiName: "Liege", country: "Belgique", countryCode: "BE", region: "Europe", code: "LGG" },
-  { name: "Genève", asciiName: "Geneve", country: "Suisse", countryCode: "CH", region: "Europe", code: "GVA", popular: true },
-  { name: "Zurich", asciiName: "Zurich", country: "Suisse", countryCode: "CH", region: "Europe", code: "ZRH", popular: true },
-  { name: "Bâle", asciiName: "Bale", country: "Suisse", countryCode: "CH", region: "Europe", code: "BSL" },
-  { name: "Londres", asciiName: "Londres", country: "Royaume-Uni", countryCode: "GB", region: "Europe", code: "LHR", popular: true },
-  { name: "Manchester", asciiName: "Manchester", country: "Royaume-Uni", countryCode: "GB", region: "Europe", code: "MAN" },
-  { name: "Madrid", asciiName: "Madrid", country: "Espagne", countryCode: "ES", region: "Europe", code: "MAD", popular: true },
-  { name: "Barcelone", asciiName: "Barcelone", country: "Espagne", countryCode: "ES", region: "Europe", code: "BCN", popular: true },
-  { name: "Valence", asciiName: "Valence", country: "Espagne", countryCode: "ES", region: "Europe", code: "VLC" },
-  { name: "Séville", asciiName: "Seville", country: "Espagne", countryCode: "ES", region: "Europe", code: "SVQ" },
-  { name: "Malaga", asciiName: "Malaga", country: "Espagne", countryCode: "ES", region: "Europe", code: "AGP" },
-  { name: "Rome", asciiName: "Rome", country: "Italie", countryCode: "IT", region: "Europe", code: "FCO", popular: true },
-  { name: "Milan", asciiName: "Milan", country: "Italie", countryCode: "IT", region: "Europe", code: "MXP", popular: true },
-  { name: "Naples", asciiName: "Naples", country: "Italie", countryCode: "IT", region: "Europe", code: "NAP" },
-  { name: "Turin", asciiName: "Turin", country: "Italie", countryCode: "IT", region: "Europe", code: "TRN" },
-  { name: "Berlin", asciiName: "Berlin", country: "Allemagne", countryCode: "DE", region: "Europe", code: "BER", popular: true },
-  { name: "Francfort", asciiName: "Francfort", country: "Allemagne", countryCode: "DE", region: "Europe", code: "FRA", popular: true },
-  { name: "Munich", asciiName: "Munich", country: "Allemagne", countryCode: "DE", region: "Europe", code: "MUC", popular: true },
-  { name: "Amsterdam", asciiName: "Amsterdam", country: "Pays-Bas", countryCode: "NL", region: "Europe", code: "AMS", popular: true },
-  { name: "Lisbonne", asciiName: "Lisbonne", country: "Portugal", countryCode: "PT", region: "Europe", code: "LIS", popular: true },
-  { name: "Porto", asciiName: "Porto", country: "Portugal", countryCode: "PT", region: "Europe", code: "OPO" },
-  { name: "Vienne", asciiName: "Vienne", country: "Autriche", countryCode: "AT", region: "Europe", code: "VIE" },
-  { name: "Dublin", asciiName: "Dublin", country: "Irlande", countryCode: "IE", region: "Europe", code: "DUB" },
-  { name: "Athènes", asciiName: "Athenes", country: "Grèce", countryCode: "GR", region: "Europe", code: "ATH" },
-  { name: "Istanbul", asciiName: "Istanbul", country: "Turquie", countryCode: "TR", region: "Europe", code: "IST", popular: true },
-  { name: "Prague", asciiName: "Prague", country: "République Tchèque", countryCode: "CZ", region: "Europe", code: "PRG" },
-  { name: "Varsovie", asciiName: "Varsovie", country: "Pologne", countryCode: "PL", region: "Europe", code: "WAW" },
-  { name: "Budapest", asciiName: "Budapest", country: "Hongrie", countryCode: "HU", region: "Europe", code: "BUD" },
-  { name: "Bucarest", asciiName: "Bucarest", country: "Roumanie", countryCode: "RO", region: "Europe", code: "OTP" },
-  { name: "Copenhague", asciiName: "Copenhague", country: "Danemark", countryCode: "DK", region: "Europe", code: "CPH" },
-  { name: "Stockholm", asciiName: "Stockholm", country: "Suède", countryCode: "SE", region: "Europe", code: "ARN" },
-  { name: "Oslo", asciiName: "Oslo", country: "Norvège", countryCode: "NO", region: "Europe", code: "OSL" },
-  { name: "Helsinki", asciiName: "Helsinki", country: "Finlande", countryCode: "FI", region: "Europe", code: "HEL" },
-
-  // --- Amériques ---
+  // ==========================================
+  // --- AMÉRIQUES (Canada, USA, Amérique Latine) ---
+  // ==========================================
   { name: "Montréal", asciiName: "Montreal", country: "Canada", countryCode: "CA", region: "Amériques", code: "YUL", popular: true },
   { name: "Québec", asciiName: "Quebec", country: "Canada", countryCode: "CA", region: "Amériques", code: "YQB" },
   { name: "Toronto", asciiName: "Toronto", country: "Canada", countryCode: "CA", region: "Amériques", code: "YYZ", popular: true },
-  { name: "Vancouver", asciiName: "Vancouver", country: "Canada", countryCode: "CA", region: "Amériques", code: "YVR" },
+  { name: "Vancouver", asciiName: "Vancouver", country: "Canada", countryCode: "CA", region: "Amériques", code: "YVR", popular: true },
   { name: "Ottawa", asciiName: "Ottawa", country: "Canada", countryCode: "CA", region: "Amériques", code: "YOW" },
   { name: "Calgary", asciiName: "Calgary", country: "Canada", countryCode: "CA", region: "Amériques", code: "YYC" },
+  { name: "Edmonton", asciiName: "Edmonton", country: "Canada", countryCode: "CA", region: "Amériques", code: "YEG" },
   { name: "New York", asciiName: "New York", country: "États-Unis", countryCode: "US", region: "Amériques", code: "JFK", popular: true },
-  { name: "Los Angeles", asciiName: "Los Angeles", country: "États-Unis", countryCode: "US", region: "Amériques", code: "LAX", popular: true },
   { name: "Miami", asciiName: "Miami", country: "États-Unis", countryCode: "US", region: "Amériques", code: "MIA", popular: true },
-  { name: "Chicago", asciiName: "Chicago", country: "États-Unis", countryCode: "US", region: "Amériques", code: "ORD" },
-  { name: "San Francisco", asciiName: "San Francisco", country: "États-Unis", countryCode: "US", region: "Amériques", code: "SFO" },
-  { name: "Washington", asciiName: "Washington", country: "États-Unis", countryCode: "US", region: "Amériques", code: "IAD" },
+  { name: "Los Angeles", asciiName: "Los Angeles", country: "États-Unis", countryCode: "US", region: "Amériques", code: "LAX", popular: true },
+  { name: "Chicago", asciiName: "Chicago", country: "États-Unis", countryCode: "US", region: "Amériques", code: "ORD", popular: true },
+  { name: "San Francisco", asciiName: "San Francisco", country: "États-Unis", countryCode: "US", region: "Amériques", code: "SFO", popular: true },
   { name: "Boston", asciiName: "Boston", country: "États-Unis", countryCode: "US", region: "Amériques", code: "BOS" },
+  { name: "Washington", asciiName: "Washington", country: "États-Unis", countryCode: "US", region: "Amériques", code: "IAD" },
   { name: "Atlanta", asciiName: "Atlanta", country: "États-Unis", countryCode: "US", region: "Amériques", code: "ATL" },
-  { name: "Houston", asciiName: "Houston", country: "États-Unis", countryCode: "US", region: "Amériques", code: "IAH" },
   { name: "Dallas", asciiName: "Dallas", country: "États-Unis", countryCode: "US", region: "Amériques", code: "DFW" },
+  { name: "Houston", asciiName: "Houston", country: "États-Unis", countryCode: "US", region: "Amériques", code: "IAH" },
   { name: "Mexico", asciiName: "Mexico", country: "Mexique", countryCode: "MX", region: "Amériques", code: "MEX", popular: true },
   { name: "Cancún", asciiName: "Cancun", country: "Mexique", countryCode: "MX", region: "Amériques", code: "CUN" },
   { name: "São Paulo", asciiName: "Sao Paulo", country: "Brésil", countryCode: "BR", region: "Amériques", code: "GRU", popular: true },
@@ -204,20 +183,92 @@ export const worldCities: WorldCity[] = [
   { name: "Lima", asciiName: "Lima", country: "Pérou", countryCode: "PE", region: "Amériques", code: "LIM" },
   { name: "Santiago", asciiName: "Santiago", country: "Chili", countryCode: "CL", region: "Amériques", code: "SCL" },
 
-  // --- Moyen-Orient ---
+  // ==========================================
+  // --- EUROPE ---
+  // ==========================================
+  { name: "Bruxelles", asciiName: "Bruxelles", country: "Belgique", countryCode: "BE", region: "Europe", code: "BRU", popular: true },
+  { name: "Charleroi", asciiName: "Charleroi", country: "Belgique", countryCode: "BE", region: "Europe", code: "CRL" },
+  { name: "Genève", asciiName: "Geneve", country: "Suisse", countryCode: "CH", region: "Europe", code: "GVA", popular: true },
+  { name: "Zurich", asciiName: "Zurich", country: "Suisse", countryCode: "CH", region: "Europe", code: "ZRH", popular: true },
+  { name: "Bâle", asciiName: "Bale", country: "Suisse", countryCode: "CH", region: "Europe", code: "BSL" },
+  { name: "Londres Heathrow", asciiName: "Londres Heathrow", country: "Royaume-Uni", countryCode: "GB", region: "Europe", code: "LHR", popular: true },
+  { name: "Londres Gatwick", asciiName: "Londres Gatwick", country: "Royaume-Uni", countryCode: "GB", region: "Europe", code: "LGW" },
+  { name: "Londres Stansted", asciiName: "Londres Stansted", country: "Royaume-Uni", countryCode: "GB", region: "Europe", code: "STN" },
+  { name: "Manchester", asciiName: "Manchester", country: "Royaume-Uni", countryCode: "GB", region: "Europe", code: "MAN" },
+  { name: "Madrid", asciiName: "Madrid", country: "Espagne", countryCode: "ES", region: "Europe", code: "MAD", popular: true },
+  { name: "Barcelone", asciiName: "Barcelone", country: "Espagne", countryCode: "ES", region: "Europe", code: "BCN", popular: true },
+  { name: "Valence", asciiName: "Valence", country: "Espagne", countryCode: "ES", region: "Europe", code: "VLC" },
+  { name: "Alicante", asciiName: "Alicante", country: "Espagne", countryCode: "ES", region: "Europe", code: "ALC", popular: true },
+  { name: "Malaga", asciiName: "Malaga", country: "Espagne", countryCode: "ES", region: "Europe", code: "AGP" },
+  { name: "Rome", asciiName: "Rome", country: "Italie", countryCode: "IT", region: "Europe", code: "FCO", popular: true },
+  { name: "Milan Malpensa", asciiName: "Milan Malpensa", country: "Italie", countryCode: "IT", region: "Europe", code: "MXP", popular: true },
+  { name: "Milan Bergame", asciiName: "Milan Bergame", country: "Italie", countryCode: "IT", region: "Europe", code: "BGY" },
+  { name: "Francfort", asciiName: "Francfort", country: "Allemagne", countryCode: "DE", region: "Europe", code: "FRA", popular: true },
+  { name: "Berlin", asciiName: "Berlin", country: "Allemagne", countryCode: "DE", region: "Europe", code: "BER", popular: true },
+  { name: "Munich", asciiName: "Munich", country: "Allemagne", countryCode: "DE", region: "Europe", code: "MUC", popular: true },
+  { name: "Düsseldorf", asciiName: "Dusseldorf", country: "Allemagne", countryCode: "DE", region: "Europe", code: "DUS" },
+  { name: "Amsterdam", asciiName: "Amsterdam", country: "Pays-Bas", countryCode: "NL", region: "Europe", code: "AMS", popular: true },
+  { name: "Lisbonne", asciiName: "Lisbonne", country: "Portugal", countryCode: "PT", region: "Europe", code: "LIS", popular: true },
+  { name: "Porto", asciiName: "Porto", country: "Portugal", countryCode: "PT", region: "Europe", code: "OPO" },
+  { name: "Vienne", asciiName: "Vienne", country: "Autriche", countryCode: "AT", region: "Europe", code: "VIE", popular: true },
+  { name: "Dublin", asciiName: "Dublin", country: "Irlande", countryCode: "IE", region: "Europe", code: "DUB" },
+  { name: "Prague", asciiName: "Prague", country: "République Tchèque", countryCode: "CZ", region: "Europe", code: "PRG" },
+  { name: "Varsovie", asciiName: "Varsovie", country: "Pologne", countryCode: "PL", region: "Europe", code: "WAW" },
+  { name: "Budapest", asciiName: "Budapest", country: "Hongrie", countryCode: "HU", region: "Europe", code: "BUD" },
+  { name: "Athènes", asciiName: "Athenes", country: "Grèce", countryCode: "GR", region: "Europe", code: "ATH", popular: true },
+  { name: "Istanbul", asciiName: "Istanbul", country: "Turquie", countryCode: "TR", region: "Europe", code: "IST", popular: true },
+  { name: "Istanbul Sabiha", asciiName: "Istanbul Sabiha", country: "Turquie", countryCode: "TR", region: "Europe", code: "SAW" },
+  { name: "Antalya", asciiName: "Antalya", country: "Turquie", countryCode: "TR", region: "Europe", code: "AYT" },
+  { name: "Copenhague", asciiName: "Copenhague", country: "Danemark", countryCode: "DK", region: "Europe", code: "CPH" },
+  { name: "Stockholm", asciiName: "Stockholm", country: "Suède", countryCode: "SE", region: "Europe", code: "ARN" },
+  { name: "Oslo", asciiName: "Oslo", country: "Norvège", countryCode: "NO", region: "Europe", code: "OSL" },
+  { name: "Helsinki", asciiName: "Helsinki", country: "Finlande", countryCode: "FI", region: "Europe", code: "HEL" },
+  { name: "Bucarest", asciiName: "Bucarest", country: "Roumanie", countryCode: "RO", region: "Europe", code: "OTP" },
+  { name: "Luxembourg", asciiName: "Luxembourg", country: "Luxembourg", countryCode: "LU", region: "Europe", code: "LUX" },
+
+  // ==========================================
+  // --- MOYEN-ORIENT ---
+  // ==========================================
   { name: "Dubaï", asciiName: "Dubai", country: "Émirats Arabes Unis", countryCode: "AE", region: "Moyen-Orient", code: "DXB", popular: true },
-  { name: "Abou Dabi", asciiName: "Abou Dabi", country: "Émirats Arabes Unis", countryCode: "AE", region: "Moyen-Orient", code: "AUH" },
+  { name: "Abou Dabi", asciiName: "Abou Dabi", country: "Émirats Arabes Unis", countryCode: "AE", region: "Moyen-Orient", code: "AUH", popular: true },
   { name: "Doha", asciiName: "Doha", country: "Qatar", countryCode: "QA", region: "Moyen-Orient", code: "DOH", popular: true },
   { name: "Riyad", asciiName: "Riyad", country: "Arabie Saoudite", countryCode: "SA", region: "Moyen-Orient", code: "RUH", popular: true },
   { name: "Djeddah", asciiName: "Djeddah", country: "Arabie Saoudite", countryCode: "SA", region: "Moyen-Orient", code: "JED", popular: true },
-  { name: "Médine", asciiName: "Medine", country: "Arabie Saoudite", countryCode: "SA", region: "Moyen-Orient", code: "MED" },
+  { name: "Médine", asciiName: "Medine", country: "Arabie Saoudite", countryCode: "SA", region: "Moyen-Orient", code: "MED", popular: true },
   { name: "Koweït", asciiName: "Koweit", country: "Koweït", countryCode: "KW", region: "Moyen-Orient", code: "KWI" },
   { name: "Mascate", asciiName: "Mascate", country: "Oman", countryCode: "OM", region: "Moyen-Orient", code: "MCT" },
   { name: "Manama", asciiName: "Manama", country: "Bahreïn", countryCode: "BH", region: "Moyen-Orient", code: "BAH" },
   { name: "Beyrouth", asciiName: "Beyrouth", country: "Liban", countryCode: "LB", region: "Moyen-Orient", code: "BEY", popular: true },
   { name: "Amman", asciiName: "Amman", country: "Jordanie", countryCode: "JO", region: "Moyen-Orient", code: "AMM" },
+  { name: "Le Caire", asciiName: "Le Caire", country: "Égypte", countryCode: "EG", region: "Moyen-Orient", code: "CAI", popular: true },
+  { name: "Alexandrie", asciiName: "Alexandrie", country: "Égypte", countryCode: "EG", region: "Moyen-Orient", code: "HBE" },
+  { name: "Charm el-Cheikh", asciiName: "Charm el-Cheikh", country: "Égypte", countryCode: "EG", region: "Moyen-Orient", code: "SSH" },
 
-  // --- Asie & Océanie ---
+  // ==========================================
+  // --- AFRIQUE SUBSAHARIENNE ---
+  // ==========================================
+  { name: "Dakar", asciiName: "Dakar", country: "Sénégal", countryCode: "SN", region: "Afrique", code: "DSS", popular: true },
+  { name: "Abidjan", asciiName: "Abidjan", country: "Côte d'Ivoire", countryCode: "CI", region: "Afrique", code: "ABJ", popular: true },
+  { name: "Bamako", asciiName: "Bamako", country: "Mali", countryCode: "ML", region: "Afrique", code: "BKO", popular: true },
+  { name: "Douala", asciiName: "Douala", country: "Cameroun", countryCode: "CM", region: "Afrique", code: "DLA", popular: true },
+  { name: "Yaoundé", asciiName: "Yaounde", country: "Cameroun", countryCode: "CM", region: "Afrique", code: "NSI" },
+  { name: "Conakry", asciiName: "Conakry", country: "Guinée", countryCode: "GN", region: "Afrique", code: "CKY" },
+  { name: "Lomé", asciiName: "Lome", country: "Togo", countryCode: "TG", region: "Afrique", code: "LFW" },
+  { name: "Cotonou", asciiName: "Cotonou", country: "Bénin", countryCode: "BJ", region: "Afrique", code: "COO" },
+  { name: "Ouagadougou", asciiName: "Ouagadougou", country: "Burkina Faso", countryCode: "BF", region: "Afrique", code: "OUA" },
+  { name: "Niamey", asciiName: "Niamey", country: "Niger", countryCode: "NE", region: "Afrique", code: "NIM" },
+  { name: "Libreville", asciiName: "Libreville", country: "Gabon", countryCode: "GA", region: "Afrique", code: "LBV" },
+  { name: "Brazzaville", asciiName: "Brazzaville", country: "Congo", countryCode: "CG", region: "Afrique", code: "BZV" },
+  { name: "Kinshasa", asciiName: "Kinshasa", country: "RD Congo", countryCode: "CD", region: "Afrique", code: "FIH", popular: true },
+  { name: "Johannesburg", asciiName: "Johannesburg", country: "Afrique du Sud", countryCode: "ZA", region: "Afrique", code: "JNB", popular: true },
+  { name: "Le Cap", asciiName: "Le Cap", country: "Afrique du Sud", countryCode: "ZA", region: "Afrique", code: "CPT" },
+  { name: "Nairobi", asciiName: "Nairobi", country: "Kenya", countryCode: "KE", region: "Afrique", code: "NBO" },
+  { name: "Addis-Abeba", asciiName: "Addis-Abeba", country: "Éthiopie", countryCode: "ET", region: "Afrique", code: "ADD" },
+  { name: "Nouakchott", asciiName: "Nouakchott", country: "Mauritanie", countryCode: "MR", region: "Afrique", code: "NKC" },
+
+  // ==========================================
+  // --- ASIE & OCÉANIE ---
+  // ==========================================
   { name: "Tokyo", asciiName: "Tokyo", country: "Japon", countryCode: "JP", region: "Asie", code: "HND", popular: true },
   { name: "Osaka", asciiName: "Osaka", country: "Japon", countryCode: "JP", region: "Asie", code: "KIX" },
   { name: "Séoul", asciiName: "Seoul", country: "Corée du Sud", countryCode: "KR", region: "Asie", code: "ICN", popular: true },
@@ -250,6 +301,8 @@ export function searchWorldCities(query: string, limit = 8): WorldCity[] {
   if (!q) {
     return worldCities.filter((c) => c.popular).slice(0, limit);
   }
+
+  const exactCodeMatches: WorldCity[] = [];
   const startsWithMatches: WorldCity[] = [];
   const otherMatches: WorldCity[] = [];
 
@@ -259,28 +312,37 @@ export function searchWorldCities(query: string, limit = 8): WorldCity[] {
     const normCountry = normalize(city.country);
     const code = city.code ? normalize(city.code) : "";
 
-    if (normName.startsWith(q) || normAscii.startsWith(q) || code === q) {
+    // Exact IATA code match (e.g. "ALG", "CDG", "YUL")
+    if (code && code === q) {
+      exactCodeMatches.push(city);
+    } else if (normName.startsWith(q) || normAscii.startsWith(q)) {
       startsWithMatches.push(city);
     } else if (
       normName.includes(q) ||
       normAscii.includes(q) ||
       normCountry.includes(q) ||
-      code.includes(q)
+      (code && code.includes(q))
     ) {
       otherMatches.push(city);
     }
 
-    if (startsWithMatches.length + otherMatches.length >= limit * 2) {
+    if (exactCodeMatches.length + startsWithMatches.length + otherMatches.length >= limit * 3) {
       break;
     }
   }
 
-  return [...startsWithMatches, ...otherMatches].slice(0, limit);
+  // Sort startsWith matches with popular first
+  startsWithMatches.sort((a, b) => (b.popular ? 1 : 0) - (a.popular ? 1 : 0));
+
+  return [...exactCodeMatches, ...startsWithMatches, ...otherMatches].slice(0, limit);
 }
 
 export function findCityByName(name: string): WorldCity | undefined {
   const q = normalize(name);
   return worldCities.find(
-    (c) => normalize(c.name) === q || normalize(c.asciiName) === q || (c.code && normalize(c.code) === q)
+    (c) =>
+      normalize(c.name) === q ||
+      normalize(c.asciiName) === q ||
+      (c.code && normalize(c.code) === q)
   );
 }
