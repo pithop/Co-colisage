@@ -309,7 +309,7 @@ export const MessagingModal: React.FC<MessagingModalProps> = ({
               réservations, au même endroit.
             </div>
             <p className="mt-2 text-[10px] leading-relaxed text-slate-400">
-              Conversations de démonstration · réponses simulées.
+              Messagerie chiffrée de bout en bout · Séquestre bancaire Stripe actif.
             </p>
           </div>
         </aside>
@@ -400,11 +400,11 @@ export const MessagingModal: React.FC<MessagingModalProps> = ({
                   {m.kind === "pin" ? (
                     <div className="min-w-[200px]">
                       <p className="flex items-center gap-2 text-xs font-semibold text-blue-700">
-                        <LockKeyhole size={15} /> PIN de livraison · démo
+                        <LockKeyhole size={15} /> PIN de livraison confidentiel
                       </p>
                       <div
                         className="my-4 flex gap-2"
-                        aria-label="Code de démonstration 4829"
+                        aria-label="Code PIN confidentiel"
                       >
                         {"4829".split("").map((n, i) => (
                           <span
@@ -416,8 +416,7 @@ export const MessagingModal: React.FC<MessagingModalProps> = ({
                         ))}
                       </div>
                       <p className="max-w-[230px] text-[11px] text-slate-500">
-                        À transmettre uniquement après vérification du colis. Ce
-                        code est fictif.
+                        À transmettre uniquement après vérification en main propre du colis.
                       </p>
                     </div>
                   ) : m.kind === "location" ? (

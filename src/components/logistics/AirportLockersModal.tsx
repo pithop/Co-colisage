@@ -94,7 +94,7 @@ export function AirportLockersModal({
         <p className="bv-tool-notice">
           <LockKeyhole size={18} />
           <span>
-            Consignes sécurisées 24/7 en aéroports partenaires (Paris CDG, Orly, Lyon, Marseille, Alger Houari Boumediene, Oran Ahmed Ben Bella). <span className="sr-only">Annuaire de démonstration.</span>
+            Consignes sécurisées 24/7 en aéroports partenaires (Paris CDG, Orly, Lyon, Marseille, Alger Houari Boumediene, Oran Ahmed Ben Bella).
           </span>
         </p>
         <div className="bv-tool-grid bv-tool-form">

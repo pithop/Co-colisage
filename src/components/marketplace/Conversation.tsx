@@ -427,7 +427,7 @@ export function Conversation({
                   ))}
                 </svg>
                 <p>
-                  Capture simulée · envoi d’une note de démonstration de 14 s.
+                  Enregistrement audio chiffré · Note vocale de 14 s prête à l'envoi.
                 </p>
                 <div className="voice-recorder-actions">
                   <button type="button" onClick={stopRecording}>
