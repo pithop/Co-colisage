@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDatabaseQuery } from "../../hooks/useDatabaseQuery";
+import { useAuth } from "../../context/AuthContext";
 import {
   Check,
   Wallet,
@@ -13,6 +14,8 @@ import {
   Clock3,
   MessageCircle,
   Zap,
+  UserCheck,
+  AlertCircle,
 } from "lucide-react";
 export type Intention = "request" | "shop" | "carry" | "send" | "receive";
 export function Profile({
@@ -62,6 +65,7 @@ export function Profile({
   onOpenExpediteurDashboard?: () => void;
   onOpenCarrierDashboard?: () => void;
 }) {
+  const { user, profileSelection, setProfileSelection, isKycVerified, openKycModal } = useAuth();
   const [activeRole, setActiveRole] = useState<
     "carry" | "send" | "request" | "receive"
   >("request");
@@ -119,6 +123,95 @@ export function Profile({
         </span>
         <ChevronRight size={20} />
       </button>
+
+      {/* Profile Selection & Activation */}
+      <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 space-y-4 my-2 text-left">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <UserCheck size={18} className="text-blue-600 dark:text-blue-400" />
+              Choix de vos profils applicatifs
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Sélectionnez si vous souhaitez utiliser l'application comme Voyageur (Shop &amp; Go), Expéditeur (Bag &amp; Go), ou les deux.
+            </p>
+          </div>
+          {isKycVerified ? (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 shrink-0 self-start sm:self-auto">
+              <ShieldCheck size={13} />
+              eIDAS Vérifié
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={openKycModal}
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/20 transition-colors shrink-0 self-start sm:self-auto"
+            >
+              <AlertCircle size={13} />
+              Déposer mes documents
+            </button>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+          {[
+            {
+              id: "voyageur" as const,
+              title: "Voyageur (Shop & Go)",
+              desc: "Rentabiliser mes kilos et faire des achats",
+              reqKyc: true,
+            },
+            {
+              id: "expediteur" as const,
+              title: "Expéditeur (Bag & Go)",
+              desc: "Trouver un voyageur et expédier mes colis",
+              reqKyc: false,
+            },
+            {
+              id: "both" as const,
+              title: "Les 2 Profils",
+              desc: "Accès complet aux deux plateformes",
+              reqKyc: true,
+            },
+          ].map((item) => {
+            const active = (profileSelection || "both") === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  const res = setProfileSelection(item.id);
+                  if (!res.success && res.requiresKyc) {
+                    openKycModal();
+                  }
+                }}
+                className={`p-3.5 rounded-xl border text-left transition-all relative ${
+                  active
+                    ? "border-blue-600 bg-blue-50/70 dark:bg-blue-950/40 text-blue-950 dark:text-blue-100 ring-2 ring-blue-500/20 shadow-sm"
+                    : "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300"
+                }`}
+              >
+                {active && (
+                  <div className="absolute top-2.5 right-2.5 w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center">
+                    <Check size={11} strokeWidth={3} />
+                  </div>
+                )}
+                <div className="font-semibold text-xs mb-1 flex items-center gap-1.5">
+                  <span>{item.title}</span>
+                  {item.reqKyc && !isKycVerified && (
+                    <span className="text-[9px] px-1 py-0.2 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-normal">
+                      KYC requis
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                  {item.desc}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+      </div>
       <section className="role-workspace" aria-label="Mes quatre rôles">
         <div className="role-tabs" aria-label="Choisir une activité">
           {(
@@ -351,7 +444,11 @@ export function Profile({
             <Award size={24} />
             <div>
               <h3>Statut Super Voyageur</h3>
-              <p>La confiance se construit à chaque trajet.</p>
+              <p>
+                {(user?.completedDeliveries || 0) >= 5
+                  ? "La confiance se construit à chaque trajet."
+                  : "Complétez vos 5 premières missions pour débloquer le badge Super Voyageur."}
+              </p>
             </div>
           </div>
           <ul className="trust-criteria">
@@ -359,35 +456,42 @@ export function Profile({
               {
                 Icon: Zap,
                 label: "Réactivité de réponse",
-                value: 98,
+                value: (user?.completedDeliveries || 0) >= 5 ? 98 : 0,
                 max: 100,
-                display: "98%",
-                detail: "Réponse en moins de 15 min pour 98% des échanges.",
+                display: (user?.completedDeliveries || 0) >= 5 ? "98%" : "--",
+                detail: (user?.completedDeliveries || 0) >= 5
+                  ? "Réponse en moins de 15 min pour 98% des échanges."
+                  : "Calculé automatiquement après vos premiers échanges en direct.",
               },
               {
                 Icon: Clock3,
                 label: "Ponctualité",
-                value: 99,
+                value: (user?.completedDeliveries || 0) >= 5 ? 99 : 0,
                 max: 100,
-                display: "99%",
-                detail: "99% des rendez-vous honorés à l’heure convenue.",
+                display: (user?.completedDeliveries || 0) >= 5 ? "99%" : "--",
+                detail: (user?.completedDeliveries || 0) >= 5
+                  ? "99% des rendez-vous honorés à l’heure convenue."
+                  : "Calculé après votre première remise de colis.",
               },
               {
                 Icon: MessageCircle,
                 label: "Échange clair",
-                value: 4.9,
+                value: (user?.reviewsCount || 0) > 0 ? (user?.rating || 5) : 0,
                 max: 5,
-                display: "4.9 / 5",
-                detail:
-                  "Une note de 4.9 sur 5 pour la clarté des échanges et des instructions.",
+                display: (user?.reviewsCount || 0) > 0 ? `${(user?.rating || 5.0).toFixed(1)} / 5` : "--",
+                detail: (user?.reviewsCount || 0) > 0
+                  ? `Note moyenne basée sur ${user?.reviewsCount} avis client.`
+                  : "Calculé à partir des avis reçus des expéditeurs.",
               },
               {
                 Icon: Package,
                 label: "Marchandise intacte",
-                value: 100,
+                value: (user?.completedDeliveries || 0) >= 5 ? 100 : 0,
                 max: 100,
-                display: "100%",
-                detail: "100% des marchandises remises en bon état.",
+                display: (user?.completedDeliveries || 0) >= 5 ? "100%" : "--",
+                detail: (user?.completedDeliveries || 0) >= 5
+                  ? "100% des marchandises remises en bon état."
+                  : "Calculé à partir de vos livraisons validées par code PIN.",
               },
             ].map(({ Icon, label, value, max, display, detail }, index) => (
               <li key={label}>
