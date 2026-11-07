@@ -242,36 +242,6 @@ export function MarketplaceHeader(props: Props) {
               <Compass size={18} />
             </button>
 
-            <button
-              type="button"
-              className="header-tool mobile-header-link"
-              aria-label="Mes expéditions"
-              title="Mes expéditions"
-              onClick={() => navigate("tracking")}
-            >
-              <Package size={18} />
-              <span className="header-tool-label">Expéditions</span>
-            </button>
-            <button
-              type="button"
-              className="header-tool mobile-header-link"
-              aria-label="Radar Mondial"
-              title="Radar Mondial"
-              onClick={() => navigate("radar")}
-            >
-              <Globe2 size={18} />
-              <span className="header-tool-label">Radar</span>
-            </button>
-            <button
-              className="header-tool mobile-header-link"
-              aria-label="Arbitrage Vols"
-              title="Arbitrage Vols"
-              onClick={() => navigate("arbitrage")}
-            >
-              <Plane size={18} />
-                <span className="header-tool-label">Arbitrage</span>
-            </button>
-
             {props.showAdmin && (
               <button
                 className="header-tool"
@@ -377,46 +347,48 @@ export function MarketplaceHeader(props: Props) {
         </nav>
       </div>
 
-      {/* Mobile Platform Switcher Strip */}
-      <div className="md:hidden flex items-center justify-center px-4 py-2 bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200/60 dark:border-slate-800">
-        <div
-          className="flex items-center w-full max-w-xs p-1 rounded-2xl bg-slate-200/80 dark:bg-slate-800 border border-slate-300/80 dark:border-slate-700 shadow-inner"
-          role="radiogroup"
-          aria-label="Choisir la plateforme mobile"
-        >
-          <button
-            type="button"
-            role="radio"
-            aria-checked={activePlatform === 'shopandgo'}
-            onClick={() => handleSelectPlatform('shopandgo')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              activePlatform === 'shopandgo'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400'
-            }`}
+      {/* Mobile Platform Switcher Strip - Only on Explore / Platform routes */}
+      {(route === "explore" || route === "shopandgo" || route === "bagandgo" || route === "") && (
+        <div className="md:hidden flex items-center justify-center px-4 py-2 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/60 dark:border-slate-800">
+          <div
+            className="flex items-center w-full max-w-xs p-1 rounded-2xl bg-slate-200/80 dark:bg-slate-800 border border-slate-300/80 dark:border-slate-700 shadow-inner"
+            role="radiogroup"
+            aria-label="Choisir la plateforme mobile"
           >
-            <ShoppingBag size={13} />
-            <span>Shop &amp; Go</span>
-            <span className="text-[9px] px-1 rounded bg-black/15 uppercase font-medium">Voyageur</span>
-          </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={activePlatform === 'shopandgo'}
+              onClick={() => handleSelectPlatform('shopandgo')}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-bold transition-all min-h-[36px] ${
+                activePlatform === 'shopandgo'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400'
+              }`}
+            >
+              <ShoppingBag size={13} />
+              <span>Shop &amp; Go</span>
+              <span className="text-[9px] px-1 rounded bg-black/15 uppercase font-medium">Voyageur</span>
+            </button>
 
-          <button
-            type="button"
-            role="radio"
-            aria-checked={activePlatform === 'bagandgo'}
-            onClick={() => handleSelectPlatform('bagandgo')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              activePlatform === 'bagandgo'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400'
-            }`}
-          >
-            <Package size={13} />
-            <span>Bag &amp; Go</span>
-            <span className="text-[9px] px-1 rounded bg-black/15 uppercase font-medium">Expéditeur</span>
-          </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={activePlatform === 'bagandgo'}
+              onClick={() => handleSelectPlatform('bagandgo')}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-bold transition-all min-h-[36px] ${
+                activePlatform === 'bagandgo'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400'
+              }`}
+            >
+              <Package size={13} />
+              <span>Bag &amp; Go</span>
+              <span className="text-[9px] px-1 rounded bg-black/15 uppercase font-medium">Expéditeur</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </header>
   );
 }

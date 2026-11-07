@@ -6399,6 +6399,14 @@
     font-weight: 650;
   }
 
+  .mobile-nav-tab.active.active-emerald {
+    color: #059669;
+  }
+
+  .mobile-nav-tab.active.active-blue {
+    color: #2563eb;
+  }
+
   .nav-tab-icon-wrap {
     position: relative;
     display: flex;
@@ -6446,6 +6454,14 @@
     height: 3px;
     background: #2563eb;
     border-radius: 999px;
+  }
+
+  .mobile-nav-tab.active-emerald .nav-tab-active-pill {
+    background: #059669;
+  }
+
+  .mobile-nav-tab.active-blue .nav-tab-active-pill {
+    background: #2563eb;
   }
 }
 
@@ -8481,6 +8497,26 @@ html[data-theme="dark"] .mobile-nav-tab,
 html[data-theme="dark"] .mobile-nav-tab.active,
 .dark .mobile-nav-tab.active {
   color: #60a5fa;
+}
+
+html[data-theme="dark"] .mobile-nav-tab.active.active-emerald,
+.dark .mobile-nav-tab.active.active-emerald {
+  color: #34d399;
+}
+
+html[data-theme="dark"] .mobile-nav-tab.active.active-blue,
+.dark .mobile-nav-tab.active.active-blue {
+  color: #60a5fa;
+}
+
+html[data-theme="dark"] .mobile-nav-tab.active.active-emerald .nav-tab-active-pill,
+.dark .mobile-nav-tab.active.active-emerald .nav-tab-active-pill {
+  background: #34d399;
+}
+
+html[data-theme="dark"] .mobile-nav-tab.active.active-blue .nav-tab-active-pill,
+.dark .mobile-nav-tab.active.active-blue .nav-tab-active-pill {
+  background: #60a5fa;
 }
 
 html[data-theme="dark"] .market-dialog,

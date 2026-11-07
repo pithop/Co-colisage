@@ -19,40 +19,7 @@ export const money = (cents: number) =>
     cents / 100,
   );
 
-const history: WalletTransaction[] = [
-  {
-    id: "EP-0144",
-    title: "Commission · Paris–Lyon",
-    detail: "Remise validée par QR code",
-    at: "2026-11-03T14:30:00Z",
-    cents: 22000,
-    status: "Débloqué",
-  },
-  {
-    id: "EP-0143",
-    title: "Commission · Marseille–Alger",
-    detail: "Remise validée par QR code",
-    at: "2026-11-02T10:00:00Z",
-    cents: 12500,
-    status: "Débloqué",
-  },
-  {
-    id: "EP-0142",
-    title: "Virement SEPA instantané",
-    detail: "Compte bancaire •••• 0189 · demande enregistrée",
-    at: "2026-11-02T12:00:00Z",
-    cents: -10000,
-    status: "Virement",
-  },
-  {
-    id: "EP-0141",
-    title: "Commission · Paris–Lille",
-    detail: "Remise validée par QR code",
-    at: "2026-11-01T09:00:00Z",
-    cents: 10000,
-    status: "Débloqué",
-  },
-];
+const history: WalletTransaction[] = [];
 
 // Derive releases from the persisted handover state: visiting the wallet cannot
 // release a deposit or credit the same completed delivery twice.
@@ -61,7 +28,7 @@ export function walletTransactions(
   transfers: WalletTransaction[],
 ) {
   const deposits: WalletTransaction[] = conversations
-    .filter((c) => c.id === "nike-air-max" || c.stage !== "discussion")
+    .filter((c) => c.stage !== "discussion")
     .map((c) => ({
       id: `deposit-${c.id}`,
       title: `Caution · ${c.subject}`,

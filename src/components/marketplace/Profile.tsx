@@ -16,7 +16,11 @@ import {
   Zap,
   UserCheck,
   AlertCircle,
+  Sliders,
+  Globe,
 } from "lucide-react";
+import { ThemeToggle } from "../common/ThemeToggle";
+import { LanguageSelector } from "../../context/LanguageContext";
 export type Intention = "request" | "shop" | "carry" | "send" | "receive";
 export function Profile({
   actorId,
@@ -549,6 +553,37 @@ export function Profile({
           aria-describedby="auto-accept-hint"
         />
       </div>
+
+      {/* Paramètres & Affichage (Langue & Thème) */}
+      <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 space-y-4 my-2 text-left">
+        <div>
+          <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Sliders size={18} className="text-blue-600 dark:text-blue-400" />
+            Paramètres &amp; Affichage
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Personnalisez votre langue d'affichage et le thème visuel de BagVoyage.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <div className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+            <div className="flex items-center gap-2">
+              <Globe size={16} className="text-slate-500 dark:text-slate-400" />
+              <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">Langue</span>
+            </div>
+            <LanguageSelector location="footer" />
+          </div>
+
+          <div className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">Mode sombre / clair</span>
+            </div>
+            <ThemeToggle showLabel className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-medium" />
+          </div>
+        </div>
+      </div>
+
       <button
         className="primary-button"
         disabled={!selected.length}

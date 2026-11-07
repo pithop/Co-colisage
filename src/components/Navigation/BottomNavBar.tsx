@@ -85,7 +85,7 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate }: Props
             <button
               key={item.key}
               type="button"
-              className={`mobile-nav-tab ${active ? "active" : ""}`}
+              className={`mobile-nav-tab ${active ? `active ${activePlatform === "shopandgo" ? "active-emerald" : "active-blue"}` : ""}`}
               aria-current={active ? "page" : undefined}
               aria-label={item.label}
               onClick={() => {

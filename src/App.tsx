@@ -204,19 +204,19 @@ function Marketplace() {
   const previousRoute = useRef(route);
   const [mode, setMode] = useState<"requests" | "trips">("requests");
   const [requests, setRequests, requestsReady, requestsError, retryRequests] =
-    useProductionStore("purchase_requests", "ep-requests-v1", initialRequests);
+    useProductionStore("purchase_requests", "bv-requests-v2", initialRequests);
   const [trips, setTrips, tripsReady, tripsError, retryTrips] =
-    useProductionStore("trips", "ep-trips-v1", initialTrips);
+    useProductionStore("trips", "bv-trips-v2", initialTrips);
   const arbitrageRequests = useMemo(
     () => requests.filter(request => request.ownerId !== actorId),
     [requests, actorId],
   );
   const [autoAccept, setAutoAccept] = useStoredState(
-    "ep-auto-accept-v1",
+    "bv-auto-accept-v2",
     false,
   );
   const [intentions, setIntentions] = useStoredState<Intention[]>(
-    "ep-intentions-v1",
+    "bv-intentions-v2",
     ["request"],
   );
   const [
@@ -227,11 +227,12 @@ function Marketplace() {
     retryConversations,
   ] = useProductionStore(
     "conversations",
-    "ep-conversations-v1",
+    "bv-conversations-v2",
     initialConversations,
   );
   const [ledger, setLedger, walletReady, walletError, retryWallet] =
-    useProductionStore("wallet_transactions", "ep-wallet-ledger-v1", []);
+    useProductionStore("wallet_transactions", "bv-wallet-ledger-v2", []);
+
   const transfers = ledger.filter(
     (tx) => tx.status === "Virement" && !tx.id.startsWith("EP-"),
   );
