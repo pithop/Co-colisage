@@ -7,8 +7,10 @@ import {
   Plane, 
   ArrowRight, 
   ShieldAlert,
+  ShieldCheck,
   Sparkles,
-  Loader2
+  Loader2,
+  Lock,
 } from 'lucide-react';
 import { ProductItem } from '../../types';
 
@@ -49,36 +51,80 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
   const isAllValid = receiptUploaded && ticketUploaded;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in duration-200"
+      onClick={onClose}
+    >
       <div 
         role="dialog"
         aria-modal="true"
         aria-labelledby="proof-title"
-        className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-xl bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-cyan-500/30 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-400" />
-            <h3 id="proof-title" className="font-bold text-sm">Validation Obligatoire du Shopper</h3>
+        {/* Oceanic Brand Header */}
+        <div className="relative bg-gradient-to-r from-[#072a4a] via-[#05375c] to-[#0276aa] px-6 py-5 text-white flex items-center justify-between border-b border-cyan-500/25">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Sparkles className="w-4 h-4 text-cyan-300" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-200">
+                Protocole Shop &amp; Go
+              </span>
+            </div>
+            <h3 id="proof-title" className="font-black text-lg text-white">
+              Validation Obligatoire du Shopper
+            </h3>
+            <p className="text-xs text-cyan-100/90 font-medium">
+              Téléversement des deux preuves tangibles pour débloquer la remise
+            </p>
           </div>
-          <button onClick={onClose} aria-label="Fermer" className="text-slate-400 hover:text-white">
+          <button 
+            onClick={onClose} 
+            aria-label="Fermer" 
+            className="p-1.5 rounded-full text-cyan-200 hover:bg-white/10 hover:text-white transition-colors"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto space-y-6">
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-              Étape 2 du protocole de confiance
-            </span>
-            <h4 className="text-lg font-extrabold text-slate-900 mt-1">
-              Téléversement des deux preuves tangibles
-            </h4>
-            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-              Pour éliminer toute fraude ou transport illicite, le Shopper doit obligatoirement prouver qu'il a lui-même acheté l'article en boutique et qu'il possède un vol confirmé.
+        <div className="p-6 overflow-y-auto space-y-5">
+          {/* 3-Step Progress Bar */}
+          <div className="grid grid-cols-3 gap-2">
+            <div className="flex items-center gap-2 p-2 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500">
+              <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-black">
+                <CheckCircle2 size={12} />
+              </div>
+              <div className="min-w-0">
+                <div className="text-[11px] font-bold truncate">1. Commande</div>
+                <div className="text-[9px] text-slate-400 truncate">Séquestre acté</div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 p-2 rounded-xl border bg-cyan-50 dark:bg-cyan-950/40 border-[#00c2cb] text-[#072a4a] dark:text-cyan-200 ring-2 ring-cyan-400/20">
+              <div className="w-5 h-5 rounded-full bg-[#00c2cb] text-[#072a4a] flex items-center justify-center text-[10px] font-black">
+                2
+              </div>
+              <div className="min-w-0">
+                <div className="text-[11px] font-bold truncate">2. Preuves</div>
+                <div className="text-[9px] text-slate-400 truncate">Ticket &amp; Vol</div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 p-2 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500">
+              <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center text-[10px] font-black">
+                3
+              </div>
+              <div className="min-w-0">
+                <div className="text-[11px] font-bold truncate">3. Remise</div>
+                <div className="text-[9px] text-slate-400 truncate">Code PIN</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/25">
+            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+              Pour éliminer toute fraude ou contrefaçon, vous devez prouver que vous avez acheté l'article vous-même en boutique officielle et que votre vol est confirmé.
             </p>
           </div>
 
@@ -194,25 +240,52 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
             )}
           </div>
 
+          {/* 3 Reassurance Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-cyan-50/50 dark:bg-slate-800/60 border border-cyan-100 dark:border-slate-700">
+              <ShieldCheck size={16} className="text-[#00c2cb] shrink-0 mt-0.5" />
+              <div>
+                <p className="text-[11px] font-bold text-slate-900 dark:text-white">Séquestre Stripe</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400">Remboursement garanti sous séquestre.</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-cyan-50/50 dark:bg-slate-800/60 border border-cyan-100 dark:border-slate-700">
+              <Plane size={16} className="text-[#00c2cb] shrink-0 mt-0.5" />
+              <div>
+                <p className="text-[11px] font-bold text-slate-900 dark:text-white">Vol IATA Confirmé</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400">Rapprochement PNR et carte d'embarquement.</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-cyan-50/50 dark:bg-slate-800/60 border border-cyan-100 dark:border-slate-700">
+              <Lock size={16} className="text-[#00c2cb] shrink-0 mt-0.5" />
+              <div>
+                <p className="text-[11px] font-bold text-slate-900 dark:text-white">Facture Officielle</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400">Contrôle de ticket contre la contrefaçon.</p>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 sm:p-6 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-          <div className="flex items-center gap-1 text-xs text-slate-500">
-            <ShieldAlert className="w-4 h-4 text-blue-500" />
-            <span>Preuves cryptées de bout en bout</span>
+        <div className="p-4 sm:p-5 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+            <ShieldAlert className="w-4 h-4 text-[#00c2cb]" />
+            <span>Preuves cryptées AES-256 de bout en bout</span>
           </div>
 
           <button
             onClick={onProceedToDelivery}
             disabled={!isAllValid}
-            className={`px-5 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 ${
+            className={`w-full sm:w-auto px-6 py-2.5 rounded-xl font-black text-xs transition-all flex items-center justify-center gap-2 ${
               isAllValid
-                ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md active:scale-95'
-                : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                ? 'bg-[#00c2cb] hover:bg-cyan-400 text-[#072a4a] shadow-lg shadow-cyan-500/25 active:scale-95'
+                : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'
             }`}
           >
-            <span>Passer à la simulation de livraison (Code PIN)</span>
+            <span>Passer à la livraison (Code PIN)</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

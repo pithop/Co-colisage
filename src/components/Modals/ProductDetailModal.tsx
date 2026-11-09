@@ -31,26 +31,31 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const totalEscrow = Number((product.price + product.gain + platformFee).toFixed(2));
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in duration-200"
+      onClick={onClose}
+    >
       <div 
-        className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-cyan-500/30 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        {/* Oceanic Top Header */}
+        <div className="relative bg-gradient-to-r from-[#072a4a] via-[#05375c] to-[#0276aa] px-6 py-4 border-b border-cyan-500/25 flex items-center justify-between text-white">
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-200 bg-white/10 px-2 py-0.5 rounded-full">
               {product.brand}
             </span>
-            <span className="text-slate-300">•</span>
-            <span className="text-xs font-semibold text-blue-600">
+            <span className="text-cyan-400">•</span>
+            <span className="text-xs font-bold text-white flex items-center gap-1">
+              <Sparkles size={14} className="text-cyan-300" />
               Boutique Inversée
             </span>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+            aria-label="Fermer"
+            className="p-1.5 rounded-full text-cyan-200 hover:text-white hover:bg-white/10 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -164,17 +169,17 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         </div>
 
         {/* Modal Actions Footer */}
-        <div className="p-4 sm:p-6 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-end gap-3">
+        <div className="p-4 sm:p-5 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-end gap-3">
           <button
             onClick={onClose}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-xs hover:bg-slate-100 transition-colors"
+            className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
           >
             Fermer
           </button>
 
           <button
             onClick={() => onAcceptMission(product)}
-            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95"
+            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#00c2cb] hover:bg-cyan-400 text-[#072a4a] font-black text-xs shadow-lg shadow-cyan-500/25 transition-all flex items-center justify-center gap-2 active:scale-95"
           >
             <Plane className="w-4 h-4 -rotate-45" />
             <span>Accepter d'acheter et transporter (Shopper)</span>

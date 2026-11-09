@@ -47,31 +47,38 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in duration-200"
+      onClick={onClose}
+    >
       <div 
-        className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 text-slate-900"
+        className="relative w-full max-w-xl bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-cyan-500/30 overflow-hidden flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 text-slate-900 dark:text-white"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="px-6 py-4 bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-white flex items-center justify-between">
+        {/* Oceanic Brand Header */}
+        <div className="px-6 py-5 bg-gradient-to-r from-[#072a4a] via-[#05375c] to-[#0276aa] text-white flex items-center justify-between border-b border-cyan-500/25">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold shadow-md">
-              <Zap className="w-5 h-5 text-amber-300" />
+            <div className="w-10 h-10 rounded-xl bg-[#00c2cb] text-[#072a4a] flex items-center justify-center font-black shadow-md shadow-cyan-500/30">
+              <Zap className="w-5 h-5 text-[#072a4a]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-extrabold text-base text-white">Algorithme d'Arbitrage IA</h3>
-                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full font-extrabold">
-                  {opportunity.netProfit >= 0 ? 'Voyage 100% financé' : 'Voyage à compléter'}
+                <h3 className="font-black text-base text-white">Algorithme d'Arbitrage IA</h3>
+                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full font-black">
+                  {opportunity.netProfit >= 0 ? 'Billet 100% financé' : 'Billet subventionné'}
                 </span>
               </div>
-              <p className="text-xs text-slate-300">
-                Billet d'avion financé par les commissions de courses
+              <p className="text-xs text-cyan-100/90 font-medium">
+                Optimisation temps réel du coût de votre vol par les missions
               </p>
             </div>
           </div>
 
-          <button onClick={onClose} className="p-1 rounded-full text-slate-400 hover:text-white">
+          <button 
+            onClick={onClose} 
+            aria-label="Fermer" 
+            className="p-1.5 rounded-full text-cyan-200 hover:text-white hover:bg-white/10 transition-colors"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -191,7 +198,7 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
               {/* Bouton CTA */}
               <button
                 onClick={handleConfirm}
-                className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3.5 bg-[#00c2cb] hover:bg-cyan-400 active:scale-[0.98] text-[#072a4a] font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-cyan-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>Confirmer les missions sélectionnées</span>
                 <ArrowRight className="w-4 h-4" />
