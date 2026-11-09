@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Building2, FileCheck, Plus, Trash2 } from "lucide-react";
+import { Building2, FileCheck, Plus, Trash2, ShieldCheck, Truck, Check, Lock } from "lucide-react";
 import { Dialog } from "../marketplace/Dialog";
 import { readAttachment, type Attachment } from "../../services/uploads";
 import {
@@ -8,12 +8,14 @@ import {
   type ProApplication,
 } from "../../services/productionDb";
 import type { User } from "../../types/auth";
+
 export const proDocumentLabels = {
   registry: "Kbis ou extrait CNRC",
   license: "Licence de transport DREAL / Ministère des Transports",
   insurance: "Attestation RC Pro marchandises",
   identity: "Pièce d’identité du gérant",
 } as const;
+
 export function ProOnboardingModal({
   user,
   onClose,
@@ -38,18 +40,63 @@ export function ProOnboardingModal({
   const [busy, setBusy] = useState(false);
   const [reading, setReading] = useState(0);
   const [error, setError] = useState("");
+
   const updateVehicle = (id: string, values: Partial<(typeof fleet)[number]>) =>
     setFleet((rows) =>
       rows.map((row) => (row.id === id ? { ...row, ...values } : row)),
     );
+
+  const docCount = Object.keys(documents).length;
+  const currentStep = docCount >= 4 ? 3 : docCount > 0 ? 2 : 1;
+
   return (
-    <Dialog title="Devenir transporteur professionnel" onClose={onClose} wide>
+    <Dialog title="Devenir transporteur professionnel agréé" onClose={onClose} wide>
+      {/* 3-Step Timeline */}
+      <div className="grid grid-cols-3 gap-2 mb-4 p-2 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+        {[
+          { num: 1, title: 'Entreprise', subtitle: 'SIRET / CNRC' },
+          { num: 2, title: 'Licences & RC', subtitle: 'DREAL & Assurance' },
+          { num: 3, title: 'Flotte & Capacités', subtitle: 'Charges utiles (kg/m³)' },
+        ].map((s) => {
+          const active = currentStep === s.num;
+          const completed = currentStep > s.num;
+          return (
+            <div
+              key={s.num}
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all ${
+                completed
+                  ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30'
+                  : active
+                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs border border-slate-200 dark:border-slate-600'
+                  : 'text-slate-400 dark:text-slate-500'
+              }`}
+            >
+              <span
+                className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 ${
+                  completed
+                    ? 'bg-emerald-500 text-white'
+                    : active
+                    ? 'bg-[#072a4a] text-white dark:bg-cyan-400 dark:text-[#072a4a]'
+                    : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
+                }`}
+              >
+                {completed ? <Check size={12} strokeWidth={3} /> : s.num}
+              </span>
+              <div className="min-w-0 hidden sm:block">
+                <p className="text-xs font-bold leading-tight truncate">{s.title}</p>
+                <p className="text-[10px] opacity-75 truncate">{s.subtitle}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
       <div className="composer-heading">
         <Building2 size={32} />
         <div>
           <span className="eyebrow">BAGVOYAGE BUSINESS</span>
           <h3>Votre métier. Un nouveau territoire.</h3>
-          <p>Un dossier complet pour faire reconnaître votre entreprise.</p>
+          <p>Dossier officiel pour agrémenter votre flotte et débloquer les groupages volumétriques.</p>
         </div>
       </div>
       <form

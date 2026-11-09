@@ -49,6 +49,7 @@ import {
 import { Dialog } from "./components/marketplace/Dialog";
 import { AuthModal } from "./components/Auth/AuthModal";
 import { KycDocumentsModal } from "./components/Auth/KycDocumentsModal";
+import { HowItWorksModal } from "./components/Modals/HowItWorksModal";
 import {
   createCodes,
   initialConversations,
@@ -188,6 +189,13 @@ function Marketplace() {
   const [proofUploadOpen, setProofUploadOpen] = useState(false);
   const [gpsTrackingOpen, setGpsTrackingOpen] = useState(false);
   const [pinModalOpen, setPinModalOpen] = useState(false);
+  const [howItWorksModalOpen, setHowItWorksModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpenHowItWorks = () => setHowItWorksModalOpen(true);
+    window.addEventListener("bv:open-how-it-works", handleOpenHowItWorks);
+    return () => window.removeEventListener("bv:open-how-it-works", handleOpenHowItWorks);
+  }, []);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -738,7 +746,7 @@ function Marketplace() {
                 setPublishKind("trips");
                 setPublish(true);
               }}
-              onScanBoardingPass={() => setIataScannerOpen(true)}
+              onScanBoardingPass={() => setScanner(true)}
             />
           ) : activePlatform === "shopandgo" ? (
             <ShopAndGoPlatform
@@ -1296,6 +1304,10 @@ function Marketplace() {
           }}
         />
       )}
+      <HowItWorksModal
+        isOpen={howItWorksModalOpen}
+        onClose={() => setHowItWorksModalOpen(false)}
+      />
     </div>
   );
 }

@@ -124,17 +124,17 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
   return (
     <div className="shopandgo-platform-container max-w-5xl mx-auto px-4 py-3 space-y-6 pb-36 text-left">
       {/* 1. Hero Photographic Banner matching Client Mockup 3 */}
-      <section className="relative overflow-hidden rounded-3xl bg-slate-900 text-white shadow-lg border border-cyan-500/20">
+      <section className="relative overflow-hidden rounded-[28px] bg-[#072a4a] text-white shadow-xl border border-cyan-500/25">
         <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 scale-105"
+          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
           style={{ backgroundImage: "url('/images/hero-luxury-shopper.jpg')" }}
         />
-        {/* Dark oceanic gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#072a4a]/95 via-[#072a4a]/85 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#072a4a] via-transparent to-transparent opacity-90" />
+        {/* Dark oceanic gradient overlay letting the sunlit arcade shine on the right */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#072a4a]/95 via-[#072a4a]/85 to-[#072a4a]/40 sm:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#072a4a]/90 via-transparent to-black/20" />
 
-        <div className="relative p-6 sm:p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-3.5 max-w-xl">
+        <div className="relative p-5 sm:p-7 md:p-8 flex flex-col md:flex-row items-center justify-between gap-5">
+          <div className="space-y-3 max-w-xl">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-400/20 backdrop-blur-md border border-cyan-400/40 text-cyan-200 text-xs font-semibold">
               <ShoppingCart size={13} className="text-cyan-300" />
               <span>Shop &amp; Go · Espace Achat &amp; Commande Boutique</span>
@@ -160,24 +160,13 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
             </div>
           </div>
 
-          <div className="hidden md:flex flex-col items-center justify-center p-5 rounded-2xl bg-[#062c47]/75 backdrop-blur-md border border-cyan-400/30 text-center shadow-xl">
+          <div className="hidden md:flex flex-col items-center justify-center p-5 rounded-2xl bg-[#062c47]/80 backdrop-blur-md border border-cyan-400/30 text-center shadow-xl">
             <div className="w-16 h-16 rounded-full bg-cyan-400/20 flex items-center justify-center mb-2">
               <ShoppingCart size={32} className="text-cyan-300 animate-pulse" />
             </div>
             <span className="text-xs font-bold text-white tracking-wide uppercase">Boutiques &amp; Duty-Free</span>
             <span className="text-[10px] text-cyan-200 mt-0.5">Achats exclusifs transfrontaliers</span>
           </div>
-        </div>
-
-        {/* Organic wave curve transition below hero */}
-        <div className="relative w-full overflow-hidden leading-none">
-          <svg
-            className="w-full h-5 sm:h-7 text-white dark:text-slate-900 fill-current block"
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-          >
-            <path d="M0,0 C150,90 350,-40 500,45 C650,120 900,20 1200,60 L1200,120 L0,120 Z" />
-          </svg>
         </div>
       </section>
 

@@ -164,31 +164,37 @@ server.listen(PORT, async () => {
     });
     console.log("Captured 24_bagandgo_mobile.jpg");
 
-    // 5. KYC Verification Modal Desktop
+    // 7. KYC Verification Modal Desktop
     const pageKyc = await desktopContext.newPage();
-    await pageKyc.goto(`http://localhost:${PORT}/#shopandgo`, { waitUntil: "networkidle" });
-    await pageKyc.waitForTimeout(800);
-    const kycBtn = pageKyc.locator("button:has-text('Vérification'), button:has-text('Identité'), button:has-text('Activer')").first();
+    await pageKyc.goto(`http://localhost:${PORT}/#voyageur`, { waitUntil: "networkidle" });
+    await pageKyc.waitForTimeout(1000);
+    // Find KYC trigger or click KYC button in header
+    const kycBtn = pageKyc.locator("button[aria-label='Vérification KYC'], button:has-text('Vérification'), button:has-text('Identité'), button:has-text('KYC')").first();
     if (await kycBtn.isVisible().catch(() => false)) {
       await kycBtn.click();
-      await pageKyc.waitForTimeout(800);
-      await pageKyc.screenshot({
-        path: path.join(outputDir, "25_kyc_verification_modal.jpg"),
-        type: "jpeg",
-        quality: 90,
-        fullPage: false,
+    } else {
+      await pageKyc.evaluate(() => {
+        const btn = document.querySelector("button[aria-label='Vérification KYC']");
+        if (btn) btn.click();
       });
-      console.log("Captured 25_kyc_verification_modal.jpg");
     }
+    await pageKyc.waitForTimeout(900);
+    await pageKyc.screenshot({
+      path: path.join(outputDir, "25_kyc_verification_modal.jpg"),
+      type: "jpeg",
+      quality: 90,
+      fullPage: false,
+    });
+    console.log("Captured 25_kyc_verification_modal.jpg");
 
-    // 6. Ticket Scanner Modal (Clean without demo tickets)
+    // 8. Ticket Scanner Modal
     const pageScan = await desktopContext.newPage();
-    await pageScan.goto(`http://localhost:${PORT}/#shopandgo`, { waitUntil: "networkidle" });
-    await pageScan.waitForTimeout(800);
+    await pageScan.goto(`http://localhost:${PORT}/#voyageur`, { waitUntil: "networkidle" });
+    await pageScan.waitForTimeout(1000);
     const scanBtn = pageScan.locator("button:has-text('Scanner billet IATA')").first();
     if (await scanBtn.isVisible().catch(() => false)) {
       await scanBtn.click();
-      await pageScan.waitForTimeout(800);
+      await pageScan.waitForTimeout(900);
       await pageScan.screenshot({
         path: path.join(outputDir, "17_ticket_scanner_modal.jpg"),
         type: "jpeg",
@@ -197,6 +203,20 @@ server.listen(PORT, async () => {
       });
       console.log("Captured 17_ticket_scanner_modal.jpg");
     }
+
+    // 9. How It Works Modal
+    const pageHow = await desktopContext.newPage();
+    await pageHow.goto(`http://localhost:${PORT}/#voyageur`, { waitUntil: "networkidle" });
+    await pageHow.waitForTimeout(1000);
+    await pageHow.evaluate(() => window.dispatchEvent(new CustomEvent("bv:open-how-it-works")));
+    await pageHow.waitForTimeout(900);
+    await pageHow.screenshot({
+      path: path.join(outputDir, "28_how_it_works_modal.jpg"),
+      type: "jpeg",
+      quality: 90,
+      fullPage: false,
+    });
+    console.log("Captured 28_how_it_works_modal.jpg");
 
     console.log("All new platform screenshots successfully generated!");
   } finally {

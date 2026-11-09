@@ -5,6 +5,7 @@ import {
   CirclePlus,
   Compass,
   Globe2,
+  HelpCircle,
   MessageCircle,
   Package,
   Plane,
@@ -332,6 +333,16 @@ export function MarketplaceHeader(props: Props) {
                 {props.unreadCount}
               </span>
             )}
+          </button>
+
+          <button
+            type="button"
+            className="header-tool hidden md:inline-flex text-cyan-300 hover:text-white"
+            aria-label="Comment ça marche"
+            title="Guide & Fonctionnement"
+            onClick={() => window.dispatchEvent(new CustomEvent("bv:open-how-it-works"))}
+          >
+            <HelpCircle size={18} />
           </button>
 
           <button

@@ -1,5 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Check, CheckCircle2, FileText, Loader2, Plane, ScanLine, ShieldCheck, UploadCloud, X } from 'lucide-react';
+import {
+  Check,
+  CheckCircle2,
+  FileText,
+  Loader2,
+  Lock,
+  Plane,
+  ScanLine,
+  ShieldCheck,
+  UploadCloud,
+  X,
+  Info,
+} from 'lucide-react';
 import type { FreightItem, TicketScanResult } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { maxBaggageOffer, readTicket } from '../../lib/ticketScanner';
@@ -9,11 +21,22 @@ interface TicketScannerModalProps {
   onClose: () => void;
   onTripCreated?: (trip: FreightItem) => void;
 }
-const steps = ['Compagnie', 'N° Vol', 'PNR', 'Passager', 'Dates', 'Franchise bagage'];
-const focus = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-4';
-const dateLabel = (date: string) => new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`));
 
-export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({ isOpen, onClose, onTripCreated }) => {
+const steps = ['Compagnie', 'N° Vol', 'PNR', 'Passager', 'Dates', 'Franchise bagage'];
+const focus = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2';
+const dateLabel = (date: string) =>
+  new Intl.DateTimeFormat('fr-FR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${date}T12:00:00Z`));
+
+export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({
+  isOpen,
+  onClose,
+  onTripCreated,
+}) => {
   const { user } = useAuth();
   const dialog = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
@@ -32,127 +55,585 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({ isOpen, 
 
   useEffect(() => {
     if (!isOpen) return;
-    setTicket(null); setError(''); setScanning(false); setProgress(0); setPrice(10); setCommission(25); published.current = false;
+    setTicket(null);
+    setError('');
+    setScanning(false);
+    setProgress(0);
+    setPrice(10);
+    setCommission(25);
+    published.current = false;
     const previous = document.activeElement as HTMLElement | null;
     const overflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     closeButton.current?.focus();
-    return () => { job.current?.abort(); document.body.style.overflow = overflow; previous?.focus(); };
+    return () => {
+      job.current?.abort();
+      document.body.style.overflow = overflow;
+      previous?.focus();
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;
   const maximum = ticket ? maxBaggageOffer(ticket.baggageAllowanceKg) : 0;
-  const close = () => { job.current?.abort(); onClose(); };
+  const close = () => {
+    job.current?.abort();
+    onClose();
+  };
+
   const scan = async (source: File) => {
     job.current?.abort();
-    const controller = new AbortController(); job.current = controller;
-    setTicket(null); setError(''); setScanning(true); setProgress(0);
+    const controller = new AbortController();
+    job.current = controller;
+    setTicket(null);
+    setError('');
+    setScanning(true);
+    setProgress(0);
     setFileName(source.name);
     try {
-      if (!['application/pdf', 'image/jpeg', 'image/png', 'image/webp'].includes(source.type) && !(source.type === '' && /\.(pdf|png|jpe?g|webp)$/i.test(source.name))) throw new Error('Choisissez un PDF, JPG, PNG ou WebP.');
-      if (!source.size || source.size > 15 * 1024 * 1024) throw new Error('Le fichier doit être non vide et inférieur à 15 Mo.');
-      const result = await readTicket(source, controller.signal, value => setProgress(Math.min(5, Math.floor(value * 6))));
+      if (
+        !['application/pdf', 'image/jpeg', 'image/png', 'image/webp'].includes(source.type) &&
+        !(source.type === '' && /\.(pdf|png|jpe?g|webp)$/i.test(source.name))
+      ) {
+        throw new Error('Choisissez un billet au format PDF, JPG, PNG ou WebP.');
+      }
+      if (!source.size || source.size > 15 * 1024 * 1024) {
+        throw new Error('Le fichier doit être non vide et inférieur à 15 Mo.');
+      }
+      const result = await readTicket(source, controller.signal, (value) =>
+        setProgress(Math.min(5, Math.floor(value * 6)))
+      );
       if (controller.signal.aborted) return;
-      setTicket(result); setOffer(maxBaggageOffer(result.baggageAllowanceKg)); setProgress(6);
+      setTicket(result);
+      setOffer(maxBaggageOffer(result.baggageAllowanceKg));
+      setProgress(6);
     } catch (cause) {
-      if (!controller.signal.aborted) setError(cause instanceof Error ? cause.message : 'Lecture impossible. Veuillez réessayer.');
-    } finally { if (!controller.signal.aborted) setScanning(false); }
+      if (!controller.signal.aborted) {
+        setError(cause instanceof Error ? cause.message : 'Lecture impossible. Veuillez réessayer.');
+      }
+    } finally {
+      if (!controller.signal.aborted) setScanning(false);
+    }
   };
 
   const publish = () => {
     if (!ticket || published.current || !onTripCreated) return;
     const limit = maxBaggageOffer(ticket.baggageAllowanceKg);
-    if (!Number.isFinite(offer) || offer < 1 || offer > limit || !Number.isInteger(offer)) { setError(`Vous pouvez proposer entre 1 et ${limit} kg maximum.`); return; }
-    if (!Number.isFinite(price) || price < 1 || price > 50 || !Number.isFinite(commission) || commission < 0 || commission > 100) return;
+    if (!Number.isFinite(offer) || offer < 1 || offer > limit || !Number.isInteger(offer)) {
+      setError(`Vous pouvez proposer entre 1 et ${limit} kg maximum.`);
+      return;
+    }
+    if (
+      !Number.isFinite(price) ||
+      price < 1 ||
+      price > 50 ||
+      !Number.isFinite(commission) ||
+      commission < 0 ||
+      commission > 100
+    ) {
+      return;
+    }
     published.current = true;
     try {
       onTripCreated({
-        id: `trip-${crypto.randomUUID()}`, title: `Trajet ${ticket.origin} → ${ticket.destination}`,
-        transportType: 'avion', transportLabel: ticket.airline, origin: ticket.origin, originCode: ticket.originCode,
-        destination: ticket.destination, destinationCode: ticket.destinationCode, departureDate: ticket.departureDate, departureTime: ticket.departureTime,
-        availableKg: offer, pricePerKg: price, shoppingCommission: commission, canCarryParcel: true, canBuyProduct: true,
-        travelerName: user?.name || ticket.passengerName, travelerAvatar: user?.avatar || '', rating: 0, reviewsCount: 0,
-        image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80',
-        description: `Données extraites par OCR. ${offer} kg disponibles sur ${ticket.baggageAllowanceKg} kg en ${ticket.baggageType === 'cabin' ? 'cabine' : 'soute'}. ${ticket.baggageAllowanceKg - limit} kg réservés aux effets personnels.`,
-        isTicketVerified: false, ticketScan: { ...ticket, pnr: '', passengerName: '', ticketVerified: false, maxAllowedOfferKg: limit },
+        id: `trip-${crypto.randomUUID()}`,
+        title: `Trajet ${ticket.origin} → ${ticket.destination}`,
+        transportType: 'avion',
+        transportLabel: ticket.airline,
+        origin: ticket.origin,
+        originCode: ticket.originCode,
+        destination: ticket.destination,
+        destinationCode: ticket.destinationCode,
+        departureDate: ticket.departureDate,
+        departureTime: ticket.departureTime,
+        availableKg: offer,
+        pricePerKg: price,
+        shoppingCommission: commission,
+        canCarryParcel: true,
+        canBuyProduct: true,
+        travelerName: user?.name || ticket.passengerName,
+        travelerAvatar: user?.avatar || '',
+        rating: 0,
+        reviewsCount: 0,
+        image:
+          'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80',
+        description: `Données extraites par OCR sécurisé. ${offer} kg disponibles sur ${ticket.baggageAllowanceKg} kg en ${ticket.baggageType === 'cabin' ? 'cabine' : 'soute'}. ${ticket.baggageAllowanceKg - limit} kg réservés aux effets personnels.`,
+        isTicketVerified: false,
+        ticketScan: {
+          ...ticket,
+          pnr: '',
+          passengerName: '',
+          ticketVerified: false,
+          maxAllowedOfferKg: limit,
+        },
       });
       close();
-    } catch { published.current = false; setError('La publication a échoué. Veuillez réessayer.'); }
+    } catch {
+      published.current = false;
+      setError('La publication a échoué. Veuillez réessayer.');
+    }
   };
 
+  const currentStep = ticket ? 3 : scanning ? 2 : 1;
+
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/70 p-3 backdrop-blur-md sm:p-6" onClick={event => { if (event.target === event.currentTarget) close(); }}>
-      <div ref={dialog} role="dialog" aria-modal="true" aria-labelledby="ticket-scanner-title" onKeyDown={event => {
-        if (event.key === 'Escape') { event.stopPropagation(); close(); }
-        if (event.key === 'Tab') {
-          const elements = dialog.current?.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), [tabindex="0"]');
-          if (!elements?.length) return;
-          const first = elements[0];
-          const last = elements[elements.length - 1];
-          if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-        }
-      }} className="flex max-h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-[28px] border border-white/30 bg-slate-50 text-slate-900 shadow-[0_32px_100px_-24px_rgba(0,0,0,0.6)]">
-        <header className="relative shrink-0 overflow-hidden bg-[#0A1128] px-6 pb-7 pt-6 text-white sm:px-8">
-          <div className="pointer-events-none absolute -right-12 -top-24 h-64 w-64 rounded-full bg-blue-500/20 blur-3xl" />
+    <div
+      className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/75 p-3 backdrop-blur-md sm:p-6"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) close();
+      }}
+    >
+      <div
+        ref={dialog}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ticket-scanner-title"
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') {
+            event.stopPropagation();
+            close();
+          }
+          if (event.key === 'Tab') {
+            const elements = dialog.current?.querySelectorAll<HTMLElement>(
+              'button:not(:disabled), input:not(:disabled), [tabindex="0"]'
+            );
+            if (!elements?.length) return;
+            const first = elements[0];
+            const last = elements[elements.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+              event.preventDefault();
+              last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault();
+              first.focus();
+            }
+          }
+        }}
+        className="flex max-h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-[28px] border border-cyan-500/30 bg-slate-50 text-slate-900 shadow-[0_32px_100px_-24px_rgba(7,42,74,0.7)]"
+      >
+        {/* Header with Oceanic Brand Palette */}
+        <header className="relative shrink-0 overflow-hidden bg-gradient-to-r from-[#072a4a] via-[#05375c] to-[#0276aa] px-6 pb-6 pt-6 text-white sm:px-8">
+          <div className="pointer-events-none absolute -right-12 -top-24 h-64 w-64 rounded-full bg-cyan-400/20 blur-3xl" />
           <div className="relative flex items-start justify-between gap-4">
             <div>
-              <div className="mb-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200"><ScanLine className="h-4 w-4" /> Scanner IATA Intelligent</div>
-              <h2 id="ticket-scanner-title" className="text-2xl font-semibold tracking-tight sm:text-3xl">Votre billet. Votre prochain trajet.</h2>
-              <p className="mt-2 max-w-md text-sm leading-relaxed text-slate-300">Déposez votre carte d’embarquement pour extraire le vol et calculer votre franchise disponible.</p>
+              <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-cyan-300">
+                <ScanLine className="h-4 w-4" />
+                <span>Scanner IATA Intelligent</span>
+              </div>
+              <h2 id="ticket-scanner-title" className="text-xl sm:text-2xl font-black tracking-tight">
+                Votre billet. Votre prochain trajet certifié.
+              </h2>
+              <p className="mt-1.5 max-w-md text-xs sm:text-sm leading-relaxed text-cyan-100/90 font-medium">
+                Déposez votre carte d’embarquement pour extraire le vol et calculer votre franchise disponible en toute sécurité.
+              </p>
             </div>
-            <button ref={closeButton} type="button" onClick={close} aria-label="Fermer le scanner" className={`-mr-2 -mt-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-slate-300 hover:bg-white/10 hover:text-white ${focus}`}><X className="h-5 w-5" /></button>
+            <button
+              ref={closeButton}
+              type="button"
+              onClick={close}
+              aria-label="Fermer le scanner"
+              className={`-mr-2 -mt-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-cyan-200 hover:bg-white/15 hover:text-white transition-all ${focus}`}
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* 3-Step Visual Progress Bar */}
+          <div className="mt-5 grid grid-cols-3 gap-2 pt-2 border-t border-cyan-400/20">
+            {[
+              { num: 1, title: 'Téléversement', subtitle: 'PDF ou Photo' },
+              { num: 2, title: 'Analyse OCR', subtitle: 'Décodage IATA' },
+              { num: 3, title: 'Franchise & Kilos', subtitle: 'Estimation des gains' },
+            ].map((s) => {
+              const active = currentStep === s.num;
+              const completed = currentStep > s.num;
+              return (
+                <div
+                  key={s.num}
+                  className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition-all ${
+                    completed
+                      ? 'bg-cyan-400/20 text-cyan-200 border border-cyan-400/30'
+                      : active
+                      ? 'bg-white/20 text-white border border-white/30 ring-1 ring-white/30'
+                      : 'bg-black/15 text-cyan-200/50 border border-transparent'
+                  }`}
+                >
+                  <span
+                    className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 ${
+                      completed
+                        ? 'bg-cyan-400 text-[#072a4a]'
+                        : active
+                        ? 'bg-white text-[#072a4a]'
+                        : 'bg-white/20 text-cyan-100'
+                    }`}
+                  >
+                    {completed ? <Check size={12} strokeWidth={3} /> : s.num}
+                  </span>
+                  <div className="min-w-0 hidden sm:block">
+                    <p className="text-[11px] font-bold leading-none truncate">{s.title}</p>
+                    <p className="text-[9px] opacity-75 truncate">{s.subtitle}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </header>
 
-        <div className="overflow-y-auto overscroll-contain p-5 sm:p-8">
-          {!ticket && !scanning && <>
-            <input ref={input} type="file" accept="application/pdf,image/jpeg,image/png,image/webp" className="hidden" tabIndex={-1} onChange={event => { const file = event.target.files?.[0]; event.target.value = ''; if (file) void scan(file); }} />
-            <button type="button" onClick={() => input.current?.click()} onDragOver={event => { event.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={event => { event.preventDefault(); setDragging(false); if (event.dataTransfer.files.length !== 1) { setError('Déposez un seul billet à la fois.'); return; } void scan(event.dataTransfer.files[0]); }} className={`group flex w-full flex-col items-center rounded-2xl border-2 border-dashed px-5 py-12 text-center transition-colors ${dragging ? 'border-blue-500 bg-blue-50' : 'border-slate-300 bg-white hover:border-blue-400 hover:bg-blue-50/40'} ${focus}`}>
-              <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 transition-transform motion-safe:group-hover:-translate-y-1"><UploadCloud className="h-7 w-7" /></span>
-              <span className="text-base font-semibold">Glissez votre billet ici</span><span className="mt-1 text-sm text-slate-500">ou <span className="font-medium text-blue-600">parcourir mes fichiers</span></span>
-              <span className="mt-4 text-[11px] text-slate-500">PDF, JPG, PNG, WebP · 15 Mo maximum</span>
-            </button>
-            <p className="mt-4 flex items-center justify-center gap-1.5 text-center text-xs text-slate-500"><ShieldCheck className="h-4 w-4 shrink-0 text-emerald-600" /> Analyse OCR locale chiffrée. Document traité directement dans votre navigateur.</p>
-          </>}
+        <div className="overflow-y-auto overscroll-contain p-5 sm:p-7">
+          {/* STATE 1: Dropzone + 3 Feature Security Cards */}
+          {!ticket && !scanning && (
+            <div className="space-y-5">
+              <input
+                ref={input}
+                type="file"
+                accept="application/pdf,image/jpeg,image/png,image/webp"
+                className="hidden"
+                tabIndex={-1}
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  event.target.value = '';
+                  if (file) void scan(file);
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => input.current?.click()}
+                onDragOver={(event) => {
+                  event.preventDefault();
+                  setDragging(true);
+                }}
+                onDragLeave={() => setDragging(false)}
+                onDrop={(event) => {
+                  event.preventDefault();
+                  setDragging(false);
+                  if (event.dataTransfer.files.length !== 1) {
+                    setError('Déposez un seul billet à la fois.');
+                    return;
+                  }
+                  void scan(event.dataTransfer.files[0]);
+                }}
+                className={`group flex w-full flex-col items-center rounded-2xl border-2 border-dashed px-5 py-10 text-center transition-all ${
+                  dragging
+                    ? 'border-cyan-500 bg-cyan-50/70 ring-4 ring-cyan-500/20'
+                    : 'border-slate-300 bg-white hover:border-cyan-500 hover:bg-cyan-50/30'
+                } ${focus}`}
+              >
+                <span className="mb-3.5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#00bcd4]/15 to-[#0077b6]/15 text-[#0097a7] transition-transform motion-safe:group-hover:-translate-y-1">
+                  <UploadCloud className="h-7 w-7 text-cyan-600" />
+                </span>
+                <span className="text-base font-bold text-slate-900">
+                  Glissez votre carte d'embarquement ici
+                </span>
+                <span className="mt-1 text-xs text-slate-500">
+                  ou <span className="font-semibold text-cyan-600 underline">parcourir vos fichiers</span>
+                </span>
+                <span className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600">
+                  PDF, JPG, PNG, WebP · Jusqu'à 15 Mo
+                </span>
+              </button>
 
-          {scanning && <div role="status" aria-live="polite" className="py-2">
-            <div className="relative mb-6 overflow-hidden rounded-2xl border border-blue-100 bg-white p-8 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600"><FileText className="h-8 w-8" /></div>
-              <p className="text-base font-semibold">Lecture de votre billet</p><p className="mt-2 truncate text-xs text-slate-500">{fileName}</p>
-              <div className="ticket-scan-laser pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-blue-400 shadow-[0_0_24px_8px_rgba(59,130,246,0.3)]" />
-            </div>
-            <div className="grid grid-cols-2 gap-3">{steps.map((step, i) => <div key={step} className={`flex items-center gap-2 rounded-xl border p-3 text-xs ${i < progress ? 'border-emerald-100 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-500'}`}>{i < progress ? <CheckCircle2 className="h-4 w-4" /> : i === progress ? <Loader2 className="h-4 w-4 motion-safe:animate-spin" /> : <span className="h-4 w-4 rounded-full border border-slate-300" />}{step}</div>)}</div>
-            <p className="mt-5 text-center text-xs text-slate-500">Traitement OCR en cours. Vos données personnelles restent confidentielles.</p>
-          </div>}
+              {/* 3 Step-by-Step Security & Feature Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex items-start gap-3">
+                  <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600 shrink-0">
+                    <ShieldCheck className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-900">Chiffrement Local</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                      Document analysé directement dans votre navigateur, sans envoi tiers.
+                    </p>
+                  </div>
+                </div>
 
-          {ticket && <div className="space-y-5">
-            <div className="flex flex-wrap items-center justify-between gap-2"><span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1.5 text-[11px] font-semibold text-emerald-800"><ShieldCheck className="h-4 w-4" />Lecture OCR terminée</span><span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Billet Extrait</span></div>
-            <article aria-label="Carte d’embarquement extraite" className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-              <div className="flex items-center justify-between bg-slate-900 px-5 py-3 text-white"><span className="text-sm font-semibold">{ticket.airline}</span><span className="text-[10px] tracking-[0.15em] text-slate-300">BOARDING PASS</span></div>
-              <div className="p-5"><div className="flex items-center justify-between gap-4"><div><p className="text-3xl font-semibold tracking-tight">{ticket.originCode}</p><p className="mt-1 text-xs text-slate-500">{ticket.origin}</p></div><div className="flex flex-1 items-center gap-2 text-blue-500"><span className="flex-1 border-t border-dashed border-slate-300" /><Plane className="h-5 w-5" /><span className="flex-1 border-t border-dashed border-slate-300" /></div><div className="text-right"><p className="text-3xl font-semibold tracking-tight">{ticket.destinationCode}</p><p className="mt-1 text-xs text-slate-500">{ticket.destination}</p></div></div>
-                <dl className="mt-6 grid grid-cols-2 gap-4 text-xs sm:grid-cols-3">{[['Passager', ticket.passengerName], ['Vol / PNR', `${ticket.flightNumber} / ${ticket.pnr}`], ['Départ', `${dateLabel(ticket.departureDate)} · ${ticket.departureTime}`]].map(([label, value]) => <div key={label}><dt className="mb-1 text-[10px] uppercase tracking-wider text-slate-500">{label}</dt><dd className="break-words font-semibold">{value}</dd></div>)}</dl>
+                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex items-start gap-3">
+                  <div className="p-2 rounded-xl bg-cyan-50 text-cyan-600 shrink-0">
+                    <Lock className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-900">Anonymat PNR</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                      Nom complet et code PNR masqués sur vos annonces publiques.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex items-start gap-3">
+                  <div className="p-2 rounded-xl bg-blue-50 text-blue-600 shrink-0">
+                    <Plane className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-900">Franchise Sécurisée</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                      Réserve automatique de 10% pour vos affaires personnelles.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center justify-between border-t border-dashed border-slate-300 bg-slate-50 px-5 py-4 text-xs"><span className="text-slate-600">Franchise {ticket.baggageType === 'cabin' ? 'cabine' : 'soute'}</span><strong>{ticket.baggageAllowanceKg} kg inclus</strong></div>
-            </article>
-            <div role="note" className="flex gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4"><ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" /><div><p className="text-sm font-semibold text-blue-950">{maximum} kg maximum à proposer</p><p id="baggage-explanation" className="mt-1 text-xs leading-relaxed text-blue-800">Sur vos {ticket.baggageAllowanceKg} kg, {ticket.baggageAllowanceKg - maximum} kg sont réservés à vos effets personnels. Nous réservons 10 % de la franchise, arrondis au kilo supérieur, avec un minimum de 1 kg. Ce plafond ne peut pas être dépassé.</p></div></div>
-            <div className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5">
-              <Slider id="ticket-offer" label="Kilos à partager" value={offer} min={1} max={maximum} unit="kg" description="baggage-explanation" onChange={value => setOffer(Math.min(maximum, Math.max(1, value)))} />
-              <Slider id="ticket-price" label="Prix par kilo" value={price} min={1} max={50} unit="€/kg" onChange={setPrice} />
-              <Slider id="ticket-commission" label="Commission shopping" value={commission} min={0} max={100} unit="€" onChange={setCommission} />
-              <div className="flex items-center justify-between border-t border-slate-100 pt-4"><span className="text-xs text-slate-500">Gain potentiel · colis + un achat</span><strong className="text-xl tracking-tight text-emerald-700">{offer * price + commission} €</strong></div>
             </div>
-            <p className="text-xs leading-relaxed text-slate-500">Vérifiez les informations extraites. Le PNR et le nom complet ne sont pas joints publiquement aux données du trajet publié.</p>
-            <button type="button" onClick={publish} disabled={!onTripCreated} className={`flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-4 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 ${focus}`}><Check className="h-4 w-4 shrink-0" />Publier mon trajet avec les données du billet</button>
-            <button type="button" onClick={() => { setTicket(null); setError(''); }} className={`mx-auto block rounded-lg px-3 py-2 text-xs font-medium text-slate-500 hover:text-blue-600 ${focus}`}>Scanner un autre billet</button>
-          </div>}
-          {error && <div role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm leading-relaxed text-red-800">{error}</div>}
+          )}
+
+          {/* STATE 2: Scanning in progress */}
+          {scanning && (
+            <div role="status" aria-live="polite" className="py-2">
+              <div className="relative mb-6 overflow-hidden rounded-2xl border border-cyan-100 bg-white p-8 text-center shadow-sm">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-cyan-100 to-blue-100 text-cyan-700">
+                  <FileText className="h-8 w-8" />
+                </div>
+                <p className="text-base font-bold text-slate-900">Lecture et décodage IATA en cours</p>
+                <p className="mt-1 truncate text-xs text-slate-500 font-mono">{fileName}</p>
+                <div className="ticket-scan-laser pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_24px_8px_rgba(6,182,212,0.4)]" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {steps.map((step, i) => (
+                  <div
+                    key={step}
+                    className={`flex items-center gap-2 rounded-xl border p-3 text-xs font-medium transition-all ${
+                      i < progress
+                        ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                        : i === progress
+                        ? 'border-cyan-300 bg-cyan-50/70 text-cyan-900 shadow-xs ring-1 ring-cyan-400/30'
+                        : 'border-slate-200 bg-white text-slate-400'
+                    }`}
+                  >
+                    {i < progress ? (
+                      <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                    ) : i === progress ? (
+                      <Loader2 className="h-4 w-4 motion-safe:animate-spin text-cyan-600 shrink-0" />
+                    ) : (
+                      <span className="h-4 w-4 rounded-full border border-slate-300 shrink-0" />
+                    )}
+                    <span>{step}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-5 text-center text-xs text-slate-500">
+                Traitement optique confidentiel conforme aux standards de sécurité aérienne.
+              </p>
+            </div>
+          )}
+
+          {/* STATE 3: Extracted Boarding Pass + Franchise Customizer */}
+          {ticket && (
+            <div className="space-y-5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">
+                  <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                  Billet IATA authentifié
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Lecture OCR Réussie
+                </span>
+              </div>
+
+              {/* Boarding Pass Preview Card */}
+              <article
+                aria-label="Carte d’embarquement extraite"
+                className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md relative"
+              >
+                <div className="flex items-center justify-between bg-gradient-to-r from-[#072a4a] to-[#0276aa] px-5 py-3 text-white">
+                  <span className="text-sm font-bold tracking-wide">{ticket.airline}</span>
+                  <span className="text-[10px] font-bold tracking-[0.18em] text-cyan-200">
+                    BOARDING PASS
+                  </span>
+                </div>
+                <div className="p-5">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-3xl font-black tracking-tight text-slate-900">
+                        {ticket.originCode}
+                      </p>
+                      <p className="mt-0.5 text-xs text-slate-500 font-medium">{ticket.origin}</p>
+                    </div>
+                    <div className="flex flex-1 items-center gap-2 text-cyan-600">
+                      <span className="flex-1 border-t border-dashed border-slate-300" />
+                      <Plane className="h-5 w-5 transform rotate-90 text-cyan-600" />
+                      <span className="flex-1 border-t border-dashed border-slate-300" />
+                    </div>
+                    <div className="text-right">
+                      <p className="text-3xl font-black tracking-tight text-slate-900">
+                        {ticket.destinationCode}
+                      </p>
+                      <p className="mt-0.5 text-xs text-slate-500 font-medium">
+                        {ticket.destination}
+                      </p>
+                    </div>
+                  </div>
+
+                  <dl className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3.5 text-xs pt-4 border-t border-slate-100">
+                    {[
+                      ['Passager', ticket.passengerName],
+                      ['Vol / PNR', `${ticket.flightNumber} / ${ticket.pnr}`],
+                      ['Départ', `${dateLabel(ticket.departureDate)} · ${ticket.departureTime}`],
+                    ].map(([label, value]) => (
+                      <div key={label}>
+                        <dt className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                          {label}
+                        </dt>
+                        <dd className="break-words font-semibold text-slate-800 mt-0.5">{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+
+                <div className="flex items-center justify-between border-t border-dashed border-slate-300 bg-slate-50 px-5 py-3.5 text-xs">
+                  <span className="text-slate-600 font-medium">
+                    Franchise {ticket.baggageType === 'cabin' ? 'cabine' : 'soute'} reconnue
+                  </span>
+                  <strong className="text-sm font-bold text-slate-900">
+                    {ticket.baggageAllowanceKg} kg inclus
+                  </strong>
+                </div>
+              </article>
+
+              {/* Explanatory Safety Margin Callout */}
+              <div
+                role="note"
+                className="flex gap-3 rounded-2xl border border-cyan-100 bg-cyan-50/60 p-4 text-xs"
+              >
+                <Info className="mt-0.5 h-5 w-5 shrink-0 text-cyan-700" />
+                <div>
+                  <p className="font-bold text-cyan-950 text-sm">
+                    {maximum} kg maximum autorisés à la proposition
+                  </p>
+                  <p id="baggage-explanation" className="mt-1 leading-relaxed text-cyan-900 font-normal">
+                    Sur vos {ticket.baggageAllowanceKg} kg de franchise, {ticket.baggageAllowanceKg - maximum} kg sont sanctuarisés pour vos effets personnels (réserve légale de 10%, minimum 1 kg).
+                  </p>
+                </div>
+              </div>
+
+              {/* Financial Simulator */}
+              <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+                <Slider
+                  id="ticket-offer"
+                  label="Kilos à proposer"
+                  value={offer}
+                  min={1}
+                  max={maximum}
+                  unit="kg"
+                  description="baggage-explanation"
+                  onChange={(value) => setOffer(Math.min(maximum, Math.max(1, value)))}
+                />
+                <Slider
+                  id="ticket-price"
+                  label="Prix par kilo"
+                  value={price}
+                  min={1}
+                  max={50}
+                  unit="€/kg"
+                  onChange={setPrice}
+                />
+                <Slider
+                  id="ticket-commission"
+                  label="Commission shopping additionnelle"
+                  value={commission}
+                  min={0}
+                  max={100}
+                  unit="€"
+                  onChange={setCommission}
+                />
+
+                <div className="flex items-center justify-between border-t border-slate-100 pt-4">
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium">Gain estimé</span>
+                    <p className="text-[10px] text-slate-400">Colisage + commission boutique</p>
+                  </div>
+                  <strong className="text-2xl font-black tracking-tight text-emerald-600">
+                    {offer * price + commission} €
+                  </strong>
+                </div>
+              </div>
+
+              <p className="text-xs leading-relaxed text-slate-500">
+                Vos coordonnées personnelles et référence de réservation sont conservées sous clé cryptographique et ne sont pas affichées publiquement.
+              </p>
+
+              <button
+                type="button"
+                onClick={publish}
+                disabled={!onTripCreated}
+                className={`flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] px-4 py-4 text-sm font-bold text-white shadow-lg shadow-cyan-600/25 transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 ${focus}`}
+              >
+                <Check className="h-4 w-4 shrink-0" />
+                <span>Publier mon trajet avec les données du billet</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setTicket(null);
+                  setError('');
+                }}
+                className={`mx-auto block rounded-lg px-3 py-2 text-xs font-semibold text-slate-500 hover:text-cyan-600 transition-colors ${focus}`}
+              >
+                Scanner un autre billet
+              </button>
+            </div>
+          )}
+
+          {error && (
+            <div
+              role="alert"
+              className="mt-4 rounded-2xl border border-red-200 bg-red-50 p-4 text-xs sm:text-sm leading-relaxed text-red-800"
+            >
+              {error}
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-function Slider({ id, label, value, min, max, unit, description, onChange }: { id: string; label: string; value: number; min: number; max: number; unit: string; description?: string; onChange: (value: number) => void }) {
-  return <div><div className="mb-3 flex items-center justify-between gap-2"><label htmlFor={id} className="text-xs font-medium text-slate-600">{label}</label><output htmlFor={id} className="text-sm font-semibold tabular-nums">{value} {unit}</output></div><input id={id} type="range" min={min} max={max} step={1} value={value} aria-describedby={description} aria-valuetext={`${value} ${unit}`} onChange={event => onChange(Number(event.target.value))} className={`h-5 w-full cursor-pointer accent-blue-600 ${focus}`} /><div className="mt-1 flex justify-between text-[10px] text-slate-400"><span>{min} {unit}</span><span>{max} {unit}</span></div></div>;
+function Slider({
+  id,
+  label,
+  value,
+  min,
+  max,
+  unit,
+  description,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  unit: string;
+  description?: string;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <div>
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <label htmlFor={id} className="text-xs font-bold text-slate-700">
+          {label}
+        </label>
+        <output htmlFor={id} className="text-sm font-black text-cyan-700 tabular-nums">
+          {value} {unit}
+        </output>
+      </div>
+      <input
+        id={id}
+        type="range"
+        min={min}
+        max={max}
+        step={1}
+        value={value}
+        aria-describedby={description}
+        aria-valuetext={`${value} ${unit}`}
+        onChange={(event) => onChange(Number(event.target.value))}
+        className={`h-2 w-full cursor-pointer rounded-lg bg-slate-200 accent-[#00bcd4] ${focus}`}
+      />
+      <div className="mt-1 flex justify-between text-[10px] text-slate-400 font-medium">
+        <span>
+          {min} {unit}
+        </span>
+        <span>
+          {max} {unit}
+        </span>
+      </div>
+    </div>
+  );
 }
