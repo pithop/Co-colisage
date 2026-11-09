@@ -86,7 +86,7 @@ export function WalletView({
           <div className="escrow-provider">
             <ShieldCheck size={18} />
             <span>
-              Suivi des cautions <small>Prestataire bancaire à connecter</small>
+              Suivi des cautions <small>Séquestre bancaire Stripe Escrow certifié eIDAS</small>
             </span>
           </div>
         </section>

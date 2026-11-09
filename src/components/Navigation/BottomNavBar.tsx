@@ -1,4 +1,4 @@
-import { Bell, Home, Luggage, ShoppingCart, UserRound } from "lucide-react";
+import { Bell, Home, Luggage, MessageCircle, ShoppingCart, UserRound } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 interface Props {
@@ -22,6 +22,9 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate, onNotif
     }
     if (key === "missions") {
       return route === "tracking" || route === "shopandgo";
+    }
+    if (key === "messages") {
+      return route === "messages";
     }
     if (key === "notifications") return route === "notifications";
     if (key === "account") return route === "profile";
@@ -83,7 +86,30 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate, onNotif
           {isCurrent("missions") && <span className="nav-tab-active-pill" aria-hidden="true" />}
         </button>
 
-        {/* Tab 3: Notifications */}
+        {/* Tab 3: Messages */}
+        <button
+          type="button"
+          className={`mobile-nav-tab ${isCurrent("messages") ? "active active-blue" : ""}`}
+          aria-current={isCurrent("messages") ? "page" : undefined}
+          aria-label={`Messages${unreadMessagesCount > 0 ? `, ${unreadMessagesCount} non lus` : ""}`}
+          onClick={() => {
+            triggerHaptic();
+            navigate("messages");
+          }}
+        >
+          <span className="nav-tab-icon-wrap">
+            <MessageCircle size={20} className="nav-tab-icon" aria-hidden="true" />
+            {unreadMessagesCount > 0 && (
+              <span className="nav-tab-badge" aria-label={`${unreadMessagesCount} messages non lus`}>
+                {unreadMessagesCount > 9 ? "9+" : unreadMessagesCount}
+              </span>
+            )}
+          </span>
+          <span className="nav-tab-label">Messages</span>
+          {isCurrent("messages") && <span className="nav-tab-active-pill" aria-hidden="true" />}
+        </button>
+
+        {/* Tab 4: Notifications */}
         <button
           type="button"
           className={`mobile-nav-tab ${isCurrent("notifications") ? "active active-blue" : ""}`}
@@ -105,7 +131,7 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate, onNotif
           {isCurrent("notifications") && <span className="nav-tab-active-pill" aria-hidden="true" />}
         </button>
 
-        {/* Tab 4: Mon compte */}
+        {/* Tab 5: Mon compte */}
         <button
           type="button"
           className={`mobile-nav-tab ${isCurrent("account") ? "active active-blue" : ""}`}

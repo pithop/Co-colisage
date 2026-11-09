@@ -253,7 +253,7 @@ export function Conversation({
               <strong>
                 {stageText} · {euro(c.amount)}
               </strong>
-              <small>Registre BagVoyage</small>
+              <small>Séquestre bancaire Stripe Escrow</small>
             </div>
             {c.resolution || c.id.startsWith("support-") ? null : c.stage ===
               "discussion" ? (
