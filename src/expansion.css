@@ -6399,10 +6399,6 @@
     font-weight: 650;
   }
 
-  .mobile-nav-tab.active.active-cyan {
-    color: #0093b2;
-  }
-
   .mobile-nav-tab.active.active-emerald {
     color: #059669;
   }
@@ -6458,10 +6454,6 @@
     height: 3px;
     background: #2563eb;
     border-radius: 999px;
-  }
-
-  .mobile-nav-tab.active-cyan .nav-tab-active-pill {
-    background: #00c2cb;
   }
 
   .mobile-nav-tab.active-emerald .nav-tab-active-pill {
@@ -8510,16 +8502,6 @@ html[data-theme="dark"] .mobile-nav-tab.active,
 html[data-theme="dark"] .mobile-nav-tab.active.active-emerald,
 .dark .mobile-nav-tab.active.active-emerald {
   color: #34d399;
-}
-
-html[data-theme="dark"] .mobile-nav-tab.active.active-cyan,
-.dark .mobile-nav-tab.active.active-cyan {
-  color: #22d3ee;
-}
-
-html[data-theme="dark"] .mobile-nav-tab.active.active-cyan .nav-tab-active-pill,
-.dark .mobile-nav-tab.active.active-cyan .nav-tab-active-pill {
-  background: #22d3ee;
 }
 
 html[data-theme="dark"] .mobile-nav-tab.active.active-blue,

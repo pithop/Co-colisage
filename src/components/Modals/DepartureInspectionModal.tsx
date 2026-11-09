@@ -154,7 +154,7 @@ export const DepartureInspectionModal: React.FC<DepartureInspectionModalProps> =
                   </div>
                 ) : (
                   <div className="p-4 text-center space-y-2">
-                    <Video className="w-10 h-10 text-cyan-400 mx-auto" />
+                    <Video className="w-10 h-10 text-blue-500 mx-auto" />
                     <p className="font-bold text-xs text-slate-200">
                       Filmez brièvement l'ouverture et la fermeture du colis avec le ruban de sécurité
                     </p>

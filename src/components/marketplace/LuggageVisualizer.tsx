@@ -71,7 +71,7 @@ export function LuggageVisualizer({
                 <stop offset="1" stopColor="#dbeafe" stopOpacity=".3" />
               </linearGradient>
               <linearGradient id={`${id}-fill`} x1="0" y1="0" x2="1" y2="1">
-                <stop stopColor="#22d3ee" />
+                <stop stopColor="#60a5fa" />
                 <stop offset=".5" stopColor="#2563eb" />
                 <stop offset="1" stopColor="#10b981" />
               </linearGradient>

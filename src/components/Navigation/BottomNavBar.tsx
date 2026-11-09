@@ -46,7 +46,7 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate, onNotif
         {/* Tab 1: Accueil */}
         <button
           type="button"
-          className={`mobile-nav-tab ${isCurrent("home") ? "active active-cyan" : ""}`}
+          className={`mobile-nav-tab ${isCurrent("home") ? "active active-blue" : ""}`}
           aria-current={isCurrent("home") ? "page" : undefined}
           aria-label="Accueil"
           onClick={() => {
@@ -64,7 +64,7 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate, onNotif
         {/* Tab 2: Mes commandes (Shop&Go) ou Mes missions (Bag&Go / Voyageur) */}
         <button
           type="button"
-          className={`mobile-nav-tab ${isCurrent("missions") ? "active active-cyan" : ""}`}
+          className={`mobile-nav-tab ${isCurrent("missions") ? "active active-blue" : ""}`}
           aria-current={isCurrent("missions") ? "page" : undefined}
           aria-label={isShop ? "Mes commandes" : "Mes missions"}
           onClick={() => {
@@ -86,7 +86,7 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate, onNotif
         {/* Tab 3: Notifications */}
         <button
           type="button"
-          className={`mobile-nav-tab ${isCurrent("notifications") ? "active active-cyan" : ""}`}
+          className={`mobile-nav-tab ${isCurrent("notifications") ? "active active-blue" : ""}`}
           aria-current={isCurrent("notifications") ? "page" : undefined}
           aria-label="Notifications"
           onClick={() => {
@@ -108,7 +108,7 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate, onNotif
         {/* Tab 4: Mon compte */}
         <button
           type="button"
-          className={`mobile-nav-tab ${isCurrent("account") ? "active active-cyan" : ""}`}
+          className={`mobile-nav-tab ${isCurrent("account") ? "active active-blue" : ""}`}
           aria-current={isCurrent("account") ? "page" : undefined}
           aria-label="Mon compte"
           onClick={() => {

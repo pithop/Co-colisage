@@ -81,7 +81,7 @@ export const SecuritySection: React.FC = () => {
 
           {/* Card 3: Proof of purchase */}
           <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-4">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center mb-4">
               <FileCheck className="w-5 h-5" />
             </div>
             <h4 className="font-bold text-base text-white">Preuves d'achat</h4>
@@ -143,7 +143,7 @@ export const SecuritySection: React.FC = () => {
 
             {/* Step 3 */}
             <div className="flex flex-col items-center text-center p-3 rounded-xl bg-slate-800/50 border border-slate-700/60">
-              <div className="w-9 h-9 rounded-full bg-cyan-600 text-white flex items-center justify-center font-bold text-xs mb-2">
+              <div className="w-9 h-9 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold text-xs mb-2">
                 3
               </div>
               <p className="font-bold text-xs text-white">Shopper (Achat & Vol)</p>

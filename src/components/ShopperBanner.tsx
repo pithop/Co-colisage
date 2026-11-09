@@ -18,12 +18,12 @@ export const ShopperBanner: React.FC<ShopperBannerProps> = ({
           
           {/* Background decorative elements */}
           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-white/10 blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-1/3 -mb-16 w-60 h-60 rounded-full bg-cyan-400/20 blur-2xl pointer-events-none" />
+          <div className="absolute bottom-0 left-1/3 -mb-16 w-60 h-60 rounded-full bg-sky-400/20 blur-2xl pointer-events-none" />
 
           {/* Left Text */}
           <div className="relative z-10 max-w-xl text-center lg:text-left">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold text-white mb-4">
-              <Briefcase className="w-3.5 h-3.5 text-cyan-200" />
+              <Briefcase className="w-3.5 h-3.5 text-sky-200" />
               <span>Vous êtes voyageur ?</span>
             </div>
 

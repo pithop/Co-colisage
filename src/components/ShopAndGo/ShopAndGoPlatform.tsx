@@ -124,14 +124,14 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
   return (
     <div className="shopandgo-platform-container max-w-5xl mx-auto px-4 py-4 space-y-6 pb-36 text-left">
       {/* 1. Hero Banner matching Client Mockup 3 */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-sky-50 via-cyan-50/70 to-blue-100 dark:from-slate-900 dark:via-sky-950 dark:to-slate-900 text-slate-900 dark:text-white shadow-md border border-cyan-200/70 dark:border-cyan-500/20">
-        <div className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-cyan-500/15 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-teal-500/15 blur-3xl pointer-events-none" />
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-slate-50 to-blue-50/40 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 text-slate-900 dark:text-white shadow-sm border border-slate-200/80 dark:border-slate-800">
+        <div className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-blue-500/5 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-indigo-500/5 blur-3xl pointer-events-none" />
 
         <div className="relative p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-3 max-w-xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/30 text-cyan-800 dark:text-cyan-300 text-xs font-semibold">
-              <ShoppingCart size={13} className="text-cyan-600 dark:text-cyan-400" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/80 text-xs font-semibold">
+              <ShoppingCart size={13} className="text-blue-600 dark:text-blue-400" />
               <span>Shop &amp; Go · Espace Achat &amp; Commande Boutique</span>
             </div>
 
@@ -144,21 +144,21 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
 
             <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-slate-600 dark:text-slate-300">
               <span className="inline-flex items-center gap-1.5 font-medium">
-                <ShieldCheck size={14} className="text-cyan-600 dark:text-cyan-400" />
+                <ShieldCheck size={14} className="text-blue-600 dark:text-blue-400" />
                 <span>Paiement sous séquestre Stripe</span>
               </span>
               <span className="inline-flex items-center gap-1.5 font-medium">
-                <Sparkles size={14} className="text-cyan-600 dark:text-cyan-400" />
+                <Sparkles size={14} className="text-blue-600 dark:text-blue-400" />
                 <span>Livraison en main propre</span>
               </span>
             </div>
           </div>
 
           <div className="w-full md:w-auto flex justify-center shrink-0">
-            <div className="relative w-44 h-44 sm:w-52 sm:h-52 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-sky-400/20 border border-cyan-400/30 flex items-center justify-center p-4 shadow-inner">
-              <ShoppingCart size={82} className="text-cyan-600 dark:text-cyan-300 drop-shadow-md animate-pulse" />
-              <div className="absolute bottom-3 left-3 right-3 text-center bg-slate-950/70 backdrop-blur-md rounded-xl py-1 px-2 border border-white/10">
-                <span className="text-[10px] text-cyan-300 font-bold tracking-wider uppercase">
+            <div className="relative w-44 h-44 sm:w-52 sm:h-52 rounded-2xl bg-gradient-to-tr from-blue-50 to-indigo-50/60 dark:bg-slate-800/80 border border-blue-100 dark:border-slate-700/60 flex items-center justify-center p-4 shadow-sm">
+              <ShoppingCart size={82} className="text-blue-600 dark:text-blue-400 drop-shadow-sm animate-pulse" />
+              <div className="absolute bottom-3 left-3 right-3 text-center bg-slate-900/90 backdrop-blur-md rounded-xl py-1 px-2 border border-white/10 shadow-sm">
+                <span className="text-[10px] text-white font-bold tracking-wider uppercase">
                   Boutiques &amp; Duty-Free
                 </span>
               </div>
@@ -179,13 +179,13 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
       <div className="space-y-2">
         <div className="flex items-center justify-between px-1">
           <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-            <Sparkles size={14} className="text-cyan-500" />
+            <Sparkles size={14} className="text-blue-600 dark:text-blue-400" />
             Animation &amp; Séquestre du Budget
           </span>
           <button
             type="button"
             onClick={() => setShowVisualizer(!showVisualizer)}
-            className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 hover:underline"
+            className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
           >
             {showVisualizer ? "Masquer le simulateur" : "Afficher le simulateur"}
           </button>
@@ -203,8 +203,8 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
       {/* 2. Interactive Form "Votre commande" matching Client Mockup 3 */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/80 overflow-hidden shadow-sm">
-          <div className="px-5 py-3 bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 text-white flex items-center gap-2 font-bold text-xs uppercase tracking-wide">
-            <ShoppingCart size={16} />
+          <div className="px-5 py-3.5 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-700/80 text-slate-800 dark:text-slate-200 flex items-center gap-2 font-bold text-xs uppercase tracking-wider">
+            <ShoppingCart size={16} className="text-blue-600 dark:text-blue-400" />
             <span>Votre commande</span>
           </div>
 
@@ -222,7 +222,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                   onChange={(e) => setProductTitle(e.target.value)}
                   placeholder="Décrivez le produit (ex : iPhone, parfum, chocolat...)"
                   required
-                  className="w-full pl-9 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                  className="w-full pl-9 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                 />
               </div>
             </div>
@@ -234,7 +234,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                 <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Photo de l'article
                 </label>
-                <label className="relative flex flex-col items-center justify-center p-4 h-36 rounded-2xl border-2 border-dashed border-cyan-400/50 dark:border-cyan-500/30 bg-cyan-50/40 dark:bg-slate-800/40 hover:bg-cyan-50/80 dark:hover:bg-slate-800/60 cursor-pointer transition-all overflow-hidden group">
+                <label className="relative flex flex-col items-center justify-center p-4 h-36 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 hover:bg-slate-100/60 dark:hover:bg-slate-800/60 cursor-pointer transition-all overflow-hidden group">
                   {photoPreview ? (
                     <img
                       src={photoPreview}
@@ -243,7 +243,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                     />
                   ) : (
                     <>
-                      <div className="w-10 h-10 rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
                         <Camera size={20} />
                       </div>
                       <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
@@ -272,7 +272,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500"
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   >
                     <option value="Beauté & Parfum">Beauté &amp; Parfum</option>
                     <option value="High-Tech & Apple">High-Tech &amp; Apple</option>
@@ -290,7 +290,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                   <select
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
-                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500"
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   >
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -312,7 +312,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                       onChange={(e) => setProductPrice(e.target.value)}
                       placeholder="100 €"
                       min="1"
-                      className="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                      className="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     />
                   </div>
                 </div>
@@ -320,13 +320,13 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
             </div>
 
             {/* Live Commission & Budget Calculator Banner */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-sky-500/10 to-teal-500/10 border border-cyan-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-slate-800/60 border border-blue-200/60 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
                   Ma commission (pour le voyageur)
                 </span>
                 <span title="Rémunération nette versée au voyageur à la remise">
-                  <Info size={14} className="text-cyan-600 dark:text-cyan-400 cursor-help" />
+                  <Info size={14} className="text-blue-600 dark:text-blue-400 cursor-help" />
                 </span>
               </div>
 
@@ -338,12 +338,12 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                     value={commission}
                     onChange={(e) => setCommission(e.target.value)}
                     min="5"
-                    className="w-full pl-6 pr-2 py-1.5 rounded-lg border border-cyan-400/40 bg-white dark:bg-slate-800 font-extrabold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500 text-center"
+                    className="w-full pl-6 pr-2 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 font-extrabold text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500 text-center"
                   />
                 </div>
 
                 {/* Total Budget Pill Badge */}
-                <div className="px-3.5 py-1.5 rounded-xl bg-slate-900 text-cyan-300 font-extrabold text-xs shadow-sm border border-cyan-500/30 whitespace-nowrap">
+                <div className="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white font-extrabold text-xs shadow-sm border border-slate-800 whitespace-nowrap">
                   = Budget total estimé : {totalBudget} €
                 </div>
               </div>
@@ -362,7 +362,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                     value={productUrl}
                     onChange={(e) => setProductUrl(e.target.value)}
                     placeholder="Colle ici le lien du produit (Amazon, Zara...)"
-                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
               </div>
@@ -378,7 +378,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                     value={storeName}
                     onChange={(e) => setStoreName(e.target.value)}
                     placeholder="Ex : Sephora, Fnac, Duty-Free..."
-                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
               </div>
@@ -393,7 +393,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                     type="date"
                     value={deadlineDate}
                     onChange={(e) => setDeadlineDate(e.target.value)}
-                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
               </div>
@@ -410,7 +410,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                     onChange={(e) => setDeliveryLocation(e.target.value)}
                     placeholder="Ville ou adresse de livraison"
                     required
-                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
               </div>
@@ -426,7 +426,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                     value={departureLocation}
                     onChange={(e) => setDepartureLocation(e.target.value)}
                     placeholder="Ex : Alger, Paris..."
-                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
               </div>
@@ -442,7 +442,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                     value={recipient}
                     onChange={(e) => setRecipient(e.target.value)}
                     placeholder="Nom ou numéro"
-                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
               </div>
@@ -451,7 +451,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
             {/* Negotiation Toggle */}
             <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <Handshake size={18} className="text-cyan-600 dark:text-cyan-400" />
+                <Handshake size={18} className="text-blue-600 dark:text-blue-400" />
                 <span className="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">
                   Accepter une négociation
                 </span>
@@ -464,7 +464,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                   onChange={(e) => setAcceptNegotiation(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500" />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600" />
               </label>
             </div>
           </div>
@@ -473,7 +473,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
         {/* Big Pill CTA Button */}
         <button
           type="submit"
-          className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-sky-600 via-cyan-500 to-teal-500 hover:from-sky-500 hover:to-teal-400 text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 transition-all active:scale-[0.98]"
+          className="w-full py-4 px-6 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
         >
           <Send size={18} strokeWidth={2.4} />
           <span>Publier ma demande</span>
@@ -484,7 +484,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
       <section className="space-y-4 pt-2">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-            <span className="w-1.5 h-5 bg-gradient-to-b from-cyan-500 to-teal-500 rounded-full inline-block" />
+            <span className="w-1.5 h-5 bg-blue-600 rounded-full inline-block" />
             <span>Mes demandes récentes</span>
             {shoppingRequests.length > 0 && (
               <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
@@ -496,7 +496,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
           {shoppingRequests.length > 0 && (
             <button
               type="button"
-              className="text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
             >
               <span>Voir tout</span>
               <ChevronRight size={14} />
@@ -510,14 +510,14 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
               <div
                 key={req.id}
                 onClick={() => onRequest?.(req)}
-                className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-cyan-400/50 transition-all shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 cursor-pointer"
+                className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-blue-300 dark:hover:border-blue-800 transition-all shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 cursor-pointer"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0 overflow-hidden">
+                  <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-800/60 flex items-center justify-center shrink-0 overflow-hidden">
                     {req.image && req.image.startsWith('http') ? (
                       <img src={req.image} alt={req.title} className="w-full h-full object-cover" />
                     ) : (
-                      <ShoppingCart size={24} className="text-cyan-600 dark:text-cyan-400" />
+                      <ShoppingCart size={24} className="text-blue-600 dark:text-blue-400" />
                     )}
                   </div>
 
@@ -527,7 +527,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                     </h3>
 
                     <div className="flex flex-wrap items-center gap-2 mt-1">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-cyan-500/15 text-cyan-700 dark:text-cyan-300">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300">
                         {req.specifications?.includes('Catégorie:')
                           ? req.specifications.split('Catégorie:')[1]?.split('·')[0]?.trim()
                           : 'Achat boutique'}
@@ -542,13 +542,13 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                       <span className="text-slate-400 mx-1.5">|</span>
                       <span>Commission : {req.reward} €</span>
                       <span className="text-slate-400 mx-1.5">|</span>
-                      <span className="text-cyan-600 dark:text-cyan-400 font-extrabold">Total : {req.budget} €</span>
+                      <span className="text-blue-600 dark:text-blue-400 font-extrabold">Total : {req.budget} €</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                  <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">
+                  <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60">
                     <Clock size={13} />
                     <span>En attente</span>
                   </span>
@@ -560,7 +560,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
         ) : (
           /* Virgin Clean State */
           <div className="p-8 sm:p-10 rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 text-center space-y-3">
-            <div className="w-14 h-14 rounded-2xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mx-auto shadow-sm">
+            <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto shadow-sm">
               <ShoppingCart size={26} />
             </div>
 

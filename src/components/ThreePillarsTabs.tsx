@@ -28,9 +28,9 @@ const tabs = [
     subtitle: 'Envoyer à un proche',
     badge: 'Dès 9 € / kg',
     activity: '8 colis prêts',
-    iconColor: 'text-cyan-700',
-    activeIcon: 'from-cyan-400 to-cyan-600 shadow-cyan-500/30',
-    dot: 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.65)]',
+    iconColor: 'text-blue-700',
+    activeIcon: 'from-blue-500 to-indigo-600 shadow-blue-500/30',
+    dot: 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.65)]',
     movement: 'group-hover:-translate-y-0.5 group-hover:rotate-6',
   },
   {
@@ -56,7 +56,7 @@ export const ThreePillarsTabs: React.FC<ThreePillarsTabsProps> = ({
       <div className="relative isolate rounded-[28px] bg-gradient-to-br from-white via-blue-200/60 to-slate-200/80 p-px shadow-[0_16px_48px_-20px_rgba(15,23,42,0.22),0_2px_8px_-4px_rgba(15,23,42,0.08)]">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-[28px]">
           <div className="absolute -left-8 -top-16 h-40 w-64 rounded-full bg-blue-200/40 blur-3xl" />
-          <div className="absolute -bottom-16 right-0 h-40 w-64 rounded-full bg-cyan-100/60 blur-3xl" />
+          <div className="absolute -bottom-16 right-0 h-40 w-64 rounded-full bg-indigo-100/60 blur-3xl" />
         </div>
 
         <div className="rounded-[27px] bg-white/70 p-2 backdrop-blur-xl sm:p-3">
@@ -83,7 +83,7 @@ export const ThreePillarsTabs: React.FC<ThreePillarsTabsProps> = ({
                 >
                   <span
                     aria-hidden="true"
-                    className={`pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-blue-400/20 via-transparent to-cyan-300/10 transition-opacity duration-300 motion-reduce:transition-none ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-40'}`}
+                    className={`pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-blue-400/20 via-transparent to-indigo-300/10 transition-opacity duration-300 motion-reduce:transition-none ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-40'}`}
                   />
                   <span aria-hidden="true" className={`pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent to-transparent ${isActive ? 'via-blue-200/60' : 'via-white'}`} />
 

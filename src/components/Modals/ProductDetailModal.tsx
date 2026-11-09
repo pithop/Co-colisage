@@ -67,7 +67,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 alt={product.name} 
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-3 left-3 bg-cyan-600 text-white px-2.5 py-1 rounded-full text-xs font-bold shadow-md flex items-center gap-1">
+              <div className="absolute top-3 left-3 bg-blue-600 text-white px-2.5 py-1 rounded-full text-xs font-bold shadow-md flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5" />
                 <span>Destination : {product.destination}</span>
               </div>

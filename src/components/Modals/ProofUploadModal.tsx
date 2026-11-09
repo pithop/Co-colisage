@@ -142,7 +142,7 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
           <div className="border border-slate-200 rounded-2xl p-4 bg-slate-50/50">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Plane className="w-4 h-4 text-cyan-600 -rotate-45" />
+                <Plane className="w-4 h-4 text-indigo-600 -rotate-45" />
                 <span className="font-bold text-xs text-slate-900">
                   2. Preuve de voyage (Billet d'avion / Carte d'embarquement)
                 </span>
@@ -176,11 +176,11 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
               <button
                 onClick={handleSimulateTicket}
                 disabled={loadingTicket}
-                className="w-full py-5 border-2 border-dashed border-slate-300 hover:border-cyan-500 rounded-xl bg-white flex flex-col items-center justify-center gap-1 text-slate-600 hover:text-cyan-600 transition-colors cursor-pointer"
+                className="w-full py-5 border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl bg-white flex flex-col items-center justify-center gap-1 text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"
               >
                 {loadingTicket ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin text-cyan-600" />
+                    <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
                     <span className="text-xs font-semibold">Vérification IATA du vol...</span>
                   </>
                 ) : (

@@ -52,7 +52,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
                 <span><strong>Preuve d'Achat :</strong> Le Shopper achète l'article lui-même avec traçabilité intégrale et téléverse le ticket de caisse à son nom.</span>
               </li>
               <li className="flex items-start gap-2">
-                <Plane className="w-4 h-4 text-cyan-600 shrink-0 mt-0.5" />
+                <Plane className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
                 <span><strong>Preuve de Voyage :</strong> Téléversement de la carte d'embarquement officielle pour garantir les dates et le trajet.</span>
               </li>
             </ul>

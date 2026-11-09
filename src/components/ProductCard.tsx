@@ -22,7 +22,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) =
         <button type="button" aria-pressed={isLiked} aria-label={`${isLiked ? 'Retirer des' : 'Ajouter aux'} favoris : ${product.name}`} onClick={() => setIsLiked(value => !value)} className={`absolute right-2 top-2 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 shadow-sm backdrop-blur-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 motion-safe:active:scale-90 motion-reduce:transition-none ${isLiked ? 'bg-rose-50 text-rose-600' : 'bg-white/90 text-slate-700 hover:bg-white hover:text-rose-600'}`}>
           <Heart aria-hidden="true" className={`h-[18px] w-[18px] ${isLiked ? 'fill-current' : ''}`} />
         </button>
-        <span className="absolute bottom-3 left-3 right-3 flex w-fit max-w-[calc(100%-1.5rem)] items-center gap-1.5 rounded-full border border-white/25 bg-slate-950/60 px-3 py-1.5 text-[11px] font-medium text-white backdrop-blur-md"><MapPin aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-cyan-200" /><span className="break-words">{product.destination}</span></span>
+        <span className="absolute bottom-3 left-3 right-3 flex w-fit max-w-[calc(100%-1.5rem)] items-center gap-1.5 rounded-full border border-white/25 bg-slate-950/60 px-3 py-1.5 text-[11px] font-medium text-white backdrop-blur-md"><MapPin aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-sky-200" /><span className="break-words">{product.destination}</span></span>
       </div>
 
       <div className="flex flex-1 flex-col px-3 pb-3 pt-5">

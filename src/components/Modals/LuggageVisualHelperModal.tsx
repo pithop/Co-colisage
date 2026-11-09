@@ -74,7 +74,7 @@ export const LuggageVisualHelperModal: React.FC<LuggageVisualHelperModalProps> =
         {/* Header */}
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
           <div className="flex items-center gap-2">
-            <Box className="w-5 h-5 text-cyan-400" />
+            <Box className="w-5 h-5 text-blue-400" />
             <h3 className="font-bold text-sm">Aide Visuelle & Gabarits de Taille (UC02/UC03)</h3>
           </div>
           <button onClick={onClose} className="p-1 rounded-full text-slate-400 hover:text-white">

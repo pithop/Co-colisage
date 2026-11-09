@@ -68,7 +68,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
           aria-label="Scanner Billet"
           className="group -mt-7 flex min-h-[76px] flex-col items-center justify-center gap-1.5 rounded-2xl"
         >
-          <span className="rounded-full bg-gradient-to-tr from-blue-600 via-indigo-400 to-cyan-200 p-[3px] shadow-[0_4px_24px_rgba(59,130,246,0.4)] transition duration-200 group-hover:scale-105 group-active:scale-95">
+          <span className="rounded-full bg-gradient-to-tr from-blue-600 via-indigo-500 to-sky-300 p-[3px] shadow-[0_4px_24px_rgba(59,130,246,0.4)] transition duration-200 group-hover:scale-105 group-active:scale-95">
             <span className="flex h-[52px] w-[52px] items-center justify-center rounded-full border border-white/30 bg-gradient-to-br from-slate-800 to-[#0A1128] text-white">
               <ScanLine size={24} strokeWidth={1.7} />
             </span>

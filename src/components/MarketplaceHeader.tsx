@@ -88,9 +88,9 @@ export function MarketplaceHeader(props: Props) {
             <BrandMark platform={activePlatform} />
           </button>
 
-          {/* Platform Switcher Desktop - 3-Way Tri-Modal Switcher */}
+          {/* Platform Switcher Desktop - Apple HIG Segmented Control */}
           <div
-            className="hidden lg:flex items-center p-1 rounded-2xl bg-slate-900/90 border border-cyan-500/30 ml-3 shadow-md backdrop-blur-md"
+            className="hidden lg:flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 ml-3 shadow-inner"
             role="radiogroup"
             aria-label="Choisir la plateforme"
           >
@@ -101,14 +101,14 @@ export function MarketplaceHeader(props: Props) {
               onClick={() => handleSelectPlatform('bagandgo')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 activePlatform === 'bagandgo'
-                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25'
-                  : 'text-slate-300 hover:text-white'
+                  ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/60 dark:border-slate-700/60'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <Package size={14} className={activePlatform === 'bagandgo' ? 'text-slate-950' : 'text-cyan-400'} />
+              <Package size={14} className={activePlatform === 'bagandgo' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'} />
               <div className="flex flex-col text-left leading-none">
                 <span className="font-bold">Bag&amp;Go</span>
-                <span className="text-[8px] opacity-80 font-medium">Récupérer · Expédier</span>
+                <span className="text-[8px] opacity-75 font-medium">Récupérer · Expédier</span>
               </div>
             </button>
 
@@ -119,11 +119,11 @@ export function MarketplaceHeader(props: Props) {
               onClick={() => handleSelectPlatform('voyageur')}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 activePlatform === 'voyageur'
-                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25'
-                  : 'text-slate-300 hover:text-white'
+                  ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/60 dark:border-slate-700/60'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <UserRound size={14} className={activePlatform === 'voyageur' ? 'text-slate-950' : 'text-cyan-400'} />
+              <UserRound size={14} className={activePlatform === 'voyageur' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'} />
               <span className="font-bold">Voyageur</span>
             </button>
 
@@ -134,14 +134,14 @@ export function MarketplaceHeader(props: Props) {
               onClick={() => handleSelectPlatform('shopandgo')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 activePlatform === 'shopandgo'
-                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25'
-                  : 'text-slate-300 hover:text-white'
+                  ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/60 dark:border-slate-700/60'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <ShoppingCart size={14} className={activePlatform === 'shopandgo' ? 'text-slate-950' : 'text-cyan-400'} />
+              <ShoppingCart size={14} className={activePlatform === 'shopandgo' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'} />
               <div className="flex flex-col text-left leading-none">
                 <span className="font-bold">Shop&amp;Go</span>
-                <span className="text-[8px] opacity-80 font-medium">Acheter · Livrer</span>
+                <span className="text-[8px] opacity-75 font-medium">Acheter · Livrer</span>
               </div>
             </button>
           </div>
@@ -358,9 +358,9 @@ export function MarketplaceHeader(props: Props) {
 
       {/* Mobile Platform Switcher Strip - Only on Explore / Platform routes */}
       {(route === "explore" || route === "voyageur" || route === "shopandgo" || route === "bagandgo" || route === "") && (
-        <div className="lg:hidden flex items-center justify-center px-2.5 py-2 bg-slate-900/95 backdrop-blur-md border-t border-cyan-500/20">
+        <div className="lg:hidden flex items-center justify-center px-3 py-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/70 dark:border-slate-800">
           <div
-            className="flex items-center w-full max-w-sm p-1 rounded-2xl bg-slate-950/80 border border-cyan-500/30 shadow-inner"
+            className="flex items-center w-full max-w-sm p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-inner"
             role="radiogroup"
             aria-label="Choisir la plateforme mobile"
           >
@@ -371,14 +371,14 @@ export function MarketplaceHeader(props: Props) {
               onClick={() => handleSelectPlatform('bagandgo')}
               className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-xl text-xs font-bold transition-all min-h-[38px] ${
                 activePlatform === 'bagandgo'
-                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25'
-                  : 'text-slate-300'
+                  ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/60 dark:border-slate-700/60'
+                  : 'text-slate-600 dark:text-slate-400'
               }`}
             >
-              <Package size={13} className={activePlatform === 'bagandgo' ? 'text-slate-950' : 'text-cyan-400'} />
+              <Package size={13} className={activePlatform === 'bagandgo' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'} />
               <div className="flex flex-col text-left leading-tight">
                 <span className="text-[11px] font-bold">Bag&amp;Go</span>
-                <span className="text-[7.5px] opacity-80 font-normal truncate max-w-[65px]">Expédier</span>
+                <span className="text-[7.5px] opacity-75 font-medium truncate max-w-[65px]">Expédier</span>
               </div>
             </button>
 
@@ -389,11 +389,11 @@ export function MarketplaceHeader(props: Props) {
               onClick={() => handleSelectPlatform('voyageur')}
               className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl text-xs font-bold transition-all min-h-[38px] ${
                 activePlatform === 'voyageur'
-                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25'
-                  : 'text-slate-300'
+                  ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/60 dark:border-slate-700/60'
+                  : 'text-slate-600 dark:text-slate-400'
               }`}
             >
-              <UserRound size={13} className={activePlatform === 'voyageur' ? 'text-slate-950' : 'text-cyan-400'} />
+              <UserRound size={13} className={activePlatform === 'voyageur' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'} />
               <span className="text-[11px] font-bold">Voyageur</span>
             </button>
 
@@ -404,14 +404,14 @@ export function MarketplaceHeader(props: Props) {
               onClick={() => handleSelectPlatform('shopandgo')}
               className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-xl text-xs font-bold transition-all min-h-[38px] ${
                 activePlatform === 'shopandgo'
-                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25'
-                  : 'text-slate-300'
+                  ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/60 dark:border-slate-700/60'
+                  : 'text-slate-600 dark:text-slate-400'
               }`}
             >
-              <ShoppingCart size={13} className={activePlatform === 'shopandgo' ? 'text-slate-950' : 'text-cyan-400'} />
+              <ShoppingCart size={13} className={activePlatform === 'shopandgo' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'} />
               <div className="flex flex-col text-left leading-tight">
                 <span className="text-[11px] font-bold">Shop&amp;Go</span>
-                <span className="text-[7.5px] opacity-80 font-normal truncate max-w-[65px]">Acheter</span>
+                <span className="text-[7.5px] opacity-75 font-medium truncate max-w-[65px]">Acheter</span>
               </div>
             </button>
           </div>

@@ -21,13 +21,13 @@ export const FreightCard: React.FC<FreightCardProps> = ({ item, onSelect }) => {
   return (
     <article className="group relative isolate flex h-full min-w-0 flex-col overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-soft transition-all duration-300 hover:border-slate-300 hover:shadow-elevated motion-safe:hover:-translate-y-1 motion-reduce:transition-none">
       <div className="relative overflow-hidden bg-slate-950 px-5 pb-5 pt-4 text-white">
-        <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
         <div className="relative flex min-h-11 items-center justify-between gap-3">
           <span className="inline-flex min-w-0 items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold">
-            <TransportIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-cyan-300" />
+            <TransportIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-sky-300" />
             <span className="break-words">{transportLabel}</span>
           </span>
-          <button type="button" aria-pressed={isLiked} aria-label={`${isLiked ? 'Retirer des' : 'Ajouter aux'} favoris : ${item.title}`} onClick={() => setIsLiked(value => !value)} className={`relative z-20 flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 motion-safe:active:scale-95 ${isLiked ? 'bg-rose-400/20 text-rose-300' : 'text-white/70 hover:bg-white/10 hover:text-white'}`}>
+          <button type="button" aria-pressed={isLiked} aria-label={`${isLiked ? 'Retirer des' : 'Ajouter aux'} favoris : ${item.title}`} onClick={() => setIsLiked(value => !value)} className={`relative z-20 flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 motion-safe:active:scale-95 ${isLiked ? 'bg-rose-400/20 text-rose-300' : 'text-white/70 hover:bg-white/10 hover:text-white'}`}>
             <Heart aria-hidden="true" className={`h-[18px] w-[18px] ${isLiked ? 'fill-current' : ''}`} />
           </button>
         </div>
@@ -38,7 +38,7 @@ export const FreightCard: React.FC<FreightCardProps> = ({ item, onSelect }) => {
             <p className="mt-1 break-words text-4xl font-semibold tracking-tighter">{item.originCode}</p>
             <p className="mt-1 text-xs leading-relaxed text-slate-300">{item.origin}</p>
           </div>
-          <div aria-hidden="true" className="flex items-center gap-1 text-cyan-300"><span className="h-px flex-1 bg-white/20" /><ArrowRight className="h-5 w-5" /><span className="h-px flex-1 bg-white/20" /></div>
+          <div aria-hidden="true" className="flex items-center gap-1 text-sky-300"><span className="h-px flex-1 bg-white/20" /><ArrowRight className="h-5 w-5" /><span className="h-px flex-1 bg-white/20" /></div>
           <div className="text-right">
             <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-400">Arrivée</p>
             <p className="mt-1 break-words text-4xl font-semibold tracking-tighter">{item.destinationCode}</p>
@@ -47,7 +47,7 @@ export const FreightCard: React.FC<FreightCardProps> = ({ item, onSelect }) => {
         </div>
 
         <div className="relative mt-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-t border-white/10 pt-4 text-xs">
-          <span className="flex items-center gap-2 font-medium"><CalendarDays aria-hidden="true" className="h-4 w-4 text-cyan-300" />{item.departureDate}</span>
+          <span className="flex items-center gap-2 font-medium"><CalendarDays aria-hidden="true" className="h-4 w-4 text-sky-300" />{item.departureDate}</span>
           <span className="flex items-center gap-1.5 tabular-nums text-slate-300"><Clock aria-hidden="true" className="h-3.5 w-3.5" />{item.departureTime?.replace(':', ' h ') ?? 'Horaire à confirmer'}</span>
         </div>
       </div>

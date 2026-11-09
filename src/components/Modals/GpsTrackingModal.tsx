@@ -56,8 +56,8 @@ export const GpsTrackingModal: React.FC<GpsTrackingModalProps> = ({
 
               {/* Trajectory */}
               <div className="flex-1 mx-4 relative flex items-center justify-center">
-                <div className="w-full h-0.5 bg-dashed border-t-2 border-dashed border-cyan-400/60" />
-                <div className="absolute bg-cyan-400 text-slate-900 p-1.5 rounded-full shadow-lg animate-pulse">
+                <div className="w-full h-0.5 bg-dashed border-t-2 border-dashed border-blue-400/60" />
+                <div className="absolute bg-blue-500 text-white p-1.5 rounded-full shadow-lg animate-pulse">
                   <Ship className="w-4 h-4" />
                 </div>
               </div>
