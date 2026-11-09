@@ -72,9 +72,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [activePlatform, setActivePlatformState] = useState<ActivePlatform>(() => {
     try {
       const saved = localStorage.getItem('bagvoyage_platform');
-      if (saved === 'shopandgo' || saved === 'bagandgo') return saved;
+      if (saved === 'voyageur' || saved === 'bagandgo' || saved === 'shopandgo') return saved;
     } catch { /* ignore storage errors */ }
-    return user?.activePlatform || 'shopandgo';
+    return user?.activePlatform || 'voyageur';
   });
 
   const [profileSelection, setProfileSelectionState] = useState<UserProfileSelection>(() => {

@@ -13,6 +13,7 @@ import {
   Share2,
   ShieldCheck,
   ShoppingBag,
+  ShoppingCart,
   Smartphone,
   Ticket,
   UserRound,
@@ -25,6 +26,7 @@ import { CurrencyRatePill } from "./CurrencyConverter/CurrencyConverterModal";
 import { LanguageSelector } from "../context/LanguageContext";
 import { ThemeToggle } from "./common/ThemeToggle";
 import { useAuth } from "../context/AuthContext";
+import { ActivePlatform } from "../types/auth";
 
 interface Props {
   route: string;
@@ -58,17 +60,9 @@ export function MarketplaceHeader(props: Props) {
     openKycModal,
   } = useAuth();
 
-  const handleSelectPlatform = (platform: 'shopandgo' | 'bagandgo') => {
-    if (platform === 'shopandgo') {
-      if (!isKycVerified && profileSelection === 'expediteur') {
-        openKycModal();
-        return;
-      }
-      setActivePlatform('shopandgo');
-    } else {
-      setActivePlatform('bagandgo');
-    }
-    if (route !== 'explore' && route !== 'shopandgo' && route !== 'bagandgo') {
+  const handleSelectPlatform = (platform: ActivePlatform) => {
+    setActivePlatform(platform);
+    if (route !== 'explore' && route !== 'voyageur' && route !== 'shopandgo' && route !== 'bagandgo') {
       navigate('explore');
     }
   };
@@ -91,33 +85,15 @@ export function MarketplaceHeader(props: Props) {
             onClick={() => navigate("explore")}
             aria-label="BagVoyage, accueil"
           >
-            <BrandMark />
+            <BrandMark platform={activePlatform} />
           </button>
 
-          {/* Platform Switcher Desktop */}
+          {/* Platform Switcher Desktop - 3-Way Tri-Modal Switcher */}
           <div
-            className="hidden md:flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 ml-2 shadow-inner"
+            className="hidden lg:flex items-center p-1 rounded-2xl bg-slate-900/90 border border-cyan-500/30 ml-3 shadow-md backdrop-blur-md"
             role="radiogroup"
             aria-label="Choisir la plateforme"
           >
-            <button
-              type="button"
-              role="radio"
-              aria-checked={activePlatform === 'shopandgo'}
-              onClick={() => handleSelectPlatform('shopandgo')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                activePlatform === 'shopandgo'
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              <ShoppingBag size={13} />
-              <span>Shop &amp; Go</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-black/15 dark:bg-white/10 uppercase tracking-wider font-semibold">
-                Voyageur
-              </span>
-            </button>
-
             <button
               type="button"
               role="radio"
@@ -125,15 +101,48 @@ export function MarketplaceHeader(props: Props) {
               onClick={() => handleSelectPlatform('bagandgo')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 activePlatform === 'bagandgo'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25'
+                  : 'text-slate-300 hover:text-white'
               }`}
             >
-              <Package size={13} />
-              <span>Bag &amp; Go</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-black/15 dark:bg-white/10 uppercase tracking-wider font-semibold">
-                Expéditeur
-              </span>
+              <Package size={14} className={activePlatform === 'bagandgo' ? 'text-slate-950' : 'text-cyan-400'} />
+              <div className="flex flex-col text-left leading-none">
+                <span className="font-bold">Bag&amp;Go</span>
+                <span className="text-[8px] opacity-80 font-medium">Récupérer · Expédier</span>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              role="radio"
+              aria-checked={activePlatform === 'voyageur'}
+              onClick={() => handleSelectPlatform('voyageur')}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                activePlatform === 'voyageur'
+                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25'
+                  : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              <UserRound size={14} className={activePlatform === 'voyageur' ? 'text-slate-950' : 'text-cyan-400'} />
+              <span className="font-bold">Voyageur</span>
+            </button>
+
+            <button
+              type="button"
+              role="radio"
+              aria-checked={activePlatform === 'shopandgo'}
+              onClick={() => handleSelectPlatform('shopandgo')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                activePlatform === 'shopandgo'
+                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25'
+                  : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              <ShoppingCart size={14} className={activePlatform === 'shopandgo' ? 'text-slate-950' : 'text-cyan-400'} />
+              <div className="flex flex-col text-left leading-none">
+                <span className="font-bold">Shop&amp;Go</span>
+                <span className="text-[8px] opacity-80 font-medium">Acheter · Livrer</span>
+              </div>
             </button>
           </div>
         </div>
@@ -292,7 +301,7 @@ export function MarketplaceHeader(props: Props) {
           {/* Indicateur de connectivité Réseau / Mode Aéroport Hors-ligne */}
           <button
             type="button"
-            className={`network-status-pill ${isOnline ? "status-online" : "status-offline"}`}
+            className={`network-status-pill hidden md:inline-flex ${isOnline ? "status-online" : "status-offline"}`}
             title={
               isOnline
                 ? "Réseau actif · Mode connecté"
@@ -327,7 +336,7 @@ export function MarketplaceHeader(props: Props) {
 
           <button
             type="button"
-            className={`header-tool ${isKycVerified ? "text-emerald-500" : "text-amber-500"}`}
+            className={`header-tool hidden md:inline-flex ${isKycVerified ? "text-emerald-500" : "text-amber-500"}`}
             aria-label="Vérification KYC"
             title={isKycVerified ? "Identité KYC Vérifiée" : "Vérification d'identité requise"}
             onClick={openKycModal}
@@ -336,7 +345,7 @@ export function MarketplaceHeader(props: Props) {
           </button>
 
           <button
-            className="header-tool header-profile"
+            className="header-tool header-profile hidden md:inline-flex"
             aria-label="Profil"
             title="Profil"
             aria-current={route === "profile" ? "page" : undefined}
@@ -348,43 +357,62 @@ export function MarketplaceHeader(props: Props) {
       </div>
 
       {/* Mobile Platform Switcher Strip - Only on Explore / Platform routes */}
-      {(route === "explore" || route === "shopandgo" || route === "bagandgo" || route === "") && (
-        <div className="md:hidden flex items-center justify-center px-4 py-2 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/60 dark:border-slate-800">
+      {(route === "explore" || route === "voyageur" || route === "shopandgo" || route === "bagandgo" || route === "") && (
+        <div className="lg:hidden flex items-center justify-center px-2.5 py-2 bg-slate-900/95 backdrop-blur-md border-t border-cyan-500/20">
           <div
-            className="flex items-center w-full max-w-xs p-1 rounded-2xl bg-slate-200/80 dark:bg-slate-800 border border-slate-300/80 dark:border-slate-700 shadow-inner"
+            className="flex items-center w-full max-w-sm p-1 rounded-2xl bg-slate-950/80 border border-cyan-500/30 shadow-inner"
             role="radiogroup"
             aria-label="Choisir la plateforme mobile"
           >
             <button
               type="button"
               role="radio"
-              aria-checked={activePlatform === 'shopandgo'}
-              onClick={() => handleSelectPlatform('shopandgo')}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-bold transition-all min-h-[36px] ${
-                activePlatform === 'shopandgo'
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400'
+              aria-checked={activePlatform === 'bagandgo'}
+              onClick={() => handleSelectPlatform('bagandgo')}
+              className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-xl text-xs font-bold transition-all min-h-[38px] ${
+                activePlatform === 'bagandgo'
+                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25'
+                  : 'text-slate-300'
               }`}
             >
-              <ShoppingBag size={13} />
-              <span>Shop &amp; Go</span>
-              <span className="text-[9px] px-1 rounded bg-black/15 uppercase font-medium">Voyageur</span>
+              <Package size={13} className={activePlatform === 'bagandgo' ? 'text-slate-950' : 'text-cyan-400'} />
+              <div className="flex flex-col text-left leading-tight">
+                <span className="text-[11px] font-bold">Bag&amp;Go</span>
+                <span className="text-[7.5px] opacity-80 font-normal truncate max-w-[65px]">Expédier</span>
+              </div>
             </button>
 
             <button
               type="button"
               role="radio"
-              aria-checked={activePlatform === 'bagandgo'}
-              onClick={() => handleSelectPlatform('bagandgo')}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-bold transition-all min-h-[36px] ${
-                activePlatform === 'bagandgo'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400'
+              aria-checked={activePlatform === 'voyageur'}
+              onClick={() => handleSelectPlatform('voyageur')}
+              className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl text-xs font-bold transition-all min-h-[38px] ${
+                activePlatform === 'voyageur'
+                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25'
+                  : 'text-slate-300'
               }`}
             >
-              <Package size={13} />
-              <span>Bag &amp; Go</span>
-              <span className="text-[9px] px-1 rounded bg-black/15 uppercase font-medium">Expéditeur</span>
+              <UserRound size={13} className={activePlatform === 'voyageur' ? 'text-slate-950' : 'text-cyan-400'} />
+              <span className="text-[11px] font-bold">Voyageur</span>
+            </button>
+
+            <button
+              type="button"
+              role="radio"
+              aria-checked={activePlatform === 'shopandgo'}
+              onClick={() => handleSelectPlatform('shopandgo')}
+              className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-xl text-xs font-bold transition-all min-h-[38px] ${
+                activePlatform === 'shopandgo'
+                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25'
+                  : 'text-slate-300'
+              }`}
+            >
+              <ShoppingCart size={13} className={activePlatform === 'shopandgo' ? 'text-slate-950' : 'text-cyan-400'} />
+              <div className="flex flex-col text-left leading-tight">
+                <span className="text-[11px] font-bold">Shop&amp;Go</span>
+                <span className="text-[7.5px] opacity-80 font-normal truncate max-w-[65px]">Acheter</span>
+              </div>
             </button>
           </div>
         </div>

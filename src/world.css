@@ -67,13 +67,28 @@
   .unified-header .desktop-nav, .unified-header .desktop-account { display: none; }
   .header-rail { display: none; }
   .header-primary-actions { gap: 4px; margin-inline-start: auto; }
-  .unified-header .network-status-pill { width: 40px; height: 40px; padding: 0; justify-content: center; border: 0; background: transparent; }
-  .unified-header .network-status-pill svg { width: 17px; height: 17px; }
-  .unified-header .network-status-label { display: none; }
-  .unified-header .header-tool { width: 40px; height: 40px; border-radius: 12px; }
-  .unified-header .header-profile { background: #f1f5f9; color: #334155; }
-  .unified-header .header-profile[aria-current="page"] { background: #eff6ff; color: #2563eb; }
-  .unified-header .notification-count { right: 6px; top: 5px; }
+  .unified-header .network-status-pill,
+  .unified-header .header-profile,
+  .unified-header button[aria-label="Vérification KYC"] {
+    display: none !important;
+  }
+  .unified-header .header-tool.notification-bell {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+  .unified-header .notification-count {
+    background: #ef4444 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 2px #ffffff !important;
+    width: 17px !important;
+    height: 17px !important;
+    min-width: 17px !important;
+    right: 4px !important;
+    top: 4px !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+  }
   .unified-header .mobile-tools-scroll { display: none; }
   .unified-header :is(.header-tool, .network-status-pill):active { transform: scale(.94); }
   .unified-header :focus-visible { outline-offset: -3px; }

@@ -1,5 +1,5 @@
 export type UserRole = 'expediteur' | 'voyageur' | 'transporteur_pro';
-export type ActivePlatform = 'shopandgo' | 'bagandgo';
+export type ActivePlatform = 'voyageur' | 'bagandgo' | 'shopandgo';
 export type UserProfileSelection = 'voyageur' | 'expediteur' | 'both';
 
 export type KycDocumentType = 'cni' | 'passport' | 'selfie' | 'proof_of_address';

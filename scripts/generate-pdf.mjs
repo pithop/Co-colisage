@@ -45,6 +45,8 @@ const img22 = getBase64Image("22_shopandgo_mobile.jpg");
 const img23 = getBase64Image("23_bagandgo_desktop.jpg");
 const img24 = getBase64Image("24_bagandgo_mobile.jpg");
 const img25 = getBase64Image("25_kyc_verification_modal.jpg");
+const img26 = getBase64Image("26_voyageur_desktop.jpg");
+const img27 = getBase64Image("27_voyageur_mobile.jpg");
 
 const htmlContent = `<!DOCTYPE html>
 <html lang="fr">
@@ -404,7 +406,7 @@ const htmlContent = `<!DOCTYPE html>
     </div>
     <div class="page-footer">
       <span>BagVoyage International • Dossier de Présentation Officiel</span>
-      <span>Page 1 / 12</span>
+      <span>Page 1 / 13</span>
     </div>
   </div>
 
@@ -441,7 +443,7 @@ const htmlContent = `<!DOCTYPE html>
 
     <div class="page-footer">
       <span>BagVoyage International • Dossier de Présentation Officiel</span>
-      <span>Page 2 / 12</span>
+      <span>Page 2 / 13</span>
     </div>
   </div>
 
@@ -488,7 +490,7 @@ const htmlContent = `<!DOCTYPE html>
 
     <div class="page-footer">
       <span>BagVoyage International • Dossier de Présentation Officiel</span>
-      <span>Page 3 / 12</span>
+      <span>Page 3 / 13</span>
     </div>
   </div>
 
@@ -526,7 +528,7 @@ const htmlContent = `<!DOCTYPE html>
 
     <div class="page-footer">
       <span>BagVoyage International • Dossier de Présentation Officiel</span>
-      <span>Page 4 / 12</span>
+      <span>Page 4 / 13</span>
     </div>
   </div>
 
@@ -573,66 +575,66 @@ const htmlContent = `<!DOCTYPE html>
 
     <div class="page-footer">
       <span>BagVoyage International • Dossier de Présentation Officiel</span>
-      <span>Page 5 / 12</span>
+      <span>Page 5 / 13</span>
     </div>
   </div>
 
-  <!-- PAGE 6: SHOP & GO (VOYAGEUR) -->
+  <!-- PAGE 6: VOYAGEUR & TRANSPORTEUR -->
   <div class="page">
     <div class="section-header">
-      <h2>5. Plateforme Shop & Go &middot; Espace Voyageur</h2>
-      <span class="section-tag">05 // SHOP & GO VOYAGEUR</span>
+      <h2>5. Mode Voyageur &middot; Espace Transporteur Certifié</h2>
+      <span class="section-tag">05 // MODE VOYAGEUR</span>
     </div>
 
     <p class="lead-text">
-      Plateforme dédiée aux voyageurs souhaitant rentabiliser leur franchise bagages. Les voyageurs acceptent des missions de commande en boutiques européennes ou transportent des colis certifiés pour des clients locaux, avec paiement bloqué sous séquestre Stripe.
+      Interface dédiée aux voyageurs monétisant leurs franchises bagages. Elle intègre un sélecteur de vol 2x2, le choix d'intention (achat vs transport), et le simulateur animé de valise <em>LuggageVisualizer</em> plébiscité pour son ergonomie interactive en temps réel.
     </p>
 
     <div class="grid-2">
       <div>
         <div class="screenshot-frame">
-          <img src="${img21}" alt="Shop & Go Desktop">
+          <img src="${img26}" alt="Voyageur Desktop">
         </div>
-        <p class="screenshot-label">Figure 5.1 : Plateforme Shop & Go Desktop (Filtres segments, corridors et solde séquestre)</p>
+        <p class="screenshot-label">Figure 5.1 : Mode Voyageur Desktop (Recherche 2x2, simulateur de valise et annonces)</p>
       </div>
       <div>
         <div class="mobile-mockup" style="width: 80%; margin: 0 auto;">
-          <img src="${img22}" alt="Shop & Go Mobile">
+          <img src="${img27}" alt="Voyageur Mobile">
         </div>
-        <p class="screenshot-label">Figure 5.2 : Expérience mobile responsive Shop & Go</p>
+        <p class="screenshot-label">Figure 5.2 : Vue Mobile Voyageur responsive avec bascule tri-modale</p>
       </div>
     </div>
 
     <div class="grid-3" style="margin-top: 6px;">
       <div class="card">
-        <h3>Missions d'Achats & Colis</h3>
-        <p>Bascule instantanée entre achats assistés en boutique (iPhone, parfums, mode) et simple transport de colis.</p>
+        <h3>Recherche Vol 2x2</h3>
+        <p>Sélection instantanée départ, arrivée, date et numéro de vol IATA avec auto-complétion intelligente.</p>
       </div>
       <div class="card">
-        <h3>Destinations Phares</h3>
-        <p>Filtres instantanés en un clic sur les corridors à fort trafic : Alger, Oran, Constantine, Tunis, Casablanca.</p>
+        <h3>Double Intention</h3>
+        <p>Cartes d'action interactives : <em>Acheter et livrer un colis</em> ou <em>Récupérer et transporter</em>.</p>
       </div>
       <div class="card">
-        <h3>Arbitrage de Vols Rentables</h3>
-        <p>Accès direct aux opportunités d'arbitrage de billets d'avion pour voyager gratuitement grâce à ses kilos.</p>
+        <h3>LuggageVisualizer Animé</h3>
+        <p>Simulation physique de remplissage de la valise cabine avec calcul direct des gains au kilo (jusqu'à 225 €).</p>
       </div>
     </div>
 
     <div class="page-footer">
       <span>BagVoyage International • Dossier de Présentation Officiel</span>
-      <span>Page 6 / 12</span>
+      <span>Page 6 / 13</span>
     </div>
   </div>
 
   <!-- PAGE 7: BAG & GO (EXPEDITEUR) -->
   <div class="page">
     <div class="section-header">
-      <h2>6. Plateforme Bag & Go &middot; Espace Expéditeur</h2>
+      <h2>6. Mode Bag &amp; Go &middot; Espace Expéditeur de Colis</h2>
       <span class="section-tag">06 // BAG & GO EXPEDITEUR</span>
     </div>
 
     <p class="lead-text">
-      Plateforme dédiée aux particuliers et commerçants ayant besoin d'expédier un colis rapidement et en toute sécurité. Les biens voyagent en cabine avec des voyageurs vérifiés eIDAS, avec déblocage sécurisé par code PIN secret à l'arrivée.
+      Interface épurée en 4 blocs fonctionnels permettant aux particuliers et professionnels d'expédier des colis en cabine. Elle intègre le nouveau simulateur <em>ParcelVisualizer</em> à balance dynamique et la sécurisation par code PIN secret.
     </p>
 
     <div class="grid-2">
@@ -640,42 +642,89 @@ const htmlContent = `<!DOCTYPE html>
         <div class="screenshot-frame">
           <img src="${img23}" alt="Bag & Go Desktop">
         </div>
-        <p class="screenshot-label">Figure 6.1 : Plateforme Bag & Go Desktop (Sélection des trajets, transporteurs et garanties)</p>
+        <p class="screenshot-label">Figure 6.1 : Mode Bag & Go Desktop (Formulaire structuré 4 blocs et simulateur)</p>
       </div>
       <div>
         <div class="mobile-mockup" style="width: 80%; margin: 0 auto;">
           <img src="${img24}" alt="Bag & Go Mobile">
         </div>
-        <p class="screenshot-label">Figure 6.2 : Vue Mobile de la plateforme Bag & Go</p>
+        <p class="screenshot-label">Figure 6.2 : Vue Mobile Bag & Go avec simulateur de colis dynamique</p>
       </div>
     </div>
 
     <div class="grid-3" style="margin-top: 6px;">
       <div class="card">
-        <h3>Multi-Transports</h3>
-        <p>Filtres sélectifs par vecteur de déplacement : Avion (rapide), Bateau / Fret maritime ou Voiture / Utilitaire.</p>
+        <h3>Architecture 4 Blocs</h3>
+        <p>Saisie claire : Informations colis, Urgence & Délai, Destination et Option déplacement.</p>
       </div>
       <div class="card">
-        <h3>Code PIN de Clôture</h3>
-        <p>Sécurité absolue : les fonds ne sont versés au transporteur qu'une fois le code PIN secret saisi par le destinataire.</p>
+        <h3>ParcelVisualizer 3D</h3>
+        <p>Animation vectorielle isométrique du carton d'expédition avec balance digitale et pesée en temps réel.</p>
       </div>
       <div class="card">
-        <h3>Suivi en Direct</h3>
-        <p>Accès immédiat au suivi télémétrique des colis déposés avec notification à chaque étape du voyage.</p>
+        <h3>Protection PIN & Séquestre</h3>
+        <p>Chiffrement des fonds sous séquestre Stripe libérés uniquement sur saisie du code PIN à la livraison.</p>
       </div>
     </div>
 
     <div class="page-footer">
       <span>BagVoyage International • Dossier de Présentation Officiel</span>
-      <span>Page 7 / 12</span>
+      <span>Page 7 / 13</span>
     </div>
   </div>
 
-  <!-- PAGE 8: VERIFICATION KYC eIDAS & SCANNER IATA -->
+  <!-- PAGE 8: SHOP & GO (ACHETEUR) -->
   <div class="page">
     <div class="section-header">
-      <h2>7. Vérification d'Identité KYC eIDAS & Scanner IATA OCR</h2>
-      <span class="section-tag">07 // SECURITY & SMART TECH</span>
+      <h2>7. Mode Shop &amp; Go &middot; Espace Achat &amp; Commandes</h2>
+      <span class="section-tag">07 // SHOP & GO COMMANDE</span>
+    </div>
+
+    <p class="lead-text">
+      Plateforme d'achat assisté pour commander des articles de boutiques et duty-free internationaux. Elle intègre l'animation <em>ShopBudgetVisualizer</em> avec jauge bicolore et coffre-fort de séquestre Stripe à 100%.
+    </p>
+
+    <div class="grid-2">
+      <div>
+        <div class="screenshot-frame">
+          <img src="${img21}" alt="Shop & Go Desktop">
+        </div>
+        <p class="screenshot-label">Figure 7.1 : Mode Shop & Go Desktop (Formulaire Votre commande et ventilation budget)</p>
+      </div>
+      <div>
+        <div class="mobile-mockup" style="width: 80%; margin: 0 auto;">
+          <img src="${img22}" alt="Shop & Go Mobile">
+        </div>
+        <p class="screenshot-label">Figure 7.2 : Vue Mobile Shop & Go avec simulateur de panier interactif</p>
+      </div>
+    </div>
+
+    <div class="grid-3" style="margin-top: 6px;">
+      <div class="card">
+        <h3>Formulaire Intuitif</h3>
+        <p>Photo de l'article, catégorie, quantité, prix en boutique et lien marchand en quelques clics.</p>
+      </div>
+      <div class="card">
+        <h3>ShopBudgetVisualizer</h3>
+        <p>Chariot duty-free animé avec jauge interactive ventilant prix produit et rémunération voyageur.</p>
+      </div>
+      <div class="card">
+        <h3>Coffre Séquestre Garanti</h3>
+        <p>Zéro risque d'arnaque : remboursement total si le voyageur ne présente pas le ticket de caisse certifié.</p>
+      </div>
+    </div>
+
+    <div class="page-footer">
+      <span>BagVoyage International • Dossier de Présentation Officiel</span>
+      <span>Page 8 / 13</span>
+    </div>
+  </div>
+
+  <!-- PAGE 9: VERIFICATION KYC eIDAS & SCANNER IATA -->
+  <div class="page">
+    <div class="section-header">
+      <h2>8. Vérification d'Identité KYC eIDAS & Scanner IATA OCR</h2>
+      <span class="section-tag">08 // SECURITY & SMART TECH</span>
     </div>
 
     <p class="lead-text">
@@ -687,13 +736,13 @@ const htmlContent = `<!DOCTYPE html>
         <div class="screenshot-frame">
           <img src="${img25}" alt="Module KYC eIDAS">
         </div>
-        <p class="screenshot-label">Figure 7.1 : Interface de téléversement et vérification eIDAS des pièces d'identité.</p>
+        <p class="screenshot-label">Figure 8.1 : Interface de téléversement et vérification eIDAS des pièces d'identité.</p>
       </div>
       <div>
         <div class="screenshot-frame">
           <img src="${img17}" alt="Scanner IATA OCR">
         </div>
-        <p class="screenshot-label">Figure 7.2 : Scanner OCR embarqué pour billets d'avion et cartes d'embarquement.</p>
+        <p class="screenshot-label">Figure 8.2 : Scanner OCR embarqué pour billets d'avion et cartes d'embarquement.</p>
       </div>
     </div>
 
@@ -714,15 +763,15 @@ const htmlContent = `<!DOCTYPE html>
 
     <div class="page-footer">
       <span>BagVoyage International • Dossier de Présentation Officiel</span>
-      <span>Page 8 / 12</span>
+      <span>Page 9 / 13</span>
     </div>
   </div>
 
-  <!-- PAGE 9: RADAR AERIEN INTERACTIF -->
+  <!-- PAGE 10: RADAR AERIEN INTERACTIF -->
   <div class="page">
     <div class="section-header">
-      <h2>8. Radar Aérien Interactif & Corridors de Vols</h2>
-      <span class="section-tag">08 // RADAR & LIVE MAP</span>
+      <h2>9. Radar Aérien Interactif & Corridors de Vols</h2>
+      <span class="section-tag">09 // RADAR & LIVE MAP</span>
     </div>
 
     <p class="lead-text">
@@ -734,13 +783,13 @@ const htmlContent = `<!DOCTYPE html>
         <div class="screenshot-frame">
           <img src="${img13}" alt="Radar Desktop">
         </div>
-        <p class="screenshot-label">Figure 8.1 : Radar Aérien Interactif (Desktop) avec corridors en temps réel.</p>
+        <p class="screenshot-label">Figure 9.1 : Radar Aérien Interactif (Desktop) avec corridors en temps réel.</p>
       </div>
       <div>
         <div class="mobile-mockup" style="width: 80%; margin: 0 auto;">
           <img src="${img20}" alt="Radar Mobile">
         </div>
-        <p class="screenshot-label">Figure 8.2 : Radar Aérien optimisé sur Mobile.</p>
+        <p class="screenshot-label">Figure 9.2 : Radar Aérien optimisé sur Mobile.</p>
       </div>
     </div>
 
@@ -761,15 +810,15 @@ const htmlContent = `<!DOCTYPE html>
 
     <div class="page-footer">
       <span>BagVoyage International • Dossier de Présentation Officiel</span>
-      <span>Page 9 / 12</span>
+      <span>Page 10 / 13</span>
     </div>
   </div>
 
-  <!-- PAGE 10: SECURITE, SEQUESTRE & TRACKING -->
+  <!-- PAGE 11: SECURITE, SEQUESTRE & TRACKING -->
   <div class="page">
     <div class="section-header">
-      <h2>9. Sécurité Bancaire, Protocole PIN & Suivi GPS</h2>
-      <span class="section-tag">09 // SECURITY & ESCROW</span>
+      <h2>10. Sécurité Bancaire, Protocole PIN & Suivi GPS</h2>
+      <span class="section-tag">10 // SECURITY & ESCROW</span>
     </div>
 
     <p class="lead-text">
@@ -781,13 +830,13 @@ const htmlContent = `<!DOCTYPE html>
         <div class="screenshot-frame">
           <img src="${img14}" alt="Suivi GPS & Timeline">
         </div>
-        <p class="screenshot-label">Figure 9.1 : Timeline de suivi en direct (De la consigne à la remise).</p>
+        <p class="screenshot-label">Figure 10.1 : Timeline de suivi en direct (De la consigne à la remise).</p>
       </div>
       <div>
         <div class="screenshot-frame">
           <img src="${img15}" alt="Authentification & KYC">
         </div>
-        <p class="screenshot-label">Figure 9.2 : Espace d'authentification et vérification d'identité KYC.</p>
+        <p class="screenshot-label">Figure 10.2 : Espace d'authentification et vérification d'identité KYC.</p>
       </div>
     </div>
 
@@ -808,15 +857,15 @@ const htmlContent = `<!DOCTYPE html>
 
     <div class="page-footer">
       <span>BagVoyage International • Dossier de Présentation Officiel</span>
-      <span>Page 10 / 12</span>
+      <span>Page 11 / 13</span>
     </div>
   </div>
 
-  <!-- PAGE 11: DASHBOARDS, ADMIN & MULTI-DEVISES -->
+  <!-- PAGE 12: DASHBOARDS, ADMIN & MULTI-DEVISES -->
   <div class="page">
     <div class="section-header">
-      <h2>10. Centre d'Administration, Flottes & Devises</h2>
-      <span class="section-tag">10 // BACKOFFICE & LEDGER</span>
+      <h2>11. Centre d'Administration, Flottes & Devises</h2>
+      <span class="section-tag">11 // BACKOFFICE & LEDGER</span>
     </div>
 
     <p class="lead-text">
@@ -828,13 +877,13 @@ const htmlContent = `<!DOCTYPE html>
         <div class="screenshot-frame">
           <img src="${img16}" alt="Admin Dashboard">
         </div>
-        <p class="screenshot-label">Figure 10.1 : Centre de Contrôle Administrateur (Modération, litiges et remboursements).</p>
+        <p class="screenshot-label">Figure 11.1 : Centre de Contrôle Administrateur (Modération, litiges et remboursements).</p>
       </div>
       <div>
         <div class="screenshot-frame">
           <img src="${img18}" alt="Convertisseur Devises">
         </div>
-        <p class="screenshot-label">Figure 10.2 : Convertisseur de devises temps réel (EUR / DZD / CAD / USD).</p>
+        <p class="screenshot-label">Figure 11.2 : Convertisseur de devises temps réel (EUR / DZD / CAD / USD).</p>
       </div>
     </div>
 
@@ -855,15 +904,15 @@ const htmlContent = `<!DOCTYPE html>
 
     <div class="page-footer">
       <span>BagVoyage International • Dossier de Présentation Officiel</span>
-      <span>Page 11 / 12</span>
+      <span>Page 12 / 13</span>
     </div>
   </div>
 
-  <!-- PAGE 12: COMPARATIF, LEGAL & CONCLUSION -->
+  <!-- PAGE 13: COMPARATIF, LEGAL & CONCLUSION -->
   <div class="page">
     <div class="section-header">
-      <h2>11. Comparatif Marché, Cadre Légal & Fiche Technique</h2>
-      <span class="section-tag">11 // SYNTHESIS & AUDIT</span>
+      <h2>12. Comparatif Marché, Cadre Légal & Fiche Technique</h2>
+      <span class="section-tag">12 // SYNTHESIS & AUDIT</span>
     </div>
 
     <table class="data-table">
@@ -924,7 +973,7 @@ const htmlContent = `<!DOCTYPE html>
 
     <div class="page-footer">
       <span>BagVoyage International • Dossier de Présentation Officiel</span>
-      <span>Page 12 / 12</span>
+      <span>Page 13 / 13</span>
     </div>
   </div>
 

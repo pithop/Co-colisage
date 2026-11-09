@@ -34,6 +34,7 @@ import {
 import { Explorer } from "./components/marketplace/Explorer";
 import { ShopAndGoPlatform } from "./components/ShopAndGo/ShopAndGoPlatform";
 import { BagAndGoPlatform } from "./components/BagAndGo/BagAndGoPlatform";
+import { VoyageurPlatform } from "./components/Voyageur/VoyageurPlatform";
 import { RequestDetails, TripDetails } from "./components/marketplace/Details";
 import { Profile, Intention } from "./components/marketplace/Profile";
 import { Publish } from "./components/marketplace/Publish";
@@ -146,6 +147,7 @@ function routeFromLocation() {
   const hash = window.location.hash.slice(1);
   if (hash) {
     if (hash === "app") return "explore";
+    if (hash === "voyageur") return "voyageur";
     if (hash === "shopandgo" || hash === "shop-and-go") return "shopandgo";
     if (hash === "bagandgo" || hash === "bag-and-go") return "bagandgo";
     if (hash === "how-it-works" || hash === "comment-ca-marche") return "how-it-works";
@@ -156,6 +158,7 @@ function routeFromLocation() {
   }
   const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
   if (pathname === "/app") return "explore";
+  if (pathname === "/voyageur") return "voyageur";
   if (pathname === "/shopandgo" || pathname === "/shop-and-go") return "shopandgo";
   if (pathname === "/bagandgo" || pathname === "/bag-and-go") return "bagandgo";
   if (pathname === "/download") return "download";
@@ -412,6 +415,7 @@ function Marketplace() {
   const arbitrageRoute = route.split("/")[1];
   const exploring =
     route === "explore" ||
+    route === "voyageur" ||
     route === "shopandgo" ||
     route === "bagandgo" ||
     route.startsWith("publish/");
@@ -420,7 +424,9 @@ function Marketplace() {
     setRoute(next);
   };
   useEffect(() => {
-    if (route === "shopandgo" && activePlatform !== "shopandgo") {
+    if (route === "voyageur" && activePlatform !== "voyageur") {
+      setActivePlatform("voyageur");
+    } else if (route === "shopandgo" && activePlatform !== "shopandgo") {
       setActivePlatform("shopandgo");
     } else if (route === "bagandgo" && activePlatform !== "bagandgo") {
       setActivePlatform("bagandgo");
@@ -723,7 +729,18 @@ function Marketplace() {
           </Suspense>
         )}
         {exploring && (
-          activePlatform === "shopandgo" ? (
+          activePlatform === "voyageur" ? (
+            <VoyageurPlatform
+              trips={trips}
+              onSelectTrip={(t) => navigate(`trip/${t.id}`)}
+              onContactTraveler={(t) => navigate(`trip/${t.id}`)}
+              onPublishTrip={() => {
+                setPublishKind("trips");
+                setPublish(true);
+              }}
+              onScanBoardingPass={() => setIataScannerOpen(true)}
+            />
+          ) : activePlatform === "shopandgo" ? (
             <ShopAndGoPlatform
               requests={requests}
               trips={trips}
@@ -735,6 +752,10 @@ function Marketplace() {
               }}
               onScanBoardingPass={() => setIataScannerOpen(true)}
               onArbitrage={openArbitrage}
+              onAddRequest={(r) => {
+                setRequests((curr) => [r, ...curr]);
+                setNotice("Votre commande d'achat a été publiée.");
+              }}
             />
           ) : (
             <BagAndGoPlatform
@@ -751,6 +772,10 @@ function Marketplace() {
                 setPublish(true);
               }}
               onTracking={() => navigate("tracking")}
+              onAddRequest={(r) => {
+                setRequests((curr) => [r, ...curr]);
+                setNotice("Votre demande de colis a été publiée.");
+              }}
             />
           )
         )}
@@ -899,7 +924,7 @@ function Marketplace() {
             </div>
           )}
       </main>
-      {exploring && activePlatform !== "shopandgo" && activePlatform !== "bagandgo" && (
+      {exploring && activePlatform !== "shopandgo" && activePlatform !== "bagandgo" && activePlatform !== "voyageur" && (
         <div className="publish-dock">
           <div>
             <span>
@@ -1106,6 +1131,7 @@ function Marketplace() {
           route={route}
           unreadMessagesCount={unreadCount}
           navigate={navigate}
+          onNotifications={() => setNotificationsOpen(true)}
         />
       )}
       <BoardingPassScannerModal

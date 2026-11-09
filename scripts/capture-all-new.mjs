@@ -72,27 +72,60 @@ server.listen(PORT, async () => {
         "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1",
     });
 
-    // 1. Shop & Go Desktop
+    // 1. Voyageur Desktop
+    const pageVoyDesk = await desktopContext.newPage();
+    await pageVoyDesk.goto(`http://localhost:${PORT}/#voyageur`, { waitUntil: "networkidle" });
+    await pageVoyDesk.waitForSelector("h1", { timeout: 15000 });
+    await pageVoyDesk.waitForTimeout(1200);
+    await pageVoyDesk.screenshot({
+      path: path.join(outputDir, "26_voyageur_desktop.jpg"),
+      type: "jpeg",
+      quality: 90,
+      fullPage: false,
+    });
+    // Also update 09_marketplace_desktop.jpg
+    await pageVoyDesk.screenshot({
+      path: path.join(outputDir, "09_marketplace_desktop.jpg"),
+      type: "jpeg",
+      quality: 90,
+      fullPage: false,
+    });
+    console.log("Captured 26_voyageur_desktop.jpg and 09_marketplace_desktop.jpg");
+
+    // 2. Voyageur Mobile
+    const pageVoyMob = await mobileContext.newPage();
+    await pageVoyMob.goto(`http://localhost:${PORT}/#voyageur`, { waitUntil: "networkidle" });
+    await pageVoyMob.waitForSelector("h1", { timeout: 15000 });
+    await pageVoyMob.waitForTimeout(1200);
+    await pageVoyMob.screenshot({
+      path: path.join(outputDir, "27_voyageur_mobile.jpg"),
+      type: "jpeg",
+      quality: 90,
+      fullPage: false,
+    });
+    // Also update 10_marketplace_mobile.jpg
+    await pageVoyMob.screenshot({
+      path: path.join(outputDir, "10_marketplace_mobile.jpg"),
+      type: "jpeg",
+      quality: 90,
+      fullPage: false,
+    });
+    console.log("Captured 27_voyageur_mobile.jpg and 10_marketplace_mobile.jpg");
+
+    // 3. Shop & Go Desktop
     const pageShopDesk = await desktopContext.newPage();
     await pageShopDesk.goto(`http://localhost:${PORT}/#shopandgo`, { waitUntil: "networkidle" });
     await pageShopDesk.waitForSelector("h1", { timeout: 15000 });
-    await pageShopDesk.waitForTimeout(1500);
+    await pageShopDesk.waitForTimeout(1200);
     await pageShopDesk.screenshot({
       path: path.join(outputDir, "21_shopandgo_desktop.jpg"),
       type: "jpeg",
       quality: 90,
       fullPage: false,
     });
-    // Also update 09_marketplace_desktop.jpg
-    await pageShopDesk.screenshot({
-      path: path.join(outputDir, "09_marketplace_desktop.jpg"),
-      type: "jpeg",
-      quality: 90,
-      fullPage: false,
-    });
-    console.log("Captured 21_shopandgo_desktop.jpg and 09_marketplace_desktop.jpg");
+    console.log("Captured 21_shopandgo_desktop.jpg");
 
-    // 2. Shop & Go Mobile
+    // 4. Shop & Go Mobile
     const pageShopMob = await mobileContext.newPage();
     await pageShopMob.goto(`http://localhost:${PORT}/#shopandgo`, { waitUntil: "networkidle" });
     await pageShopMob.waitForSelector("h1", { timeout: 15000 });
@@ -103,16 +136,9 @@ server.listen(PORT, async () => {
       quality: 90,
       fullPage: false,
     });
-    // Also update 10_marketplace_mobile.jpg
-    await pageShopMob.screenshot({
-      path: path.join(outputDir, "10_marketplace_mobile.jpg"),
-      type: "jpeg",
-      quality: 90,
-      fullPage: false,
-    });
-    console.log("Captured 22_shopandgo_mobile.jpg and 10_marketplace_mobile.jpg");
+    console.log("Captured 22_shopandgo_mobile.jpg");
 
-    // 3. Bag & Go Desktop
+    // 5. Bag & Go Desktop
     const pageBagDesk = await desktopContext.newPage();
     await pageBagDesk.goto(`http://localhost:${PORT}/#bagandgo`, { waitUntil: "networkidle" });
     await pageBagDesk.waitForSelector("h1", { timeout: 15000 });
@@ -125,7 +151,7 @@ server.listen(PORT, async () => {
     });
     console.log("Captured 23_bagandgo_desktop.jpg");
 
-    // 4. Bag & Go Mobile
+    // 6. Bag & Go Mobile
     const pageBagMob = await mobileContext.newPage();
     await pageBagMob.goto(`http://localhost:${PORT}/#bagandgo`, { waitUntil: "networkidle" });
     await pageBagMob.waitForSelector("h1", { timeout: 15000 });

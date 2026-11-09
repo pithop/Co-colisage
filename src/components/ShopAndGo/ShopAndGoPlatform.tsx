@@ -1,33 +1,39 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
-  ShoppingBag,
-  Luggage,
-  Search,
-  ShieldCheck,
-  ArrowRight,
-  ScanLine,
-  PlusCircle,
-  Package,
+  Calendar,
+  Camera,
+  Check,
   ChevronRight,
   Clock,
+  Euro,
+  Handshake,
+  Image,
+  Info,
+  Link as LinkIcon,
   MapPin,
-  Lock,
-  CheckCircle2,
-  AlertCircle,
-  TrendingUp,
+  Plus,
+  Search,
+  Send,
+  ShieldCheck,
+  ShoppingCart,
   Sparkles,
+  Store,
+  Tag,
+  User,
 } from 'lucide-react';
-import { PurchaseRequest, Trip, euro, normalize } from '../../data/marketplace';
+import { PurchaseRequest, Trip } from '../../data/marketplace';
 import { useAuth } from '../../context/AuthContext';
+import { ShopBudgetVisualizer } from '../marketplace/ShopBudgetVisualizer';
 
 export interface ShopAndGoPlatformProps {
   requests: PurchaseRequest[];
   trips: Trip[];
-  onRequest: (request: PurchaseRequest) => void;
-  onTrip: (trip: Trip) => void;
-  onPublishTrip: () => void;
-  onScanBoardingPass: () => void;
-  onArbitrage: (routeId?: string) => void;
+  onRequest?: (request: PurchaseRequest) => void;
+  onTrip?: (trip: Trip) => void;
+  onPublishTrip?: () => void;
+  onScanBoardingPass?: () => void;
+  onArbitrage?: (routeId?: string) => void;
+  onAddRequest?: (request: PurchaseRequest) => void;
 }
 
 export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
@@ -35,423 +41,540 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
   trips: _trips,
   onRequest,
   onTrip: _onTrip,
-  onPublishTrip,
-  onScanBoardingPass,
-  onArbitrage,
+  onPublishTrip: _onPublishTrip,
+  onScanBoardingPass: _onScanBoardingPass,
+  onArbitrage: _onArbitrage,
+  onAddRequest,
 }) => {
-  const { user, openKycModal, isKycVerified } = useAuth();
+  const { user } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<'all' | 'shopping' | 'parcel' | 'urgent'>('all');
-  const [selectedDestination, setSelectedDestination] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  // Form states matching Client Mockup 3
+  const [productTitle, setProductTitle] = useState('Parfum Dior Sauvage – 100 ml');
+  const [category, setCategory] = useState('Beauté & Parfum');
+  const [quantity, setQuantity] = useState('1');
+  const [productPrice, setProductPrice] = useState('100');
+  const [commission, setCommission] = useState('20');
+  const [productUrl, setProductUrl] = useState('');
+  const [storeName, setStoreName] = useState('');
+  const [deadlineDate, setDeadlineDate] = useState('2026-12-15');
+  const [deliveryLocation, setDeliveryLocation] = useState('Paris, France');
+  const [departureLocation, setDepartureLocation] = useState('Alger');
+  const [recipient, setRecipient] = useState('');
+  const [acceptNegotiation, setAcceptNegotiation] = useState(true);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [showVisualizer, setShowVisualizer] = useState(true);
 
-  const filteredMissions = useMemo(() => {
-    const q = normalize(searchQuery);
-    return requests.filter((r) => {
-      if (r.status && r.status !== 'available') return false;
+  // Success notification
+  const [publishedNotice, setPublishedNotice] = useState(false);
 
-      if (activeTab === 'shopping' && r.kind === 'parcel') return false;
-      if (activeTab === 'parcel' && r.kind !== 'parcel') return false;
-      if (activeTab === 'urgent' && r.flexibility !== 'urgent') return false;
+  // Dynamic live calculations
+  const priceNum = parseFloat(productPrice) || 0;
+  const commNum = parseFloat(commission) || 0;
+  const totalBudget = priceNum + commNum;
 
-      if (selectedDestination !== 'all') {
-        const dest = normalize(r.destination);
-        if (!dest.includes(normalize(selectedDestination))) return false;
-      }
+  // Filter shopping requests
+  const shoppingRequests = requests.filter((r) => r.kind !== 'parcel');
 
-      if (q) {
-        const text = normalize(`${r.title} ${r.origin} ${r.destination} ${r.buyer} ${r.specifications}`);
-        if (!text.includes(q)) return false;
-      }
+  // Handle image upload simulation
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPhotoPreview(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-      return true;
-    });
-  }, [requests, activeTab, selectedDestination, searchQuery]);
+  // Handle direct publication
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const newRequest: PurchaseRequest = {
+      id: `req-shop-${Date.now()}`,
+      title: productTitle || 'Commande Shop & Go',
+      origin: departureLocation,
+      destination: deliveryLocation || 'Paris, France',
+      date: deadlineDate || new Date().toISOString().slice(0, 10),
+      budget: totalBudget,
+      reward: commNum,
+      image: photoPreview || '/images/perfume.jpg',
+      buyer: user?.name || recipient || 'Acheteur vérifié',
+      specifications: `Catégorie: ${category} · Qté: ${quantity} · Prix produit: ${priceNum} € · Commission: ${commNum} € · Magasin: ${storeName || 'Tout magasin'} · Négociable: ${acceptNegotiation ? 'Oui' : 'Non'}`,
+      location: deliveryLocation || 'Paris, France',
+      kind: 'shopping',
+      status: 'available',
+      flexibility: 'deadline',
+      declaredValue: priceNum,
+      declaredCurrency: 'EUR',
+      recipientName: recipient || undefined,
+    };
+
+    if (onAddRequest) {
+      onAddRequest(newRequest);
+    } else if (onRequest) {
+      onRequest(newRequest);
+    }
+
+    setPublishedNotice(true);
+    setTimeout(() => setPublishedNotice(false), 4000);
+  };
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-3.5 sm:px-6 pt-3 pb-36 sm:py-8 space-y-5 sm:space-y-7 animate-fadeIn text-slate-900 dark:text-slate-100">
-      {/* Header Section */}
-      <header className="border-b border-slate-200/80 dark:border-slate-800/80 pb-4 sm:pb-7">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/70 dark:border-emerald-800/60 text-xs font-semibold text-emerald-800 dark:text-emerald-300 font-mono tracking-wide uppercase">
-              <ShoppingBag size={13} className="text-emerald-600 dark:text-emerald-400" />
-              <span>Shop &amp; Go &middot; Espace Voyageur</span>
+    <div className="shopandgo-platform-container max-w-5xl mx-auto px-4 py-4 space-y-6 pb-36 text-left">
+      {/* 1. Hero Banner matching Client Mockup 3 */}
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-sky-50 via-cyan-50/70 to-blue-100 dark:from-slate-900 dark:via-sky-950 dark:to-slate-900 text-slate-900 dark:text-white shadow-md border border-cyan-200/70 dark:border-cyan-500/20">
+        <div className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-cyan-500/15 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-teal-500/15 blur-3xl pointer-events-none" />
+
+        <div className="relative p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-3 max-w-xl">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/30 text-cyan-800 dark:text-cyan-300 text-xs font-semibold">
+              <ShoppingCart size={13} className="text-cyan-600 dark:text-cyan-400" />
+              <span>Shop &amp; Go · Espace Achat &amp; Commande Boutique</span>
             </div>
-            <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-950 dark:text-white">
-              Monétisez votre franchise bagages
+
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+              Commandez ce que vous voulez, on s'occupe du reste !
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
-              Rentabilisez vos trajets aériens et maritimes en transportant des colis certifiés ou en réalisant des achats à la demande. Paiement sous séquestre bancaire Stripe libéré à la remise.
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              Faites acheter vos articles dans les boutiques et duty-free du monde entier et faites-les livrer en main propre par un voyageur certifié.
             </p>
 
-            <div className="pt-2 flex items-center gap-2 overflow-x-auto sm:flex-wrap no-scrollbar">
-              <button
-                type="button"
-                onClick={onPublishTrip}
-                className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs font-bold transition-all shadow-sm hover:shadow flex items-center gap-2 shrink-0 min-h-[44px]"
-              >
-                <PlusCircle size={16} />
-                <span>Proposer mes kilos</span>
-              </button>
-              <button
-                type="button"
-                onClick={onScanBoardingPass}
-                className="px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 active:scale-[0.98] transition-all flex items-center gap-2 shrink-0 min-h-[44px]"
-              >
-                <ScanLine size={16} className="text-emerald-600 dark:text-emerald-400" />
-                <span>Scanner billet IATA</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => onArbitrage('mrs-alg')}
-                className="px-3 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white text-xs font-semibold transition-colors flex items-center gap-1.5 shrink-0 min-h-[44px]"
-              >
-                <TrendingUp size={15} className="text-emerald-600 dark:text-emerald-400" />
-                <span>Vols rentables</span>
-                <ChevronRight size={14} />
-              </button>
+            <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-slate-600 dark:text-slate-300">
+              <span className="inline-flex items-center gap-1.5 font-medium">
+                <ShieldCheck size={14} className="text-cyan-600 dark:text-cyan-400" />
+                <span>Paiement sous séquestre Stripe</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 font-medium">
+                <Sparkles size={14} className="text-cyan-600 dark:text-cyan-400" />
+                <span>Livraison en main propre</span>
+              </span>
             </div>
           </div>
 
-          {/* Account status card - Desktop */}
-          <div className="hidden lg:block p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 w-72 shrink-0 space-y-3 shadow-xs">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-500 dark:text-slate-400 font-medium">Solde disponible</span>
-              <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-base">
-                {euro(user?.stripeBalance || 0)}
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-200/50 dark:border-slate-800/50">
-              <span className="text-slate-500 dark:text-slate-400 font-medium">Fonds sous séquestre</span>
-              <span className="font-mono font-semibold text-slate-800 dark:text-slate-200 text-xs">
-                {euro(user?.pendingEscrow || 0)}
-              </span>
-            </div>
-            <div className="pt-1">
-              {isKycVerified ? (
-                <div className="py-1.5 px-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[11px] font-semibold flex items-center gap-1.5">
-                  <CheckCircle2 size={14} className="text-emerald-600 dark:text-emerald-400" />
-                  <span>Identité vérifiée eIDAS</span>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={openKycModal}
-                  className="w-full py-1.5 px-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors min-h-[36px]"
-                >
-                  <AlertCircle size={14} className="text-amber-600 dark:text-amber-400" />
-                  <span>Vérification d&apos;identité requise</span>
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Account status strip - Mobile */}
-          <div className="lg:hidden p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between text-xs gap-3">
-            <div className="flex items-center gap-3">
-              <div>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium">Solde</span>
-                <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-sm">
-                  {euro(user?.stripeBalance || 0)}
-                </span>
-              </div>
-              <div className="h-6 w-px bg-slate-200 dark:bg-slate-800" />
-              <div>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium">Séquestre</span>
-                <span className="font-mono font-semibold text-slate-700 dark:text-slate-300 text-xs">
-                  {euro(user?.pendingEscrow || 0)}
+          <div className="w-full md:w-auto flex justify-center shrink-0">
+            <div className="relative w-44 h-44 sm:w-52 sm:h-52 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-sky-400/20 border border-cyan-400/30 flex items-center justify-center p-4 shadow-inner">
+              <ShoppingCart size={82} className="text-cyan-600 dark:text-cyan-300 drop-shadow-md animate-pulse" />
+              <div className="absolute bottom-3 left-3 right-3 text-center bg-slate-950/70 backdrop-blur-md rounded-xl py-1 px-2 border border-white/10">
+                <span className="text-[10px] text-cyan-300 font-bold tracking-wider uppercase">
+                  Boutiques &amp; Duty-Free
                 </span>
               </div>
             </div>
-            <div>
-              {isKycVerified ? (
-                <span className="py-1 px-2.5 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-[11px] font-semibold flex items-center gap-1">
-                  <CheckCircle2 size={12} />
-                  <span>Vérifié</span>
-                </span>
-              ) : (
-                <button
-                  type="button"
-                  onClick={openKycModal}
-                  className="py-1 px-2.5 rounded-lg bg-amber-500/10 active:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-[11px] font-semibold flex items-center gap-1"
-                >
-                  <AlertCircle size={12} />
-                  <span>Activer KYC</span>
-                </button>
-              )}
-            </div>
           </div>
-        </div>
-      </header>
-
-      {/* Filter and Search Navigation */}
-      <section className="space-y-3.5">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          {/* Segmented Mission Type Tabs */}
-          <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs overflow-x-auto no-scrollbar">
-            {[
-              { id: 'all' as const, label: 'Toutes les missions', count: requests.length },
-              {
-                id: 'shopping' as const,
-                label: 'Achats boutique',
-                count: requests.filter((r) => r.kind !== 'parcel').length,
-              },
-              {
-                id: 'parcel' as const,
-                label: 'Colis simples',
-                count: requests.filter((r) => r.kind === 'parcel').length,
-              },
-              {
-                id: 'urgent' as const,
-                label: 'Urgents',
-                count: requests.filter((r) => r.flexibility === 'urgent').length,
-              },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                  activeTab === tab.id
-                    ? 'bg-white dark:bg-slate-800 text-slate-950 dark:text-white shadow-xs font-semibold'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                <span>{tab.label}</span>
-                {requests.length > 0 && (
-                  <span className="text-[10px] font-mono px-1 rounded bg-slate-200/70 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300">
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Destination Quick Filter */}
-          <div className="flex items-center gap-1.5 overflow-x-auto text-xs no-scrollbar pb-0.5">
-            {[
-              { id: 'all', label: 'Toutes destinations' },
-              { id: 'Alger', label: 'Alger' },
-              { id: 'Oran', label: 'Oran' },
-              { id: 'Constantine', label: 'Constantine' },
-              { id: 'Tunis', label: 'Tunis' },
-              { id: 'Casablanca', label: 'Casablanca' },
-            ].map((city) => (
-              <button
-                key={city.id}
-                type="button"
-                onClick={() => setSelectedDestination(city.id)}
-                className={`px-2.5 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors ${
-                  selectedDestination === city.id
-                    ? 'bg-slate-950 dark:bg-white text-white dark:text-slate-950 font-semibold shadow-xs'
-                    : 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
-                }`}
-              >
-                {city.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Search input */}
-        <div className="relative">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Rechercher une destination ou un article..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all shadow-xs"
-          />
         </div>
       </section>
 
-      {/* Missions Grid or Virgin Empty State */}
-      <section className="space-y-4">
-        {requests.length > 0 && (
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <span>{filteredMissions.length} mission{filteredMissions.length > 1 ? 's' : ''} disponible{filteredMissions.length > 1 ? 's' : ''}</span>
-            <span className="flex items-center gap-1.5 font-mono text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold">
-              <Lock size={12} className="text-emerald-600 dark:text-emerald-400" />
-              Garantie séquestre bancaire Stripe
-            </span>
-          </div>
+      {/* Confirmation Toast */}
+      {publishedNotice && (
+        <div className="p-4 rounded-2xl bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg flex items-center gap-2 animate-in fade-in slide-in-from-top duration-300">
+          <Check size={18} strokeWidth={3} />
+          <span>Votre commande d'achat a été publiée avec succès et transmise aux voyageurs !</span>
+        </div>
+      )}
+
+      {/* Interactive Shop Budget Visualizer Animation (Requested by Client) */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between px-1">
+          <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+            <Sparkles size={14} className="text-cyan-500" />
+            Animation &amp; Séquestre du Budget
+          </span>
+          <button
+            type="button"
+            onClick={() => setShowVisualizer(!showVisualizer)}
+            className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 hover:underline"
+          >
+            {showVisualizer ? "Masquer le simulateur" : "Afficher le simulateur"}
+          </button>
+        </div>
+        {showVisualizer && (
+          <ShopBudgetVisualizer
+            productPrice={priceNum}
+            commission={commNum}
+            onPriceChange={(p) => setProductPrice(String(p))}
+            onCommissionChange={(c) => setCommission(String(c))}
+          />
         )}
+      </div>
 
-        {filteredMissions.length === 0 ? (
-          /* Virgin / Clean Empty State (Apple HIG & Stripe Level) */
-          <div className="p-8 sm:p-12 text-center rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-slate-50/50 to-white dark:from-slate-900/40 dark:to-slate-900/80 shadow-xs space-y-6">
-            <div className="inline-flex p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40 shadow-xs">
-              <ShoppingBag size={32} />
+      {/* 2. Interactive Form "Votre commande" matching Client Mockup 3 */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/80 overflow-hidden shadow-sm">
+          <div className="px-5 py-3 bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 text-white flex items-center gap-2 font-bold text-xs uppercase tracking-wide">
+            <ShoppingCart size={16} />
+            <span>Votre commande</span>
+          </div>
+
+          <div className="p-5 space-y-4">
+            {/* Description search bar */}
+            <div>
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                Description de l'article
+              </label>
+              <div className="relative flex items-center">
+                <Search size={16} className="absolute left-3.5 text-slate-400" />
+                <input
+                  type="text"
+                  value={productTitle}
+                  onChange={(e) => setProductTitle(e.target.value)}
+                  placeholder="Décrivez le produit (ex : iPhone, parfum, chocolat...)"
+                  required
+                  className="w-full pl-9 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                />
+              </div>
             </div>
 
-            <div className="space-y-2 max-w-lg mx-auto">
-              <h2 className="text-lg sm:text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
-                {requests.length === 0
-                  ? 'Aucune mission disponible pour le moment'
-                  : 'Aucune mission ne correspond à votre recherche'}
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                {requests.length === 0
-                  ? 'Soyez le premier à proposer votre franchise bagages. Les expéditeurs et acheteurs réservent dès parution de votre vol.'
-                  : 'Modifiez vos filtres ou réinitialisez votre recherche pour afficher toutes les opportunités.'}
-              </p>
+            {/* Photo upload + Category + Quantity + Product Price */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+              {/* Photo Box */}
+              <div className="md:col-span-4">
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Photo de l'article
+                </label>
+                <label className="relative flex flex-col items-center justify-center p-4 h-36 rounded-2xl border-2 border-dashed border-cyan-400/50 dark:border-cyan-500/30 bg-cyan-50/40 dark:bg-slate-800/40 hover:bg-cyan-50/80 dark:hover:bg-slate-800/60 cursor-pointer transition-all overflow-hidden group">
+                  {photoPreview ? (
+                    <img
+                      src={photoPreview}
+                      alt="Prévisualisation"
+                      className="w-full h-full object-cover rounded-xl"
+                    />
+                  ) : (
+                    <>
+                      <div className="w-10 h-10 rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+                        <Camera size={20} />
+                      </div>
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                        Ajouter une photo
+                      </span>
+                      <span className="text-[10px] text-slate-400 mt-0.5">
+                        PNG, JPG jusqu'à 5 Mo
+                      </span>
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    className="sr-only"
+                  />
+                </label>
+              </div>
+
+              {/* Category, Quantity, Product Price */}
+              <div className="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                    Catégorie
+                  </label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500"
+                  >
+                    <option value="Beauté & Parfum">Beauté &amp; Parfum</option>
+                    <option value="High-Tech & Apple">High-Tech &amp; Apple</option>
+                    <option value="Mode & Luxe">Mode &amp; Luxe</option>
+                    <option value="Alimentation fine">Alimentation fine &amp; Terroir</option>
+                    <option value="Pharmacie & Soins">Pharmacie &amp; Soins</option>
+                    <option value="Autre">Autre catégorie</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                    Quantité
+                  </label>
+                  <select
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500"
+                  >
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                    Prix du produit (ex : 100 €)
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="absolute left-3.5 text-slate-400 font-bold text-sm">€</span>
+                    <input
+                      type="number"
+                      value={productPrice}
+                      onChange={(e) => setProductPrice(e.target.value)}
+                      placeholder="100 €"
+                      min="1"
+                      className="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <button
-                type="button"
-                onClick={onPublishTrip}
-                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2 min-h-[44px]"
+            {/* Live Commission & Budget Calculator Banner */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-sky-500/10 to-teal-500/10 border border-cyan-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                  Ma commission (pour le voyageur)
+                </span>
+                <span title="Rémunération nette versée au voyageur à la remise">
+                  <Info size={14} className="text-cyan-600 dark:text-cyan-400 cursor-help" />
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="relative w-24">
+                  <span className="absolute left-2.5 top-2.5 text-slate-400 font-bold text-xs">€</span>
+                  <input
+                    type="number"
+                    value={commission}
+                    onChange={(e) => setCommission(e.target.value)}
+                    min="5"
+                    className="w-full pl-6 pr-2 py-1.5 rounded-lg border border-cyan-400/40 bg-white dark:bg-slate-800 font-extrabold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500 text-center"
+                  />
+                </div>
+
+                {/* Total Budget Pill Badge */}
+                <div className="px-3.5 py-1.5 rounded-xl bg-slate-900 text-cyan-300 font-extrabold text-xs shadow-sm border border-cyan-500/30 whitespace-nowrap">
+                  = Budget total estimé : {totalBudget} €
+                </div>
+              </div>
+            </div>
+
+            {/* Optional Links and Stores */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Lien du produit (optionnel)
+                </label>
+                <div className="relative flex items-center">
+                  <LinkIcon size={15} className="absolute left-3 text-slate-400" />
+                  <input
+                    type="url"
+                    value={productUrl}
+                    onChange={(e) => setProductUrl(e.target.value)}
+                    placeholder="Colle ici le lien du produit (Amazon, Zara...)"
+                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Magasin d'achat (optionnel)
+                </label>
+                <div className="relative flex items-center">
+                  <Store size={15} className="absolute left-3 text-slate-400" />
+                  <input
+                    type="text"
+                    value={storeName}
+                    onChange={(e) => setStoreName(e.target.value)}
+                    placeholder="Ex : Sephora, Fnac, Duty-Free..."
+                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Date limite souhaitée
+                </label>
+                <div className="relative flex items-center">
+                  <Calendar size={15} className="absolute left-3 text-slate-400" />
+                  <input
+                    type="date"
+                    value={deadlineDate}
+                    onChange={(e) => setDeadlineDate(e.target.value)}
+                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Lieu de livraison
+                </label>
+                <div className="relative flex items-center">
+                  <MapPin size={15} className="absolute left-3 text-slate-400" />
+                  <input
+                    type="text"
+                    value={deliveryLocation}
+                    onChange={(e) => setDeliveryLocation(e.target.value)}
+                    placeholder="Ville ou adresse de livraison"
+                    required
+                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Ville d'achat souhaitée
+                </label>
+                <div className="relative flex items-center">
+                  <MapPin size={15} className="absolute left-3 text-slate-400" />
+                  <input
+                    type="text"
+                    value={departureLocation}
+                    onChange={(e) => setDepartureLocation(e.target.value)}
+                    placeholder="Ex : Alger, Paris..."
+                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Destinataire (optionnel)
+                </label>
+                <div className="relative flex items-center">
+                  <User size={15} className="absolute left-3 text-slate-400" />
+                  <input
+                    type="text"
+                    value={recipient}
+                    onChange={(e) => setRecipient(e.target.value)}
+                    placeholder="Nom ou numéro"
+                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Negotiation Toggle */}
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <Handshake size={18} className="text-cyan-600 dark:text-cyan-400" />
+                <span className="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">
+                  Accepter une négociation
+                </span>
+              </div>
+
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={acceptNegotiation}
+                  onChange={(e) => setAcceptNegotiation(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Big Pill CTA Button */}
+        <button
+          type="submit"
+          className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-sky-600 via-cyan-500 to-teal-500 hover:from-sky-500 hover:to-teal-400 text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 transition-all active:scale-[0.98]"
+        >
+          <Send size={18} strokeWidth={2.4} />
+          <span>Publier ma demande</span>
+        </button>
+      </form>
+
+      {/* 3. Section "Mes demandes récentes" */}
+      <section className="space-y-4 pt-2">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <span className="w-1.5 h-5 bg-gradient-to-b from-cyan-500 to-teal-500 rounded-full inline-block" />
+            <span>Mes demandes récentes</span>
+            {shoppingRequests.length > 0 && (
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                {shoppingRequests.length}
+              </span>
+            )}
+          </h2>
+
+          {shoppingRequests.length > 0 && (
+            <button
+              type="button"
+              className="text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
+            >
+              <span>Voir tout</span>
+              <ChevronRight size={14} />
+            </button>
+          )}
+        </div>
+
+        {shoppingRequests.length > 0 ? (
+          <div className="grid grid-cols-1 gap-3.5">
+            {shoppingRequests.map((req) => (
+              <div
+                key={req.id}
+                onClick={() => onRequest?.(req)}
+                className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-cyan-400/50 transition-all shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 cursor-pointer"
               >
-                <PlusCircle size={16} />
-                <span>Proposer mes kilos disponibles</span>
-              </button>
-              <button
-                type="button"
-                onClick={onScanBoardingPass}
-                className="w-full sm:w-auto px-4 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 min-h-[44px]"
-              >
-                <ScanLine size={16} className="text-emerald-600 dark:text-emerald-400" />
-                <span>Scanner ma carte d&apos;embarquement</span>
-              </button>
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveTab('all');
-                    setSelectedDestination('all');
-                    setSearchQuery('');
-                  }}
-                  className="px-3.5 py-2.5 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white text-xs font-medium"
-                >
-                  Réinitialiser les filtres
-                </button>
-              )}
-            </div>
+                <div className="flex items-center gap-3.5">
+                  <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0 overflow-hidden">
+                    {req.image && req.image.startsWith('http') ? (
+                      <img src={req.image} alt={req.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <ShoppingCart size={24} className="text-cyan-600 dark:text-cyan-400" />
+                    )}
+                  </div>
 
-            {/* 3 Step Traveler Value Pillars */}
-            <div className="pt-8 border-t border-slate-200/70 dark:border-slate-800/70 grid grid-cols-1 sm:grid-cols-3 gap-4 text-left max-w-4xl mx-auto">
-              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 space-y-1.5 shadow-xs">
-                <span className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 block uppercase">
-                  1. Publiez votre vol
-                </span>
-                <h3 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white">
-                  Déclarez vos kilos libres
-                </h3>
-                <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Renseignez votre compagnie, date et liaison aérienne ou maritime.
-                </p>
-              </div>
+                  <div>
+                    <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
+                      {req.title}
+                    </h3>
 
-              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 space-y-1.5 shadow-xs">
-                <span className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 block uppercase">
-                  2. Validez les missions
-                </span>
-                <h3 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white">
-                  Colis certifiés &amp; achats
-                </h3>
-                <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Acceptez uniquement les demandes compatibles avec votre bagage et inspectées.
-                </p>
-              </div>
+                    <div className="flex flex-wrap items-center gap-2 mt-1">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-cyan-500/15 text-cyan-700 dark:text-cyan-300">
+                        {req.specifications?.includes('Catégorie:')
+                          ? req.specifications.split('Catégorie:')[1]?.split('·')[0]?.trim()
+                          : 'Achat boutique'}
+                      </span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        {req.location} • Sous 2-3 jours
+                      </span>
+                    </div>
 
-              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 space-y-1.5 shadow-xs">
-                <span className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 block uppercase">
-                  3. Encaissez garanti
-                </span>
-                <h3 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white">
-                  Séquestre Stripe libéré
-                </h3>
-                <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Fonds protégés en amont et versés sur votre compte à la remise en main propre.
-                </p>
+                    <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mt-1">
+                      <span>Produit : {req.budget - req.reward} €</span>
+                      <span className="text-slate-400 mx-1.5">|</span>
+                      <span>Commission : {req.reward} €</span>
+                      <span className="text-slate-400 mx-1.5">|</span>
+                      <span className="text-cyan-600 dark:text-cyan-400 font-extrabold">Total : {req.budget} €</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                  <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">
+                    <Clock size={13} />
+                    <span>En attente</span>
+                  </span>
+                  <ChevronRight size={18} className="text-slate-400" />
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredMissions.map((mission) => {
-              const netReward = mission.serviceGross ?? mission.reward;
-              const isShopping = mission.kind !== 'parcel';
+          /* Virgin Clean State */
+          <div className="p-8 sm:p-10 rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 text-center space-y-3">
+            <div className="w-14 h-14 rounded-2xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mx-auto shadow-sm">
+              <ShoppingCart size={26} />
+            </div>
 
-              return (
-                <article
-                  key={mission.id}
-                  onClick={() => onRequest(mission)}
-                  className="group cursor-pointer rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 p-4 hover:border-emerald-500/50 dark:hover:border-emerald-500/50 hover:shadow-md transition-all flex flex-col justify-between space-y-4 shadow-xs"
-                >
-                  <div className="space-y-3">
-                    {/* Header route line */}
-                    <div className="flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-white">
-                        <span>{mission.origin}</span>
-                        <ArrowRight size={12} className="text-slate-400" />
-                        <span>{mission.destination}</span>
-                      </div>
-                      <span className="text-[11px] text-slate-400 dark:text-slate-500 font-mono">
-                        {mission.date}
-                      </span>
-                    </div>
-
-                    {/* Item Photo & Title */}
-                    <div className="flex items-start gap-3">
-                      <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-center">
-                        {mission.image ? (
-                          <img
-                            src={mission.image}
-                            alt={mission.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <Package size={22} className="text-slate-400" />
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1 space-y-0.5">
-                        <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-700 dark:text-emerald-400 font-mono">
-                          {isShopping ? 'Achat Shop & Go' : 'Colis certifié'}
-                        </span>
-                        <h2 className="font-semibold text-sm text-slate-900 dark:text-white truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                          {mission.title}
-                        </h2>
-                        {mission.weightKg !== undefined && (
-                          <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 font-mono">
-                            <Luggage size={12} />
-                            <span>Poids : {mission.weightKg} kg</span>
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Footer Reward & CTA */}
-                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
-                    <div>
-                      <span className="text-[10px] text-slate-400 block uppercase font-mono">
-                        Rémunération nette
-                      </span>
-                      <span className="text-base font-bold text-emerald-600 dark:text-emerald-400 font-mono">
-                        +{euro(netReward)}
-                      </span>
-                    </div>
-
-                    <button
-                      type="button"
-                      className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold group-hover:bg-emerald-600 group-hover:text-white transition-colors flex items-center gap-1 min-h-[36px]"
-                    >
-                      <span>Accepter</span>
-                      <ChevronRight size={13} />
-                    </button>
-                  </div>
-                </article>
-              );
-            })}
+            <div className="max-w-md mx-auto space-y-1">
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                Aucune commande d'achat pour le moment
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Remplissez les informations ci-dessus et cliquez sur « Publier ma demande » pour trouver un voyageur qui fera vos achats.
+              </p>
+            </div>
           </div>
         )}
       </section>
     </div>
   );
 };
-
