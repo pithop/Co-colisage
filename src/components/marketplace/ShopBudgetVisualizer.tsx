@@ -30,11 +30,11 @@ export function ShopBudgetVisualizer({
     <section className="shop-budget-visualizer rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white p-4 sm:p-5 shadow-sm overflow-hidden relative">
       <header className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-cyan-50 dark:bg-cyan-950/50 text-[#00838f] dark:text-cyan-400 flex items-center justify-center">
             <ShoppingCart size={18} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block">
+            <span className="text-[10px] font-bold text-[#00838f] dark:text-cyan-400 uppercase tracking-widest block">
               Simulateur de Panier &amp; Séquestre
             </span>
             <h3 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -42,7 +42,7 @@ export function ShopBudgetVisualizer({
             </h3>
           </div>
         </div>
-        <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-800/50 text-blue-700 dark:text-blue-300 text-[11px] font-semibold">
+        <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200/60 dark:border-cyan-800/50 text-[#00838f] dark:text-cyan-300 text-[11px] font-semibold">
           <Sparkles size={12} />
           <span>Calcul Direct</span>
         </div>
@@ -58,8 +58,8 @@ export function ShopBudgetVisualizer({
           >
             <defs>
               <linearGradient id={`${id}-cartMetal`} x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#2563eb" />
-                <stop offset="100%" stopColor="#1d4ed8" />
+                <stop offset="0%" stopColor="#00bcd4" />
+                <stop offset="100%" stopColor="#00838f" />
               </linearGradient>
               <linearGradient id={`${id}-bag1`} x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0%" stopColor="#ec4899" />
@@ -76,7 +76,7 @@ export function ShopBudgetVisualizer({
             </defs>
 
             {/* Platform Floor */}
-            <ellipse cx="100" cy="140" rx="76" ry="8" fill="#2563eb" opacity="0.1" />
+            <ellipse cx="100" cy="140" rx="76" ry="8" fill="#00bcd4" opacity="0.15" />
 
             {/* Shopping Bags in Cart */}
             {/* Bag 1 (Duty Free) */}
@@ -101,17 +101,17 @@ export function ShopBudgetVisualizer({
             {/* Cart Handle */}
             <path d="M36 50 l-8 -12" stroke="#64748b" strokeWidth="4" strokeLinecap="round" />
             {/* Cart Grid Lines */}
-            <line x1="80" y1="60" x2="136" y2="60" stroke="#3b82f6" strokeWidth="1.5" strokeDasharray="3,3" opacity="0.7" />
-            <line x1="88" y1="76" x2="130" y2="76" stroke="#3b82f6" strokeWidth="1.5" strokeDasharray="3,3" opacity="0.7" />
-            <line x1="90" y1="52" x2="80" y2="94" stroke="#3b82f6" strokeWidth="1.5" opacity="0.5" />
-            <line x1="112" y1="52" x2="108" y2="94" stroke="#3b82f6" strokeWidth="1.5" opacity="0.5" />
-            <line x1="134" y1="52" x2="128" y2="94" stroke="#3b82f6" strokeWidth="1.5" opacity="0.5" />
+            <line x1="80" y1="60" x2="136" y2="60" stroke="#00bcd4" strokeWidth="1.5" strokeDasharray="3,3" opacity="0.7" />
+            <line x1="88" y1="76" x2="130" y2="76" stroke="#00bcd4" strokeWidth="1.5" strokeDasharray="3,3" opacity="0.7" />
+            <line x1="90" y1="52" x2="80" y2="94" stroke="#00bcd4" strokeWidth="1.5" opacity="0.5" />
+            <line x1="112" y1="52" x2="108" y2="94" stroke="#00bcd4" strokeWidth="1.5" opacity="0.5" />
+            <line x1="134" y1="52" x2="128" y2="94" stroke="#00bcd4" strokeWidth="1.5" opacity="0.5" />
 
             {/* Cart Wheels */}
-            <circle cx="80" cy="112" r="9" fill="#0f172a" stroke="#2563eb" strokeWidth="2" />
-            <circle cx="80" cy="112" r="3" fill="#2563eb" />
-            <circle cx="132" cy="112" r="9" fill="#0f172a" stroke="#2563eb" strokeWidth="2" />
-            <circle cx="132" cy="112" r="3" fill="#2563eb" />
+            <circle cx="80" cy="112" r="9" fill="#0f172a" stroke="#00bcd4" strokeWidth="2" />
+            <circle cx="80" cy="112" r="3" fill="#00bcd4" />
+            <circle cx="132" cy="112" r="9" fill="#0f172a" stroke="#00bcd4" strokeWidth="2" />
+            <circle cx="132" cy="112" r="3" fill="#00bcd4" />
 
             {/* Floating Escrow Vault Shield */}
             <g transform="translate(142, 24)">
@@ -145,15 +145,15 @@ export function ShopBudgetVisualizer({
           <div>
             <div className="flex justify-between items-center text-xs mb-1.5">
               <span className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1">
-                <Receipt size={13} className="text-blue-600 dark:text-blue-400" />
+                <Receipt size={13} className="text-[#00838f] dark:text-cyan-400" />
                 Ventilation des fonds
               </span>
-              <span className="text-xs font-extrabold text-blue-600 dark:text-blue-400">{total} €</span>
+              <span className="text-xs font-extrabold text-[#00838f] dark:text-cyan-400">{total} €</span>
             </div>
 
             <div className="h-3 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden flex p-0.5 gap-0.5 border border-slate-200/80 dark:border-slate-700">
               <div
-                className="h-full rounded-l-full bg-blue-600 transition-all duration-300"
+                className="h-full rounded-l-full bg-gradient-to-r from-[#00838f] to-[#00bcd4] transition-all duration-300"
                 style={{ width: `${pricePct}%` }}
                 title={`Prix Produit : ${productPrice} € (${pricePct}%)`}
               />
@@ -165,7 +165,7 @@ export function ShopBudgetVisualizer({
             </div>
 
             <div className="flex justify-between items-center text-[10px] mt-1.5 font-medium">
-              <span className="text-blue-700 dark:text-blue-300">
+              <span className="text-[#00838f] dark:text-cyan-300">
                 ● Prix boutique : <strong>{productPrice} €</strong> ({pricePct}%)
               </span>
               <span className="text-emerald-700 dark:text-emerald-300">
@@ -180,12 +180,12 @@ export function ShopBudgetVisualizer({
               <span className="text-[10px] text-slate-500 dark:text-slate-400 block uppercase tracking-wide font-medium">
                 Budget total estimé
               </span>
-              <span className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              <span className="text-xl font-extrabold text-[#072a4a] dark:text-white tracking-tight">
                 {total} €
               </span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold block">Déblocage sécurisé</span>
+              <span className="text-[10px] text-[#00838f] dark:text-cyan-400 font-semibold block">Déblocage sécurisé</span>
               <span className="text-[10px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1 justify-end font-bold">
                 <CheckCircle2 size={12} /> À la remise en main propre
               </span>
@@ -195,11 +195,11 @@ export function ShopBudgetVisualizer({
           {/* Guarantee Highlights */}
           <div className="grid grid-cols-2 gap-2 text-[10px] text-slate-700 dark:text-slate-300">
             <div className="flex items-center gap-1.5 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700">
-              <ShieldCheck size={14} className="text-blue-600 dark:text-blue-400 shrink-0" />
+              <ShieldCheck size={14} className="text-[#00838f] dark:text-cyan-400 shrink-0" />
               <span>Ticket de caisse certifié</span>
             </div>
             <div className="flex items-center gap-1.5 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700">
-              <Lock size={14} className="text-blue-600 dark:text-blue-400 shrink-0" />
+              <Lock size={14} className="text-[#00838f] dark:text-cyan-400 shrink-0" />
               <span>Remboursement si non livré</span>
             </div>
           </div>

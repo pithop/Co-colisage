@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import {
-  Box,
   Calendar,
   Car,
   Check,
   ChevronRight,
   Clock,
   Euro,
-  Flame,
-  Info,
   MapPin,
   Package,
   Plane,
@@ -102,52 +99,66 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
   };
 
   return (
-    <div className="bagandgo-platform-container max-w-5xl mx-auto px-4 py-4 space-y-6 pb-36 text-left">
-      {/* 1. Hero Banner matching Client Mockup 2 */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-slate-50 to-blue-50/40 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 text-slate-900 dark:text-white shadow-sm border border-slate-200/80 dark:border-slate-800">
-        <div className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-blue-500/5 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-indigo-500/5 blur-3xl pointer-events-none" />
+    <div className="bagandgo-platform-container max-w-5xl mx-auto px-4 py-3 space-y-6 pb-36 text-left">
+      {/* 1. Hero Photographic Banner matching Client Mockup 2 */}
+      <section className="relative overflow-hidden rounded-3xl bg-slate-900 text-white shadow-lg border border-cyan-500/20">
+        <div
+          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 scale-105"
+          style={{ backgroundImage: "url('/images/hero-airport-traveler.jpg')" }}
+        />
+        {/* Dark oceanic gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#072a4a]/95 via-[#072a4a]/85 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#072a4a] via-transparent to-transparent opacity-90" />
 
-        <div className="relative p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-3 max-w-xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/80 text-xs font-semibold">
-              <Package size={13} className="text-blue-600 dark:text-blue-400" />
+        <div className="relative p-6 sm:p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-3.5 max-w-xl">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-400/20 backdrop-blur-md border border-cyan-400/40 text-cyan-200 text-xs font-semibold">
+              <Package size={13} className="text-cyan-300" />
               <span>Bag &amp; Go · Espace Expéditeur de Colis</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white leading-tight drop-shadow-sm">
               Publiez votre demande d'envoi de colis
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              Trouvez un voyageur fiable pour transporter votre colis en cabine. Remise sécurisée par code PIN et séquestre bancaire Stripe.
+
+            <p className="text-xs sm:text-sm text-cyan-100/90 leading-relaxed font-medium max-w-lg drop-shadow-sm">
+              Trouvez un voyageur fiable pour transporter votre colis en toute sécurité. Remise par code PIN et séquestre bancaire Stripe.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-slate-600 dark:text-slate-300">
-              <span className="inline-flex items-center gap-1.5 font-medium">
-                <ShieldCheck size={14} className="text-blue-600 dark:text-blue-400" />
+            <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-cyan-200">
+              <span className="inline-flex items-center gap-1.5 font-semibold">
+                <ShieldCheck size={14} className="text-cyan-300" />
                 <span>Séquestre Stripe</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 font-medium">
-                <Sparkles size={14} className="text-blue-600 dark:text-blue-400" />
+              <span className="inline-flex items-center gap-1.5 font-semibold">
+                <Sparkles size={14} className="text-cyan-300" />
                 <span>PIN secret</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 font-medium">
-                <Check size={14} className="text-blue-600 dark:text-blue-400" />
-                <span>Profils eIDAS</span>
+              <span className="inline-flex items-center gap-1.5 font-semibold">
+                <Check size={14} className="text-cyan-300" />
+                <span>Profils certifiés</span>
               </span>
             </div>
           </div>
 
-          <div className="w-full md:w-auto flex justify-center shrink-0">
-            <div className="relative w-44 h-44 sm:w-52 sm:h-52 rounded-2xl bg-gradient-to-tr from-blue-50 to-indigo-50/60 dark:bg-slate-800/80 border border-blue-100 dark:border-slate-700/60 flex items-center justify-center p-4 shadow-sm">
-              <Package size={82} className="text-blue-600 dark:text-blue-400 drop-shadow-sm animate-bounce" />
-              <div className="absolute bottom-3 left-3 right-3 text-center bg-slate-900/90 backdrop-blur-md rounded-xl py-1 px-2 border border-white/10 shadow-sm">
-                <span className="text-[10px] text-white font-bold tracking-wider uppercase">
-                  Colisage Méditerranée
-                </span>
-              </div>
+          <div className="hidden md:flex flex-col items-center justify-center p-5 rounded-2xl bg-[#062c47]/75 backdrop-blur-md border border-cyan-400/30 text-center shadow-xl">
+            <div className="w-16 h-16 rounded-full bg-cyan-400/20 flex items-center justify-center mb-2">
+              <Package size={32} className="text-cyan-300 animate-bounce" />
             </div>
+            <span className="text-xs font-bold text-white tracking-wide uppercase">Colisage Sécurisé</span>
+            <span className="text-[10px] text-cyan-200 mt-0.5">Envois transfrontaliers certifiés</span>
           </div>
+        </div>
+
+        {/* Organic wave transition */}
+        <div className="relative w-full overflow-hidden leading-none">
+          <svg
+            className="w-full h-5 sm:h-7 text-white dark:text-slate-900 fill-current block"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+          >
+            <path d="M0,0 C150,90 350,-40 500,45 C650,120 900,20 1200,60 L1200,120 L0,120 Z" />
+          </svg>
         </div>
       </section>
 
@@ -159,17 +170,17 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         </div>
       )}
 
-      {/* Interactive Parcel Visualizer Animation (Requested by Client) */}
+      {/* Interactive Parcel Visualizer Animation */}
       <div className="space-y-2">
         <div className="flex items-center justify-between px-1">
-          <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-            <Sparkles size={14} className="text-blue-600 dark:text-blue-400" />
+          <span className="text-xs font-bold text-[#072a4a] dark:text-slate-300 flex items-center gap-1.5">
+            <Sparkles size={14} className="text-[#00bcd4]" />
             Animation &amp; Gabarit du Colis
           </span>
           <button
             type="button"
             onClick={() => setShowVisualizer(!showVisualizer)}
-            className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+            className="text-xs font-bold text-[#00838f] dark:text-cyan-400 hover:underline"
           >
             {showVisualizer ? "Masquer le simulateur" : "Afficher le simulateur"}
           </button>
@@ -186,12 +197,15 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         )}
       </div>
 
-      {/* 2. Interactive Multi-Block Form matching Client Mockup 2 */}
+      {/* 2. Interactive Multi-Block Form matching Client Mockup 2 (4 Distinct Gradient-Header Blocks) */}
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Block 1: Informations du colis */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/80 overflow-hidden shadow-sm">
-          <div className="px-5 py-3.5 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-700/80 text-slate-800 dark:text-slate-200 flex items-center gap-2 font-bold text-xs uppercase tracking-wider">
-            <Package size={16} className="text-blue-600 dark:text-blue-400" />
+        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
+          {/* Client signature Teal/Cyan Gradient Ribbon Header */}
+          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
+            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
+              <Package size={14} />
+            </span>
             <span>Informations du colis</span>
           </div>
 
@@ -203,7 +217,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
               >
                 <option value="Pharmacie">Pharmacie &amp; Médical</option>
                 <option value="High-Tech">High-Tech &amp; Électronique</option>
@@ -222,7 +236,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
               <select
                 value={dimensions}
                 onChange={(e) => setDimensions(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
               >
                 <option value="30 x 20 x 15">30 x 20 x 15 (Petit format)</option>
                 <option value="40 x 30 x 20">40 x 30 x 20 (Moyen format)</option>
@@ -238,7 +252,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
               <select
                 value={weightKg}
                 onChange={(e) => setWeightKg(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
               >
                 <option value="0.5">0.5 kg</option>
                 <option value="1.0">1.0 kg</option>
@@ -253,9 +267,11 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         </div>
 
         {/* Block 2: Urgence & Délai */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/80 overflow-hidden shadow-sm">
-          <div className="px-5 py-3.5 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-700/80 text-slate-800 dark:text-slate-200 flex items-center gap-2 font-bold text-xs uppercase tracking-wider">
-            <Zap size={16} className="text-blue-600 dark:text-blue-400" />
+        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
+          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
+            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
+              <Zap size={14} />
+            </span>
             <span>Urgence &amp; Délai</span>
           </div>
 
@@ -267,7 +283,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
               <select
                 value={urgency}
                 onChange={(e) => setUrgency(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
               >
                 <option value="Normal">Normal (sous 3 à 5 jours)</option>
                 <option value="Urgent">Urgent (sous 48h)</option>
@@ -287,7 +303,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
                   onChange={(e) => setProposedPrice(e.target.value)}
                   placeholder="Ex : 50 €"
                   min="5"
-                  className="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
                 />
               </div>
             </div>
@@ -295,9 +311,11 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         </div>
 
         {/* Block 3: Destination */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/80 overflow-hidden shadow-sm">
-          <div className="px-5 py-3.5 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-700/80 text-slate-800 dark:text-slate-200 flex items-center gap-2 font-bold text-xs uppercase tracking-wider">
-            <MapPin size={16} className="text-blue-600 dark:text-blue-400" />
+        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
+          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
+            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
+              <MapPin size={14} />
+            </span>
             <span>Destination</span>
           </div>
 
@@ -311,7 +329,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
                 value={departureCity}
                 onChange={(e) => setDepartureCity(e.target.value)}
                 placeholder="Ex : Alger, Oran..."
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
               />
             </div>
 
@@ -325,7 +343,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
                 onChange={(e) => setDestination(e.target.value)}
                 placeholder="Ville ou adresse"
                 required
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
               />
             </div>
 
@@ -338,25 +356,27 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
                 value={recipient}
                 onChange={(e) => setRecipient(e.target.value)}
                 placeholder="Nom ou numéro de téléphone du destinataire"
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
               />
             </div>
           </div>
         </div>
 
         {/* Block 4: Option déplacement */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/80 overflow-hidden shadow-sm">
-          <div className="px-5 py-3.5 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-700/80 text-slate-800 dark:text-slate-200 flex items-center gap-2 font-bold text-xs uppercase tracking-wider">
-            <Car size={16} className="text-blue-600 dark:text-blue-400" />
+        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
+          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
+            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
+              <Car size={14} />
+            </span>
             <span>Option déplacement</span>
           </div>
 
           <div className="p-5 flex items-center justify-between">
             <div>
-              <span className="font-bold text-sm text-slate-900 dark:text-white block">
+              <span className="font-extrabold text-sm text-[#072a4a] dark:text-white block">
                 Accepter de se déplacer ?
               </span>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Vous pouvez convenir d'un point de rendez-vous avec le voyageur à proximité de l'aéroport ou du port.
               </p>
             </div>
@@ -368,29 +388,29 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
                 onChange={(e) => setCanTravel(e.target.checked)}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600" />
+              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00bcd4]" />
             </label>
           </div>
         </div>
 
-        {/* 3. Big Pill CTA Button */}
+        {/* 3. Oceanic Cyan Gradient Pill CTA Button matching Client Mockup 2 */}
         <button
           type="submit"
-          className="w-full py-4 px-6 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
+          className="w-full py-4 px-6 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
         >
           <Send size={18} strokeWidth={2.4} />
           <span>Publier ma demande</span>
         </button>
       </form>
 
-      {/* 4. Section "Mes demandes récentes" */}
+      {/* 4. Section "Mes demandes récentes" with Vertical Cyan Indicator */}
       <section className="space-y-4 pt-2">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-            <span className="w-1.5 h-5 bg-blue-600 rounded-full inline-block" />
+          <h2 className="text-base font-extrabold text-[#072a4a] dark:text-white flex items-center gap-2">
+            <span className="w-1.5 h-5 bg-[#00bcd4] rounded-full inline-block" />
             <span>Mes demandes récentes</span>
             {parcelRequests.length > 0 && (
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-950/60 text-[#00838f] dark:text-cyan-300">
                 {parcelRequests.length}
               </span>
             )}
@@ -400,7 +420,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
             <button
               type="button"
               onClick={onTracking}
-              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-[#00838f] dark:text-cyan-400 hover:underline flex items-center gap-1"
             >
               <span>Voir tout</span>
               <ChevronRight size={14} />
@@ -414,16 +434,16 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
               <div
                 key={req.id}
                 onClick={() => onRequest?.(req)}
-                className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-blue-300 dark:hover:border-blue-800 transition-all shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 cursor-pointer"
+                className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-cyan-300 dark:hover:border-cyan-700 transition-all shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 cursor-pointer"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-800/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                  <div className="w-12 h-12 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200/60 dark:border-cyan-800/60 text-[#00838f] dark:text-cyan-300 flex items-center justify-center shrink-0">
                     <Package size={22} />
                   </div>
 
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-xs font-extrabold text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/40">
+                      <span className="text-xs font-extrabold text-[#00838f] dark:text-cyan-300 px-2 py-0.5 rounded-md bg-cyan-50 dark:bg-cyan-950/40">
                         {req.title}
                       </span>
                       <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
@@ -436,7 +456,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
                       <span className="text-slate-400">→</span>
                       <span>{req.destination}</span>
                       <span className="text-slate-400">•</span>
-                      <span className="text-blue-600 dark:text-blue-400">{req.budget} €</span>
+                      <span className="text-[#00838f] dark:text-cyan-400">{req.budget} €</span>
                     </div>
 
                     <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 mt-1">
@@ -462,7 +482,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         ) : (
           /* Virgin Clean State */
           <div className="p-8 sm:p-10 rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 text-center space-y-3">
-            <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto shadow-sm">
+            <div className="w-14 h-14 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 text-[#00838f] dark:text-cyan-400 flex items-center justify-center mx-auto shadow-sm">
               <Package size={26} />
             </div>
 

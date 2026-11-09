@@ -9,9 +9,9 @@ test.describe("Tri-Modal Platforms & Interactive Visualizers", () => {
     const switcher = page.locator("[role='radiogroup']:visible");
     await expect(switcher.first()).toBeVisible();
 
-    // Check dual action cards
-    await expect(page.locator("text=Acheter et livrer un colis").first()).toBeVisible();
-    await expect(page.locator("text=Récupérer et transporter").first()).toBeVisible();
+    // Check dual action cards matching client mockup
+    await expect(page.locator("text=J'envoie un colis").first()).toBeVisible();
+    await expect(page.locator("text=Je cherche des bagages").first()).toBeVisible();
 
     // Check bottom navigation on mobile or desktop
     const nav = page.locator("nav[aria-label='Navigation mobile']");

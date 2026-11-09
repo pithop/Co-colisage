@@ -1351,7 +1351,7 @@
 /* BagVoyage public landing. Scoped layouts keep marketplace surfaces independent. */
 .awwwards-landing {
   --landing-paper: #fff;
-  --landing-blue: #255ce5;
+  --landing-blue: #00838f;
   --landing-ink: #14243b;
   --landing-muted: #5d6b7c;
   --landing-border: #e2e8f0;
@@ -6395,8 +6395,8 @@
   }
 
   .mobile-nav-tab.active {
-    color: #2563eb;
-    font-weight: 650;
+    color: #00838f;
+    font-weight: 700;
   }
 
   .mobile-nav-tab.active.active-emerald {
@@ -6404,7 +6404,7 @@
   }
 
   .mobile-nav-tab.active.active-blue {
-    color: #2563eb;
+    color: #00838f;
   }
 
   .nav-tab-icon-wrap {
@@ -6452,7 +6452,7 @@
     bottom: 3px;
     width: 14px;
     height: 3px;
-    background: #2563eb;
+    background: #00bcd4;
     border-radius: 999px;
   }
 
@@ -6461,7 +6461,7 @@
   }
 
   .mobile-nav-tab.active-blue .nav-tab-active-pill {
-    background: #2563eb;
+    background: #00bcd4;
   }
 }
 
