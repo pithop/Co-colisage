@@ -46,4 +46,21 @@ test.describe("Tri-Modal Platforms & Interactive Visualizers", () => {
     await expect(page.locator("text=Votre commande").first()).toBeVisible();
     await expect(page.locator("button:has-text('Publier ma demande')").first()).toBeVisible();
   });
+
+  test("verifies mobile 5-tab navigation and modals suite", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/#voyageur");
+    
+    // Bottom nav should be visible on mobile viewport
+    const bottomNav = page.locator("nav[aria-label='Navigation mobile principale']");
+    await expect(bottomNav).toBeVisible();
+
+    // Check all 5 tabs
+    await expect(page.locator("button[aria-label='Accueil']")).toBeVisible();
+    await expect(page.locator("button[aria-label='Mes missions']")).toBeVisible();
+    await expect(page.locator("button[aria-label^='Messages']")).toBeVisible();
+    await expect(page.locator("button[aria-label='Notifications']")).toBeVisible();
+    await expect(page.locator("button[aria-label='Mon compte']")).toBeVisible();
+  });
 });
+
