@@ -5464,7 +5464,7 @@
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .main-container.messages-container {
     padding: 0;
   }
@@ -6338,7 +6338,7 @@
   display: none;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .mobile-bottom-nav {
     display: block;
     position: fixed;
@@ -6518,6 +6518,28 @@
   box-shadow: 0 24px 100px rgba(10, 17, 40, 0.2);
   overflow: hidden;
   box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .bv-tool-modal {
+    max-height: 94dvh;
+    border-radius: 28px 28px 0 0;
+    width: 100%;
+    max-width: 100% !important;
+    border-bottom: none;
+    padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
+    margin-top: auto;
+    animation: sheet-slide-up 320ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .bv-tool-header {
+    padding: 16px 20px 14px;
+  }
+  .bv-tool-content {
+    padding: 16px 20px;
+  }
+  .bv-tool-footer {
+    padding: 14px 20px;
+  }
 }
 
 .bv-tool-header {

@@ -142,7 +142,7 @@ p, body, input, select, textarea {
 }
 .luxury-chat-action:hover { background: #eff6ff; border-color: #bfdbfe; }
 .luxury-chat-action:disabled { opacity: .4; cursor: not-allowed; }
-@media (max-width: 639px) { body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); } }
+@media (max-width: 768px) { body { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); } }
 @media (prefers-reduced-motion: reduce) {
   .luxury-surface *, .luxury-surface *::before, .luxury-surface *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
