@@ -740,6 +740,8 @@ function Marketplace() {
           activePlatform === "voyageur" ? (
             <VoyageurPlatform
               trips={trips}
+              requests={requests}
+              onRequest={(r) => navigate(`request/${r.id}`)}
               onSelectTrip={(t) => navigate(`trip/${t.id}`)}
               onContactTraveler={(t) => navigate(`trip/${t.id}`)}
               onPublishTrip={() => {

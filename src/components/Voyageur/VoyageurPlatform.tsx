@@ -21,7 +21,7 @@ import {
   Train,
   Truck,
 } from "lucide-react";
-import { Trip } from "../../data/marketplace";
+import { PurchaseRequest, Trip } from "../../data/marketplace";
 import { LuggageVisualizer, VisualizerTransportMode } from "../marketplace/LuggageVisualizer";
 
 export type TransportMode = "avion" | "voiture" | "train" | "bateau" | "camion";
@@ -306,16 +306,20 @@ const MULTI_MODAL_SAMPLE_TRIPS: Record<TransportMode, Trip[]> = {
 
 interface VoyageurPlatformProps {
   trips: Trip[];
+  requests?: PurchaseRequest[];
   onSelectTrip?: (trip: Trip) => void;
   onContactTraveler?: (trip: Trip) => void;
+  onRequest?: (request: PurchaseRequest) => void;
   onPublishTrip?: () => void;
   onScanBoardingPass?: () => void;
 }
 
 export function VoyageurPlatform({
   trips,
+  requests = [],
   onSelectTrip,
   onContactTraveler,
+  onRequest,
   onPublishTrip,
   onScanBoardingPass,
 }: VoyageurPlatformProps) {
@@ -364,6 +368,18 @@ export function VoyageurPlatform({
     const matchDest =
       !arrivalLocation ||
       t.destination.toLowerCase().includes(arrivalLocation.toLowerCase().split("(")[0].trim());
+    return matchOrigin && matchDest;
+  });
+
+  // Filter available requests (parcels & shopping) based on search query
+  const filteredRequests = requests.filter((r) => {
+    if (!hasSearched) return true;
+    const matchOrigin =
+      !departureLocation ||
+      r.origin.toLowerCase().includes(departureLocation.toLowerCase().split("(")[0].trim());
+    const matchDest =
+      !arrivalLocation ||
+      r.destination.toLowerCase().includes(arrivalLocation.toLowerCase().split("(")[0].trim());
     return matchOrigin && matchDest;
   });
 
@@ -652,24 +668,28 @@ export function VoyageurPlatform({
         )}
       </section>
 
-      {/* 5. Section "Voyageurs disponibles" with Transport Badges */}
+      {/* 5. Section "Voyageurs disponibles" ou "Colis à transporter" according to selectedIntent */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-extrabold text-[#072a4a] dark:text-white flex items-center gap-2">
             <span className="w-1.5 h-5 bg-[#00bcd4] rounded-full inline-block" />
-            <span>Voyageurs disponibles ({currentConfig.shortLabel})</span>
-            {filteredTrips.length > 0 && (
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-950/60 text-[#00838f] dark:text-cyan-300">
-                {filteredTrips.length}
-              </span>
-            )}
+            <span>
+              {selectedIntent === "send_parcel" && filteredRequests.length > 0
+                ? `Colis & missions à transporter (${currentConfig.shortLabel})`
+                : `Voyageurs disponibles (${currentConfig.shortLabel})`}
+            </span>
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-950/60 text-[#00838f] dark:text-cyan-300">
+              {selectedIntent === "send_parcel" && filteredRequests.length > 0
+                ? filteredRequests.length
+                : filteredTrips.length}
+            </span>
           </h2>
 
           {hasSearched && (
             <button
               type="button"
               onClick={() => setHasSearched(false)}
-              className="text-xs font-bold text-[#00838f] dark:text-cyan-400 hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-[#00838f] dark:text-cyan-400 hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>Voir tout</span>
               <ChevronRight size={14} />
@@ -677,8 +697,55 @@ export function VoyageurPlatform({
           )}
         </div>
 
-        {/* Real Trips List */}
-        {filteredTrips.length > 0 ? (
+        {/* Requests List when selectedIntent is send_parcel and requests exist */}
+        {selectedIntent === "send_parcel" && filteredRequests.length > 0 ? (
+          <div className="grid grid-cols-1 gap-3.5">
+            {filteredRequests.map((req) => (
+              <div
+                key={req.id}
+                className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-cyan-300 dark:hover:border-cyan-700 transition-all shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+              >
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-cyan-100/70 dark:bg-cyan-900/50 text-[#00838f] dark:text-cyan-300 flex items-center justify-center shrink-0">
+                    <Package size={22} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-extrabold text-sm text-[#072a4a] dark:text-white">
+                        {req.title}
+                      </h3>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60">
+                        Gain net : +{req.reward || 35} €
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mt-1">
+                      <span>{req.origin}</span>
+                      <span className="text-slate-400">→</span>
+                      <span>{req.destination}</span>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">
+                      {req.specifications || "Colis scellé à acheminer en direct"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="w-full sm:w-auto flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0">
+                  <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">
+                    +{req.reward || 35} € net
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => (onRequest ? onRequest(req) : onSelectTrip?.(filteredTrips[0]))}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white text-xs font-bold shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer"
+                  >
+                    <span>Prendre en charge</span>
+                    <ChevronRight size={14} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredTrips.length > 0 ? (
           <div className="grid grid-cols-1 gap-3.5">
             {filteredTrips.map((trip) => (
               <div
@@ -738,7 +805,7 @@ export function VoyageurPlatform({
                   <button
                     type="button"
                     onClick={() => (onContactTraveler ? onContactTraveler(trip) : onSelectTrip?.(trip))}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white text-xs font-bold shadow-sm hover:shadow-md active:scale-95 transition-all"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white text-xs font-bold shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer"
                   >
                     <MessageCircle size={14} />
                     <span>Contacter</span>
@@ -768,7 +835,7 @@ export function VoyageurPlatform({
                 <button
                   type="button"
                   onClick={onPublishTrip}
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white text-xs font-bold shadow-sm hover:shadow-md active:scale-95 transition-all"
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white text-xs font-bold shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer"
                 >
                   <Plus size={15} />
                   <span>Proposer un trajet {currentConfig.shortLabel}</span>

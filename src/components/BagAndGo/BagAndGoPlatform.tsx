@@ -163,6 +163,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
   // UI state
+  const [activeView, setActiveView] = useState<'send' | 'browse'>('send');
   const [showVisualizer, setShowVisualizer] = useState(true);
   const [publishedNotice, setPublishedNotice] = useState(false);
 
@@ -300,8 +301,101 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         </div>
       )}
 
+      {/* 2-Segment Control: Expédier un colis vs Trouver un transporteur */}
+      <div className="flex items-center justify-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 max-w-md mx-auto border border-slate-200 dark:border-slate-700 shadow-xs">
+        <button
+          type="button"
+          onClick={() => setActiveView('send')}
+          className={`flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+            activeView === 'send'
+              ? 'bg-white dark:bg-slate-900 text-[#00838f] dark:text-cyan-300 shadow-sm scale-[1.01]'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+          }`}
+        >
+          <Package size={16} />
+          <span>Expédier mon colis</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveView('browse')}
+          className={`flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+            activeView === 'browse'
+              ? 'bg-white dark:bg-slate-900 text-[#00838f] dark:text-cyan-300 shadow-sm scale-[1.01]'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+          }`}
+        >
+          <Truck size={16} />
+          <span>Transporteurs disponibles ({_trips.length})</span>
+        </button>
+      </div>
+
+      {activeView === 'browse' && (
+        <section className="space-y-4 animate-in fade-in duration-200">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-extrabold text-[#072a4a] dark:text-white flex items-center gap-2">
+              <span className="w-1.5 h-5 bg-[#00bcd4] rounded-full inline-block" />
+              <span>Trajets &amp; transporteurs acceptant des colis</span>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-950/60 text-[#00838f] dark:text-cyan-300">
+                {_trips.length}
+              </span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 gap-3.5">
+            {_trips.map((trip) => (
+              <div
+                key={trip.id}
+                className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-cyan-300 dark:hover:border-cyan-700 transition-all shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+              >
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#00838f] to-[#00bcd4] text-white font-extrabold flex items-center justify-center text-sm shadow-sm shrink-0">
+                    {trip.title ? trip.title.slice(0, 2).toUpperCase() : "TR"}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-extrabold text-sm text-[#072a4a] dark:text-white">
+                        {trip.title || "Transporteur vérifié"}
+                      </h3>
+                      <ShieldCheck size={15} className="text-[#00bcd4]" />
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-cyan-50 dark:bg-cyan-950/40 text-[#00838f] dark:text-cyan-300 border border-cyan-200/60">
+                        {trip.transportLabel || "Trajet certifié"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mt-1">
+                      <span>{trip.origin}</span>
+                      <span className="text-slate-400">→</span>
+                      <span>{trip.destination}</span>
+                    </div>
+                    <div className="flex items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      <span>Départ : {trip.departureDate}</span>
+                      <span className="text-slate-400">•</span>
+                      <span className="font-semibold text-[#00838f] dark:text-cyan-300">
+                        {trip.availableKg ? `${trip.availableKg} kg disponibles` : "Espace disponible"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full sm:w-auto flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0">
+                  <span className="text-sm font-black text-[#00838f] dark:text-cyan-400">
+                    Dès {trip.startingPrice || trip.pricePerKg || 12} € / kg
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => _onTrip?.(trip)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white text-xs font-bold shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer"
+                  >
+                    <span>Réserver cet espace</span>
+                    <ChevronRight size={14} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Interactive Parcel Visualizer Animation */}
-      <div className="space-y-2">
+      <div className={`space-y-2 ${activeView === 'browse' ? 'hidden' : ''}`}>
         <div className="flex items-center justify-between px-1">
           <span className="text-xs font-bold text-[#072a4a] dark:text-slate-300 flex items-center gap-1.5">
             <Sparkles size={14} className="text-[#00bcd4]" />
@@ -310,7 +404,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
           <button
             type="button"
             onClick={() => setShowVisualizer(!showVisualizer)}
-            className="text-xs font-bold text-[#00838f] dark:text-cyan-400 hover:underline"
+            className="text-xs font-bold text-[#00838f] dark:text-cyan-400 hover:underline cursor-pointer"
           >
             {showVisualizer ? 'Masquer le simulateur' : 'Afficher le simulateur'}
           </button>
@@ -328,7 +422,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
       </div>
 
       {/* 2. Detailed Granular Form with 5 Specialized Blocks */}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className={`space-y-4 ${activeView === 'browse' ? 'hidden' : ''}`}>
         {/* Block 1: Format & Dimensions Précises */}
         <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
           <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center justify-between font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">

@@ -109,6 +109,8 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
   const [recipient, setRecipient] = useState('');
   const [acceptNegotiation, setAcceptNegotiation] = useState(true);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  // UI state
+  const [activeView, setActiveView] = useState<'order' | 'browse'>('order');
   const [showVisualizer, setShowVisualizer] = useState(true);
 
   // Success notification
@@ -152,6 +154,20 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
 
   // Filter shopping requests
   const shoppingRequests = requests.filter((r) => r.kind !== 'parcel');
+  const [browseSearch, setBrowseSearch] = useState('');
+  const [browseCategory, setBrowseCategory] = useState('all');
+
+  const filteredBrowseRequests = shoppingRequests.filter((req) => {
+    const matchesSearch =
+      !browseSearch ||
+      req.title.toLowerCase().includes(browseSearch.toLowerCase()) ||
+      req.location.toLowerCase().includes(browseSearch.toLowerCase());
+    const matchesCat =
+      browseCategory === 'all' ||
+      (req.specifications && req.specifications.toLowerCase().includes(browseCategory.toLowerCase())) ||
+      (req.title && req.title.toLowerCase().includes(browseCategory.toLowerCase()));
+    return matchesSearch && matchesCat;
+  });
 
   // Handle image upload simulation
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -283,8 +299,155 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
         </div>
       </section>
 
+      {/* 2-Segment Mode Switcher: Commander vs Demandes en cours */}
+      <div className="flex items-center p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 max-w-md mx-auto w-full shadow-inner">
+        <button
+          type="button"
+          onClick={() => setActiveView('order')}
+          className={`flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+            activeView === 'order'
+              ? 'bg-white dark:bg-slate-900 text-[#072a4a] dark:text-white shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <ShoppingCart size={16} />
+          <span>Créer ma commande</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveView('browse')}
+          className={`flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+            activeView === 'browse'
+              ? 'bg-white dark:bg-slate-900 text-[#072a4a] dark:text-white shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <Search size={16} />
+          <span>Demandes d'achat ({shoppingRequests.length})</span>
+        </button>
+      </div>
+
+      {/* View: Browse Shopping Requests */}
+      {activeView === 'browse' && (
+        <section className="space-y-4">
+          <div className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 shadow-sm space-y-3.5">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <div className="relative flex-1">
+                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Rechercher un parfum, boutique, destination..."
+                  value={browseSearch}
+                  onChange={(e) => setBrowseSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#00bcd4]"
+                />
+              </div>
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+                {[
+                  { id: 'all', label: 'Tous les achats' },
+                  { id: 'duty', label: 'Duty Free' },
+                  { id: 'parfum', label: 'Parfums' },
+                  { id: 'apple', label: 'Apple / Tech' },
+                  { id: 'soin', label: 'Pharmacie' },
+                ].map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setBrowseCategory(cat.id)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+                      browseCategory === cat.id
+                        ? 'bg-[#00838f] text-white shadow-sm'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {filteredBrowseRequests.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredBrowseRequests.map((req) => (
+                <div
+                  key={req.id}
+                  onClick={() => onRequest?.(req)}
+                  className="group p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-[#00bcd4] dark:hover:border-[#00bcd4] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between gap-4"
+                >
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-16 h-16 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-900/60 flex items-center justify-center shrink-0 overflow-hidden">
+                      {req.image && req.image.startsWith('http') ? (
+                        <img src={req.image} alt={req.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      ) : (
+                        <ShoppingCart size={26} className="text-[#00838f] dark:text-cyan-400" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-cyan-50 dark:bg-cyan-950/60 text-[#00838f] dark:text-cyan-300 flex items-center gap-1">
+                          <Store size={11} />
+                          <span>{req.specifications?.includes('Articles:') ? 'Multi-articles' : 'Boutique certifiée'}</span>
+                        </span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 truncate flex items-center gap-1">
+                          <MapPin size={11} />
+                          <span>{req.location}</span>
+                        </span>
+                      </div>
+                      <h4 className="font-extrabold text-sm text-[#072a4a] dark:text-white line-clamp-1 group-hover:text-[#00838f] dark:group-hover:text-cyan-300 transition-colors">
+                        {req.title}
+                      </h4>
+                      <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-600 dark:text-slate-300">
+                        <span>Articles : <strong className="text-slate-800 dark:text-white">{req.budget - req.reward} €</strong></span>
+                        <span className="text-slate-300 dark:text-slate-700">•</span>
+                        <span className="text-emerald-700 dark:text-emerald-400 font-extrabold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md">
+                          Gain net : +{req.reward} €
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                      <Lock size={12} className="text-emerald-500" />
+                      <span>Séquestre Stripe : {req.budget} €</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onRequest?.(req);
+                      }}
+                      className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#00838f] to-[#00bcd4] text-white text-xs font-bold hover:shadow transition-all flex items-center gap-1.5"
+                    >
+                      <span>Acheter pour ce client</span>
+                      <ChevronRight size={14} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 text-center space-y-2">
+              <ShoppingCart size={32} className="mx-auto text-slate-400" />
+              <p className="text-sm font-bold text-slate-800 dark:text-white">Aucune demande d'achat ne correspond à votre filtre</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setBrowseSearch('');
+                  setBrowseCategory('all');
+                }}
+                className="text-xs font-bold text-[#00838f] dark:text-cyan-400 hover:underline"
+              >
+                Réinitialiser la recherche
+              </button>
+            </div>
+          )}
+        </section>
+      )}
+
       {/* Interactive Shop Budget Visualizer Animation */}
-      <div className="space-y-2">
+      <div className={`space-y-2 ${activeView === 'browse' ? 'hidden' : ''}`}>
         <div className="flex items-center justify-between px-1">
           <span className="text-xs font-bold text-[#072a4a] dark:text-slate-300 flex items-center gap-1.5">
             <Sparkles size={14} className="text-[#00bcd4]" />
@@ -309,7 +472,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
       </div>
 
       {/* 2. Multi-Item Shopping Basket & Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className={`space-y-4 ${activeView === 'browse' ? 'hidden' : ''}`}>
         {/* Block 1: Mon Panier d'Articles */}
         <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
           <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center justify-between font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
@@ -651,7 +814,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
       </form>
 
       {/* 3. Section "Mes commandes récentes" */}
-      <section className="space-y-4 pt-2">
+      <section className={`space-y-4 pt-2 ${activeView === 'browse' ? 'hidden' : ''}`}>
         <div className="flex items-center justify-between">
           <h2 className="text-base font-extrabold text-[#072a4a] dark:text-white flex items-center gap-2">
             <span className="w-1.5 h-5 bg-[#00bcd4] rounded-full inline-block" />
