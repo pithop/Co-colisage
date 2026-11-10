@@ -30,10 +30,13 @@ import {
   Upload,
   User,
   Zap,
+  ArrowLeftRight,
+  ArrowRight,
 } from 'lucide-react';
 import { Trip, PurchaseRequest } from '../../data/marketplace';
 import { useAuth } from '../../context/AuthContext';
 import { ParcelVisualizer } from '../marketplace/ParcelVisualizer';
+import { CityAutocomplete } from '../common/CityAutocomplete';
 
 export interface BagAndGoPlatformProps {
   trips: Trip[];
@@ -166,6 +169,8 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
   const [activeView, setActiveView] = useState<'send' | 'browse'>('send');
   const [showVisualizer, setShowVisualizer] = useState(true);
   const [publishedNotice, setPublishedNotice] = useState(false);
+  const [carrierOrigin, setCarrierOrigin] = useState('');
+  const [carrierDestination, setCarrierDestination] = useState('');
 
   // Filter existing requests
   const parcelRequests = requests.filter((r) => r.kind === 'parcel');
@@ -330,69 +335,158 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         </button>
       </div>
 
-      {activeView === 'browse' && (
-        <section className="space-y-4 animate-in fade-in duration-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-extrabold text-[#072a4a] dark:text-white flex items-center gap-2">
-              <span className="w-1.5 h-5 bg-[#00bcd4] rounded-full inline-block" />
-              <span>Trajets &amp; transporteurs acceptant des colis</span>
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-950/60 text-[#00838f] dark:text-cyan-300">
-                {_trips.length}
-              </span>
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 gap-3.5">
-            {_trips.map((trip) => (
-              <div
-                key={trip.id}
-                className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-cyan-300 dark:hover:border-cyan-700 transition-all shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-              >
-                <div className="flex items-center gap-3.5">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#00838f] to-[#00bcd4] text-white font-extrabold flex items-center justify-center text-sm shadow-sm shrink-0">
-                    {trip.title ? trip.title.slice(0, 2).toUpperCase() : "TR"}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-extrabold text-sm text-[#072a4a] dark:text-white">
-                        {trip.title || "Transporteur vérifié"}
-                      </h3>
-                      <ShieldCheck size={15} className="text-[#00bcd4]" />
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-cyan-50 dark:bg-cyan-950/40 text-[#00838f] dark:text-cyan-300 border border-cyan-200/60">
-                        {trip.transportLabel || "Trajet certifié"}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mt-1">
-                      <span>{trip.origin}</span>
-                      <span className="text-slate-400">→</span>
-                      <span>{trip.destination}</span>
-                    </div>
-                    <div className="flex items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      <span>Départ : {trip.departureDate}</span>
-                      <span className="text-slate-400">•</span>
-                      <span className="font-semibold text-[#00838f] dark:text-cyan-300">
-                        {trip.availableKg ? `${trip.availableKg} kg disponibles` : "Espace disponible"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full sm:w-auto flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0">
-                  <span className="text-sm font-black text-[#00838f] dark:text-cyan-400">
-                    Dès {trip.startingPrice || trip.pricePerKg || 12} € / kg
-                  </span>
+      {activeView === 'browse' && (() => {
+        const filteredTrips = _trips.filter((trip) => {
+          const matchOrigin = !carrierOrigin || trip.origin.toLowerCase().includes(carrierOrigin.toLowerCase());
+          const matchDestination = !carrierDestination || trip.destination.toLowerCase().includes(carrierDestination.toLowerCase());
+          return matchOrigin && matchDestination;
+        });
+
+        return (
+          <section className="space-y-4 animate-in fade-in duration-200">
+            {/* Search filter bar */}
+            <div className="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 shadow-sm space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-[#072a4a] dark:text-slate-300 flex items-center gap-1.5">
+                  <MapPin size={14} className="text-[#00bcd4]" />
+                  Filtrer les transporteurs par itinéraire
+                </span>
+                {(carrierOrigin || carrierDestination) && (
                   <button
                     type="button"
-                    onClick={() => _onTrip?.(trip)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white text-xs font-bold shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer"
+                    onClick={() => {
+                      setCarrierOrigin('');
+                      setCarrierDestination('');
+                    }}
+                    className="text-[11px] font-bold text-red-500 hover:underline cursor-pointer"
                   >
-                    <span>Réserver cet espace</span>
-                    <ChevronRight size={14} />
+                    Effacer les filtres
+                  </button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-[1fr,auto,1fr] gap-2.5 items-center">
+                <div>
+                  <CityAutocomplete
+                    name="carrierOrigin"
+                    value={carrierOrigin}
+                    onChange={setCarrierOrigin}
+                    placeholder="Ville de départ (ex. Paris, Marseille...)"
+                  />
+                </div>
+
+                <div className="flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const temp = carrierOrigin;
+                      setCarrierOrigin(carrierDestination);
+                      setCarrierDestination(temp);
+                    }}
+                    title="Inverser les villes"
+                    aria-label="Inverser les villes"
+                    className="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-cyan-50 dark:hover:bg-cyan-950/50 hover:border-[#00bcd4] text-[#00838f] dark:text-cyan-400 flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+                  >
+                    <ArrowLeftRight size={16} />
                   </button>
                 </div>
+
+                <div>
+                  <CityAutocomplete
+                    name="carrierDestination"
+                    value={carrierDestination}
+                    onChange={setCarrierDestination}
+                    placeholder="Ville d'arrivée (ex. Alger, Oran, Batna...)"
+                  />
+                </div>
               </div>
-            ))}
-          </div>
-        </section>
-      )}
+            </div>
+
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-extrabold text-[#072a4a] dark:text-white flex items-center gap-2">
+                <span className="w-1.5 h-5 bg-[#00bcd4] rounded-full inline-block" />
+                <span>Trajets &amp; transporteurs acceptant des colis</span>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-950/60 text-[#00838f] dark:text-cyan-300">
+                  {filteredTrips.length}
+                </span>
+              </h2>
+            </div>
+
+            {filteredTrips.length === 0 ? (
+              <div className="p-8 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/60 text-center space-y-3">
+                <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
+                  <Package size={24} />
+                </div>
+                <h3 className="font-bold text-sm text-[#072a4a] dark:text-white">
+                  Aucun transporteur trouvé pour cet itinéraire précis
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+                  Publiez votre demande de colis : les voyageurs certifiés qui empruntent ce corridor recevront une alerte immédiate.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setActiveView('send')}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-[#00bcd4] to-[#00838f] text-white text-xs font-bold shadow-sm cursor-pointer"
+                >
+                  <Package size={14} />
+                  <span>Publier mon colis sur ce trajet</span>
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-3.5">
+                {filteredTrips.map((trip) => (
+                  <div
+                    key={trip.id}
+                    className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-cyan-300 dark:hover:border-cyan-700 transition-all shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#00838f] to-[#00bcd4] text-white font-extrabold flex items-center justify-center text-sm shadow-sm shrink-0">
+                        {trip.title ? trip.title.slice(0, 2).toUpperCase() : "TR"}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-extrabold text-sm text-[#072a4a] dark:text-white">
+                            {trip.title || "Transporteur vérifié"}
+                          </h3>
+                          <ShieldCheck size={15} className="text-[#00bcd4]" />
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-cyan-50 dark:bg-cyan-950/40 text-[#00838f] dark:text-cyan-300 border border-cyan-200/60">
+                            {trip.transportLabel || "Trajet certifié"}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mt-1">
+                          <span>{trip.origin}</span>
+                          <span className="text-slate-400">→</span>
+                          <span>{trip.destination}</span>
+                        </div>
+                        <div className="flex items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400 mt-1">
+                          <span>Départ : {trip.departureDate}</span>
+                          <span className="text-slate-400">•</span>
+                          <span className="font-semibold text-[#00838f] dark:text-cyan-300">
+                            {trip.availableKg ? `${trip.availableKg} kg disponibles` : "Espace disponible"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="w-full sm:w-auto flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0">
+                      <span className="text-sm font-black text-[#00838f] dark:text-cyan-400">
+                        Dès {trip.startingPrice || trip.pricePerKg || 12} € / kg
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => _onTrip?.(trip)}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white text-xs font-bold shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer"
+                      >
+                        <span>Réserver cet espace</span>
+                        <ChevronRight size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        );
+      })()}
 
       {/* Interactive Parcel Visualizer Animation */}
       <div className={`space-y-2 ${activeView === 'browse' ? 'hidden' : ''}`}>
@@ -861,80 +955,138 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
 
         {/* Block 4: Trajet & Destinataire */}
         <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
-          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
-            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
-              <MapPin size={14} />
+          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center justify-between font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
+            <div className="flex items-center gap-2.5">
+              <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
+                <MapPin size={14} />
+              </span>
+              <span>4. Trajet, Urgence &amp; Destinataire</span>
+            </div>
+            <span className="text-[10px] font-semibold bg-white/20 px-2.5 py-0.5 rounded-full">
+              Saisie libre monde entier
             </span>
-            <span>4. Trajet, Urgence &amp; Destinataire</span>
           </div>
 
-          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="p-5 space-y-4">
+            {/* Quick Corridor Chips */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Ville / Pays de départ
-              </label>
-              <input
-                type="text"
-                value={departureCity}
-                onChange={(e) => setDepartureCity(e.target.value)}
-                placeholder="Ex : Alger, Oran, Paris..."
-                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
-              />
+              <span className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
+                Lignes fréquentes en 1 clic
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { from: "Alger", to: "Paris" },
+                  { from: "Paris", to: "Alger" },
+                  { from: "Marseille", to: "Oran" },
+                  { from: "Lyon", to: "Constantine" },
+                  { from: "Montréal", to: "Alger" },
+                  { from: "Casablanca", to: "Paris" },
+                ].map((chip) => (
+                  <button
+                    key={`${chip.from}-${chip.to}`}
+                    type="button"
+                    onClick={() => {
+                      setDepartureCity(chip.from);
+                      setDestination(chip.to);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                      departureCity === chip.from && destination === chip.to
+                        ? "border-[#00bcd4] bg-cyan-50 dark:bg-cyan-950/60 text-[#00838f] dark:text-cyan-300 ring-1 ring-[#00bcd4]"
+                        : "border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:border-slate-300"
+                    }`}
+                  >
+                    {chip.from} <ArrowRight size={11} className="text-slate-400 inline mx-0.5" /> {chip.to}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Ville / Adresse de destination
-              </label>
-              <input
-                type="text"
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-                placeholder="Ex : Paris, Marseille, Lyon..."
-                required
-                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
-              />
+            {/* Departure / Arrival with Swap Button */}
+            <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-3 items-end">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Ville / Pays de départ
+                </label>
+                <CityAutocomplete
+                  name="departureCity"
+                  value={departureCity}
+                  onChange={setDepartureCity}
+                  placeholder="Ex : Alger, Oran, Batna, Paris..."
+                  required
+                />
+              </div>
+
+              <div className="flex justify-center pb-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const temp = departureCity;
+                    setDepartureCity(destination);
+                    setDestination(temp);
+                  }}
+                  title="Inverser le sens du trajet"
+                  aria-label="Inverser le sens du trajet"
+                  className="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-cyan-50 dark:hover:bg-cyan-950/50 hover:border-[#00bcd4] text-[#00838f] dark:text-cyan-400 flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+                >
+                  <ArrowLeftRight size={18} />
+                </button>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Ville / Pays de destination
+                </label>
+                <CityAutocomplete
+                  name="destination"
+                  value={destination}
+                  onChange={setDestination}
+                  placeholder="Ex : Paris, Marseille, Montréal, Lyon..."
+                  required
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Délai souhaité
-              </label>
-              <select
-                value={urgency}
-                onChange={(e) => setUrgency(e.target.value)}
-                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500"
-              >
-                <option value="Normal">Normal (sous 3 à 5 jours)</option>
-                <option value="Urgent">Urgent (sous 48h)</option>
-                <option value="Très urgent">Très urgent (sous 24h)</option>
-              </select>
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Délai souhaité
+                </label>
+                <select
+                  value={urgency}
+                  onChange={(e) => setUrgency(e.target.value)}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500"
+                >
+                  <option value="Normal">Normal (sous 3 à 5 jours)</option>
+                  <option value="Urgent">Urgent (sous 48h)</option>
+                  <option value="Très urgent">Très urgent (sous 24h)</option>
+                </select>
+              </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Destinataire (Nom &amp; Téléphone)
-              </label>
-              <input
-                type="text"
-                value={recipient}
-                onChange={(e) => setRecipient(e.target.value)}
-                placeholder="Nom du destinataire qui recevra le code PIN"
-                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
-              />
-            </div>
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Destinataire (Nom &amp; Téléphone)
+                </label>
+                <input
+                  type="text"
+                  value={recipient}
+                  onChange={(e) => setRecipient(e.target.value)}
+                  placeholder="Nom du destinataire qui recevra le code PIN"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                />
+              </div>
 
-            <div className="sm:col-span-2">
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Instructions particulières ou description du contenu
-              </label>
-              <input
-                type="text"
-                value={parcelNotes}
-                onChange={(e) => setParcelNotes(e.target.value)}
-                placeholder="Ex : Médicaments thermosensibles à conserver en cabine, boîte scellée..."
-                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
-              />
+              <div className="sm:col-span-2">
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Instructions particulières ou description du contenu
+                </label>
+                <input
+                  type="text"
+                  value={parcelNotes}
+                  onChange={(e) => setParcelNotes(e.target.value)}
+                  placeholder="Ex : Médicaments thermosensibles à conserver en cabine, boîte scellée..."
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                />
+              </div>
             </div>
           </div>
         </div>

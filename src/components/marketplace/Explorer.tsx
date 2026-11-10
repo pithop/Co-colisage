@@ -32,6 +32,7 @@ import {
   timeLabel,
   vehicleLabel,
 } from "../../data/marketplace";
+import { CityAutocomplete } from "../common/CityAutocomplete";
 
 export function Explorer({
   mode,
@@ -87,7 +88,7 @@ export function Explorer({
       (worldwide || !r.market) &&
       (!r.status || r.status === "available") &&
       matches(`${r.title} ${r.origin} ${r.destination}`) &&
-      (!destination || r.destination === destination) &&
+      (!destination || normalize(r.destination).includes(normalize(destination))) &&
       (!date || r.date <= date) &&
       (!budget || r.budget <= Number(budget)) &&
       (capacity === null ||
@@ -99,6 +100,7 @@ export function Explorer({
       matches(
         `${t.travelerName} ${t.origin} ${t.destination} ${t.transportLabel}`,
       ) &&
+      (!destination || normalize(t.destination).includes(normalize(destination))) &&
       (!date || t.departureDate === date) &&
       (!vehicle || vehicleLabel(t) === vehicle) &&
       (capacity === null || t.availableKg >= capacity) &&
@@ -115,6 +117,7 @@ export function Explorer({
         { label: "Budget", value: budget },
       ]
     : [
+        { label: "Destination", value: destination },
         { label: "Date", value: date },
         { label: "Véhicule", value: vehicle },
         { label: "Dimensions", value: size },
@@ -263,26 +266,27 @@ export function Explorer({
                     : filter}
               </label>
               {filter === "Destination" && (
-                <select
-                  id="filter-value"
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                >
-                  <option value="">Toutes les destinations</option>
-                  {[
-                    ...new Set([
-                      ...requests.map((r) => r.destination),
-                      ...trips.map((t) => t.destination),
-                    ]),
-                  ]
-                    .filter(Boolean)
-                    .sort()
-                    .map((d) => (
-                      <option key={d} value={d}>
-                        {d}
-                      </option>
-                    ))}
-                </select>
+                <div className="filter-city-autocomplete-wrap">
+                  <CityAutocomplete
+                    id="filter-value"
+                    name="destination"
+                    value={destination}
+                    onChange={(val) => {
+                      setDestination(val);
+                      if (val) setWorldwide(true);
+                    }}
+                    placeholder="Taper une ville (ex. Batna, Alger, Paris, Montréal...)"
+                  />
+                  {destination && (
+                    <button
+                      type="button"
+                      className="filter-clear-city-btn"
+                      onClick={() => setDestination("")}
+                    >
+                      Effacer la destination
+                    </button>
+                  )}
+                </div>
               )}
               {filter === "Date" && (
                 <input

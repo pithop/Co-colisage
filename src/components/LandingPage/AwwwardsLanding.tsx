@@ -32,6 +32,7 @@ import {
   MobileWaitlistForm,
 } from "./MobileAppLaunchModal";
 import { ThemeToggle } from "../common/ThemeToggle";
+import { CityAutocomplete } from "../common/CityAutocomplete";
 import { LandingMobileMenu } from "../Navigation/LandingMobileMenu";
 const copy = {
   fr: {
@@ -827,65 +828,18 @@ export function AwwwardsLanding({
             ))}
           </div>
           <div className="simulator-route">
-            <label>
-              {c.from}
-              <select
-                aria-label={c.from}
+            <div className="simulator-route-col">
+              <span className="simulator-col-label">{c.from}</span>
+              <CityAutocomplete
+                name="origin"
                 value={origin}
-                onChange={(event) => setOrigin(event.target.value)}
-              >
-                {[
-                  {
-                    group: text("Lignes Fréquentes", "Frequent Lines"),
-                    cities: ["Paris", "Marseille", "Alger", "Oran", "Montréal", "Lyon", "Constantine"],
-                  },
-                  {
-                    group: text("France & Europe", "France & Europe"),
-                    cities: [
-                      "Nice", "Toulouse", "Nantes", "Bordeaux", "Lille", "Strasbourg", "Montpellier",
-                      "Bruxelles", "Genève", "Londres", "Madrid", "Barcelone", "Rome", "Milan",
-                      "Berlin", "Francfort", "Amsterdam", "Lisbonne", "Istanbul",
-                    ],
-                  },
-                  {
-                    group: text("Maghreb", "Maghreb"),
-                    cities: [
-                      "Annaba", "Sétif", "Batna", "Tlemcen", "Béjaïa", "Biskra",
-                      "Casablanca", "Rabat", "Marrakech", "Fès", "Tanger", "Agadir",
-                      "Tunis", "Sfax", "Djerba",
-                    ],
-                  },
-                  {
-                    group: text("Amériques", "Americas"),
-                    cities: [
-                      "Québec", "Toronto", "Vancouver", "New York", "Los Angeles", "Miami",
-                      "Chicago", "San Francisco", "Boston", "Washington", "Mexico", "São Paulo", "Buenos Aires",
-                    ],
-                  },
-                  {
-                    group: text("Afrique & Égypte", "Africa & Egypt"),
-                    cities: [
-                      "Dakar", "Abidjan", "Bamako", "Conakry", "Douala", "Yaoundé",
-                      "Libreville", "Kinshasa", "Lagos", "Accra", "Nairobi", "Johannesburg", "Le Caire",
-                    ],
-                  },
-                  {
-                    group: text("Moyen-Orient & Asie", "Middle East & Asia"),
-                    cities: [
-                      "Dubaï", "Abou Dabi", "Doha", "Riyad", "Djeddah", "Beyrouth",
-                      "Tokyo", "Séoul", "Pékin", "Shanghai", "Singapour", "Bangkok", "New Delhi", "Sydney",
-                    ],
-                  },
-                ].map((g) => (
-                  <optgroup key={g.group} label={g.group}>
-                    {g.cities.map((city) => (
-                      <option key={city} value={city}>{city}</option>
-                    ))}
-                  </optgroup>
-                ))}
-              </select>
-            </label>
+                onChange={(val) => setOrigin(val)}
+                placeholder={text("Ex. Paris, Marseille, Alger...", "Ex. Paris, Marseille, Algiers...")}
+              />
+            </div>
             <button
+              type="button"
+              className="simulator-swap-btn"
               aria-label={text("Inverser le trajet", "Reverse route")}
               onClick={() => {
                 triggerHaptic(8);
@@ -902,64 +856,15 @@ export function AwwwardsLanding({
                 }}
               />
             </button>
-            <label>
-              {c.to}
-              <select
-                aria-label={c.to}
+            <div className="simulator-route-col">
+              <span className="simulator-col-label">{c.to}</span>
+              <CityAutocomplete
+                name="destination"
                 value={destination}
-                onChange={(event) => setDestination(event.target.value)}
-              >
-                {[
-                  {
-                    group: text("Lignes Fréquentes", "Frequent Lines"),
-                    cities: ["Alger", "Oran", "Paris", "Marseille", "Montréal", "Lyon", "Constantine"],
-                  },
-                  {
-                    group: text("France & Europe", "France & Europe"),
-                    cities: [
-                      "Nice", "Toulouse", "Nantes", "Bordeaux", "Lille", "Strasbourg", "Montpellier",
-                      "Bruxelles", "Genève", "Londres", "Madrid", "Barcelone", "Rome", "Milan",
-                      "Berlin", "Francfort", "Amsterdam", "Lisbonne", "Istanbul",
-                    ],
-                  },
-                  {
-                    group: text("Maghreb", "Maghreb"),
-                    cities: [
-                      "Annaba", "Sétif", "Batna", "Tlemcen", "Béjaïa", "Biskra",
-                      "Casablanca", "Rabat", "Marrakech", "Fès", "Tanger", "Agadir",
-                      "Tunis", "Sfax", "Djerba",
-                    ],
-                  },
-                  {
-                    group: text("Amériques", "Americas"),
-                    cities: [
-                      "Québec", "Toronto", "Vancouver", "New York", "Los Angeles", "Miami",
-                      "Chicago", "San Francisco", "Boston", "Washington", "Mexico", "São Paulo", "Buenos Aires",
-                    ],
-                  },
-                  {
-                    group: text("Afrique & Égypte", "Africa & Egypt"),
-                    cities: [
-                      "Dakar", "Abidjan", "Bamako", "Conakry", "Douala", "Yaoundé",
-                      "Libreville", "Kinshasa", "Lagos", "Accra", "Nairobi", "Johannesburg", "Le Caire",
-                    ],
-                  },
-                  {
-                    group: text("Moyen-Orient & Asie", "Middle East & Asia"),
-                    cities: [
-                      "Dubaï", "Abou Dabi", "Doha", "Riyad", "Djeddah", "Beyrouth",
-                      "Tokyo", "Séoul", "Pékin", "Shanghai", "Singapour", "Bangkok", "New Delhi", "Sydney",
-                    ],
-                  },
-                ].map((g) => (
-                  <optgroup key={g.group} label={g.group}>
-                    {g.cities.map((city) => (
-                      <option key={city} value={city}>{city}</option>
-                    ))}
-                  </optgroup>
-                ))}
-              </select>
-            </label>
+                onChange={(val) => setDestination(val)}
+                placeholder={text("Ex. Alger, Oran, Montréal...", "Ex. Algiers, Oran, Montreal...")}
+              />
+            </div>
           </div>
           <fieldset>
             <legend>{c.need}</legend>

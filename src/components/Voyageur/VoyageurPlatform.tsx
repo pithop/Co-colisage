@@ -1,6 +1,8 @@
 import { useState } from "react";
 import {
   Anchor,
+  ArrowLeftRight,
+  ArrowRight,
   Box,
   Calendar,
   Car,
@@ -23,6 +25,7 @@ import {
 } from "lucide-react";
 import { PurchaseRequest, Trip } from "../../data/marketplace";
 import { LuggageVisualizer, VisualizerTransportMode } from "../marketplace/LuggageVisualizer";
+import { CityAutocomplete } from "../common/CityAutocomplete";
 
 export type TransportMode = "avion" | "voiture" | "train" | "bateau" | "camion";
 
@@ -388,7 +391,7 @@ export function VoyageurPlatform({
       {/* 1. Multi-Modal Transport Mode Selector Bar (5 Transport Modes) */}
       <nav
         aria-label="Modes de transport pour voyageurs"
-        className="rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 p-2 shadow-sm"
+        className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-1.5 shadow-sm"
       >
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5" role="tablist">
           {(Object.keys(MODE_CONFIGS) as TransportMode[]).map((modeKey) => {
@@ -402,13 +405,13 @@ export function VoyageurPlatform({
                 role="tab"
                 aria-selected={isSelected}
                 onClick={() => handleModeChange(modeKey)}
-                className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
+                className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
                   isSelected
-                    ? "bg-gradient-to-r from-[#00838f] to-[#00bcd4] text-white shadow-md shadow-cyan-500/20 scale-[1.02]"
+                    ? "bg-[#00838f] text-white shadow-md shadow-cyan-900/20 scale-[1.02]"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60"
                 }`}
               >
-                <Icon size={17} strokeWidth={isSelected ? 2.5 : 2} className="shrink-0" />
+                <Icon size={18} className="shrink-0" />
                 <span className="truncate">{config.shortLabel}</span>
               </button>
             );
@@ -416,123 +419,135 @@ export function VoyageurPlatform({
         </div>
       </nav>
 
-      {/* 2. Hero Photographic Banner contextualized to Selected Transport Mode */}
-      <section className="relative overflow-hidden rounded-[28px] bg-[#072a4a] text-white shadow-xl border border-cyan-500/25">
-        <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
-          style={{ backgroundImage: "url('/images/hero-airport-traveler.jpg')" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#072a4a]/95 via-[#072a4a]/85 to-[#072a4a]/40 sm:to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#072a4a]/90 via-transparent to-black/20" />
-
-        <div className="relative p-5 sm:p-7 md:p-8 flex flex-col md:flex-row items-center justify-between gap-5">
-          <div className="space-y-3 max-w-xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-400/20 backdrop-blur-md border border-cyan-400/40 text-cyan-200 text-xs font-semibold">
-              <Sparkles size={13} className="text-cyan-300" />
-              <span>Espace Voyageur Multi-Modal · Mode {currentConfig.shortLabel}</span>
-            </div>
-
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white leading-tight drop-shadow-sm">
-              {currentConfig.heroHeadline}
-            </h1>
-
-            <p className="text-xs sm:text-sm text-cyan-100/90 leading-relaxed font-medium max-w-lg drop-shadow-sm">
-              {currentConfig.heroSubtitle}
-            </p>
-
-            <div className="flex flex-wrap gap-2.5 pt-1.5">
-              {onPublishTrip && (
-                <button
-                  type="button"
-                  onClick={onPublishTrip}
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all active:scale-95"
-                >
-                  <Plus size={15} />
-                  <span>Proposer un trajet {currentConfig.shortLabel}</span>
-                </button>
-              )}
-              {selectedMode === "avion" && onScanBoardingPass && (
-                <button
-                  type="button"
-                  onClick={onScanBoardingPass}
-                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white backdrop-blur-md border border-white/25 text-xs sm:text-sm font-bold transition-all active:scale-95"
-                >
-                  <Scan size={15} className="text-cyan-300" />
-                  <span>Scanner billet IATA</span>
-                </button>
-              )}
-            </div>
+      {/* 2. Hero Photographic Banner */}
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-[#072a4a] to-slate-900 text-white shadow-xl border border-cyan-500/20 p-6 sm:p-8 md:p-10">
+        <div className="relative z-10 space-y-3.5 max-w-2xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-400/15 backdrop-blur-md border border-cyan-400/30 text-cyan-200 text-xs font-semibold">
+            <Sparkles size={14} className="text-cyan-300 shrink-0" />
+            <span>Espace Voyageur Multi-Modal · {currentConfig.label}</span>
           </div>
 
-          {/* Dynamic Transport Badge Icon */}
-          <div className="hidden md:flex flex-col items-center justify-center p-5 rounded-2xl bg-[#062c47]/80 backdrop-blur-md border border-cyan-400/30 text-center shadow-xl min-w-[200px]">
-            <div className="w-16 h-16 rounded-full bg-cyan-400/20 flex items-center justify-center mb-2">
-              <ModeIcon size={32} className="text-cyan-300 transform -rotate-6 animate-pulse" />
-            </div>
-            <span className="text-xs font-bold text-white tracking-wide uppercase">{currentConfig.label}</span>
-            <span className="text-[10px] text-cyan-200 mt-0.5">{currentConfig.badge}</span>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white leading-tight">
+            {currentConfig.heroHeadline}
+          </h1>
+
+          <p className="text-xs sm:text-sm text-cyan-100/90 leading-relaxed font-medium">
+            {currentConfig.heroSubtitle}
+          </p>
+
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            {onPublishTrip && (
+              <button
+                type="button"
+                onClick={onPublishTrip}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#00bcd4] hover:bg-cyan-400 text-[#072a4a] font-black text-xs sm:text-sm shadow-lg shadow-cyan-500/25 transition-all active:scale-95 cursor-pointer"
+              >
+                <Plus size={16} strokeWidth={2.5} />
+                <span>Proposer un trajet {currentConfig.shortLabel}</span>
+              </button>
+            )}
+            {selectedMode === "avion" && onScanBoardingPass && (
+              <button
+                type="button"
+                onClick={onScanBoardingPass}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/20 font-bold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
+              >
+                <Scan size={16} className="text-cyan-300" />
+                <span>Scanner billet IATA</span>
+              </button>
+            )}
+          </div>
+
+          {/* Trust Guarantees */}
+          <div className="flex flex-wrap items-center gap-4 pt-3 text-[11px] text-cyan-200/90 font-medium border-t border-cyan-500/20">
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck size={14} className="text-[#00c2cb]" />
+              <span>Séquestre Stripe garanti</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Check size={14} className="text-[#00c2cb]" />
+              <span>Identité &amp; Billets vérifiés</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Sparkles size={14} className="text-[#00c2cb]" />
+              <span>Code PIN secret de livraison</span>
+            </span>
           </div>
         </div>
       </section>
 
-      {/* 3. Search Form (2x2 Grid) Contextualized to Chosen Mode */}
-      <section className="rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 p-5 sm:p-6 shadow-sm space-y-4">
+      {/* 3. Floating Modern Search Bar with Free-Text City Autocomplete (Airbnb/BlaBlaCar style) */}
+      <section className="relative rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-6 shadow-xl space-y-4">
         <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-          <div className="flex items-center gap-2 text-sm font-extrabold text-[#072a4a] dark:text-white">
-            <span className="w-2 h-2 rounded-full bg-[#00bcd4]" />
-            <span>Paramètres de recherche · {currentConfig.label}</span>
+          <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-white">
+            <Search size={16} className="text-[#00838f] dark:text-cyan-400" />
+            <span>Rechercher sur tous les corridors ({currentConfig.label})</span>
           </div>
-          <span className="text-xs text-slate-500 font-semibold">
-            Unité : {currentConfig.capacityUnit}
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
+            Toutes villes mondiales autorisées
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          {/* Departure */}
-          <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 focus-within:border-cyan-500 focus-within:ring-2 focus-within:ring-cyan-500/20 transition-all">
-            <MapPin size={20} className="text-[#00bcd4] shrink-0" />
-            <div className="flex-1 min-w-0">
-              <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                {currentConfig.departureLabel}
-              </label>
-              <select
-                value={departureLocation}
-                onChange={(e) => setDepartureLocation(e.target.value)}
-                className="w-full bg-transparent font-bold text-sm text-slate-900 dark:text-white outline-none cursor-pointer"
-              >
-                {currentConfig.departurePresets.map((city) => (
-                  <option key={city} value={city}>
-                    {city}
-                  </option>
-                ))}
-              </select>
-            </div>
+        {/* Unified Search Input Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+          {/* Departure Field (Free text + Suggestions) */}
+          <div className="md:col-span-5 relative">
+            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+              {currentConfig.departureLabel}
+            </label>
+            <CityAutocomplete
+              name="voyageurDeparture"
+              value={departureLocation}
+              onChange={(val) => {
+                setDepartureLocation(val);
+                setHasSearched(true);
+              }}
+              placeholder="Tapez n'importe quelle ville de départ (ex: Paris, Alger, Lyon...)"
+              className="w-full"
+            />
           </div>
 
-          {/* Arrival */}
-          <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 focus-within:border-cyan-500 focus-within:ring-2 focus-within:ring-cyan-500/20 transition-all">
-            <MapPin size={20} className="text-[#00bcd4] shrink-0" />
-            <div className="flex-1 min-w-0">
-              <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                {currentConfig.arrivalLabel}
-              </label>
-              <select
-                value={arrivalLocation}
-                onChange={(e) => setArrivalLocation(e.target.value)}
-                className="w-full bg-transparent font-bold text-sm text-slate-900 dark:text-white outline-none cursor-pointer"
-              >
-                {currentConfig.arrivalPresets.map((city) => (
-                  <option key={city} value={city}>
-                    {city}
-                  </option>
-                ))}
-              </select>
-            </div>
+          {/* Quick Invert Button */}
+          <div className="md:col-span-1 flex items-center justify-center pt-3 md:pt-4">
+            <button
+              type="button"
+              onClick={() => {
+                const temp = departureLocation;
+                setDepartureLocation(arrivalLocation);
+                setArrivalLocation(temp);
+                setHasSearched(true);
+              }}
+              title="Inverser départ et arrivée"
+              aria-label="Inverser départ et arrivée"
+              className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-cyan-50 dark:hover:bg-cyan-950/40 text-slate-600 dark:text-slate-300 hover:text-[#00838f] dark:hover:text-cyan-300 flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
+            >
+              <ArrowLeftRight size={16} />
+            </button>
           </div>
 
+          {/* Arrival Field (Free text + Suggestions) */}
+          <div className="md:col-span-6 relative">
+            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+              {currentConfig.arrivalLabel}
+            </label>
+            <CityAutocomplete
+              name="voyageurArrival"
+              value={arrivalLocation}
+              onChange={(val) => {
+                setArrivalLocation(val);
+                setHasSearched(true);
+              }}
+              placeholder="Tapez n'importe quelle destination (ex: Oran, Marseille, Constantine...)"
+              className="w-full"
+            />
+          </div>
+        </div>
+
+        {/* Secondary Row: Date, Reference & Submit Button */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
           {/* Travel Date */}
-          <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 focus-within:border-cyan-500 focus-within:ring-2 focus-within:ring-cyan-500/20 transition-all">
-            <Calendar size={20} className="text-[#00bcd4] shrink-0" />
+          <div className="flex items-center gap-3 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 focus-within:border-cyan-500 transition-all">
+            <Calendar size={18} className="text-[#00838f] dark:text-cyan-400 shrink-0" />
             <div className="flex-1 min-w-0">
               <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 {currentConfig.dateLabel}
@@ -540,38 +555,93 @@ export function VoyageurPlatform({
               <input
                 type="date"
                 value={travelDate}
-                onChange={(e) => setTravelDate(e.target.value)}
-                className="w-full bg-transparent font-bold text-sm text-slate-900 dark:text-white outline-none cursor-pointer"
+                onChange={(e) => {
+                  setTravelDate(e.target.value);
+                  setHasSearched(true);
+                }}
+                className="w-full bg-transparent font-bold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer"
               />
             </div>
           </div>
 
-          {/* Mode Identifier (Flight #, Vehicle model, Train #, Ferry, Truck) */}
-          <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 focus-within:border-cyan-500 focus-within:ring-2 focus-within:ring-cyan-500/20 transition-all">
-            <ModeIcon size={20} className="text-[#00bcd4] shrink-0" />
+          {/* Mode Identifier (Flight #, Vehicle model, Train #, etc.) */}
+          <div className="flex items-center gap-3 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 focus-within:border-cyan-500 transition-all">
+            <ModeIcon size={18} className="text-[#00838f] dark:text-cyan-400 shrink-0" />
             <div className="flex-1 min-w-0">
               <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                {currentConfig.identifierLabel}
+                {currentConfig.identifierLabel} (optionnel)
               </label>
               <input
                 type="text"
                 value={referenceNumber}
                 onChange={(e) => setReferenceNumber(e.target.value)}
                 placeholder={currentConfig.identifierPlaceholder}
-                className="w-full bg-transparent font-bold text-sm text-slate-900 dark:text-white outline-none"
+                className="w-full bg-transparent font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none"
               />
             </div>
           </div>
+
+          {/* CTA Search Button */}
+          <button
+            type="button"
+            onClick={() => setHasSearched(true)}
+            className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#00838f] to-[#00bcd4] hover:from-[#006978] hover:to-cyan-400 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-cyan-900/20 active:scale-95 transition-all cursor-pointer"
+          >
+            <Search size={18} strokeWidth={2.4} />
+            <span>Lancer la recherche</span>
+          </button>
         </div>
 
-        {/* Dual Action Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+        {/* Popular Recommended Corridors Chips */}
+        <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">
+            Trajets fréquents :
+          </span>
+          {[
+            { from: "Paris", to: "Alger" },
+            { from: "Marseille", to: "Oran" },
+            { from: "Lyon", to: "Constantine" },
+            { from: "Toulouse", to: "Casablanca" },
+            { from: "Paris", to: "Tunis" },
+            { from: "Nice", to: "Alger" },
+            { from: "Marseille", to: "Alger" }
+          ].map((corridor, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => {
+                setDepartureLocation(corridor.from);
+                setArrivalLocation(corridor.to);
+                setHasSearched(true);
+              }}
+              className="text-[11px] font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-cyan-50 dark:hover:bg-cyan-950/50 text-slate-700 dark:text-slate-300 hover:text-[#00838f] dark:hover:text-cyan-300 transition-all border border-slate-200/80 dark:border-slate-700 cursor-pointer"
+            >
+              {corridor.from} → {corridor.to}
+            </button>
+          ))}
+          {(departureLocation || arrivalLocation) && (
+            <button
+              type="button"
+              onClick={() => {
+                setDepartureLocation("");
+                setArrivalLocation("");
+                setHasSearched(false);
+              }}
+              className="text-[11px] font-bold text-rose-500 hover:underline ml-auto cursor-pointer"
+            >
+              Réinitialiser les filtres
+            </button>
+          )}
+        </div>
+
+        {/* Dual Intent Selector */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
           <button
             type="button"
             onClick={() => setSelectedIntent("send_parcel")}
-            className={`p-4 rounded-2xl text-left transition-all relative flex flex-col justify-between min-h-[110px] ${
+            className={`p-4 rounded-2xl text-left transition-all relative flex flex-col justify-between cursor-pointer ${
               selectedIntent === "send_parcel"
-                ? "border-2 border-[#00bcd4] bg-[#e6f9fa] dark:bg-cyan-950/40 ring-2 ring-[#00bcd4]/25 shadow-sm"
+                ? "border-2 border-[#00bcd4] bg-cyan-50/60 dark:bg-cyan-950/40 ring-2 ring-[#00bcd4]/20 shadow-sm"
                 : "border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300"
             }`}
           >
@@ -581,13 +651,13 @@ export function VoyageurPlatform({
               </div>
             )}
             <div className="w-10 h-10 rounded-xl bg-cyan-100/70 dark:bg-cyan-900/50 text-[#00838f] dark:text-cyan-300 flex items-center justify-center mb-2">
-              <Package size={22} />
+              <Package size={20} />
             </div>
             <div>
-              <h3 className="font-extrabold text-sm text-[#072a4a] dark:text-white">
+              <h3 className="font-black text-sm text-slate-900 dark:text-white">
                 J'envoie un colis
               </h3>
-              <p className="text-xs text-[#00838f] dark:text-cyan-400 font-semibold mt-0.5">
+              <p className="text-xs text-[#00838f] dark:text-cyan-300 font-semibold mt-0.5">
                 Transporter un paquet ou du volume ({currentConfig.shortLabel})
               </p>
             </div>
@@ -596,9 +666,9 @@ export function VoyageurPlatform({
           <button
             type="button"
             onClick={() => setSelectedIntent("find_luggage")}
-            className={`p-4 rounded-2xl text-left transition-all relative flex flex-col justify-between min-h-[110px] ${
+            className={`p-4 rounded-2xl text-left transition-all relative flex flex-col justify-between cursor-pointer ${
               selectedIntent === "find_luggage"
-                ? "border-2 border-[#00bcd4] bg-[#e6f9fa] dark:bg-cyan-950/40 ring-2 ring-[#00bcd4]/25 shadow-sm"
+                ? "border-2 border-[#00bcd4] bg-cyan-50/60 dark:bg-cyan-950/40 ring-2 ring-[#00bcd4]/20 shadow-sm"
                 : "border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300"
             }`}
           >
@@ -608,28 +678,18 @@ export function VoyageurPlatform({
               </div>
             )}
             <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-2">
-              <Luggage size={22} />
+              <Luggage size={20} />
             </div>
             <div>
-              <h3 className="font-extrabold text-sm text-[#072a4a] dark:text-white">
+              <h3 className="font-black text-sm text-slate-900 dark:text-white">
                 Je cherche de l'espace disponible
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
-                Capacité disponible en {currentConfig.capacityUnit}
+                Capacité disponible en {currentConfig.capacityUnit} (dès 8 € / {currentConfig.capacityUnit})
               </p>
             </div>
           </button>
         </div>
-
-        {/* CTA Button */}
-        <button
-          type="button"
-          onClick={() => setHasSearched(true)}
-          className="w-full py-4 px-6 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
-        >
-          <Search size={18} strokeWidth={2.4} />
-          <span>Rechercher un voyageur ({currentConfig.shortLabel})</span>
-        </button>
       </section>
 
       {/* 4. Interactive Capacity & Earnings Simulator (Mode-Aware) */}
@@ -746,69 +806,72 @@ export function VoyageurPlatform({
             ))}
           </div>
         ) : filteredTrips.length > 0 ? (
-          <div className="grid grid-cols-1 gap-3.5">
+          <div className="grid grid-cols-1 gap-4">
             {filteredTrips.map((trip) => (
               <div
                 key={trip.id}
-                className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-cyan-300 dark:hover:border-cyan-700 transition-all shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                className="p-5 sm:p-6 rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-[#00bcd4] dark:hover:border-cyan-500/60 transition-all duration-200 shadow-sm hover:shadow-xl hover:-translate-y-0.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-5"
               >
-                <div className="flex items-center gap-3.5">
-                  <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#00838f] to-[#00bcd4] text-white font-extrabold flex items-center justify-center text-sm shadow-sm">
+                <div className="flex items-start sm:items-center gap-4">
+                  <div className="relative shrink-0">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white font-black flex items-center justify-center text-base shadow-md">
                       {trip.title ? trip.title.slice(0, 2).toUpperCase() : "VO"}
                     </div>
-                    <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
+                    <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900 flex items-center justify-center shadow-xs" title="Profil vérifié" />
                   </div>
 
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-extrabold text-sm text-[#072a4a] dark:text-white">
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-black text-base text-slate-900 dark:text-white">
                         {trip.title || "Voyageur Certifié"}
                       </h3>
-                      <ShieldCheck size={15} className="text-[#00bcd4]" />
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-cyan-50 dark:bg-cyan-950/40 text-[#00838f] dark:text-cyan-300 border border-cyan-200/60 dark:border-cyan-800/50">
+                      <ShieldCheck size={16} className="text-[#00838f] dark:text-cyan-400 shrink-0" />
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-950/60 text-[#00838f] dark:text-cyan-300 border border-cyan-200/80 dark:border-cyan-800">
                         {trip.transportLabel || currentConfig.label}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mt-1">
-                      <span>{trip.origin}</span>
-                      <span className="text-slate-400">→</span>
-                      <span>{trip.destination}</span>
+                    <div className="flex items-center gap-2 text-sm font-black text-slate-800 dark:text-slate-100">
+                      <span className="text-[#00838f] dark:text-cyan-300">{trip.origin}</span>
+                      <ArrowRight size={14} className="text-slate-400 shrink-0" />
+                      <span className="text-slate-900 dark:text-white">{trip.destination}</span>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400 pt-0.5">
                       {trip.flightNumber && (
-                        <span className="inline-flex items-center gap-1">
-                          <ModeIcon size={12} className="text-[#00838f] dark:text-cyan-400" />
+                        <span className="inline-flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300">
+                          <ModeIcon size={13} className="text-[#00838f] dark:text-cyan-400" />
                           <span>{trip.flightNumber}</span>
                         </span>
                       )}
-                      <span>{trip.departureDate}</span>
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-cyan-50 dark:bg-cyan-950/40 text-[#00838f] dark:text-cyan-300 font-semibold text-[10px]">
-                        {trip.availableKg ? `${trip.availableKg} ${currentConfig.capacityUnit} dispo` : "Espace garanti"}
+                      <span>Départ : <strong>{trip.departureDate}</strong></span>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-bold text-[10px] border border-emerald-500/20">
+                        {trip.availableKg ? `${trip.availableKg} ${currentConfig.capacityUnit} disponibles` : "Espace garanti"}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1 text-xs text-amber-500 font-bold mt-1">
+                    <div className="flex items-center gap-1.5 text-xs text-amber-500 font-bold pt-0.5">
                       <Star size={13} fill="currentColor" />
-                      <span>4.9</span>
-                      <span className="text-slate-400 font-normal">(98 avis certifiés)</span>
+                      <span className="text-slate-900 dark:text-white">4.9</span>
+                      <span className="text-slate-400 dark:text-slate-500 font-normal">(98 avis certifiés Stripe)</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="w-full sm:w-auto flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0">
-                  <span className="text-sm font-black text-[#00838f] dark:text-cyan-400">
-                    Dès {trip.startingPrice || trip.pricePerKg || 12} € / {currentConfig.capacityUnit}
-                  </span>
+                <div className="w-full md:w-auto flex md:flex-col items-center md:items-end justify-between md:justify-center gap-3 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-slate-800">
+                  <div className="text-left md:text-right">
+                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tarif transport</span>
+                    <span className="text-lg font-black text-[#00838f] dark:text-cyan-300">
+                      Dès {trip.startingPrice || trip.pricePerKg || 12} € / {currentConfig.capacityUnit}
+                    </span>
+                  </div>
                   <button
                     type="button"
                     onClick={() => (onContactTraveler ? onContactTraveler(trip) : onSelectTrip?.(trip))}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white text-xs font-bold shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#00838f] to-[#00bcd4] hover:from-[#006978] hover:to-cyan-400 text-white text-xs sm:text-sm font-black shadow-md hover:shadow-cyan-500/25 active:scale-95 transition-all cursor-pointer"
                   >
-                    <MessageCircle size={14} />
-                    <span>Contacter</span>
+                    <MessageCircle size={15} />
+                    <span>Contacter &amp; Réserver</span>
                   </button>
                 </div>
               </div>

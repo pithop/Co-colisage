@@ -29,10 +29,13 @@ import {
   Tag,
   Trash2,
   User,
+  ArrowLeftRight,
+  ArrowRight,
 } from 'lucide-react';
 import { PurchaseRequest, Trip } from '../../data/marketplace';
 import { useAuth } from '../../context/AuthContext';
 import { ShopBudgetVisualizer } from '../marketplace/ShopBudgetVisualizer';
+import { CityAutocomplete } from '../common/CityAutocomplete';
 
 export interface ShopAndGoPlatformProps {
   requests: PurchaseRequest[];
@@ -741,64 +744,121 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
 
         {/* Block 3: Logistique & Remise en Main Propre */}
         <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
-          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
-            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
-              <MapPin size={14} />
+          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center justify-between font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
+            <div className="flex items-center gap-2.5">
+              <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
+                <MapPin size={14} />
+              </span>
+              <span>3. Trajet, Date Limite &amp; Destinataire</span>
+            </div>
+            <span className="text-[10px] font-semibold bg-white/20 px-2.5 py-0.5 rounded-full">
+              Saisie libre monde entier
             </span>
-            <span>3. Trajet, Date Limite &amp; Destinataire</span>
           </div>
 
-          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="p-5 space-y-4">
+            {/* Quick Corridor Chips */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Ville d'achat souhaitée
-              </label>
-              <input
-                type="text"
-                value={departureLocation}
-                onChange={(e) => setDepartureLocation(e.target.value)}
-                placeholder="Ex : Paris, France / Milan, Italie..."
-                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
-              />
+              <span className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
+                Villes d'achat &amp; livraison fréquentes
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { from: "Paris", to: "Alger" },
+                  { from: "Marseille", to: "Oran" },
+                  { from: "Lyon", to: "Constantine" },
+                  { from: "Paris", to: "Casablanca" },
+                  { from: "Dubaï", to: "Alger" },
+                  { from: "Montréal", to: "Alger" },
+                ].map((chip) => (
+                  <button
+                    key={`${chip.from}-${chip.to}`}
+                    type="button"
+                    onClick={() => {
+                      setDepartureLocation(chip.from);
+                      setDeliveryLocation(chip.to);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                      departureLocation === chip.from && deliveryLocation === chip.to
+                        ? "border-[#00bcd4] bg-cyan-50 dark:bg-cyan-950/60 text-[#00838f] dark:text-cyan-300 ring-1 ring-[#00bcd4]"
+                        : "border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:border-slate-300"
+                    }`}
+                  >
+                    {chip.from} <ArrowRight size={11} className="text-slate-400 inline mx-0.5" /> {chip.to}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Ville de livraison finale
-              </label>
-              <input
-                type="text"
-                value={deliveryLocation}
-                onChange={(e) => setDeliveryLocation(e.target.value)}
-                placeholder="Ex : Alger, Oran, Constantine, Tunis..."
-                required
-                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
-              />
+            {/* Departure / Arrival with Swap Button */}
+            <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-3 items-end">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Ville d'achat souhaitée
+                </label>
+                <CityAutocomplete
+                  name="departureLocation"
+                  value={departureLocation}
+                  onChange={setDepartureLocation}
+                  placeholder="Ex : Paris, Marseille, Milan, Dubaï..."
+                />
+              </div>
+
+              <div className="flex justify-center pb-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const temp = departureLocation;
+                    setDepartureLocation(deliveryLocation);
+                    setDeliveryLocation(temp);
+                  }}
+                  title="Inverser les villes"
+                  aria-label="Inverser les villes"
+                  className="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-cyan-50 dark:hover:bg-cyan-950/50 hover:border-[#00bcd4] text-[#00838f] dark:text-cyan-400 flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+                >
+                  <ArrowLeftRight size={18} />
+                </button>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Ville de livraison finale
+                </label>
+                <CityAutocomplete
+                  name="deliveryLocation"
+                  value={deliveryLocation}
+                  onChange={setDeliveryLocation}
+                  placeholder="Ex : Alger, Oran, Constantine, Batna..."
+                  required
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Date limite de réception souhaitée
-              </label>
-              <input
-                type="date"
-                value={deadlineDate}
-                onChange={(e) => setDeadlineDate(e.target.value)}
-                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
-              />
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Date limite de réception souhaitée
+                </label>
+                <input
+                  type="date"
+                  value={deadlineDate}
+                  onChange={(e) => setDeadlineDate(e.target.value)}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                />
+              </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Destinataire (Nom &amp; Contact)
-              </label>
-              <input
-                type="text"
-                value={recipient}
-                onChange={(e) => setRecipient(e.target.value)}
-                placeholder="Personne qui recevra la livraison"
-                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
-              />
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Destinataire (Nom &amp; Contact)
+                </label>
+                <input
+                  type="text"
+                  value={recipient}
+                  onChange={(e) => setRecipient(e.target.value)}
+                  placeholder="Personne qui recevra la livraison"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                />
+              </div>
             </div>
           </div>
         </div>
