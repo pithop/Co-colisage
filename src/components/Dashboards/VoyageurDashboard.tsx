@@ -90,11 +90,11 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby="profile-title"
-        className="luxury-surface flex max-h-[100dvh] w-full max-w-5xl flex-col overflow-hidden bg-[#f6f7fa] text-slate-900 shadow-2xl sm:max-h-[92dvh] sm:rounded-[32px] sm:border sm:border-white/40"
+        className="luxury-surface flex max-h-[100dvh] w-full max-w-5xl flex-col overflow-hidden bg-[#f6f7fa] dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xl sm:max-h-[92dvh] sm:rounded-[32px] sm:border sm:border-white/40 dark:sm:border-slate-800"
       >
-        <header className="flex shrink-0 items-center justify-between border-b border-slate-200/70 bg-white/80 px-5 py-4 sm:px-8">
+        <header className="flex shrink-0 items-center justify-between border-b border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 px-5 py-4 sm:px-8">
           <span className="flex items-center gap-2 text-xs font-semibold">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 text-white">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 dark:bg-slate-800 text-white">
               <Plane size={15} />
             </span>{" "}
             BagVoyage{" "}
@@ -239,9 +239,9 @@ export const VoyageurDashboard: React.FC<VoyageurDashboardProps> = ({
           {payout !== undefined && (
             <div
               role="status"
-              className="mt-4 flex items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800"
+              className="mt-4 flex items-center gap-3 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 p-4 text-sm text-emerald-800 dark:text-emerald-300"
             >
-              <span className="text-xl"></span>
+              <CheckCircle2 size={22} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
               <div>
                 <strong className="font-semibold">
                   Bien arrivé, même votre argent.

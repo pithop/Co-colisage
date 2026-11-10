@@ -133,7 +133,7 @@ export function Profile({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <UserCheck size={18} className="text-blue-600 dark:text-blue-400" />
+              <UserCheck size={18} className="text-[#00838f] dark:text-cyan-400" />
               Choix de vos profils applicatifs
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -191,12 +191,12 @@ export function Profile({
                 }}
                 className={`p-3.5 rounded-xl border text-left transition-all relative ${
                   active
-                    ? "border-blue-600 bg-blue-50/70 dark:bg-blue-950/40 text-blue-950 dark:text-blue-100 ring-2 ring-blue-500/20 shadow-sm"
+                    ? "border-[#00838f] bg-cyan-50/70 dark:bg-cyan-950/40 text-[#072a4a] dark:text-cyan-100 ring-2 ring-[#00bcd4]/20 shadow-sm"
                     : "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300"
                 }`}
               >
                 {active && (
-                  <div className="absolute top-2.5 right-2.5 w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center">
+                  <div className="absolute top-2.5 right-2.5 w-4 h-4 rounded-full bg-[#00838f] text-white flex items-center justify-center">
                     <Check size={11} strokeWidth={3} />
                   </div>
                 )}
@@ -558,7 +558,7 @@ export function Profile({
       <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 space-y-4 my-2 text-left">
         <div>
           <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Sliders size={18} className="text-blue-600 dark:text-blue-400" />
+            <Sliders size={18} className="text-[#00838f] dark:text-cyan-400" />
             Paramètres &amp; Affichage
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
