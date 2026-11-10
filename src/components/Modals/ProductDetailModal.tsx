@@ -80,23 +80,23 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
             <div className="w-full sm:w-1/2 flex flex-col justify-between">
               <div>
-                <h3 className="text-xl font-extrabold text-slate-900 leading-tight">
+                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white leading-tight">
                   {product.name}
                 </h3>
 
-                <div className="mt-3 space-y-2 text-xs text-slate-600">
+                <div className="mt-3 space-y-2 text-xs text-slate-600 dark:text-slate-300">
                   <div className="flex items-center gap-2">
-                    <Store className="w-4 h-4 text-slate-400 shrink-0" />
-                    <span>Magasin d'origine : <strong>{product.originStore}</strong></span>
+                    <Store className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
+                    <span>Magasin d'origine : <strong className="text-slate-800 dark:text-slate-100">{product.originStore}</strong></span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
-                    <span>Livraison souhaitée : <strong>{product.deliveryPeriod}</strong></span>
+                    <Calendar className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
+                    <span>Livraison souhaitée : <strong className="text-slate-800 dark:text-slate-100">{product.deliveryPeriod}</strong></span>
                   </div>
                   {product.weightEst && (
                     <div className="flex items-center gap-2">
-                      <Plane className="w-4 h-4 text-slate-400 shrink-0" />
-                      <span>Poids estimé : <strong>{product.weightEst}</strong></span>
+                      <Plane className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
+                      <span>Poids estimé : <strong className="text-slate-800 dark:text-slate-100">{product.weightEst}</strong></span>
                     </div>
                   )}
                 </div>
@@ -106,7 +106,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     href={product.officialUrl} 
                     target="_blank" 
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 font-semibold mt-3"
+                    className="inline-flex items-center gap-1.5 text-xs text-[#00838f] dark:text-cyan-400 hover:underline font-semibold mt-3"
                   >
                     <span>Voir sur la boutique officielle</span>
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -115,17 +115,17 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
 
               {/* Shopper Bounty Pill */}
-              <div className="mt-4 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-between">
+              <div className="mt-4 p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/60 flex items-center justify-between">
                 <div>
-                  <p className="text-[11px] font-bold text-emerald-800 uppercase tracking-wide">
+                  <p className="text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wide">
                     Rémunération du voyageur
                   </p>
-                  <p className="text-xl font-black text-emerald-600 flex items-center gap-1">
+                  <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                     <Sparkles className="w-4 h-4" />
                     +{product.gain.toFixed(2)} €
                   </p>
                 </div>
-                <span className="text-[10px] bg-emerald-600 text-white font-bold px-2 py-1 rounded-full">
+                <span className="text-[10px] bg-emerald-600 dark:bg-emerald-500 text-white font-bold px-2 py-1 rounded-full">
                   Net d'impôt
                 </span>
               </div>
@@ -133,32 +133,32 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           </div>
 
           {/* Detailed Financial Calculation breakdown (Escrow) */}
-          <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4">
-            <h4 className="font-bold text-xs uppercase tracking-wider text-slate-600 mb-3 flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-blue-600" />
-              <span>Transparence Financière & Séquestre Stripe</span>
+          <div className="bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 rounded-2xl p-4">
+            <h4 className="font-bold text-xs uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-3 flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-[#00838f] dark:text-cyan-400" />
+              <span>Transparence Financière &amp; Séquestre Stripe</span>
             </h4>
 
             <div className="space-y-2 text-xs">
-              <div className="flex justify-between text-slate-600">
+              <div className="flex justify-between text-slate-600 dark:text-slate-300">
                 <span>Prix de l'article en boutique</span>
-                <span className="font-semibold text-slate-900">{product.price.toFixed(2)} €</span>
+                <span className="font-semibold text-slate-900 dark:text-white">{product.price.toFixed(2)} €</span>
               </div>
-              <div className="flex justify-between text-slate-600">
+              <div className="flex justify-between text-slate-600 dark:text-slate-300">
                 <span>Marge nette pour le Shopper</span>
-                <span className="font-bold text-emerald-600">+{product.gain.toFixed(2)} €</span>
+                <span className="font-bold text-emerald-600 dark:text-emerald-400">+{product.gain.toFixed(2)} €</span>
               </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Frais de service & assurance transport (Stripe)</span>
-                <span className="font-semibold text-slate-900">+{platformFee.toFixed(2)} €</span>
+              <div className="flex justify-between text-slate-600 dark:text-slate-300">
+                <span>Frais de service &amp; assurance transport (Stripe)</span>
+                <span className="font-semibold text-slate-900 dark:text-white">+{platformFee.toFixed(2)} €</span>
               </div>
-              <div className="pt-2 border-t border-slate-200 flex justify-between text-sm font-extrabold text-slate-900">
+              <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between text-sm font-extrabold text-slate-900 dark:text-white">
                 <span>Total sécurisé sur le séquestre Stripe</span>
-                <span className="text-blue-600">{totalEscrow.toFixed(2)} €</span>
+                <span className="text-[#00838f] dark:text-cyan-400">{totalEscrow.toFixed(2)} €</span>
               </div>
             </div>
 
-            <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-500 bg-white p-2.5 rounded-xl border border-slate-200/60">
+            <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-700">
               <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
               <span>
                 L'acheteur a déjà pré-bloqué ces fonds sur Stripe. Vous êtes certain d'être remboursé et payé dès la livraison.

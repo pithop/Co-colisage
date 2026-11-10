@@ -129,35 +129,35 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
           </div>
 
           {/* Proof 1: Receipt / Store Invoice */}
-          <div className="border border-slate-200 rounded-2xl p-4 bg-slate-50/50">
+          <div className="border border-slate-200 dark:border-slate-700/80 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/50">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-blue-600" />
-                <span className="font-bold text-xs text-slate-900">
+                <FileText className="w-4 h-4 text-[#00838f] dark:text-cyan-400" />
+                <span className="font-bold text-xs text-slate-900 dark:text-white">
                   1. Preuve d'achat officielle (Ticket / Facture)
                 </span>
               </div>
               {receiptUploaded && (
-                <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-500/20">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   Vérifié
                 </span>
               )}
             </div>
 
-            <p className="text-[11px] text-slate-500 mb-3">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-3">
               Photo lisible du ticket de caisse à votre nom chez <strong>{product.originStore}</strong> d'un montant de <strong>{product.price.toFixed(2)} €</strong>.
             </p>
 
             {receiptUploaded ? (
-              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between text-xs text-emerald-800">
+              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-300">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>Ticket_Caisse_{product.brand}.pdf (1.2 MB) - Montant vérifié</span>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <span className="truncate">Ticket_Caisse_{product.brand}.pdf (1.2 MB) - Montant vérifié</span>
                 </div>
                 <button 
                   onClick={() => setReceiptUploaded(false)}
-                  className="text-slate-400 hover:text-slate-600 text-[10px]"
+                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-[10px] ml-2 shrink-0"
                 >
                   Remplacer
                 </button>
@@ -166,18 +166,18 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
               <button
                 onClick={handleSimulateReceipt}
                 disabled={loadingReceipt}
-                className="w-full py-5 border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl bg-white flex flex-col items-center justify-center gap-1 text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"
+                className="w-full py-5 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[#00bcd4] dark:hover:border-cyan-400 rounded-xl bg-white dark:bg-slate-800/80 flex flex-col items-center justify-center gap-1 text-slate-600 dark:text-slate-300 hover:text-[#00838f] dark:hover:text-cyan-300 transition-colors cursor-pointer"
               >
                 {loadingReceipt ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                    <Loader2 className="w-5 h-5 animate-spin text-[#00bcd4]" />
                     <span className="text-xs font-semibold">Analyse OCR du ticket en cours...</span>
                   </>
                 ) : (
                   <>
-                    <UploadCloud className="w-6 h-6 text-slate-400" />
+                    <UploadCloud className="w-6 h-6 text-slate-400 dark:text-slate-500" />
                     <span className="text-xs font-bold">Cliquer pour téléverser le ticket de caisse</span>
-                    <span className="text-[10px] text-slate-400">JPG, PNG ou PDF (max 10 Mo)</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500">JPG, PNG ou PDF (max 10 Mo)</span>
                   </>
                 )}
               </button>
@@ -185,35 +185,35 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
           </div>
 
           {/* Proof 2: Boarding Pass / Flight Ticket */}
-          <div className="border border-slate-200 rounded-2xl p-4 bg-slate-50/50">
+          <div className="border border-slate-200 dark:border-slate-700/80 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/50">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Plane className="w-4 h-4 text-indigo-600 -rotate-45" />
-                <span className="font-bold text-xs text-slate-900">
+                <Plane className="w-4 h-4 text-[#00838f] dark:text-cyan-400 -rotate-45" />
+                <span className="font-bold text-xs text-slate-900 dark:text-white">
                   2. Preuve de voyage (Billet d'avion / Carte d'embarquement)
                 </span>
               </div>
               {ticketUploaded && (
-                <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-500/20">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   Vérifié
                 </span>
               )}
             </div>
 
-            <p className="text-[11px] text-slate-500 mb-3">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-3">
               Vol correspondant aux dates de l'annonce : <strong>{product.originCity} → {product.destination}</strong>.
             </p>
 
             {ticketUploaded ? (
-              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between text-xs text-emerald-800">
+              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-300">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>BoardingPass_AF702_{product.destinationCode}.pdf (Vol direct vérifié)</span>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <span className="truncate">BoardingPass_AF702_{product.destinationCode}.pdf (Vol direct vérifié)</span>
                 </div>
                 <button 
                   onClick={() => setTicketUploaded(false)}
-                  className="text-slate-400 hover:text-slate-600 text-[10px]"
+                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-[10px] ml-2 shrink-0"
                 >
                   Remplacer
                 </button>
@@ -222,18 +222,18 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
               <button
                 onClick={handleSimulateTicket}
                 disabled={loadingTicket}
-                className="w-full py-5 border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl bg-white flex flex-col items-center justify-center gap-1 text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"
+                className="w-full py-5 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[#00bcd4] dark:hover:border-cyan-400 rounded-xl bg-white dark:bg-slate-800/80 flex flex-col items-center justify-center gap-1 text-slate-600 dark:text-slate-300 hover:text-[#00838f] dark:hover:text-cyan-300 transition-colors cursor-pointer"
               >
                 {loadingTicket ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                    <Loader2 className="w-5 h-5 animate-spin text-[#00bcd4]" />
                     <span className="text-xs font-semibold">Vérification IATA du vol...</span>
                   </>
                 ) : (
                   <>
-                    <UploadCloud className="w-6 h-6 text-slate-400" />
+                    <UploadCloud className="w-6 h-6 text-slate-400 dark:text-slate-500" />
                     <span className="text-xs font-bold">Cliquer pour téléverser votre carte d'embarquement</span>
-                    <span className="text-[10px] text-slate-400">PDF, image ou QR Code de vol</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500">PDF, image ou QR Code de vol</span>
                   </>
                 )}
               </button>

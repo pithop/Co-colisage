@@ -102,38 +102,38 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
           ) : (
             <>
               {/* Le vol le moins cher trouvé par l'algo */}
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+              <div className="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <Plane className="w-4 h-4 text-blue-600" />
+                  <span className="font-extrabold text-slate-400 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <Plane className="w-4 h-4 text-[#00838f] dark:text-cyan-400" />
                     Billet le moins cher détecté
                   </span>
-                  <span className="font-black text-blue-600 text-sm">
+                  <span className="font-black text-[#00838f] dark:text-cyan-400 text-sm">
                     {opportunity.flight.flightPrice} €
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between pt-1">
                   <div>
-                    <p className="text-xs font-black text-slate-900">{opportunity.flight.origin}</p>
-                    <p className="text-[11px] text-slate-500">{opportunity.flight.departureDate} • {opportunity.flight.departureTime}</p>
+                    <p className="text-xs font-black text-slate-900 dark:text-white">{opportunity.flight.origin}</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">{opportunity.flight.departureDate} • {opportunity.flight.departureTime}</p>
                   </div>
                   <ArrowRight className="w-4 h-4 text-slate-400" />
                   <div className="text-right">
-                    <p className="text-xs font-black text-emerald-600">{opportunity.flight.destination}</p>
-                    <p className="text-[11px] text-slate-500 font-semibold">{opportunity.flight.airline} ({opportunity.flight.flightNumber})</p>
+                    <p className="text-xs font-black text-emerald-600 dark:text-emerald-400">{opportunity.flight.destination}</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold">{opportunity.flight.airline} ({opportunity.flight.flightNumber})</p>
                   </div>
                 </div>
               </div>
 
               {/* Les commandes associées par l'algo */}
-              <div className="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-200 space-y-3">
+              <div className="p-4 bg-emerald-50/60 dark:bg-emerald-950/30 rounded-2xl border border-emerald-200 dark:border-emerald-800/60 space-y-3">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-extrabold text-emerald-800 uppercase tracking-wider flex items-center gap-1.5">
-                    <ShoppingBag className="w-4 h-4 text-emerald-600" />
+                  <span className="font-extrabold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <ShoppingBag className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                     Commandes en attente sur ce vol
                   </span>
-                  <span className="font-black text-emerald-700 text-sm">
+                  <span className="font-black text-emerald-700 dark:text-emerald-400 text-sm">
                     +{opportunity.totalOrderReward} € versés
                   </span>
                 </div>
@@ -142,11 +142,11 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
                   {opportunity.clientAvatar && <img
                     src={opportunity.clientAvatar} 
                     alt={opportunity.clientName} 
-                    className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-xs"
+                    className="w-10 h-10 rounded-full object-cover border-2 border-white dark:border-slate-800 shadow-xs"
                   />}
                   <div>
-                    <h5 className="font-bold text-xs text-slate-900">{opportunity.ordersDescription}</h5>
-                    <p className="text-[11px] text-slate-500 mt-0.5">
+                    <h5 className="font-bold text-xs text-slate-900 dark:text-white">{opportunity.ordersDescription}</h5>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                       Demandé par {opportunity.clientName} • Fonds sous séquestre Stripe garanti
                     </p>
                   </div>
@@ -154,7 +154,7 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
               </div>
 
               {/* Le Bilan Financier Limpide (Stripe / Apple style) */}
-              <div className="p-4 bg-slate-900 text-white rounded-2xl space-y-2.5 shadow-md">
+              <div className="p-4 bg-slate-900 dark:bg-slate-950 text-white rounded-2xl space-y-2.5 shadow-md border border-slate-800">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
                   Bilan Financier de l'Arbitrage
                 </span>
@@ -183,12 +183,12 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
               </div>
 
               {/* Les 3 Étapes Simples */}
-              <div className="p-3 bg-slate-50 rounded-xl text-xs space-y-1.5 text-slate-600">
-                <p className="font-bold text-slate-800 flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <div className="p-3.5 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-xs space-y-1.5 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                <p className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   Comment ça se passe ?
                 </p>
-                <ol className="list-decimal list-inside space-y-1 text-[11px] text-slate-500 pl-1">
+                <ol className="list-decimal list-inside space-y-1 text-[11px] text-slate-500 dark:text-slate-400 pl-1">
                   <li>L'acheteur a déjà bloqué les <strong>{opportunity.totalOrderReward} €</strong> sur Stripe.</li>
                   <li>Vous prenez en charge les missions sélectionnées : {opportunity.ordersDescription}.</li>
                   <li>À l'arrivée à {opportunity.city}, vous remettez les articles et encaissez <strong>{opportunity.totalOrderReward} €</strong> instantanément.</li>

@@ -68,16 +68,32 @@ export const LuggageVisualHelperModal: React.FC<LuggageVisualHelperModalProps> =
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
       <div 
-        className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="luggage-title"
+        className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-cyan-500/30 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
-          <div className="flex items-center gap-2">
-            <Box className="w-5 h-5 text-blue-400" />
-            <h3 className="font-bold text-sm">Aide Visuelle & Gabarits de Taille (UC02/UC03)</h3>
+        {/* Oceanic Brand Header */}
+        <div className="relative bg-gradient-to-r from-[#072a4a] via-[#05375c] to-[#0276aa] px-6 py-5 text-white flex items-center justify-between border-b border-cyan-500/25">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-cyan-400/20 text-cyan-300">
+              <Box className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-200 block mb-0.5">
+                Standardisation IATA & Fret
+              </span>
+              <h3 id="luggage-title" className="font-black text-base text-white">
+                Gabarits Visuels & Équivalents Colis
+              </h3>
+            </div>
           </div>
-          <button onClick={onClose} className="p-1 rounded-full text-slate-400 hover:text-white">
+          <button 
+            onClick={onClose} 
+            aria-label="Fermer"
+            className="p-1.5 rounded-full text-cyan-200 hover:bg-white/10 hover:text-white transition-colors"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -85,13 +101,13 @@ export const LuggageVisualHelperModal: React.FC<LuggageVisualHelperModalProps> =
         {/* Content */}
         <div className="p-6 overflow-y-auto space-y-6">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-              Évaluation Volumétrique Instantanée
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#00838f] dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-950/40 px-3 py-1 rounded-full border border-cyan-200 dark:border-cyan-800">
+              <span>Évaluation Volumétrique Instantanée</span>
             </span>
-            <h4 className="text-xl font-extrabold text-slate-900 mt-1">
+            <h4 className="text-xl font-black text-slate-900 dark:text-white mt-2">
               Choisissez le gabarit de votre colis
             </h4>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
               Pour éviter toute contestation lors du rendez-vous, comparez votre objet aux équivalents usuels standardisés.
             </p>
           </div>
@@ -106,37 +122,39 @@ export const LuggageVisualHelperModal: React.FC<LuggageVisualHelperModalProps> =
                   onClick={() => setSelectedFormat(f.id as any)}
                   className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between ${
                     isSelected
-                      ? 'border-blue-600 bg-blue-50/40 shadow-sm'
-                      : 'border-slate-200 hover:border-slate-300 bg-white'
+                      ? 'border-[#00bcd4] bg-cyan-50/50 dark:bg-cyan-950/30 ring-2 ring-[#00bcd4]/20 shadow-md'
+                      : 'border-slate-200 dark:border-slate-800 hover:border-cyan-400/50 bg-slate-50/50 dark:bg-slate-800/40'
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-bold text-xs text-slate-900">{f.title}</span>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        isSelected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'
+                      <span className="font-bold text-xs text-slate-900 dark:text-white">{f.title}</span>
+                      <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+                        isSelected 
+                          ? 'bg-[#00c2cb] text-[#072a4a]' 
+                          : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
                       }`}>
                         {f.badge}
                       </span>
                     </div>
 
-                    <p className="text-xs text-blue-700 font-semibold mb-2">
+                    <p className="text-xs text-[#00838f] dark:text-cyan-300 font-semibold mb-2">
                       ≈ {f.equivalent}
                     </p>
 
-                    <div className="space-y-1 text-[11px] text-slate-600">
+                    <div className="space-y-1.5 text-[11px] text-slate-600 dark:text-slate-300">
                       <div className="flex items-center gap-1.5">
-                        <Scale className="w-3.5 h-3.5 text-slate-400" />
-                        <span>Poids : <strong>{f.weight}</strong></span>
+                        <Scale className="w-3.5 h-3.5 text-[#00838f] dark:text-cyan-400 shrink-0" />
+                        <span>Poids : <strong className="text-slate-900 dark:text-white">{f.weight}</strong></span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <Maximize2 className="w-3.5 h-3.5 text-slate-400" />
-                        <span>Dimensions : <strong>{f.dimensions}</strong></span>
+                        <Maximize2 className="w-3.5 h-3.5 text-[#00838f] dark:text-cyan-400 shrink-0" />
+                        <span>Dimensions : <strong className="text-slate-900 dark:text-white">{f.dimensions}</strong></span>
                       </div>
                     </div>
                   </div>
 
-                  <p className="text-[10px] text-slate-400 mt-3 pt-2 border-t border-slate-100">
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-3 pt-2.5 border-t border-slate-200 dark:border-slate-700/60">
                     Idéal pour : {f.ideal}
                   </p>
                 </div>
@@ -144,29 +162,41 @@ export const LuggageVisualHelperModal: React.FC<LuggageVisualHelperModalProps> =
             })}
           </div>
 
-          {/* Douane & Sanctions Légales Notice (Algérie & International - UC14) */}
-          <div className="p-4 rounded-2xl bg-red-50/70 border border-red-200 text-xs space-y-2">
-            <div className="flex items-center gap-2 text-red-700 font-bold">
-              <AlertOctagon className="w-4 h-4 shrink-0" />
+          {/* Douane & Sanctions Légales Notice */}
+          <div className="p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-xs space-y-2">
+            <div className="flex items-center gap-2 text-amber-900 dark:text-amber-300 font-bold">
+              <AlertOctagon className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
               <span>Conformité Douanière & Sanctions Pénales (Loi n°79-07)</span>
             </div>
-            <p className="text-[11px] text-slate-600 leading-relaxed">
+            <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
               Le voyageur endosse l'entière responsabilité légale du contenu vis-à-vis des douanes dès la prise en charge. Sont strictement interdits :
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] text-slate-700 font-medium">
-              <span className="flex items-center gap-1">Devises non déclarées (&gt; 1 000€)</span>
-              <span className="flex items-center gap-1">Médicaments sans ordonnance valide</span>
-              <span className="flex items-center gap-1">Tabac (&gt; 1 cartouche autorisée)</span>
-              <span className="flex items-center gap-1">Marchandises contrefaites ou interdites</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] text-slate-700 dark:text-slate-200 font-medium pt-1">
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                Devises non déclarées (&gt; 1 000€)
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                Médicaments sans ordonnance valide
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                Tabac (&gt; 1 cartouche autorisée)
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                Marchandises contrefaites ou interdites
+              </span>
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+        <div className="p-4 sm:p-5 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+            className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
           >
             Fermer
           </button>
@@ -176,10 +206,10 @@ export const LuggageVisualHelperModal: React.FC<LuggageVisualHelperModalProps> =
               if (onSelectFormat) onSelectFormat(selectedFormat);
               onClose();
             }}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5"
+            className="px-6 py-2.5 bg-[#00c2cb] hover:bg-cyan-400 text-[#072a4a] font-black text-xs rounded-xl shadow-lg shadow-cyan-500/25 active:scale-95 transition-all flex items-center gap-2"
           >
             <span>Confirmer le Format ({selectedFormat})</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="w-4 h-4" />
           </button>
         </div>
 

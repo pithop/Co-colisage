@@ -160,24 +160,24 @@ export const DepartureInspectionModal: React.FC<DepartureInspectionModalProps> =
           {/* Step 1: ID Check */}
           {step === 1 && (
             <div className="space-y-4">
-              <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 space-y-3">
+              <div className="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <UserCheck className="w-4 h-4 text-emerald-600" />
-                    <span className="font-bold text-xs text-slate-900">Pièce d'identité originale de l'expéditeur</span>
+                    <UserCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    <span className="font-bold text-xs text-slate-900 dark:text-white">Pièce d'identité originale de l'expéditeur</span>
                   </div>
-                  <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">
+                  <span className="text-[10px] bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full font-bold">
                     Vérifiée (Stripe KYC)
                   </span>
                 </div>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   L'expéditeur Mohamed T. présente sa CNI française n° 230913... conforme à la demande.
                 </p>
               </div>
 
               <button
                 onClick={() => setStep(2)}
-                className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl text-xs"
+                className="w-full py-3 bg-[#00838f] hover:bg-[#006978] text-white font-bold rounded-xl text-xs active:scale-95 transition-all shadow-md shadow-cyan-900/20"
               >
                 Valider l'identité et passer à la vidéo
               </button>
@@ -206,13 +206,13 @@ export const DepartureInspectionModal: React.FC<DepartureInspectionModalProps> =
                   </div>
                 ) : (
                   <div className="p-4 text-center space-y-2">
-                    <Video className="w-10 h-10 text-blue-500 mx-auto" />
+                    <Video className="w-10 h-10 text-cyan-400 mx-auto" />
                     <p className="font-bold text-xs text-slate-200">
                       Filmez brièvement l'ouverture et la fermeture du colis avec le ruban de sécurité
                     </p>
                     <button
                       onClick={startVideoSimulation}
-                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-md"
+                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-95"
                     >
                       Démarrer l'enregistrement (15s)
                     </button>
@@ -223,7 +223,7 @@ export const DepartureInspectionModal: React.FC<DepartureInspectionModalProps> =
               {videoCaptured && (
                 <button
                   onClick={() => setStep(3)}
-                  className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl text-xs"
+                  className="w-full py-3 bg-[#00838f] hover:bg-[#006978] text-white font-bold rounded-xl text-xs active:scale-95 transition-all shadow-md shadow-cyan-900/20"
                 >
                   Continuer vers la signature de décharge
                 </button>
@@ -234,9 +234,9 @@ export const DepartureInspectionModal: React.FC<DepartureInspectionModalProps> =
           {/* Step 3: Legal Liability Signature */}
           {step === 3 && (
             <div className="space-y-4">
-              <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200/80 text-xs text-amber-900 space-y-2">
-                <div className="flex items-center gap-2 font-bold text-amber-800">
-                  <AlertTriangle className="w-4 h-4 text-amber-600" />
+              <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-xs text-amber-900 dark:text-amber-200 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-amber-800 dark:text-amber-300">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                   <span>Transfert de responsabilité légale douanière</span>
                 </div>
                 <p className="text-[11px] leading-relaxed">
@@ -247,16 +247,18 @@ export const DepartureInspectionModal: React.FC<DepartureInspectionModalProps> =
               <div 
                 onClick={() => setSigned(!signed)}
                 className={`p-4 rounded-2xl border-2 border-dashed flex items-center justify-between cursor-pointer transition-colors ${
-                  signed ? 'border-emerald-500 bg-emerald-50 text-emerald-900' : 'border-slate-300 hover:border-blue-500'
+                  signed 
+                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200' 
+                    : 'border-slate-300 dark:border-slate-700 hover:border-cyan-500 bg-slate-50/50 dark:bg-slate-800/40 text-slate-800 dark:text-slate-200'
                 }`}
               >
                 <div>
                   <p className="font-bold text-xs">Signature électronique du voyageur</p>
-                  <p className="text-[10px] text-slate-500">
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400">
                     {signed ? "Signé électroniquement (Karim Bouzid - Certifié)" : "Cliquer pour apposer votre signature"}
                   </p>
                 </div>
-                {signed && <CheckCircle2 className="w-5 h-5 text-emerald-600" />}
+                {signed && <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />}
               </div>
 
               <button
