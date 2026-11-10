@@ -2,7 +2,7 @@ export type PlatformMode = 'shop' | 'bag';
 
 export type MainPillar = 'voyageur' | 'expediteur' | 'destinataire';
 
-export type TransportType = 'avion' | 'voiture' | 'bateau' | 'camion' | 'dutyfree';
+export type TransportType = 'avion' | 'voiture' | 'train' | 'bateau' | 'camion' | 'dutyfree';
 
 export interface ProductItem {
   id: string;

@@ -8,22 +8,44 @@ import {
 } from "lucide-react";
 import { euro } from "../../data/marketplace";
 
+export type VisualizerTransportMode = "avion" | "voiture" | "train" | "bateau" | "camion";
+
 interface LuggageVisualizerProps {
   onSelectCapacity?: (kg: number) => void;
   parcelWeights?: number[];
+  transportMode?: VisualizerTransportMode;
 }
 
 export function LuggageVisualizer({
   onSelectCapacity,
   parcelWeights,
+  transportMode = "avion",
 }: LuggageVisualizerProps) {
-  const [kg, setKg] = useState(10);
+  const isCar = transportMode === "voiture";
+  const isTruck = transportMode === "camion";
+  const isTrain = transportMode === "train";
+  const isBoat = transportMode === "bateau";
+
+  const defaultVal = isTruck ? 2 : isCar ? 150 : isBoat ? 25 : isTrain ? 15 : 10;
+  const maxVal = isTruck ? 12 : isCar ? 450 : isBoat ? 80 : isTrain ? 40 : 30;
+  const minVal = isTruck ? 0.5 : isCar ? 30 : isBoat ? 5 : isTrain ? 5 : 1;
+  const stepVal = isTruck ? 0.5 : isCar ? 10 : 1;
+  const unitLabel = isTruck ? "m³" : isCar ? "L" : "kg";
+
+  const [capacity, setCapacity] = useState(defaultVal);
   const id = useId();
-  const fill = (kg / 30) * 100;
-  const earnings = kg * 7.5;
+
+  // Mode-based fill and earnings calculations
+  const fill = Math.min(100, Math.max(10, ((capacity - minVal) / (maxVal - minVal)) * 100));
+  const ratePerUnit = isTruck ? 45 : isCar ? 0.45 : isBoat ? 6.5 : isTrain ? 7.0 : 7.5;
+  const earnings = Math.round(capacity * ratePerUnit);
   const parcels = parcelWeights
-    ? parcelWeights.filter((weight) => weight <= kg).length
-    : Math.floor(kg / 3);
+    ? parcelWeights.filter((weight) => weight <= capacity).length
+    : Math.max(1, Math.floor(isCar ? capacity / 40 : isTruck ? capacity * 4 : capacity / 3));
+
+  // Legacy compatibility
+  const kg = capacity;
+
 
   return (
     <section className="luggage-visualizer" aria-labelledby={`${id}-title`}>
@@ -184,89 +206,101 @@ export function LuggageVisualizer({
             <rect x="150" y="82" width="8" height="24" rx="4" fill="#0f172a" />
           </svg>
           <span className="luggage-capacity">
-            {Math.round(fill)} % de 30 kg
+            {Math.round(fill)} % de capacité ({capacity} {unitLabel})
           </span>
         </div>
         <div className="luggage-summary" aria-live="polite" aria-atomic="true">
-          <span className="luggage-metric-label">Kilos alloués</span>
+          <span className="luggage-metric-label">
+            {isCar ? "Volume coffre alloué" : isTruck ? "Volume fret alloué" : "Capacité allouée"}
+          </span>
           <strong className="luggage-weight">
-            {kg}
-            <span> kg</span>
+            {capacity}
+            <span> {unitLabel}</span>
           </strong>
           <div className="luggage-gain">
             <Sparkles size={16} />
             <strong>+{euro(earnings)}</strong>
           </div>
-          <span className="luggage-metric-label">Gain estimé voyageur</span>
+          <span className="luggage-metric-label">Gain net estimé</span>
           <p className="luggage-parcels">
-            <strong>{parcels} colis</strong> compatibles disponibles
+            <strong>{parcels} {isTruck ? "lots fret" : "colis"}</strong> compatibles disponibles
           </p>
         </div>
       </div>
       <div
         className="luggage-compartments"
         role="group"
-        aria-label="Format de bagage"
+        aria-label="Format de transport"
       >
         <button
           type="button"
-          aria-pressed={kg <= 10}
-          onClick={() => setKg((current) => Math.min(current, 10))}
+          aria-pressed={capacity <= (maxVal + minVal) / 2}
+          onClick={() => setCapacity(minVal + Math.round((maxVal - minVal) * 0.3))}
         >
           <Luggage size={17} aria-hidden="true" />
           <span>
-            Format Cabine<small>1 à 10 kg</small>
+            {isCar ? "Format Coffre partiel" : isTruck ? "Format Demi-fourgon" : "Format Cabine / Standard"}
+            <small>{minVal} à {Math.round((maxVal + minVal) / 2)} {unitLabel}</small>
           </span>
         </button>
         <button
           type="button"
-          aria-pressed={kg > 10}
-          onClick={() => setKg((current) => Math.max(current, 11))}
+          aria-pressed={capacity > (maxVal + minVal) / 2}
+          onClick={() => setCapacity(maxVal)}
         >
           <Luggage size={21} aria-hidden="true" />
           <span>
-            Format Soute<small>11 à 30 kg</small>
+            {isCar ? "Format Coffre complet" : isTruck ? "Format Plein volume" : "Format Soute / Grand volume"}
+            <small>{Math.round((maxVal + minVal) / 2) + 1} à {maxVal} {unitLabel}</small>
           </span>
         </button>
       </div>
       <div className="luggage-slider-control">
         <label htmlFor={`${id}-capacity`}>
-          Votre espace disponible <strong>{kg} kg</strong>
+          Votre espace disponible <strong>{capacity} {unitLabel}</strong>
         </label>
         <input
           id={`${id}-capacity`}
           className="luggage-slider"
           type="range"
           role="slider"
-          aria-label="Kilos disponibles dans vos bagages"
-          aria-valuetext={`${kg} kilos, gain estimé ${euro(earnings)}`}
-          min={1}
-          max={30}
-          step={1}
-          value={kg}
+          aria-label={`Espace disponible en ${unitLabel}`}
+          aria-valuetext={`${capacity} ${unitLabel}, gain estimé ${euro(earnings)}`}
+          min={minVal}
+          max={maxVal}
+          step={stepVal}
+          value={capacity}
           style={
-            { "--slider-fill": `${((kg - 1) / 29) * 100}%` } as CSSProperties
+            { "--slider-fill": `${Math.max(0, Math.min(100, ((capacity - minVal) / (maxVal - minVal)) * 100))}%` } as CSSProperties
           }
-          onChange={(event) => setKg(Number(event.target.value))}
+          onChange={(event) => setCapacity(Number(event.target.value))}
         />
         <div className="luggage-slider-scale">
-          <span>1 kg</span>
-          <span>30 kg</span>
+          <span>{minVal} {unitLabel}</span>
+          <span>{maxVal} {unitLabel}</span>
         </div>
       </div>
       <p className="luggage-flight">
         <Plane size={17} />
         <span>
-          {kg >= 8
+          {isCar
+            ? "Amortit vos frais de carburant et péages d'autoroute"
+            : isTruck
+            ? "Optimise vos retours à vide et rentabilise votre utilitaire"
+            : isBoat
+            ? "Couvre une cabine privée et la traversée ferry"
+            : isTrain
+            ? "Rembourse l'intégralité de votre billet TGV"
+            : capacity >= 8
             ? "Vos gains estimés peuvent couvrir un billet à 60 €"
             : "Finance une grande partie de votre trajet"}
         </span>
       </p>
       <button
         className="w-full py-3.5 px-6 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
-        onClick={() => onSelectCapacity?.(kg)}
+        onClick={() => onSelectCapacity?.(capacity)}
       >
-        <span>Filtrer les annonces pour {kg} kg</span>
+        <span>Filtrer les annonces pour {capacity} {unitLabel}</span>
         <ArrowRight size={17} />
       </button>
       <p className="luggage-security">

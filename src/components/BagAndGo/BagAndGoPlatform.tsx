@@ -1,19 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import {
+  AlertTriangle,
+  BatteryCharging,
+  Box,
   Calendar,
+  Camera,
   Car,
   Check,
+  CheckCircle2,
   ChevronRight,
   Clock,
   Euro,
+  FileText,
+  HelpCircle,
+  Home,
+  Info,
   MapPin,
+  Maximize2,
   Package,
   Plane,
   Plus,
+  Scale,
   Send,
+  ShieldAlert,
   ShieldCheck,
   Sparkles,
   Star,
+  Truck,
+  Upload,
   User,
   Zap,
 } from 'lucide-react';
@@ -32,6 +46,70 @@ export interface BagAndGoPlatformProps {
   onAddRequest?: (request: PurchaseRequest) => void;
 }
 
+interface PresetFormat {
+  id: string;
+  name: string;
+  desc: string;
+  length: number;
+  width: number;
+  height: number;
+  defaultKg: number;
+  recommendedPrice: number;
+}
+
+const PRESET_FORMATS: PresetFormat[] = [
+  {
+    id: 'enveloppe',
+    name: 'Enveloppe A4',
+    desc: 'Documents, passeports, plis urgents',
+    length: 32,
+    width: 23,
+    height: 3,
+    defaultKg: 0.4,
+    recommendedPrice: 20,
+  },
+  {
+    id: 'chaussures',
+    name: 'Boîte à chaussures',
+    desc: 'Sneakers, flacons, cosmétiques, high-tech',
+    length: 35,
+    width: 25,
+    height: 14,
+    defaultKg: 1.8,
+    recommendedPrice: 35,
+  },
+  {
+    id: 'standard',
+    name: 'Carton standard',
+    desc: 'Vêtements, coffrets, cadeaux, souvenirs',
+    length: 40,
+    width: 30,
+    height: 20,
+    defaultKg: 3.5,
+    recommendedPrice: 50,
+  },
+  {
+    id: 'cabine',
+    name: 'Format Valise cabine',
+    desc: 'Bagage cabine plein, textiles denses',
+    length: 55,
+    width: 40,
+    height: 23,
+    defaultKg: 8.0,
+    recommendedPrice: 90,
+  },
+  {
+    id: 'grand',
+    name: 'Grand carton XL',
+    desc: 'Gros volume, matériel ménager, artisanat',
+    length: 60,
+    width: 45,
+    height: 35,
+    defaultKg: 14.0,
+    recommendedPrice: 140,
+  },
+];
+
 export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
   trips: _trips,
   requests,
@@ -43,42 +121,106 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
   onAddRequest,
 }) => {
   const { user } = useAuth();
+  const id = useId();
 
-  // Form states matching Client Mockup 2
-  const [category, setCategory] = useState('Pharmacie');
-  const [dimensions, setDimensions] = useState('30 x 20 x 15');
-  const [weightKg, setWeightKg] = useState('1.5');
-  const [urgency, setUrgency] = useState('Normal');
-  const [proposedPrice, setProposedPrice] = useState('50');
-  const [destination, setDestination] = useState('Paris, France');
+  // Category
+  const [category, setCategory] = useState('Pharmacie & Médical');
+
+  // Format preset or custom
+  const [selectedPreset, setSelectedPreset] = useState<string>('chaussures');
+  const [isCustomDimensions, setIsCustomDimensions] = useState(false);
+
+  // Exact dimensions (in cm)
+  const [lengthCm, setLengthCm] = useState(35);
+  const [widthCm, setWidthCm] = useState(25);
+  const [heightCm, setHeightCm] = useState(14);
+
+  // Weight (in kg)
+  const [weightKg, setWeightKg] = useState(1.8);
+
+  // Computed volume (L) and volumetric weight (IATA: L*W*H / 5000)
+  const volumeLitres = Number(((lengthCm * widthCm * heightCm) / 1000).toFixed(1));
+  const volumetricWeightKg = Number(((lengthCm * widthCm * heightCm) / 5000).toFixed(1));
+  const billableWeightKg = Math.max(weightKg, volumetricWeightKg);
+
+  // Logistics: Drop-off & Handover
+  const [pickupOption, setPickupOption] = useState<'station_dropoff' | 'home_pickup'>('station_dropoff');
+  const [deliveryOption, setDeliveryOption] = useState<'station_meetup' | 'home_delivery'>('station_meetup');
+
+  // Special Handling Tags
+  const [isFragile, setIsFragile] = useState(false);
+  const [hasLithiumBattery, setHasLithiumBattery] = useState(false);
+  const [isTamperSealed, setIsTamperSealed] = useState(true);
+  const [hasInvoice, setHasInvoice] = useState(true);
+
+  // Locations & routing
   const [departureCity, setDepartureCity] = useState('Alger');
+  const [destination, setDestination] = useState('Paris, France');
+  const [urgency, setUrgency] = useState('Normal');
   const [recipient, setRecipient] = useState('');
-  const [canTravel, setCanTravel] = useState(true);
-  const [showVisualizer, setShowVisualizer] = useState(true);
+  const [proposedPrice, setProposedPrice] = useState('35');
+  const [parcelNotes, setParcelNotes] = useState('');
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
-  // Success notification
+  // UI state
+  const [showVisualizer, setShowVisualizer] = useState(true);
   const [publishedNotice, setPublishedNotice] = useState(false);
 
-  // Filter parcel requests
+  // Filter existing requests
   const parcelRequests = requests.filter((r) => r.kind === 'parcel');
+
+  // Update preset
+  const handleSelectPreset = (preset: PresetFormat) => {
+    setSelectedPreset(preset.id);
+    setIsCustomDimensions(false);
+    setLengthCm(preset.length);
+    setWidthCm(preset.width);
+    setHeightCm(preset.height);
+    setWeightKg(preset.defaultKg);
+    setProposedPrice(String(preset.recommendedPrice));
+  };
+
+  // Photo upload simulation
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPhotoPreview(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Price calculations
+  const priceNum = parseFloat(proposedPrice) || 35;
+  const pickupFee = pickupOption === 'home_pickup' ? 8 : 0;
+  const deliveryFee = deliveryOption === 'home_delivery' ? 10 : 0;
+  const totalShipperCost = priceNum + pickupFee + deliveryFee;
+  const travelerNetReward = Math.round(priceNum * 0.85 + pickupFee * 0.75 + deliveryFee * 0.75);
 
   // Handle direct publication
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const priceNum = parseFloat(proposedPrice) || 50;
-    const weightNum = parseFloat(weightKg) || 1.5;
+
+    const tagsList = [
+      isFragile ? 'Fragile' : null,
+      hasLithiumBattery ? 'Batterie Lithium' : null,
+      isTamperSealed ? 'Scellé sécurisé' : null,
+      hasInvoice ? 'Facture fournie' : null,
+    ].filter(Boolean).join(', ');
 
     const newRequest: PurchaseRequest = {
       id: `req-parcel-${Date.now()}`,
-      title: `Colis ${category} (${weightNum} kg)`,
+      title: `Colis ${category} · ${lengthCm}×${widthCm}×${heightCm} cm (${weightKg} kg)`,
       origin: departureCity,
       destination: destination || 'Paris, France',
       date: new Date().toISOString().slice(0, 10),
-      budget: priceNum,
-      reward: Math.round(priceNum * 0.7),
-      image: '/images/parcel.svg',
+      budget: totalShipperCost,
+      reward: travelerNetReward,
+      image: photoPreview || '/images/parcel.svg',
       buyer: user?.name || recipient || 'Expéditeur vérifié',
-      specifications: `Dimensions: ${dimensions} cm · Poids: ${weightNum} kg · Urgence: ${urgency} · Se déplace: ${canTravel ? 'Oui' : 'Non'}`,
+      specifications: `Dimensions: ${lengthCm}×${widthCm}×${heightCm} cm (${volumeLitres}L) · Poids réel: ${weightKg} kg · Facturé: ${billableWeightKg} kg · Prise en charge: ${pickupOption === 'home_pickup' ? 'Domicile (+8€)' : 'Rendez-vous'} · Livraison: ${deliveryOption === 'home_delivery' ? 'Domicile (+10€)' : 'Main propre'} · Tags: ${tagsList || 'Standard'} · Urgence: ${urgency}${parcelNotes ? ` · Note: ${parcelNotes}` : ''}`,
       location: destination || 'Paris, France',
       kind: 'parcel',
       status: 'available',
@@ -95,18 +237,17 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
     }
 
     setPublishedNotice(true);
-    setTimeout(() => setPublishedNotice(false), 4000);
+    setTimeout(() => setPublishedNotice(false), 4500);
   };
 
   return (
     <div className="bagandgo-platform-container max-w-5xl mx-auto px-4 py-3 space-y-6 pb-36 text-left">
-      {/* 1. Hero Photographic Banner matching Client Mockup 2 */}
+      {/* 1. Hero Photographic Banner */}
       <section className="relative overflow-hidden rounded-[28px] bg-[#072a4a] text-white shadow-xl border border-cyan-500/25">
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
           style={{ backgroundImage: "url('/images/hero-airport-traveler.jpg')" }}
         />
-        {/* Dark oceanic gradient overlay for high contrast and visible jet */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#072a4a]/95 via-[#072a4a]/85 to-[#072a4a]/40 sm:to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#072a4a]/90 via-transparent to-black/20" />
 
@@ -114,39 +255,39 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
           <div className="space-y-3 max-w-xl">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-400/20 backdrop-blur-md border border-cyan-400/40 text-cyan-200 text-xs font-semibold">
               <Package size={13} className="text-cyan-300" />
-              <span>Bag &amp; Go · Espace Expéditeur de Colis</span>
+              <span>Bag &amp; Go · Expédition de Colis Précise &amp; Multi-Modal</span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white leading-tight drop-shadow-sm">
-              Publiez votre demande d'envoi de colis
+              Expédiez vos colis au millimètre près en toute confiance
             </h1>
 
             <p className="text-xs sm:text-sm text-cyan-100/90 leading-relaxed font-medium max-w-lg drop-shadow-sm">
-              Trouvez un voyageur fiable pour transporter votre colis en toute sécurité. Remise par code PIN et séquestre bancaire Stripe.
+              Renseignez les dimensions précises, le poids exact et vos exigences de sécurité. Séquestre bancaire Stripe et validation par code PIN unique.
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-cyan-200">
               <span className="inline-flex items-center gap-1.5 font-semibold">
                 <ShieldCheck size={14} className="text-cyan-300" />
-                <span>Séquestre Stripe</span>
+                <span>Séquestre Stripe sécurisé</span>
               </span>
               <span className="inline-flex items-center gap-1.5 font-semibold">
                 <Sparkles size={14} className="text-cyan-300" />
-                <span>PIN secret</span>
+                <span>Validation PIN &amp; QR</span>
               </span>
               <span className="inline-flex items-center gap-1.5 font-semibold">
                 <Check size={14} className="text-cyan-300" />
-                <span>Profils certifiés</span>
+                <span>Poids volumétrique IATA</span>
               </span>
             </div>
           </div>
 
-          <div className="hidden md:flex flex-col items-center justify-center p-5 rounded-2xl bg-[#062c47]/80 backdrop-blur-md border border-cyan-400/30 text-center shadow-xl">
+          <div className="hidden md:flex flex-col items-center justify-center p-5 rounded-2xl bg-[#062c47]/80 backdrop-blur-md border border-cyan-400/30 text-center shadow-xl min-w-[200px]">
             <div className="w-16 h-16 rounded-full bg-cyan-400/20 flex items-center justify-center mb-2">
               <Package size={32} className="text-cyan-300 animate-bounce" />
             </div>
-            <span className="text-xs font-bold text-white tracking-wide uppercase">Colisage Sécurisé</span>
-            <span className="text-[10px] text-cyan-200 mt-0.5">Envois transfrontaliers certifiés</span>
+            <span className="text-xs font-bold text-white tracking-wide uppercase">Colisage Garanti</span>
+            <span className="text-[10px] text-cyan-200 mt-0.5">Avion · Voiture · Train · Bateau</span>
           </div>
         </div>
       </section>
@@ -154,8 +295,8 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
       {/* Confirmation Toast */}
       {publishedNotice && (
         <div className="p-4 rounded-2xl bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg flex items-center gap-2 animate-in fade-in slide-in-from-top duration-300">
-          <Check size={18} strokeWidth={3} />
-          <span>Votre demande de colis a été publiée avec succès et transmise aux voyageurs disponibles !</span>
+          <CheckCircle2 size={18} strokeWidth={2.5} />
+          <span>Votre demande d'expédition a été enregistrée avec succès et transmise aux transporteurs !</span>
         </div>
       )}
 
@@ -164,115 +305,511 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         <div className="flex items-center justify-between px-1">
           <span className="text-xs font-bold text-[#072a4a] dark:text-slate-300 flex items-center gap-1.5">
             <Sparkles size={14} className="text-[#00bcd4]" />
-            Animation &amp; Gabarit du Colis
+            Simulation Dynamique &amp; Gabarit 3D du Colis
           </span>
           <button
             type="button"
             onClick={() => setShowVisualizer(!showVisualizer)}
             className="text-xs font-bold text-[#00838f] dark:text-cyan-400 hover:underline"
           >
-            {showVisualizer ? "Masquer le simulateur" : "Afficher le simulateur"}
+            {showVisualizer ? 'Masquer le simulateur' : 'Afficher le simulateur'}
           </button>
         </div>
         {showVisualizer && (
           <ParcelVisualizer
-            initialWeight={parseFloat(weightKg) || 1.5}
+            initialWeight={weightKg}
             initialCategory={category}
             onWeightChange={(newKg) => {
-              setWeightKg(String(newKg));
-              setProposedPrice(String(Math.round(15 + newKg * 12)));
+              setWeightKg(newKg);
+              setProposedPrice(String(Math.round(18 + newKg * 11)));
             }}
           />
         )}
       </div>
 
-      {/* 2. Interactive Multi-Block Form matching Client Mockup 2 (4 Distinct Gradient-Header Blocks) */}
+      {/* 2. Detailed Granular Form with 5 Specialized Blocks */}
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Block 1: Informations du colis */}
+        {/* Block 1: Format & Dimensions Précises */}
         <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
-          {/* Client signature Teal/Cyan Gradient Ribbon Header */}
-          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
-            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
-              <Package size={14} />
+          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center justify-between font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
+            <div className="flex items-center gap-2.5">
+              <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
+                <Box size={14} />
+              </span>
+              <span>1. Format &amp; Dimensions du Colis</span>
+            </div>
+            <span className="text-[11px] normal-case bg-white/20 px-2.5 py-0.5 rounded-full font-semibold">
+              Volume : {volumeLitres} L · Poids volumétrique : {volumetricWeightKg} kg
             </span>
-            <span>Informations du colis</span>
           </div>
 
-          <div className="p-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="p-5 space-y-4">
+            {/* Quick Presets Selection */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Catégorie
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+                Sélectionnez un format prédéfini ou personnalisez les dimensions
               </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
-              >
-                <option value="Pharmacie">Pharmacie &amp; Médical</option>
-                <option value="High-Tech">High-Tech &amp; Électronique</option>
-                <option value="Textile">Textile &amp; Vêtements</option>
-                <option value="Documents">Documents &amp; Papiers</option>
-                <option value="Cosmétiques">Cosmétiques &amp; Parfums</option>
-                <option value="Alimentation">Alimentation &amp; Terroir</option>
-                <option value="Autre">Autre marchandise</option>
-              </select>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                {PRESET_FORMATS.map((preset) => {
+                  const isSelected = selectedPreset === preset.id && !isCustomDimensions;
+                  return (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => handleSelectPreset(preset)}
+                      className={`p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between ${
+                        isSelected
+                          ? 'border-[#00bcd4] bg-cyan-50/70 dark:bg-cyan-950/40 ring-2 ring-[#00bcd4]/30 shadow-sm'
+                          : 'border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 hover:border-slate-300'
+                      }`}
+                    >
+                      {isSelected && (
+                        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[#00bcd4] text-white flex items-center justify-center shadow-xs">
+                          <Check size={10} strokeWidth={3} />
+                        </div>
+                      )}
+                      <div>
+                        <span className="font-extrabold text-xs text-[#072a4a] dark:text-white block">
+                          {preset.name}
+                        </span>
+                        <span className="text-[10px] text-[#00838f] dark:text-cyan-400 font-semibold block mt-0.5">
+                          {preset.length} × {preset.width} × {preset.height} cm
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">
+                        {preset.desc}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Taille (cm)
-              </label>
-              <select
-                value={dimensions}
-                onChange={(e) => setDimensions(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
-              >
-                <option value="30 x 20 x 15">30 x 20 x 15 (Petit format)</option>
-                <option value="40 x 30 x 20">40 x 30 x 20 (Moyen format)</option>
-                <option value="55 x 40 x 23">55 x 40 x 23 (Format valise cabine)</option>
-                <option value="Format enveloppe">Format enveloppe A4</option>
-              </select>
+            {/* Custom Dimensions Inputs (Length, Width, Height) */}
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                  <Maximize2 size={14} className="text-[#00838f] dark:text-cyan-400" />
+                  Dimensions exactes (cm) &amp; Volume en litres
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsCustomDimensions(true)}
+                  className={`text-[11px] font-bold px-2 py-0.5 rounded-md transition-colors ${
+                    isCustomDimensions
+                      ? 'bg-cyan-100 text-[#00838f] dark:bg-cyan-900/60 dark:text-cyan-300'
+                      : 'text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  Mode dimensions sur-mesure
+                </button>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                    Longueur (cm)
+                  </label>
+                  <input
+                    type="number"
+                    min="5"
+                    max="150"
+                    value={lengthCm}
+                    onChange={(e) => {
+                      setIsCustomDimensions(true);
+                      setLengthCm(Number(e.target.value) || 10);
+                    }}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-bold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                    Largeur (cm)
+                  </label>
+                  <input
+                    type="number"
+                    min="5"
+                    max="150"
+                    value={widthCm}
+                    onChange={(e) => {
+                      setIsCustomDimensions(true);
+                      setWidthCm(Number(e.target.value) || 10);
+                    }}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-bold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                    Hauteur (cm)
+                  </label>
+                  <input
+                    type="number"
+                    min="2"
+                    max="150"
+                    value={heightCm}
+                    onChange={(e) => {
+                      setIsCustomDimensions(true);
+                      setHeightCm(Number(e.target.value) || 5);
+                    }}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-bold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+                  />
+                </div>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Poids (kg)
-              </label>
-              <select
-                value={weightKg}
-                onChange={(e) => setWeightKg(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
-              >
-                <option value="0.5">0.5 kg</option>
-                <option value="1.0">1.0 kg</option>
-                <option value="1.5">1.5 kg</option>
-                <option value="2.0">2.0 kg</option>
-                <option value="3.0">3.0 kg</option>
-                <option value="5.0">5.0 kg</option>
-                <option value="10.0">10.0 kg</option>
-              </select>
+            {/* Weight & Category Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    Poids réel (kg)
+                  </label>
+                  <span className="text-xs font-black text-[#00838f] dark:text-cyan-400">
+                    {weightKg} kg
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0.2"
+                  max="35"
+                  step="0.1"
+                  value={weightKg}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value);
+                    setWeightKg(val);
+                    setProposedPrice(String(Math.round(18 + val * 11)));
+                  }}
+                  className="w-full accent-[#00bcd4] cursor-pointer"
+                />
+                <div className="flex items-center justify-between text-[10px] text-slate-400 font-semibold mt-1">
+                  <span>0.2 kg</span>
+                  <span>Poids facturé IATA : <strong>{billableWeightKg} kg</strong></span>
+                  <span>35 kg</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Catégorie de contenu
+                </label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500"
+                >
+                  <option value="Pharmacie & Médical">Pharmacie &amp; Médical (médicaments scellés, ordonnances)</option>
+                  <option value="High-Tech & Électronique">High-Tech &amp; Électronique (téléphones, PC, accessoires)</option>
+                  <option value="Textile & Vêtements">Textile, Chaussures &amp; Prêt-à-porter</option>
+                  <option value="Documents & Papiers">Documents officiels, Passeports &amp; Diplômes</option>
+                  <option value="Cosmétiques & Parfums">Cosmétiques, Parfumerie &amp; Soins</option>
+                  <option value="Alimentation & Terroir">Alimentation, Épicerie fine &amp; Produits du terroir</option>
+                  <option value="Pièces auto & Outillage">Pièces détachées, Outillage &amp; Bricolage</option>
+                  <option value="Autre">Autre marchandise licite</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Block 2: Urgence & Délai */}
+        {/* Block 2: Logistique de Prise en Charge & Remise */}
         <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
           <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
             <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
-              <Zap size={14} />
+              <Truck size={14} />
             </span>
-            <span>Urgence &amp; Délai</span>
+            <span>2. Logistique de Prise en Charge &amp; Remise</span>
+          </div>
+
+          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Departure Handover */}
+            <div>
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+                Point de collecte (Départ)
+              </label>
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => setPickupOption('station_dropoff')}
+                  className={`w-full p-3 rounded-xl border text-left transition-all flex items-start gap-3 ${
+                    pickupOption === 'station_dropoff'
+                      ? 'border-[#00bcd4] bg-cyan-50/70 dark:bg-cyan-950/40 ring-1 ring-[#00bcd4]'
+                      : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/40'
+                  }`}
+                >
+                  <MapPin size={18} className="text-[#00838f] dark:text-cyan-400 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <span className="font-bold text-xs text-[#072a4a] dark:text-white block">
+                      Dépôt au voyageur (Gratuit)
+                    </span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Vous déposez le colis au point de rendez-vous convenu (aéroport, gare, station).
+                    </span>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPickupOption('home_pickup')}
+                  className={`w-full p-3 rounded-xl border text-left transition-all flex items-start gap-3 ${
+                    pickupOption === 'home_pickup'
+                      ? 'border-[#00bcd4] bg-cyan-50/70 dark:bg-cyan-950/40 ring-1 ring-[#00bcd4]'
+                      : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/40'
+                  }`}
+                >
+                  <Home size={18} className="text-[#00838f] dark:text-cyan-400 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-xs text-[#072a4a] dark:text-white">
+                        Enlèvement à domicile (+8 €)
+                      </span>
+                      <span className="text-[10px] font-extrabold text-[#00838f] dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-900/60 px-1.5 py-0.5 rounded">
+                        +8 €
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Le transporteur ou un coursier partenaire vient récupérer le colis à votre adresse.
+                    </span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            {/* Arrival Handover */}
+            <div>
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+                Distribution finale (Arrivée)
+              </label>
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => setDeliveryOption('station_meetup')}
+                  className={`w-full p-3 rounded-xl border text-left transition-all flex items-start gap-3 ${
+                    deliveryOption === 'station_meetup'
+                      ? 'border-[#00bcd4] bg-cyan-50/70 dark:bg-cyan-950/40 ring-1 ring-[#00bcd4]'
+                      : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/40'
+                  }`}
+                >
+                  <User size={18} className="text-[#00838f] dark:text-cyan-400 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <span className="font-bold text-xs text-[#072a4a] dark:text-white block">
+                      Remise en main propre (Inclus)
+                    </span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Le destinataire retrouve le voyageur au terminal ou au lieu convenu avec le code PIN.
+                    </span>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setDeliveryOption('home_delivery')}
+                  className={`w-full p-3 rounded-xl border text-left transition-all flex items-start gap-3 ${
+                    deliveryOption === 'home_delivery'
+                      ? 'border-[#00bcd4] bg-cyan-50/70 dark:bg-cyan-950/40 ring-1 ring-[#00bcd4]'
+                      : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/40'
+                  }`}
+                >
+                  <Home size={18} className="text-[#00838f] dark:text-cyan-400 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-xs text-[#072a4a] dark:text-white">
+                        Livraison à domicile destinataire (+10 €)
+                      </span>
+                      <span className="text-[10px] font-extrabold text-[#00838f] dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-900/60 px-1.5 py-0.5 rounded">
+                        +10 €
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Acheminement direct jusqu'à la porte ou l'entreprise du destinataire.
+                    </span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Block 3: Sécurité, Normes & Exigences Spéciales */}
+        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
+          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
+            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
+              <ShieldCheck size={14} />
+            </span>
+            <span>3. Sécurité, Normes &amp; Scellé de Garantie</span>
+          </div>
+
+          <div className="p-5 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Fragile */}
+              <label className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 cursor-pointer hover:border-cyan-400 transition-colors">
+                <div className="flex items-center gap-2.5">
+                  <AlertTriangle size={18} className="text-amber-500 shrink-0" />
+                  <div>
+                    <span className="font-bold text-xs text-slate-900 dark:text-white block">
+                      Colis Fragile
+                    </span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                      Verre, céramique, écrans, composants délicats
+                    </span>
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={isFragile}
+                  onChange={(e) => setIsFragile(e.target.checked)}
+                  className="w-4 h-4 rounded text-cyan-600 accent-[#00bcd4] cursor-pointer"
+                />
+              </label>
+
+              {/* Lithium Battery */}
+              <label className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 cursor-pointer hover:border-cyan-400 transition-colors">
+                <div className="flex items-center gap-2.5">
+                  <BatteryCharging size={18} className="text-cyan-600 dark:text-cyan-400 shrink-0" />
+                  <div>
+                    <span className="font-bold text-xs text-slate-900 dark:text-white block">
+                      Batterie Lithium incluse
+                    </span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                      Téléphone, PC portable, drone (norme IATA transport)
+                    </span>
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={hasLithiumBattery}
+                  onChange={(e) => setHasLithiumBattery(e.target.checked)}
+                  className="w-4 h-4 rounded text-cyan-600 accent-[#00bcd4] cursor-pointer"
+                />
+              </label>
+
+              {/* Tamper seal */}
+              <label className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 cursor-pointer hover:border-cyan-400 transition-colors">
+                <div className="flex items-center gap-2.5">
+                  <ShieldCheck size={18} className="text-emerald-500 shrink-0" />
+                  <div>
+                    <span className="font-bold text-xs text-slate-900 dark:text-white block">
+                      Scellé de sécurité numéroté
+                    </span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                      Scellé avec numéro unique photographié avant départ
+                    </span>
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={isTamperSealed}
+                  onChange={(e) => setIsTamperSealed(e.target.checked)}
+                  className="w-4 h-4 rounded text-cyan-600 accent-[#00bcd4] cursor-pointer"
+                />
+              </label>
+
+              {/* Invoice attached */}
+              <label className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 cursor-pointer hover:border-cyan-400 transition-colors">
+                <div className="flex items-center gap-2.5">
+                  <FileText size={18} className="text-[#00838f] dark:text-cyan-400 shrink-0" />
+                  <div>
+                    <span className="font-bold text-xs text-slate-900 dark:text-white block">
+                      Facture / Justificatif joint
+                    </span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                      Facilite le passage en douane et l'assurance
+                    </span>
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={hasInvoice}
+                  onChange={(e) => setHasInvoice(e.target.checked)}
+                  className="w-4 h-4 rounded text-cyan-600 accent-[#00bcd4] cursor-pointer"
+                />
+              </label>
+            </div>
+
+            {/* Photo preview upload */}
+            <div>
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                Photo du colis préparé (recommandé pour vérification préalable)
+              </label>
+              <label className="relative flex flex-col items-center justify-center p-4 h-28 rounded-2xl border-2 border-dashed border-cyan-400/60 dark:border-cyan-700/60 bg-cyan-50/30 dark:bg-cyan-950/20 hover:bg-cyan-50/60 cursor-pointer transition-all overflow-hidden group">
+                {photoPreview ? (
+                  <img
+                    src={photoPreview}
+                    alt="Colis"
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-cyan-100/80 dark:bg-cyan-900/50 text-[#00838f] dark:text-cyan-300 flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <Camera size={20} />
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-[#072a4a] dark:text-slate-200 block">
+                        Télécharger une photo de votre colis
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        PNG, JPG jusqu'à 5 Mo · Rassure les voyageurs certifiés
+                      </span>
+                    </div>
+                  </div>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  className="sr-only"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Block 4: Trajet & Destinataire */}
+        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
+          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
+            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
+              <MapPin size={14} />
+            </span>
+            <span>4. Trajet, Urgence &amp; Destinataire</span>
           </div>
 
           <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Délai de livraison
+                Ville / Pays de départ
+              </label>
+              <input
+                type="text"
+                value={departureCity}
+                onChange={(e) => setDepartureCity(e.target.value)}
+                placeholder="Ex : Alger, Oran, Paris..."
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                Ville / Adresse de destination
+              </label>
+              <input
+                type="text"
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+                placeholder="Ex : Paris, Marseille, Lyon..."
+                required
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                Délai souhaité
               </label>
               <select
                 value={urgency}
                 onChange={(e) => setUrgency(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-cyan-500"
               >
                 <option value="Normal">Normal (sous 3 à 5 jours)</option>
                 <option value="Urgent">Urgent (sous 48h)</option>
@@ -282,122 +819,82 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
 
             <div>
               <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Prix proposé
-              </label>
-              <div className="relative flex items-center">
-                <span className="absolute left-3.5 text-slate-400 font-bold text-sm">€</span>
-                <input
-                  type="number"
-                  value={proposedPrice}
-                  onChange={(e) => setProposedPrice(e.target.value)}
-                  placeholder="Ex : 50 €"
-                  min="5"
-                  className="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Block 3: Destination */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
-          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
-            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
-              <MapPin size={14} />
-            </span>
-            <span>Destination</span>
-          </div>
-
-          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Ville de départ
-              </label>
-              <input
-                type="text"
-                value={departureCity}
-                onChange={(e) => setDepartureCity(e.target.value)}
-                placeholder="Ex : Alger, Oran..."
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Lieu de destination
-              </label>
-              <input
-                type="text"
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-                placeholder="Ville ou adresse"
-                required
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
-              />
-            </div>
-
-            <div className="sm:col-span-2">
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Destinataire (optionnel)
+                Destinataire (Nom &amp; Téléphone)
               </label>
               <input
                 type="text"
                 value={recipient}
                 onChange={(e) => setRecipient(e.target.value)}
-                placeholder="Nom ou numéro de téléphone du destinataire"
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                placeholder="Nom du destinataire qui recevra le code PIN"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500"
               />
             </div>
-          </div>
-        </div>
 
-        {/* Block 4: Option déplacement */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-sm">
-          <div className="px-5 py-3.5 bg-gradient-to-r from-[#00838f] via-[#0097a7] to-[#00bcd4] text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm">
-            <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white">
-              <Car size={14} />
-            </span>
-            <span>Option déplacement</span>
-          </div>
-
-          <div className="p-5 flex items-center justify-between">
-            <div>
-              <span className="font-extrabold text-sm text-[#072a4a] dark:text-white block">
-                Accepter de se déplacer ?
-              </span>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Vous pouvez convenir d'un point de rendez-vous avec le voyageur à proximité de l'aéroport ou du port.
-              </p>
-            </div>
-
-            <label className="relative inline-flex items-center cursor-pointer shrink-0 ml-4">
+            <div className="sm:col-span-2">
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                Instructions particulières ou description du contenu
+              </label>
               <input
-                type="checkbox"
-                checked={canTravel}
-                onChange={(e) => setCanTravel(e.target.checked)}
-                className="sr-only peer"
+                type="text"
+                value={parcelNotes}
+                onChange={(e) => setParcelNotes(e.target.value)}
+                placeholder="Ex : Médicaments thermosensibles à conserver en cabine, boîte scellée..."
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
               />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00bcd4]" />
-            </label>
+            </div>
           </div>
         </div>
 
-        {/* 3. Oceanic Cyan Gradient Pill CTA Button matching Client Mockup 2 */}
+        {/* Block 5: Rémunération Proposée & Séquestre Stripe */}
+        <div className="p-4 rounded-2xl bg-cyan-50/60 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold text-sm text-[#072a4a] dark:text-white">
+                Rémunération de transport proposée :
+              </span>
+              <span className="text-xs text-slate-500">
+                (Hors options logistiques)
+              </span>
+            </div>
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              Total à payer sous séquestre : <strong>{totalShipperCost} €</strong> ({priceNum} € transport + {pickupFee} € collecte + {deliveryFee} € livraison)
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="relative w-28">
+              <span className="absolute left-3 top-2.5 text-slate-400 font-bold text-sm">€</span>
+              <input
+                type="number"
+                min="10"
+                value={proposedPrice}
+                onChange={(e) => setProposedPrice(e.target.value)}
+                className="w-full pl-7 pr-2 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 font-black text-sm text-slate-900 dark:text-white outline-none focus:border-cyan-500 text-center"
+              />
+            </div>
+
+            <div className="px-4 py-2.5 rounded-full bg-gradient-to-r from-[#00838f] to-[#00bcd4] text-white font-extrabold text-xs sm:text-sm shadow-sm whitespace-nowrap">
+              Gain voyageur net : ~{travelerNetReward} €
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Oceanic Cyan Gradient Pill CTA Button */}
         <button
           type="submit"
           className="w-full py-4 px-6 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
         >
           <Send size={18} strokeWidth={2.4} />
-          <span>Publier ma demande</span>
+          <span>Publier ma demande de colis ({billableWeightKg} kg facturés)</span>
         </button>
       </form>
 
-      {/* 4. Section "Mes demandes récentes" with Vertical Cyan Indicator */}
+      {/* 4. Section "Mes demandes récentes" */}
       <section className="space-y-4 pt-2">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-extrabold text-[#072a4a] dark:text-white flex items-center gap-2">
             <span className="w-1.5 h-5 bg-[#00bcd4] rounded-full inline-block" />
-            <span>Mes demandes récentes</span>
+            <span>Mes demandes d'envoi récentes</span>
             {parcelRequests.length > 0 && (
               <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-950/60 text-[#00838f] dark:text-cyan-300">
                 {parcelRequests.length}
@@ -461,7 +958,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
                 <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
                   <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60">
                     <Clock size={13} />
-                    <span>En attente</span>
+                    <span>En attente transporteur</span>
                   </span>
                   <ChevronRight size={18} className="text-slate-400" />
                 </div>
@@ -469,7 +966,6 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
             ))}
           </div>
         ) : (
-          /* Virgin Clean State */
           <div className="p-8 sm:p-10 rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 text-center space-y-3">
             <div className="w-14 h-14 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 text-[#00838f] dark:text-cyan-400 flex items-center justify-center mx-auto shadow-sm">
               <Package size={26} />

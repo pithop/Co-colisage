@@ -1,56 +1,102 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Tri-Modal Platforms & Interactive Visualizers", () => {
-  test("loads Mode Voyageur with flight search and animated luggage simulator", async ({ page }) => {
+test.describe("Tri-Modal Platforms & Multi-Modal Capabilities", () => {
+  test("Mode Voyageur: 5-mode transport switcher & dynamic fields", async ({ page }) => {
     await page.goto("/#voyageur");
-    await expect(page.locator("h1")).toContainText("Trouvez un voyageur");
-    
-    // Check 3-way switcher presence
-    const switcher = page.locator("[role='radiogroup']:visible");
-    await expect(switcher.first()).toBeVisible();
+    await expect(page.locator("h1")).toContainText("bagages sur vos vols");
 
-    // Check dual action cards matching client mockup
+    // Check 3-way platform switcher presence
+    const platformSwitcher = page.locator("[role='radiogroup']:visible");
+    await expect(platformSwitcher.first()).toBeVisible();
+
+    // Check 5 transport modes in Voyageur mode
+    const modeTabs = page.locator("nav[aria-label='Modes de transport pour voyageurs'] [role='tab']");
+    await expect(modeTabs).toHaveCount(5);
+
+    // Switch to Voiture
+    await page.click("button:has-text('Voiture')");
+    await expect(page.locator("h1")).toContainText("votre coffre lors de vos trajets en voiture");
+    await expect(page.locator("text=Modèle de véhicule")).toBeVisible();
+    await expect(page.locator("text=Litres").first()).toBeVisible();
+
+    // Switch to Train
+    await page.click("button:has-text('Train')");
+    await expect(page.locator("h1")).toContainText("trajets ferroviaires et TGV");
+    await expect(page.locator("text=Gare de départ")).toBeVisible();
+
+    // Switch to Bateau
+    await page.click("button:has-text('Bateau')");
+    await expect(page.locator("h1")).toContainText("traversées maritimes");
+    await expect(page.locator("text=Port d'embarquement")).toBeVisible();
+
+    // Switch to Utilitaire
+    await page.click("button:has-text('Utilitaire')");
+    await expect(page.locator("h1")).toContainText("Remplissez vos utilitaires");
+    await expect(page.locator("text=Gabarit utilitaire")).toBeVisible();
+
+    // Check dual action cards
     await expect(page.locator("text=J'envoie un colis").first()).toBeVisible();
-    await expect(page.locator("text=Je cherche des bagages").first()).toBeVisible();
-
-    // Check bottom navigation on mobile or desktop
-    const nav = page.locator("nav[aria-label='Navigation mobile']");
-    if (await nav.isVisible()) {
-      await expect(page.locator("text=Mes missions").first()).toBeVisible();
-    }
+    await expect(page.locator("text=Je cherche de l'espace disponible").first()).toBeVisible();
   });
 
-  test("switches to Mode Bag&Go with 4-block form and ParcelVisualizer", async ({ page }) => {
+  test("Mode Bag&Go: Granular parcel presets, custom dimensions & IATA volumetric weight", async ({ page }) => {
     await page.goto("/#bagandgo");
-    await expect(page.locator("h1")).toContainText("Publiez votre demande d'envoi de colis");
+    await expect(page.locator("h1")).toContainText("Expédiez vos colis au millimètre près");
 
-    // Check 4-block form headers
-    await expect(page.locator("text=Informations du colis").first()).toBeVisible();
-    await expect(page.locator("text=Urgence & Délai").first()).toBeVisible();
-    await expect(page.locator("text=Destination").first()).toBeVisible();
-    await expect(page.locator("text=Option déplacement").first()).toBeVisible();
+    // Check 5 preset cards
+    await expect(page.locator("text=Enveloppe A4")).toBeVisible();
+    await expect(page.locator("text=Boîte à chaussures")).toBeVisible();
+    await expect(page.locator("text=Carton standard")).toBeVisible();
+    await expect(page.locator("text=Format Valise cabine")).toBeVisible();
+    await expect(page.locator("text=Grand carton XL")).toBeVisible();
+
+    // Check custom dimensions inputs
+    await expect(page.locator("text=Longueur (cm)")).toBeVisible();
+    await expect(page.locator("text=Largeur (cm)")).toBeVisible();
+    await expect(page.locator("text=Hauteur (cm)")).toBeVisible();
+
+    // Check volume and volumetric weight badges
+    await expect(page.locator("text=Poids volumétrique").first()).toBeVisible();
+
+    // Check logistics options
+    await expect(page.locator("text=Dépôt au voyageur")).toBeVisible();
+    await expect(page.locator("text=Enlèvement à domicile")).toBeVisible();
+
+    // Check security tags
+    await expect(page.locator("text=Colis Fragile")).toBeVisible();
+    await expect(page.locator("text=Batterie Lithium incluse")).toBeVisible();
+    await expect(page.locator("text=Scellé de sécurité numéroté")).toBeVisible();
 
     // Check ParcelVisualizer
     await expect(page.locator("text=Simulateur de Colis Dynamique").first()).toBeVisible();
   });
 
-  test("switches to Mode Shop&Go with interactive order form and ShopBudgetVisualizer", async ({ page }) => {
+  test("Mode Shop&Go: Multi-item basket, store selector & mandatory proof-of-purchase", async ({ page }) => {
     await page.goto("/#shopandgo");
-    await expect(page.locator("h1")).toContainText("Commandez ce que vous voulez");
+    await expect(page.locator("h1")).toContainText("Commandez en boutique & Duty-Free");
 
-    // Check ShopBudgetVisualizer
-    await expect(page.locator("text=Simulateur de Panier & Séquestre").first()).toBeVisible();
-    await expect(page.locator("text=Budget total estimé").first()).toBeVisible();
+    // Check mandatory proof-of-purchase policy banner
+    await expect(page.locator("text=Garantie Transparence : Reçu & Ticket de caisse officiel")).toBeVisible();
 
-    // Check form fields
-    await expect(page.locator("text=Votre commande").first()).toBeVisible();
-    await expect(page.locator("button:has-text('Publier ma demande')").first()).toBeVisible();
+    // Check basket list
+    await expect(page.locator("text=Mon Panier d'Articles")).toBeVisible();
+    await expect(page.locator("text=Dior Sauvage")).toBeVisible();
+
+    // Check "Ajouter un autre article au panier"
+    const addBtn = page.locator("button:has-text('Ajouter un autre article au panier')");
+    await expect(addBtn).toBeVisible();
+    await addBtn.click();
+    await expect(page.locator("text=Nouvel article à faire acheter")).toBeVisible();
+
+    // Check financial breakdown & escrow
+    await expect(page.locator("text=Total bloqué sous séquestre")).toBeVisible();
+    await expect(page.locator("button:has-text('Publier ma commande d')")).toBeVisible();
   });
 
-  test("verifies mobile 5-tab navigation and modals suite", async ({ page }) => {
+  test("Mobile responsive layout: 5-tab Apple HIG navigation", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/#voyageur");
-    
+
     // Bottom nav should be visible on mobile viewport
     const bottomNav = page.locator("nav[aria-label='Navigation mobile principale']");
     await expect(bottomNav).toBeVisible();
@@ -63,4 +109,3 @@ test.describe("Tri-Modal Platforms & Interactive Visualizers", () => {
     await expect(page.locator("button[aria-label='Mon compte']")).toBeVisible();
   });
 });
-

@@ -93,6 +93,7 @@ export const vehicleLabel = (trip: Trip) =>
     camion: "Camionnette",
     avion: trip.id === "emma" ? "Bagage" : "Avion",
     bateau: "Bateau",
+    train: "Train & TGV",
     dutyfree: "Bagage",
   })[trip.transportType];
 export const normalize = (value: string) =>
