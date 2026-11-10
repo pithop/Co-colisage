@@ -5,6 +5,7 @@ import {
   ScanLine,
   Plane,
   Car,
+  Train,
   Truck,
   Ship,
   Smartphone,
@@ -62,12 +63,23 @@ const transports = [
     Icon: Car,
   },
   {
+    value: "train",
+    label: "Train",
+    detail: "TGV & bagages",
+    Icon: Train,
+  },
+  {
+    value: "bateau",
+    label: "Bateau",
+    detail: "Fret maritime & ferry",
+    Icon: Ship,
+  },
+  {
     value: "camion",
     label: "Camionnette",
-    detail: "Grand volume",
+    detail: "Grand volume & utilitaire",
     Icon: Truck,
   },
-  { value: "bateau", label: "Bateau", detail: "Fret maritime", Icon: Ship },
 ] as const;
 const corridors = [
   {

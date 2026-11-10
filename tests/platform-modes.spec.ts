@@ -108,4 +108,28 @@ test.describe("Tri-Modal Platforms & Multi-Modal Capabilities", () => {
     await expect(page.locator("button[aria-label='Notifications']")).toBeVisible();
     await expect(page.locator("button[aria-label='Mon compte']")).toBeVisible();
   });
+
+  test("PublishModal: 5-mode transport selection, parcel presets & shop options", async ({ page }) => {
+    await page.goto("/#voyageur");
+    
+    // Open publish modal
+    const publishBtn = page.locator("button:has-text('Proposer un trajet')").first();
+    await publishBtn.click();
+    await expect(page.locator("h2:has-text('Publier une annonce')")).toBeVisible();
+
+    // Check 5 mode buttons inside modal
+    await expect(page.locator(".transport-selector-card:has-text('Avion')")).toBeVisible();
+    await expect(page.locator(".transport-selector-card:has-text('Voiture')")).toBeVisible();
+    await expect(page.locator(".transport-selector-card:has-text('Train')")).toBeVisible();
+    await expect(page.locator(".transport-selector-card:has-text('Bateau')")).toBeVisible();
+    await expect(page.locator(".transport-selector-card:has-text('Camionnette')")).toBeVisible();
+
+    // Switch to Voiture inside modal
+    await page.locator(".transport-selector-card:has-text('Voiture')").click();
+    await expect(page.locator("input[placeholder*='Peugeot']")).toBeVisible();
+
+    // Switch to Train inside modal
+    await page.locator(".transport-selector-card:has-text('Train')").click();
+    await expect(page.locator(".transport-selector-card:has-text('Train')")).toHaveAttribute("aria-pressed", "true");
+  });
 });
