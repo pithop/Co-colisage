@@ -64,8 +64,13 @@ html[data-theme="dark"] .unified-header.site-header,
 .traveler-reviews article { padding: 16px 0; border-bottom: 1px solid var(--line); }
 .traveler-reviews article > div { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 12px; }
 .traveler-reviews p { margin-top: 8px; color: #536174; font-size: 13px; line-height: 1.8; }
-.radar-corridor { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #536174; }
-.radar-corridor select { background: white; border: 1px solid #dde4eb; border-radius: 8px; padding: 8px 10px; max-width: 190px; }
+.radar-corridor-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.radar-corridor-chip { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 9999px; border: 1px solid #e2e8f0; background: #ffffff; color: #475569; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s ease; }
+:root.dark .radar-corridor-chip, .dark .radar-corridor-chip { background: #1e293b; border-color: rgba(255, 255, 255, 0.1); color: #94a3b8; }
+.radar-corridor-chip:hover { border-color: #93c5fd; color: #2563eb; }
+:root.dark .radar-corridor-chip:hover, .dark .radar-corridor-chip:hover { border-color: #3b82f6; color: #60a5fa; }
+.radar-corridor-chip.active { background: #eff6ff; border-color: #2563eb; color: #2563eb; font-weight: 700; box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1); }
+:root.dark .radar-corridor-chip.active, .dark .radar-corridor-chip.active { background: rgba(37, 99, 235, 0.2); border-color: #3b82f6; color: #60a5fa; }
 .radar-pagination { display: flex; justify-content: flex-end; align-items: center; gap: 16px; padding: 16px 24px; color: #536174; font-size: 12px; }
 .radar-pagination button { border: 1px solid #dce3eb; padding: 7px 12px; border-radius: 7px; }
 @media (max-width: 1200px) {

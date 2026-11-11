@@ -111,6 +111,39 @@
 .arbitrage-empty p, .arbitrage-empty button { font-size: 13px; }
 .arbitrage-empty button { color: #2563eb; font-weight: 600; text-decoration: underline; cursor: pointer; }
 .arbitrage-error { margin: 16px 32px 0; padding: 12px 16px; border-radius: 10px; background: #fef2f2; border: 1px solid #fee2e2; color: #991b1b; font-size: 13px; }
+/* Arbitrage Sort Controls */
+.arbitrage-sort-group { display: flex; flex-direction: column; gap: 6px; }
+.arbitrage-sort-label { font-size: 11px; font-weight: 600; color: #475569; }
+:root.dark .arbitrage-sort-label, .dark .arbitrage-sort-label { color: #cbd5e1; }
+.arbitrage-sort-pills { display: inline-flex; align-items: center; background: #f1f5f9; padding: 3px; border-radius: 10px; border: 1px solid #e2e8f0; gap: 3px; min-height: 42px; }
+:root.dark .arbitrage-sort-pills, .dark .arbitrage-sort-pills { background: #0f172a; border-color: rgba(255, 255, 255, 0.1); }
+.arbitrage-sort-pill { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 7px; border: none; font-size: 12px; font-weight: 600; color: #64748b; background: transparent; cursor: pointer; transition: all 0.15s ease; white-space: nowrap; }
+:root.dark .arbitrage-sort-pill, .dark .arbitrage-sort-pill { color: #94a3b8; }
+.arbitrage-sort-pill.active { background: #ffffff; color: #2563eb; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); font-weight: 700; }
+:root.dark .arbitrage-sort-pill.active, .dark .arbitrage-sort-pill.active { background: #1e293b; color: #60a5fa; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+
+/* Route Corridor Chip Selector */
+.arbitrage-route-selector { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; margin-bottom: 16px; }
+.arbitrage-route-chip { display: flex; flex-direction: column; align-items: flex-start; padding: 10px 14px; border-radius: 12px; border: 1px solid #e2e8f0; background: #ffffff; color: #334155; cursor: pointer; transition: all 0.2s ease; text-align: left; position: relative; }
+:root.dark .arbitrage-route-chip, .dark .arbitrage-route-chip { background: #1e293b; border-color: rgba(255, 255, 255, 0.08); color: #cbd5e1; }
+.arbitrage-route-chip:hover { border-color: #93c5fd; background: #f8fafc; }
+:root.dark .arbitrage-route-chip:hover, .dark .arbitrage-route-chip:hover { border-color: #3b82f6; background: #1e293b; }
+.arbitrage-route-chip.active { border-color: #2563eb; background: #eff6ff; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15); }
+:root.dark .arbitrage-route-chip.active, .dark .arbitrage-route-chip.active { border-color: #3b82f6; background: rgba(37, 99, 235, 0.15); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25); }
+.route-chip-airports { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-size: 14px; color: #0f172a; }
+:root.dark .route-chip-airports, .dark .route-chip-airports { color: #f8fafc; }
+.arbitrage-route-chip.active .route-chip-airports { color: #2563eb; }
+:root.dark .arbitrage-route-chip.active .route-chip-airports { color: #60a5fa; }
+.route-chip-arrow { color: #94a3b8; }
+.arbitrage-route-chip.active .route-chip-arrow { color: #2563eb; }
+:root.dark .arbitrage-route-chip.active .route-chip-arrow { color: #60a5fa; }
+.route-chip-cities { font-size: 11px; color: #64748b; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+:root.dark .route-chip-cities, .dark .route-chip-cities { color: #94a3b8; }
+.route-chip-badge { position: absolute; top: 10px; right: 10px; width: 18px; height: 18px; border-radius: 50%; background: #2563eb; color: #ffffff; display: flex; align-items: center; justify-content: center; }
+:root.dark .route-chip-badge, .dark .route-chip-badge { background: #3b82f6; }
+.arbitrage-section-subtitle { margin: 14px 0 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; }
+:root.dark .arbitrage-section-subtitle, .dark .arbitrage-section-subtitle { color: #94a3b8; }
+
 @media (max-width: 900px) { .arbitrage-workspace { gap: 20px; padding: 24px; } .arbitrage-filters { flex-direction: column; align-items: stretch; } }
 @media (max-width: 600px) {
   .arbitrage-heading { padding: 20px; flex-direction: column; gap: 16px; }
@@ -123,4 +156,6 @@
   .arbitrage-footnote { padding: 16px; }
   .mission-icon { display: none; }
   .arbitrage-error { margin-inline: 16px; }
+  .arbitrage-route-selector { grid-template-columns: 1fr; }
 }
+

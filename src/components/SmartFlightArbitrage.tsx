@@ -1,5 +1,5 @@
 import { useEffect, useId, useMemo, useState } from "react";
-import { ArrowLeftRight, ArrowRight, ArrowUpRight, Check, Package, Plane, RefreshCw, ShoppingBag, SlidersHorizontal, Sparkles } from "lucide-react";
+import { ArrowLeftRight, ArrowRight, ArrowUpRight, Check, Package, Percent, Plane, RefreshCw, ShoppingBag, SlidersHorizontal, Sparkles, TrendingUp } from "lucide-react";
 import { euro, type PurchaseRequest } from "../data/marketplace";
 import {
   calculateProfit, estimatedFlightOffers, filterOpportunities, flightArbitrageApi, matchFlight,
@@ -132,17 +132,75 @@ export function SmartFlightArbitrage({ requests, reservedRequestIds = [], initia
           />
         </div>
         <label>Gain net minimum (€)<input type="number" step="1" placeholder="Aucun minimum" value={minimum} onChange={event => { setMinimum(event.target.value); setExcluded([]); }} /></label>
-        <label>Trier les vols<select aria-label="Trier les vols" value={sort} onChange={event => setSort(event.target.value as "profit" | "roi")}><option value="profit">Gain net décroissant</option><option value="roi">ROI décroissant</option></select></label>
+        <div className="arbitrage-sort-group">
+          <span className="arbitrage-sort-label">Trier par</span>
+          <div className="arbitrage-sort-pills" role="radiogroup" aria-label="Trier les vols">
+            <button
+              type="button"
+              role="radio"
+              aria-checked={sort === "profit"}
+              className={`arbitrage-sort-pill ${sort === "profit" ? "active" : ""}`}
+              onClick={() => setSort("profit")}
+            >
+              <TrendingUp size={13} />
+              <span>Gain net (€)</span>
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={sort === "roi"}
+              className={`arbitrage-sort-pill ${sort === "roi" ? "active" : ""}`}
+              onClick={() => setSort("roi")}
+            >
+              <Percent size={13} />
+              <span>Rentabilité ROI</span>
+            </button>
+          </div>
+        </div>
       </div>
       {(error || snapshot.error) && <p className="arbitrage-error" role="alert">{error || snapshot.error}</p>}
       {!deal || !flight ? <div className="arbitrage-empty"><SlidersHorizontal size={28} /><h3>Aucun vol ne correspond à ces critères.</h3><p>Essayez un autre trajet ou un gain minimum plus bas.</p><button onClick={() => { setOrigin(""); setDestination(""); setMinimum(""); }}>Réinitialiser les filtres</button></div> : (
         <div className="arbitrage-workspace">
           <div className="arbitrage-itinerary">
-            <div className="arbitrage-section-title"><span>01</span><h3>Choisissez votre départ</h3></div>
-            <label className="sr-only" htmlFor={`${id}-route`}>Itinéraire du vol</label>
-            <select id={`${id}-route`} value={flight.routeId} onChange={event => { setRouteId(event.target.value); setOfferId(""); setExcluded([]); setOrigin(""); setDestination(""); setMinimum(""); }}>
-              {routes.map(key => { const offer = snapshot.offers.find(item => item.routeId === key)!; return <option key={key} value={key}>{offer.origin} → {offer.destination} · {offer.originCode}–{offer.destinationCode}</option>; })}
-            </select>
+            <div className="arbitrage-section-title"><span>01</span><h3>Choisissez votre corridor de vol</h3></div>
+            <div className="arbitrage-route-selector" role="radiogroup" aria-label="Choisir le couloir aérien">
+              {routes.map(key => {
+                const offer = snapshot.offers.find(item => item.routeId === key)!;
+                const isSelected = flight.routeId === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    role="radio"
+                    aria-checked={isSelected}
+                    className={`arbitrage-route-chip ${isSelected ? "active" : ""}`}
+                    onClick={() => {
+                      setRouteId(key);
+                      setOfferId("");
+                      setExcluded([]);
+                      setOrigin("");
+                      setDestination("");
+                      setMinimum("");
+                    }}
+                  >
+                    <div className="route-chip-airports">
+                      <span className="route-chip-code">{offer.originCode}</span>
+                      <ArrowRight size={13} className="route-chip-arrow" />
+                      <span className="route-chip-code">{offer.destinationCode}</span>
+                    </div>
+                    <span className="route-chip-cities">{offer.origin} → {offer.destination}</span>
+                    {isSelected && (
+                      <span className="route-chip-badge">
+                        <Check size={11} />
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="arbitrage-section-subtitle">
+              <span>Dates &amp; Prix du billet disponible</span>
+            </div>
             <div className="arbitrage-dates" role="group" aria-label="Date de départ et prix du billet">
               {matches.filter(item => item.flight.routeId === flight.routeId).map(item => <button key={item.id} aria-pressed={item.id === base?.id} onClick={() => choose(item)}><span>{dateLabel(item.flight.departureAt)}</span><strong>{euro(item.flight.flightPrice)}</strong><small>{item.flight.airline}</small>{item.id === base?.id && <Check size={14} aria-hidden="true" />}</button>)}
             </div>

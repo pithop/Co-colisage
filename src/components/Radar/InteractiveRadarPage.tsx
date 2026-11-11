@@ -318,12 +318,29 @@ export function InteractiveRadarPage({
               </button>
             ))}
           </div>
-          <label className="radar-corridor">Corridor
-            <select aria-label="Corridor" value={corridor} onChange={event => setCorridor(event.target.value as "all" | Corridor)}>
-              <option value="all">Tous</option>
-              {Object.entries(corridorLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
-            </select>
-          </label>
+          <div className="radar-corridor-chips" role="radiogroup" aria-label="Filtrer par corridor">
+            <button
+              type="button"
+              role="radio"
+              aria-checked={corridor === "all"}
+              className={`radar-corridor-chip ${corridor === "all" ? "active" : ""}`}
+              onClick={() => setCorridor("all")}
+            >
+              Tous
+            </button>
+            {Object.entries(corridorLabels).map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                role="radio"
+                aria-checked={corridor === key}
+                className={`radar-corridor-chip ${corridor === key ? "active" : ""}`}
+                onClick={() => setCorridor(key as Corridor)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
         <InteractiveMediterraneanMap
           movements={movements}

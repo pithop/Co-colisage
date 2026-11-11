@@ -111,19 +111,32 @@ export function PricingPage({
 
         <div className="pricing-calculator-card">
           <div className="calculator-controls">
-            <label className="calculator-field">
+            <div className="calculator-field corridor-field">
               <span>{isFr ? "Couloir aérien" : "Travel Corridor"}</span>
-              <select
-                value={corridor}
-                onChange={(e) => setCorridor(e.target.value as any)}
-                aria-label={isFr ? "Choisir le couloir" : "Choose corridor"}
-              >
-                <option value="algeria">{isFr ? "France / Europe – Algérie (8 € / kg)" : "France / Europe – Algeria (8 EUR / kg)"}</option>
-                <option value="canada">{isFr ? "Europe – Canada / Transatlantique (12 € / kg)" : "Europe – Canada / Transatlantic (12 EUR / kg)"}</option>
-                <option value="middle_east">{isFr ? "Europe – Moyen-Orient & Asie (11 € / kg)" : "Europe – Middle East & Asia (11 EUR / kg)"}</option>
-                <option value="africa">{isFr ? "Europe – Afrique Subsaharienne (10 € / kg)" : "Europe – Sub-Saharan Africa (10 EUR / kg)"}</option>
-              </select>
-            </label>
+              <div className="corridor-pills-grid" role="radiogroup" aria-label={isFr ? "Choisir le couloir" : "Choose corridor"}>
+                {[
+                  { id: "algeria", label: isFr ? "France / Europe – Algérie" : "France / Europe – Algeria", rate: "8 € / kg" },
+                  { id: "canada", label: isFr ? "Europe – Transatlantique" : "Europe – Transatlantic", rate: "12 € / kg" },
+                  { id: "middle_east", label: isFr ? "Europe – Moyen-Orient" : "Europe – Middle East", rate: "11 € / kg" },
+                  { id: "africa", label: isFr ? "Europe – Afrique Subsaharienne" : "Europe – Sub-Saharan Africa", rate: "10 € / kg" },
+                ].map((c) => {
+                  const isSelected = corridor === c.id;
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={isSelected}
+                      className={`corridor-pill-btn ${isSelected ? "active" : ""}`}
+                      onClick={() => setCorridor(c.id as any)}
+                    >
+                      <span className="corridor-pill-title">{c.label}</span>
+                      <span className="corridor-pill-rate">{c.rate}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
             <label className="calculator-field">
               <div className="weight-header">
