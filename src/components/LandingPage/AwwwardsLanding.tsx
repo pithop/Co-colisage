@@ -25,6 +25,14 @@ import {
   CircleCheck,
   CircleMinus,
   Menu,
+  MapPin,
+  Calendar,
+  Car,
+  Ship,
+  Coins,
+  Clock,
+  Receipt,
+  CheckCircle2,
 } from "lucide-react";
 import { AppStoreBadges } from "./AppStoreBadges";
 import {
@@ -287,6 +295,30 @@ export function AwwwardsLanding({
   const [hasNewTick, setHasNewTick] = useState(false);
   const [routeTurns, setRouteTurns] = useState(0);
 
+  // Elite Tri-Modal Hero Console State
+  const [heroMode, setHeroMode] = useState<"voyageur" | "bagandgo" | "shopandgo">("voyageur");
+  const [heroOrigin, setHeroOrigin] = useState("Paris (CDG)");
+  const [heroDestination, setHeroDestination] = useState("Alger (ALG)");
+  const [heroDate, setHeroDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 3);
+    return d.toISOString().split("T")[0];
+  });
+  const [heroCapacityKg, setHeroCapacityKg] = useState(15);
+  const [heroTransportType, setHeroTransportType] = useState<"avion" | "bateau" | "voiture">("avion");
+  const [heroParcelPreset, setHeroParcelPreset] = useState<"pli" | "petit" | "moyen" | "grand">("moyen");
+  const [heroUrgency, setHeroUrgency] = useState<"express" | "standard">("express");
+  const [heroStoreCategory, setHeroStoreCategory] = useState("High-Tech & Duty-Free");
+  const [heroProductName, setHeroProductName] = useState("");
+  const [heroRouteTurns, setHeroRouteTurns] = useState(0);
+
+  const heroEarning = heroCapacityKg * 8 + (heroCapacityKg >= 15 ? 40 : 20);
+  const heroParcelWeight =
+    heroParcelPreset === "pli" ? 1 : heroParcelPreset === "petit" ? 3 : heroParcelPreset === "moyen" ? 5 : 15;
+  const heroParcelPrice = heroParcelWeight * 8 + 5;
+  const heroCompetitorPrice = Math.round(40 + heroParcelWeight * 20);
+  const heroSavingsPercent = Math.max(0, Math.round(((heroCompetitorPrice - heroParcelPrice) / heroCompetitorPrice) * 100));
+
   const triggerHaptic = (ms = 8) => {
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       try {
@@ -474,177 +506,406 @@ export function AwwwardsLanding({
         onLanguageChange={setLanguage}
         currentRoute="landing"
       />
-      <section className="landing-hero">
-        <div className="landing-hero-copy">
-          <span className="eyebrow">{c.eyebrow}</span>
-          <h1>
-            {c.title}
-            <br />
-            <em>{c.accent}</em>
-          </h1>
-          <p>{c.intro}</p>
-          <div className="landing-hero-actions">
-            <a className="landing-cta" href="/#explore">
-              {c.cta}
-              <ArrowUpRight size={21} />
-            </a>
-            <div className="landing-store-preview">
-              <AppStoreBadges language={language} onClick={openMobileLaunch} />
-              <span>
-                {text(
-                  "iPhone & Android · Bientôt disponible",
-                  "iPhone & Android · Coming soon",
-                )}
-              </span>
-            </div>
-          </div>
-          <div className="landing-trust-chips">
-            <span>
-              <ScanLine size={16} />
-              {text("Double remise vérifiée", "Verified handovers")}
-            </span>
-            <span>
-              <Globe2 size={16} />
-              {text(
-                "Sans frontières dans l’esprit",
-                "Connection across borders",
-              )}
-            </span>
-            <span>
-              <ShieldCheck size={16} />
-              {text("Protection séquestre 100 %", "100% escrow protection")}
-            </span>
-          </div>
-        </div>
-        <div
-          className="journey-art"
-          aria-label={text(
-            "Pass de vol et fret officiel BagVoyage · Paris–Alger.",
-            "Official BagVoyage flight and cargo pass · Paris–Algiers.",
-          )}
-          role="img"
-        >
-          <div className="journey-grid" aria-hidden="true" />
-          <div className="journey-caption">
+      <section className="bv-hero-wrapper">
+        <div className="bv-hero-container">
+          <div className="bv-hero-badge-pill">
             <span className="live-dot" />
-            {text("LE VOYAGE DEVIENT UN LIEN", "EVERY JOURNEY CONNECTS")}
-            <span>01 / 03</span>
+            <span>{text("Plateforme Officielle · Co-colisage & Shopping France–Algérie", "Official Platform · Crowdsourced Shipping & Shopping France–Algeria")}</span>
           </div>
-          <div className="journey-pass">
-            <header className="pass-header">
-              <span className="pass-brand">
-                <Plane size={20} /> BagVoyage<span>air</span>
-              </span>
-              <span className="pass-type">
-                {text("PASS VOL & FRET", "FLIGHT & CARGO PASS")}
-              </span>
-            </header>
-            <div className="pass-flight">
-              <div className="pass-live">
-                <span className="live-dot" />
-                {text("Embarquement dans 2h15", "Boarding in 2h15")}
+          <h1 className="bv-hero-headline">
+            {text("Rentabilisez vos voyages.", "Fund your travels.")}
+            <br />
+            <span>{text("Expédiez vos colis. Achetez partout.", "Ship parcels. Shop anywhere.")}</span>
+          </h1>
+          <p className="bv-hero-lead">
+            {text(
+              "Mettez en relation voyageurs vérifiés et expéditeurs en temps réel. Remise en main propre express, sans taxes de douane opaques, 100 % sécurisée par séquestre Stripe Connect.",
+              "Connect verified travelers and shippers in real time. Express hand-to-hand delivery, zero opaque customs duties, 100% secured by Stripe Connect escrow."
+            )}
+          </p>
+
+          <div className="bv-hero-console-card">
+            <div className="bv-hero-mode-tabs" role="tablist">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={heroMode === "voyageur"}
+                className={`bv-hero-tab-btn ${heroMode === "voyageur" ? "active" : ""}`}
+                onClick={() => {
+                  triggerHaptic(8);
+                  setHeroMode("voyageur");
+                }}
+              >
+                <Plane size={18} />
+                <span>{text("Voyageur (Convoyeur)", "Traveler (Carrier)")}</span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={heroMode === "bagandgo"}
+                className={`bv-hero-tab-btn ${heroMode === "bagandgo" ? "active" : ""}`}
+                onClick={() => {
+                  triggerHaptic(8);
+                  setHeroMode("bagandgo");
+                }}
+              >
+                <Package size={18} />
+                <span>{text("Bag & Go (Expéditeur)", "Bag & Go (Shipper)")}</span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={heroMode === "shopandgo"}
+                className={`bv-hero-tab-btn ${heroMode === "shopandgo" ? "active" : ""}`}
+                onClick={() => {
+                  triggerHaptic(8);
+                  setHeroMode("shopandgo");
+                }}
+              >
+                <ShoppingBag size={18} />
+                <span>{text("Shop & Go (Acheteur)", "Shop & Go (Buyer)")}</span>
+              </button>
+            </div>
+
+            {/* Fields Grid */}
+            <div className="bv-hero-fields-grid">
+              <div className="bv-hero-field-group">
+                <label className="bv-field-label">
+                  <MapPin size={13} />
+                  <span>{text("Départ", "From")}</span>
+                </label>
+                <CityAutocomplete
+                  name="heroOrigin"
+                  value={heroOrigin}
+                  onChange={(val) => setHeroOrigin(val)}
+                  placeholder={text("Ex. Paris, Marseille, Lyon...", "Ex. Paris, Marseille, Lyon...")}
+                />
               </div>
-              <div className="pass-route">
-                <div>
-                  <strong>{airportCodes.Paris}</strong>
-                  <span>Paris</span>
-                </div>
-                <div className="pass-airway">
-                  <span />
-                  <Plane size={24} />
-                  <span />
-                </div>
-                <div>
-                  <strong>{airportCodes.Alger}</strong>
-                  <span>Alger</span>
-                </div>
+
+              <button
+                type="button"
+                className="bv-hero-swap-btn"
+                aria-label={text("Inverser le trajet", "Reverse route")}
+                onClick={() => {
+                  triggerHaptic(8);
+                  setHeroOrigin(heroDestination);
+                  setHeroDestination(heroOrigin);
+                  setHeroRouteTurns((t) => t + 1);
+                }}
+              >
+                <ArrowLeftRight
+                  size={16}
+                  style={{
+                    transform: `rotate(${heroRouteTurns * 180}deg)`,
+                    transition: "transform 360ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+                  }}
+                />
+              </button>
+
+              <div className="bv-hero-field-group">
+                <label className="bv-field-label">
+                  <MapPin size={13} />
+                  <span>{text("Destination", "To")}</span>
+                </label>
+                <CityAutocomplete
+                  name="heroDestination"
+                  value={heroDestination}
+                  onChange={(val) => setHeroDestination(val)}
+                  placeholder={text("Ex. Alger, Oran, Constantine...", "Ex. Algiers, Oran, Constantine...")}
+                />
               </div>
-              <div className="pass-flight-meta">
-                <span>
-                  {text("VOL", "FLIGHT")}
-                  <b>AH1000</b>
-                </span>
-                <span>
-                  {text("TERMINAL", "TERMINAL")}
-                  <b>2E</b>
-                </span>
-                <span>
-                  {text("PORTE", "GATE")}
-                  <b>K34</b>
-                </span>
-                <span>
-                  {text("SIÈGE", "SEAT")}
-                  <b>12A</b>
-                </span>
+
+              <div className="bv-hero-field-group">
+                <label className="bv-field-label">
+                  <Calendar size={13} />
+                  <span>{heroMode === "voyageur" ? text("Départ", "Departure") : text("Date souhaitée", "Desired date")}</span>
+                </label>
+                <input
+                  type="date"
+                  className="bv-hero-date-input"
+                  value={heroDate}
+                  onChange={(e) => setHeroDate(e.target.value)}
+                  aria-label={text("Date", "Date")}
+                />
               </div>
             </div>
-            <div className="pass-cargo">
-              <div className="pass-cargo-title">
-                <span className="pass-package">
-                  <Package size={22} />
-                </span>
-                <div>
-                  <strong>{text("Colis vérifié", "Verified parcel")}</strong>
+
+            {/* Mode Customizer Row */}
+            <div className="bv-hero-mode-customizer">
+              {heroMode === "voyageur" && (
+                <div className="bv-customizer-row">
+                  <div>
+                    <span className="bv-customizer-label">{text("Mode de transport", "Transport mode")}</span>
+                    <div className="bv-hero-pills-row">
+                      {(
+                        [
+                          { id: "avion", label: text("Avion", "Flight"), Icon: Plane },
+                          { id: "bateau", label: text("Bateau", "Ferry"), Icon: Ship },
+                          { id: "voiture", label: text("Voiture", "Car"), Icon: Car },
+                        ] as const
+                      ).map(({ id, label, Icon }) => (
+                        <button
+                          key={id}
+                          type="button"
+                          className={`bv-hero-pill ${heroTransportType === id ? "active" : ""}`}
+                          onClick={() => {
+                            triggerHaptic(8);
+                            setHeroTransportType(id);
+                          }}
+                        >
+                          <Icon size={14} />
+                          <span>{label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="bv-customizer-label">{text("Capacité disponible (kg)", "Available capacity (kg)")}</span>
+                    <div className="bv-hero-pills-row">
+                      {[5, 10, 15, 23, 30].map((kg) => (
+                        <button
+                          key={kg}
+                          type="button"
+                          className={`bv-hero-pill ${heroCapacityKg === kg ? "active" : ""}`}
+                          onClick={() => {
+                            triggerHaptic(8);
+                            setHeroCapacityKg(kg);
+                          }}
+                        >
+                          <span>{kg} kg</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {heroMode === "bagandgo" && (
+                <div className="bv-customizer-row">
+                  <div>
+                    <span className="bv-customizer-label">{text("Format du colis", "Parcel format")}</span>
+                    <div className="bv-hero-pills-row">
+                      {(
+                        [
+                          { id: "pli", label: text("Pli / Doc (1 kg)", "Envelope (1 kg)") },
+                          { id: "petit", label: text("Petit colis (3 kg)", "Small (3 kg)") },
+                          { id: "moyen", label: text("Valise / Moyen (5 kg)", "Medium (5 kg)") },
+                          { id: "grand", label: text("Gros volume (15 kg)", "Large (15 kg)") },
+                        ] as const
+                      ).map(({ id, label }) => (
+                        <button
+                          key={id}
+                          type="button"
+                          className={`bv-hero-pill ${heroParcelPreset === id ? "active" : ""}`}
+                          onClick={() => {
+                            triggerHaptic(8);
+                            setHeroParcelPreset(id);
+                          }}
+                        >
+                          <span>{label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="bv-customizer-label">{text("Délai souhaité", "Delivery timeframe")}</span>
+                    <div className="bv-hero-pills-row">
+                      {(
+                        [
+                          { id: "express", label: text("Express 24h–48h", "Express 24h–48h"), Icon: Clock },
+                          { id: "standard", label: text("Standard 3–5j", "Standard 3–5d"), Icon: Calendar },
+                        ] as const
+                      ).map(({ id, label, Icon }) => (
+                        <button
+                          key={id}
+                          type="button"
+                          className={`bv-hero-pill ${heroUrgency === id ? "active" : ""}`}
+                          onClick={() => {
+                            triggerHaptic(8);
+                            setHeroUrgency(id);
+                          }}
+                        >
+                          <Icon size={14} />
+                          <span>{label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {heroMode === "shopandgo" && (
+                <div className="bv-customizer-row">
+                  <div>
+                    <span className="bv-customizer-label">{text("Catégorie de produit", "Product category")}</span>
+                    <div className="bv-hero-pills-row">
+                      {[
+                        text("High-Tech & Apple", "High-Tech & Apple"),
+                        text("Parfumerie Duty-Free", "Duty-Free Perfume"),
+                        text("Mode & Sneakers", "Fashion & Sneakers"),
+                        text("Pharmacie & Soins", "Pharmacy & Care"),
+                      ].map((cat) => (
+                        <button
+                          key={cat}
+                          type="button"
+                          className={`bv-hero-pill ${heroStoreCategory === cat ? "active" : ""}`}
+                          onClick={() => {
+                            triggerHaptic(8);
+                            setHeroStoreCategory(cat);
+                          }}
+                        >
+                          <span>{cat}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bv-product-preview-input">
+                    <span className="bv-customizer-label">{text("Article ou marque recherché", "Desired item or brand")}</span>
+                    <input
+                      type="text"
+                      className="bv-hero-text-input"
+                      value={heroProductName}
+                      onChange={(e) => setHeroProductName(e.target.value)}
+                      placeholder={text("Ex. iPhone 16 Pro, Parfums Dior, Dyson...", "Ex. iPhone 16 Pro, Dior perfumes, Dyson...")}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Live Ribbon */}
+            <div className="bv-hero-live-ribbon">
+              <div className="bv-ribbon-content">
+                <div className="bv-ribbon-stat">
+                  {heroMode === "voyageur" && (
+                    <>
+                      <span className="bv-ribbon-label">{text("Gain net estimé :", "Estimated net gain:")}</span>
+                      <span className="bv-ribbon-value" style={{ color: "#059669" }}>
+                        +{heroEarning} €
+                      </span>
+                      <span className="bv-ribbon-comparison">
+                        · {text("Billet d’avion 100 % rentabilisé", "100% flight ticket covered")}
+                      </span>
+                    </>
+                  )}
+                  {heroMode === "bagandgo" && (
+                    <>
+                      <span className="bv-ribbon-label">{text("Tarif BagVoyage :", "BagVoyage rate:")}</span>
+                      <span className="bv-ribbon-value" style={{ color: "#2563eb" }}>
+                        {heroParcelPrice} €
+                      </span>
+                      <span className="bv-ribbon-comparison">
+                        · {text(`-${heroSavingsPercent} % vs DHL / FedEx (${heroCompetitorPrice} €)`, `-${heroSavingsPercent}% vs DHL / FedEx (€${heroCompetitorPrice})`)}
+                      </span>
+                    </>
+                  )}
+                  {heroMode === "shopandgo" && (
+                    <>
+                      <span className="bv-ribbon-label">{text("Frais de douane :", "Customs fees:")}</span>
+                      <span className="bv-ribbon-value" style={{ color: "#059669" }}>
+                        0 €
+                      </span>
+                      <span className="bv-ribbon-comparison">
+                        · {text("Facture d’achat d’origine remise en main propre", "Original purchase invoice provided with handover")}
+                      </span>
+                    </>
+                  )}
+                </div>
+
+                <div className="bv-ribbon-badge">
+                  <ShieldCheck size={14} />
                   <span>
-                    {text("Scellé OACI STEB-447B", "ICAO seal STEB-447B")}
+                    {heroMode === "voyageur"
+                      ? text("Paiement garanti par séquestre Stripe", "Payment guaranteed by Stripe escrow")
+                      : heroMode === "bagandgo"
+                        ? text("Double vérification QR & photo scellée", "Dual QR & tamper seal verified")
+                        : text("Fonds bloqués jusqu’à réception conforme", "Funds held until compliant receipt")}
                   </span>
                 </div>
-                <ShieldCheck size={21} />
+
+                <div className="bv-hero-actions-cluster">
+                  {heroMode === "voyageur" && (
+                    <>
+                      <a href="/#voyageur" className="bv-hero-action-cta">
+                        <span>{text("Rentabiliser mon voyage", "Monetize my trip")}</span>
+                        <ArrowRight size={16} />
+                      </a>
+                      <a href="/#publish/trips" className="bv-hero-secondary-cta">
+                        <span>{text("Publier mon trajet", "Post a trip")}</span>
+                      </a>
+                    </>
+                  )}
+                  {heroMode === "bagandgo" && (
+                    <>
+                      <a href="/#bagandgo" className="bv-hero-action-cta">
+                        <span>{text("Trouver un convoyeur", "Find a carrier")}</span>
+                        <ArrowRight size={16} />
+                      </a>
+                      <a href="/#publish/parcel" className="bv-hero-secondary-cta">
+                        <span>{text("Expédier un colis", "Ship a parcel")}</span>
+                      </a>
+                    </>
+                  )}
+                  {heroMode === "shopandgo" && (
+                    <>
+                      <a href="/#shopandgo" className="bv-hero-action-cta">
+                        <span>{text("Commander avec un voyageur", "Order with a traveler")}</span>
+                        <ArrowRight size={16} />
+                      </a>
+                      <a href="/#publish/requests" className="bv-hero-secondary-cta">
+                        <span>{text("Créer une demande d'achat", "Post a shopping request")}</span>
+                      </a>
+                    </>
+                  )}
+                </div>
               </div>
-              <div className="pass-cargo-stats">
-                <span>
-                  {text("Poids", "Weight")}
-                  <b>5 kg</b>
-                </span>
-                <span>
-                  {text("Gain voyageur", "Traveller earnings")}
-                  <b>
-                    +85 € <small>net</small>
-                  </b>
-                </span>
-              </div>
-            </div>
-            <div className="pass-stub">
-              <PassBarcode />
-              <div className="pass-signature">
-                <Fingerprint size={16} />
-                <span>Ed25519 · 7f2a…447b</span>
-                <LockKeyhole size={13} />
-              </div>
-              <span className="pass-specimen">
-                {text(
-                  "APERÇU DU PASS · SPÉCIMEN IATA 2D",
-                  "PASS PREVIEW · IATA 2D SPECIMEN",
-                )}
-              </span>
             </div>
           </div>
-          <div className="journey-escrow">
-            <span className="escrow-icon">
-              <ShieldCheck size={23} />
-            </span>
-            <div>
-              <span>
-                {text("Séquestre Stripe Connect", "Stripe Connect escrow")}
-              </span>
-              <strong>
-                {text(
-                  "145 € garantis sous séquestre",
-                  "€145 secured in escrow",
-                )}
-              </strong>
-              <small>
-                {text("Protection Acheteur & Voyageur Stripe Connect", "Stripe Connect Buyer & Traveller Protection")}
-              </small>
+
+          {/* Trust Bar 4 Pillars */}
+          <div className="bv-hero-trust-bar">
+            <div className="bv-trust-bar-item">
+              <div className="bv-trust-icon-box" style={{ background: "#eff6ff", color: "#2563eb" }}>
+                <ShieldCheck size={20} />
+              </div>
+              <div>
+                <strong>{text("Séquestre Stripe Connect", "Stripe Connect Escrow")}</strong>
+                <p>{text("Fonds sécurisés à 100 %. Déblocage uniquement après validation QR à l'arrivée.", "100% escrowed funds. Payout only released upon arrival QR scan.")}</p>
+              </div>
             </div>
-            <Check size={16} />
-          </div>
-          <div className="journey-note">
-            <LockKeyhole size={13} />
-            {text(
-              "Un trajet. Deux remises. Un lien de confiance.",
-              "One journey. Two handovers. A trusted connection.",
-            )}
+
+            <div className="bv-trust-bar-item">
+              <div className="bv-trust-icon-box" style={{ background: "#ecfdf5", color: "#059669" }}>
+                <ScanLine size={20} />
+              </div>
+              <div>
+                <strong>{text("Double Remise QR & Photo", "Dual QR & Photo Check")}</strong>
+                <p>{text("Photo du scellé OACI au départ et scan QR bilatéral inviolable à la remise.", "ICAO seal photo at departure and bilateral QR validation at handover.")}</p>
+              </div>
+            </div>
+
+            <div className="bv-trust-bar-item">
+              <div className="bv-trust-icon-box" style={{ background: "#f8fafc", color: "#0284c7" }}>
+                <Plane size={20} />
+              </div>
+              <div>
+                <strong>{text("Express Vol Direct 24h–48h", "Direct Flights 24h–48h")}</strong>
+                <p>{text("Vos colis voyagent en cabine ou soute avec de vrais passagers quotidiens.", "Your parcels travel with verified passengers on daily direct flights.")}</p>
+              </div>
+            </div>
+
+            <div className="bv-trust-bar-item">
+              <div className="bv-trust-icon-box" style={{ background: "#fef3c7", color: "#d97706" }}>
+                <Coins size={20} />
+              </div>
+              <div>
+                <strong>{text("Jusqu'à -70 % d'économie", "Up to -70% Savings")}</strong>
+                <p>{text("Sans surtaxes carburant ni douanes opaques. Gagnant pour le voyageur et l'expéditeur.", "No fuel surcharges or opaque customs. Win-win for travelers and shippers.")}</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1125,46 +1386,46 @@ export function AwwwardsLanding({
               Icon: Package,
               number: "01",
               title: text(
-                "Envoyer un peu de chez soi.",
-                "Send a little piece of home.",
+                "Bag & Go : Envoyer un peu de chez soi.",
+                "Bag & Go: Send a little piece of home.",
               ),
               copy: text(
-                "Photographiez, décrivez, confiez. Votre colis prend le chemin d’un voyage déjà prévu.",
-                "Photograph, describe, hand over. Your parcel joins a journey already planned.",
+                "Photographiez, décrivez, confiez. Votre colis prend le chemin d’un voyageur déjà prévu avec remise en main propre sécurisée.",
+                "Photograph, describe, hand over. Your parcel joins a verified traveler's journey with secure handover.",
               ),
-              action: text("Je veux envoyer", "Send a parcel"),
+              action: text("Expédier un colis", "Ship a parcel"),
               kind: "parcel",
               platformRoute: "bagandgo",
             },
             {
-              Icon: ShoppingBag,
+              Icon: Plane,
               number: "02",
               title: text(
-                "Trouver ce qui vous ressemble.",
-                "Find what speaks to you.",
+                "Voyageur : L'axe central du lien.",
+                "Traveler: The central hub connecting both worlds.",
               ),
               copy: text(
-                "Un lien, une taille, une envie. Un voyageur fait vos achats et vous les rapporte.",
-                "A link, a size, a wish. A traveller shops for you and brings your finds home.",
+                "Vos kilos disponibles financent votre voyage. Particulier ou convoyeur régulier, rentabilisez jusqu'à 100% de vos billets.",
+                "Your available luggage space funds your travel. Monetize up to 100% of your tickets safely.",
               ),
-              action: text("Découvrir Shop & Go", "Discover Shop & Go"),
-              kind: "requests",
-              platformRoute: "shopandgo",
-            },
-            {
-              Icon: Plane,
-              number: "03",
-              title: text(
-                "Donner du sens au départ.",
-                "Make your journey matter.",
-              ),
-              copy: text(
-                "Vos kilos disponibles deviennent un service. Particulier ou professionnel, voyagez utile.",
-                "Your available space becomes a service. Travel with purpose, privately or professionally.",
-              ),
-              action: text("Je prends la route", "Share a journey"),
+              action: text("Rentabiliser mon voyage", "Monetize my journey"),
               kind: "trips",
               platformRoute: "voyageur",
+            },
+            {
+              Icon: ShoppingBag,
+              number: "03",
+              title: text(
+                "Shop & Go : Acheter partout sans frontières.",
+                "Shop & Go: Buy anywhere across borders.",
+              ),
+              copy: text(
+                "Un lien, une référence, une envie. Un voyageur achète pour vous en magasin officiel ou Duty-Free et vous le rapporte.",
+                "A link, a reference, a desire. A traveler buys for you in official or Duty-Free stores and brings it to you.",
+              ),
+              action: text("Commander un article", "Order an item"),
+              kind: "requests",
+              platformRoute: "shopandgo",
             },
           ].map(({ Icon, number, title, copy: description, action, kind, platformRoute }) => (
             <article key={number} className={`universe universe-${number}`}>
@@ -1276,7 +1537,7 @@ export function AwwwardsLanding({
               </div>
               <div className="universe-actions-dual" style={{ display: "flex", gap: "10px", marginTop: "16px", flexWrap: "wrap" }}>
                 <a href={`/#${platformRoute}`} className="universe-explore-link" style={{ flex: "1 1 120px", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
-                  {text("Explorer", "Explore")} {number === "01" ? "Bag&Go" : number === "02" ? "Shop&Go" : "Voyageur"}
+                  {text("Explorer", "Explore")} {number === "01" ? "Bag&Go" : number === "02" ? "Voyageur" : "Shop&Go"}
                   <ArrowRight size={16} />
                 </a>
                 <a href={`/#publish/${kind}`} className="universe-publish-link" style={{ flex: "1 1 130px", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
