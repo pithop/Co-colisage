@@ -238,24 +238,33 @@ export function PirLitigationKitModal({
             <fieldset>
               <legend>01 / Vol et déclaration d’irrégularité</legend>
               <div className="bv-tool-grid">
-                <label>
-                  Nature de l’incident
-                  <select
-                    value={fields.incident}
-                    onChange={(event) => {
-                      change("incident", event.target.value as Incident);
-                      setLossConfirmed(false);
-                    }}
-                  >
+                <div>
+                  <span className="block text-xs font-semibold mb-1.5">Nature de l’incident</span>
+                  <div className="grid grid-cols-3 gap-2">
                     {(
                       Object.entries(incidentLabels) as [Incident, string][]
-                    ).map(([key, label]) => (
-                      <option key={key} value={key}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                    ).map(([key, label]) => {
+                      const isSelected = fields.incident === key;
+                      return (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => {
+                            change("incident", key as Incident);
+                            setLossConfirmed(false);
+                          }}
+                          className={`p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                            isSelected
+                              ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                              : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
                 <label>
                   Compagnie aérienne
                   <input
@@ -388,25 +397,36 @@ export function PirLitigationKitModal({
                     onChange={(event) => change("claim", event.target.value)}
                   />
                 </label>
-                <label>
-                  Devise des montants
-                  <select
-                    value={fields.currency}
-                    onChange={(event) => {
-                      setFields((current) => ({
-                        ...current,
-                        currency: event.target.value,
-                        value: "",
-                        claim: "",
-                      }));
-                      setCertified(false);
-                    }}
-                  >
-                    {["EUR", "DZD", "MAD", "TND", "CAD"].map((currency) => (
-                      <option key={currency}>{currency}</option>
-                    ))}
-                  </select>
-                </label>
+                <div>
+                  <span className="block text-xs font-semibold mb-1.5">Devise des montants</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["EUR", "DZD", "MAD", "TND", "CAD"].map((curr) => {
+                      const isSelected = fields.currency === curr;
+                      return (
+                        <button
+                          key={curr}
+                          type="button"
+                          onClick={() => {
+                            setFields((current) => ({
+                              ...current,
+                              currency: curr,
+                              value: "",
+                              claim: "",
+                            }));
+                            setCertified(false);
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                            isSelected
+                              ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                              : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                          }`}
+                        >
+                          {curr}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
               <label>
                 Circonstances et inventaire

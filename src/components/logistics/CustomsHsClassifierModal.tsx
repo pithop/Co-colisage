@@ -152,33 +152,41 @@ export function CustomsHsClassifierModal({
         )}
         <div className="bv-tool-form">
           <div className="bv-tool-grid">
-            <label>
-              Pays de destination
-              <select
-                value={destination}
-                onChange={(event) => {
-                  const next = event.target.value as CustomsDestination;
-                  setDestination(next);
-                  setValue("");
-                  setUsed("0");
-                  setPersonal(false);
-                  setRate(next === "DZ" ? "30" : "");
-                  setLegacyTunisia(false);
-                  setBasis("full");
-                }}
-              >
+            <div>
+              <span className="block text-xs font-semibold mb-1.5">Pays de destination</span>
+              <div className="flex flex-wrap gap-1.5">
                 {(
                   Object.entries(customsPolicies) as [
                     CustomsDestination,
                     typeof policy,
                   ][]
-                ).map(([code, entry]) => (
-                  <option key={code} value={code}>
-                    {entry.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+                ).map(([code, entry]) => {
+                  const isSelected = destination === code;
+                  return (
+                    <button
+                      key={code}
+                      type="button"
+                      onClick={() => {
+                        setDestination(code);
+                        setValue("");
+                        setUsed("0");
+                        setPersonal(false);
+                        setRate(code === "DZ" ? "30" : "");
+                        setLegacyTunisia(false);
+                        setBasis("full");
+                      }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                        isSelected
+                          ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                          : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                      }`}
+                    >
+                      {entry.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
             <label>
               Valeur déclarée ({policy.currency})
               <input
@@ -263,22 +271,31 @@ export function CustomsHsClassifierModal({
             </label>
           </div>
           {destination === "DZ" && (
-            <label>
-              Assiette du scénario à 30 %
-              <select
-                value={basis}
-                onChange={(event) =>
-                  setBasis(event.target.value as "full" | "excess")
-                }
-              >
-                <option value="full">
-                  Valeur globale si dépassement · à confirmer
-                </option>
-                <option value="excess">
-                  Excédent seulement · hypothèse du rapport à valider
-                </option>
-              </select>
-            </label>
+            <div>
+              <span className="block text-xs font-semibold mb-1.5">Assiette du scénario à 30 %</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+                {[
+                  { id: "full", label: "Valeur globale si dépassement" },
+                  { id: "excess", label: "Excédent seulement" },
+                ].map((b) => {
+                  const isSelected = basis === b.id;
+                  return (
+                    <button
+                      key={b.id}
+                      type="button"
+                      onClick={() => setBasis(b.id as "full" | "excess")}
+                      className={`p-2 rounded-xl text-xs font-semibold transition-all cursor-pointer border text-center ${
+                        isSelected
+                          ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                          : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                      }`}
+                    >
+                      {b.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           )}
           {destination === "EU" && (
             <label className="bv-tool-check">

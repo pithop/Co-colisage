@@ -101,20 +101,41 @@ export function CurrencyConverterModal({ onClose }: { onClose: () => void }) {
           Comparez vos euros et vos dinars. Taux de référence fixes, non
           actualisés en direct.
         </p>
-        <label className="currency-mode">
-          Mode de conversion
-          <select
-            value={mode}
-            onChange={(event) =>
-              setMode(event.target.value as keyof typeof rates)
-            }
-          >
-            <option value="square">Taux Marché Square (242.50 DZD)</option>
-            <option value="official">
-              Taux Officiel Banque d'Algérie (145.80 DZD)
-            </option>
-          </select>
-        </label>
+        <div className="currency-mode-selector">
+          <span className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+            Taux de référence
+          </span>
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            <button
+              type="button"
+              onClick={() => setMode('square')}
+              className={`p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                mode === 'square'
+                  ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                  : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+              }`}
+            >
+              <div>Marché Square</div>
+              <div className={`text-[10px] font-normal ${mode === 'square' ? 'text-blue-100' : 'text-slate-400'}`}>
+                1 € ≈ 242.50 DZD
+              </div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('official')}
+              className={`p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                mode === 'official'
+                  ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                  : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+              }`}
+            >
+              <div>Banque d'Algérie</div>
+              <div className={`text-[10px] font-normal ${mode === 'official' ? 'text-blue-100' : 'text-slate-400'}`}>
+                1 € ≈ 145.80 DZD
+              </div>
+            </button>
+          </div>
+        </div>
         <div className="currency-fields">
           {currencies.map((currency, index) => (
             <div key={currency}>

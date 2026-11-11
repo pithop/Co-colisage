@@ -364,7 +364,7 @@ export function MarketplaceHeader(props: Props) {
                       }}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                     >
-                      <Ticket size={15} className="text-cyan-500" />
+                      <Ticket size={15} className="text-blue-500" />
                       <span>Passe fret numérique</span>
                     </button>
                   )}
@@ -377,7 +377,7 @@ export function MarketplaceHeader(props: Props) {
                     }}
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                   >
-                    <Radio size={15} className="text-cyan-500" />
+                    <Radio size={15} className="text-blue-500" />
                     <span>Radar mondial vols &amp; ferries</span>
                   </button>
 
@@ -389,7 +389,7 @@ export function MarketplaceHeader(props: Props) {
                     }}
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                   >
-                    <Plane size={15} className="text-cyan-500" />
+                    <Plane size={15} className="text-blue-500" />
                     <span>Arbitrage de vols &amp; rentabilité</span>
                   </button>
 

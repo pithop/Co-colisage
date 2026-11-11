@@ -221,23 +221,38 @@ export function CustomsModal({
                   }
                 />
               </label>
-              <label>
-                {t('Pays de destination')}
-                <select
-                  value={fields.destination}
-                  onChange={(e) =>
-                    setFields((cur) => ({
-                      ...cur,
-                      destination: e.target.value as 'DZ' | 'MA' | 'TN' | 'EU',
-                    }))
-                  }
-                >
-                  <option value="DZ">Algérie (DZ)</option>
-                  <option value="MA">Maroc (MA)</option>
-                  <option value="TN">Tunisie (TN)</option>
-                  <option value="EU">Union Européenne (EU)</option>
-                </select>
-              </label>
+              <div>
+                <span className="block text-xs font-semibold mb-1.5">{t('Pays de destination')}</span>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                  {[
+                    { code: 'DZ', label: 'Algérie' },
+                    { code: 'MA', label: 'Maroc' },
+                    { code: 'TN', label: 'Tunisie' },
+                    { code: 'EU', label: 'Europe' },
+                  ].map((p) => {
+                    const isSelected = fields.destination === p.code;
+                    return (
+                      <button
+                        key={p.code}
+                        type="button"
+                        onClick={() =>
+                          setFields((cur) => ({
+                            ...cur,
+                            destination: p.code as 'DZ' | 'MA' | 'TN' | 'EU',
+                          }))
+                        }
+                        className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                          isSelected
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                            : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                        }`}
+                      >
+                        {p.label} ({p.code})
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </fieldset>
 
@@ -272,21 +287,33 @@ export function CustomsModal({
                   }
                 />
               </label>
-              <label>
-                {t('Devise')}
-                <select
-                  value={fields.currency}
-                  onChange={(e) =>
-                    setFields((cur) => ({
-                      ...cur,
-                      currency: e.target.value as 'EUR' | 'DZD',
-                    }))
-                  }
-                >
-                  <option value="EUR">EUR (€)</option>
-                  <option value="DZD">DZD (Dinars)</option>
-                </select>
-              </label>
+              <div>
+                <span className="block text-xs font-semibold mb-1.5">{t('Devise')}</span>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {(['EUR', 'DZD'] as const).map((curr) => {
+                    const isSelected = fields.currency === curr;
+                    return (
+                      <button
+                        key={curr}
+                        type="button"
+                        onClick={() =>
+                          setFields((cur) => ({
+                            ...cur,
+                            currency: curr,
+                          }))
+                        }
+                        className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                          isSelected
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                            : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                        }`}
+                      >
+                        {curr}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
               <label>
                 {t('Taux douanier EUR / DZD')}
                 <input

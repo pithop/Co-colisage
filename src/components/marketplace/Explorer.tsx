@@ -307,29 +307,55 @@ export function Explorer({
                 />
               )}
               {filter === "Véhicule" && (
-                <select
-                  id="filter-value"
-                  value={vehicle}
-                  onChange={(e) => setVehicle(e.target.value)}
-                >
-                  <option value="">Tous les véhicules</option>
-                  {["Voiture", "Camionnette", "Bagage", "Avion", "Bateau"].map(
-                    (v) => (
-                      <option key={v}>{v}</option>
-                    ),
-                  )}
-                </select>
+                <div className="flex flex-wrap gap-1.5 py-1">
+                  <button
+                    type="button"
+                    onClick={() => setVehicle("")}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
+                      vehicle === ""
+                        ? "bg-blue-600 text-white shadow-xs"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200"
+                    }`}
+                  >
+                    Tous
+                  </button>
+                  {["Voiture", "Camionnette", "Bagage", "Avion", "Bateau"].map((v) => (
+                    <button
+                      key={v}
+                      type="button"
+                      onClick={() => setVehicle(v)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
+                        vehicle === v
+                          ? "bg-blue-600 text-white shadow-xs"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200"
+                      }`}
+                    >
+                      {v}
+                    </button>
+                  ))}
+                </div>
               )}
               {filter === "Dimensions" && (
-                <select
-                  id="filter-value"
-                  value={size}
-                  onChange={(e) => setSize(e.target.value)}
-                >
-                  <option value="">Tous les formats</option>
-                  <option value="small">Bagage · au moins 5 kg</option>
-                  <option value="large">Cartons ou petit meuble</option>
-                </select>
+                <div className="flex flex-wrap gap-1.5 py-1">
+                  {[
+                    { id: "", label: "Tous les formats" },
+                    { id: "small", label: "Bagage (≥ 5 kg)" },
+                    { id: "large", label: "Cartons / volume" },
+                  ].map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => setSize(s.id)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
+                        size === s.id
+                          ? "bg-blue-600 text-white shadow-xs"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200"
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
               )}
               <button className="text-button" onClick={() => setFilter("")}>
                 Appliquer
@@ -601,20 +627,31 @@ export function Explorer({
           </div>
         </div>
         <div className="express-controls">
-          <label htmlFor="express-destination">Votre destination</label>
-          <select
-            id="express-destination"
-            value={flightRouteId}
-            onChange={(e) => setFlightRouteId(e.target.value)}
-          >
+          <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">
+            Votre destination
+          </label>
+          <div className="flex flex-wrap gap-2">
             {flightRoutes
               .filter((item) => item.id !== "par-alg")
-              .map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.destination} · depuis {item.origin}
-                </option>
-              ))}
-          </select>
+              .map((item) => {
+                const isSelected = item.id === flightRouteId;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setFlightRouteId(item.id)}
+                    className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      isSelected
+                        ? "bg-blue-600 text-white shadow-sm ring-2 ring-blue-600 ring-offset-1"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                    }`}
+                  >
+                    <span>{item.destination}</span>
+                    <span className="text-[10px] opacity-75">({item.origin})</span>
+                  </button>
+                );
+              })}
+          </div>
         </div>
         <div
           className="express-result"

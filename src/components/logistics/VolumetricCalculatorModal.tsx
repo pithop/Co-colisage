@@ -186,18 +186,34 @@ export function VolumetricCalculatorModal({
                 </label>
               ))}
             </div>
-            <label>
-              Barème volumétrique
-              <select
-                value={divisor}
-                onChange={(event) => setDivisor(Number(event.target.value))}
-              >
-                <option value={5000}>BagVoyage · diviseur 5 000</option>
-                <option value={6000}>
-                  Référence fret IATA · diviseur 6 000
-                </option>
-              </select>
-            </label>
+            <div>
+              <span className="block text-xs font-semibold mb-1.5">Barème volumétrique</span>
+              <div className="grid grid-cols-2 gap-2 mb-3">
+                {[
+                  { val: 5000, label: "BagVoyage", sub: "diviseur 5 000" },
+                  { val: 6000, label: "Fret IATA", sub: "diviseur 6 000" },
+                ].map((item) => {
+                  const isSelected = divisor === item.val;
+                  return (
+                    <button
+                      key={item.val}
+                      type="button"
+                      onClick={() => setDivisor(item.val)}
+                      className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                        isSelected
+                          ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                          : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                      }`}
+                    >
+                      <div>{item.label}</div>
+                      <div className={`text-[10px] font-normal ${isSelected ? "text-blue-100" : "text-slate-400"}`}>
+                        {item.sub}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
             <div
               className="bv-tool-presets"
               role="group"
@@ -283,16 +299,28 @@ export function VolumetricCalculatorModal({
               ratio={holdRatio}
               detail={`${result ? logisticsNumber(result.total) : "—"} / 158 cm cumulés · ${holdLimit} kg maximum`}
             />
-            <label className="bv-hold-select">
-              Limite de poids en soute
-              <select
-                value={holdLimit}
-                onChange={(event) => setHoldLimit(Number(event.target.value))}
-              >
-                <option value={23}>23 kg</option>
-                <option value={32}>32 kg</option>
-              </select>
-            </label>
+            <div>
+              <span className="block text-xs font-semibold mb-1.5">Limite de poids en soute</span>
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                {[23, 32].map((limit) => {
+                  const isSelected = holdLimit === limit;
+                  return (
+                    <button
+                      key={limit}
+                      type="button"
+                      onClick={() => setHoldLimit(limit)}
+                      className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                        isSelected
+                          ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                          : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                      }`}
+                    >
+                      {limit} kg
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
         <section className="bv-airline-comparison">

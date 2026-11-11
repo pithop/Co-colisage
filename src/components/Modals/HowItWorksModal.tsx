@@ -35,29 +35,29 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
       onClick={onClose}
     >
       <div 
-        className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-cyan-500/30 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header with Oceanic Brand */}
-        <header className="relative bg-gradient-to-r from-[#072a4a] via-[#05375c] to-[#0276aa] px-6 py-5 text-white flex items-center justify-between">
+        {/* Header with Noble Slate Brand */}
+        <header className="relative bg-slate-900 dark:bg-slate-950 px-6 py-5 text-white flex items-center justify-between border-b border-slate-800">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Sparkles size={14} className="text-cyan-300" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-200">
+              <Sparkles size={14} className="text-blue-400" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-300">
                 Guide Interactif
               </span>
             </div>
             <h3 className="font-black text-lg text-white">
               Comment fonctionne BagVoyage ?
             </h3>
-            <p className="text-xs text-cyan-100/90 font-medium">
-              Le protocole de covoiturage de bagages &amp; boutique inversée le plus sécurisé au monde
+            <p className="text-xs text-slate-300 font-medium">
+              Le protocole de co-bagage &amp; boutique inversée le plus sécurisé au monde
             </p>
           </div>
           <button
             onClick={onClose}
             aria-label="Fermer"
-            className="p-1.5 rounded-full text-cyan-200 hover:bg-white/10 hover:text-white transition-colors"
+            className="p-1.5 rounded-full text-slate-400 hover:bg-white/10 hover:text-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -79,12 +79,12 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
                 onClick={() => setSelectedPillar(pill.id)}
                 className={`p-2.5 rounded-2xl border text-left transition-all ${
                   active
-                    ? 'border-cyan-500 bg-white dark:bg-slate-800 text-cyan-900 dark:text-cyan-200 shadow-sm ring-1 ring-cyan-500/30'
+                    ? 'border-blue-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs ring-1 ring-blue-500/20'
                     : 'border-transparent text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60'
                 }`}
               >
                 <div className="flex items-center gap-2 mb-0.5">
-                  <Icon size={16} className={active ? 'text-cyan-600 dark:text-cyan-400' : 'text-slate-400'} />
+                  <Icon size={16} className={active ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'} />
                   <span className="font-bold text-xs">{pill.label}</span>
                 </div>
                 <p className="text-[10px] opacity-75 truncate">{pill.sub}</p>
@@ -99,7 +99,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
           {selectedPillar === 'shop' && (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 flex items-center justify-center font-black text-xs">
+                <span className="w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-black text-xs">
                   1
                 </span>
                 <h4 className="font-bold text-sm text-slate-900 dark:text-white">
@@ -111,7 +111,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
               </p>
 
               <div className="flex items-center gap-2 pt-2">
-                <span className="w-6 h-6 rounded-full bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 flex items-center justify-center font-black text-xs">
+                <span className="w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-black text-xs">
                   2
                 </span>
                 <h4 className="font-bold text-sm text-slate-900 dark:text-white">
@@ -123,7 +123,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
               </p>
 
               <div className="flex items-center gap-2 pt-2">
-                <span className="w-6 h-6 rounded-full bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 flex items-center justify-center font-black text-xs">
+                <span className="w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-black text-xs">
                   3
                 </span>
                 <h4 className="font-bold text-sm text-slate-900 dark:text-white">
@@ -139,7 +139,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
           {selectedPillar === 'parcel' && (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 flex items-center justify-center font-black text-xs">
+                <span className="w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-black text-xs">
                   1
                 </span>
                 <h4 className="font-bold text-sm text-slate-900 dark:text-white">
@@ -151,7 +151,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
               </p>
 
               <div className="flex items-center gap-2 pt-2">
-                <span className="w-6 h-6 rounded-full bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 flex items-center justify-center font-black text-xs">
+                <span className="w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-black text-xs">
                   2
                 </span>
                 <h4 className="font-bold text-sm text-slate-900 dark:text-white">
@@ -163,7 +163,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
               </p>
 
               <div className="flex items-center gap-2 pt-2">
-                <span className="w-6 h-6 rounded-full bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 flex items-center justify-center font-black text-xs">
+                <span className="w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-black text-xs">
                   3
                 </span>
                 <h4 className="font-bold text-sm text-slate-900 dark:text-white">
@@ -179,7 +179,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
           {selectedPillar === 'traveler' && (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 flex items-center justify-center font-black text-xs">
+                <span className="w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-black text-xs">
                   1
                 </span>
                 <h4 className="font-bold text-sm text-slate-900 dark:text-white">
@@ -191,7 +191,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
               </p>
 
               <div className="flex items-center gap-2 pt-2">
-                <span className="w-6 h-6 rounded-full bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 flex items-center justify-center font-black text-xs">
+                <span className="w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-black text-xs">
                   2
                 </span>
                 <h4 className="font-bold text-sm text-slate-900 dark:text-white">
@@ -203,7 +203,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
               </p>
 
               <div className="flex items-center gap-2 pt-2">
-                <span className="w-6 h-6 rounded-full bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 flex items-center justify-center font-black text-xs">
+                <span className="w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-black text-xs">
                   3
                 </span>
                 <h4 className="font-bold text-sm text-slate-900 dark:text-white">
@@ -227,7 +227,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
             </div>
 
             <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/80">
-              <KeyRound size={20} className="text-cyan-500 mb-1.5" />
+              <KeyRound size={20} className="text-blue-600 dark:text-blue-400 mb-1.5" />
               <p className="font-bold text-slate-900 dark:text-white text-xs">Code PIN Unique</p>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
                 Déblocage physique impossible sans l'accord du destinataire.
@@ -245,7 +245,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-full py-4 bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white font-bold rounded-2xl shadow-md shadow-cyan-600/20 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm"
+            className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-xs transition-all active:scale-[0.99] flex items-center justify-center gap-2 text-sm cursor-pointer"
           >
             <span>J'ai compris, explorer les opportunités</span>
             <ArrowRight size={16} />

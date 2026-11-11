@@ -970,21 +970,34 @@ export function AwwwardsLanding({
             </div>
           </div>
           <div className="comparison-panel">
-            <label>
-              {c.competitor}
-              <select
-                value={competitor}
-                onChange={(event) => setCompetitor(event.target.value)}
-              >
+            <div>
+              <span className="comparison-label block text-xs font-semibold mb-2">
+                {c.competitor}
+              </span>
+              <div className="flex flex-wrap gap-2 mb-3">
                 {[
                   "DHL",
                   "FedEx",
                   text("Fret aérien classique", "Air freight"),
-                ].map((name) => (
-                  <option key={name}>{name}</option>
-                ))}
-              </select>
-            </label>
+                ].map((name) => {
+                  const isSelected = competitor === name;
+                  return (
+                    <button
+                      key={name}
+                      type="button"
+                      onClick={() => setCompetitor(name)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        isSelected
+                          ? "bg-blue-600 text-white shadow-xs"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700"
+                      }`}
+                    >
+                      {name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
             <label>
               {c.quote}
               <input

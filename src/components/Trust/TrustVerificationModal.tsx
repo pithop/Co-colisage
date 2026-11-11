@@ -79,7 +79,7 @@ export function TrustVerificationModal({
                     completed
                       ? 'bg-emerald-500 text-white'
                       : active
-                      ? 'bg-[#072a4a] text-white dark:bg-cyan-400 dark:text-[#072a4a]'
+                      ? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white'
                       : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
                   }`}
                 >
@@ -95,13 +95,13 @@ export function TrustVerificationModal({
         </div>
 
         {/* Intro Banner */}
-        <div className="p-4 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 border border-cyan-500/20 dark:border-cyan-500/30 flex items-start gap-3.5">
-          <div className="p-2.5 rounded-xl bg-[#072a4a] text-cyan-300 shrink-0 shadow-sm shadow-[#072a4a]/30">
+        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 flex items-start gap-3.5">
+          <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 shrink-0">
             <ShieldCheck size={22} />
           </div>
           <div className="text-sm">
             <div className="flex items-center gap-2 mb-0.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-800 dark:text-cyan-300">
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-100/70 dark:bg-blue-950 text-blue-800 dark:text-blue-300">
                 Identité &amp; Confiance Niveau 3
               </span>
             </div>
@@ -127,8 +127,8 @@ export function TrustVerificationModal({
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                 Numéro de mobile (FR, DZ ou international)
               </label>
-              <div className="flex items-center gap-2 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 focus-within:border-cyan-500 focus-within:ring-2 focus-within:ring-cyan-500/20 transition-all">
-                <Smartphone size={20} className="text-cyan-600 dark:text-cyan-400 shrink-0" />
+              <div className="flex items-center gap-2 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
+                <Smartphone size={20} className="text-blue-600 dark:text-blue-400 shrink-0" />
                 <input
                   type="tel"
                   className="w-full bg-transparent text-sm font-bold text-slate-900 dark:text-white outline-none"
@@ -149,7 +149,7 @@ export function TrustVerificationModal({
 
             <button
               type="button"
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white font-bold text-sm shadow-md shadow-cyan-600/20 transition-all active:scale-98 flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-xs transition-all active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
               onClick={() => setStep('otp')}
             >
               <span>{t('Envoyer le code de validation SMS')}</span>
@@ -181,7 +181,7 @@ export function TrustVerificationModal({
                     maxLength={1}
                     className={`h-14 w-11 sm:w-12 rounded-xl border-2 text-center text-xl font-black transition-all ${
                       digit
-                        ? 'border-cyan-500 bg-cyan-50/50 dark:bg-cyan-950/30 text-cyan-700 dark:text-cyan-300 shadow-xs'
+                        ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 shadow-xs'
                         : 'border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-400'
                     }`}
                     value={digit}
@@ -191,13 +191,13 @@ export function TrustVerificationModal({
               </div>
 
               <p className="text-[11px] text-slate-400">
-                Vous n'avez pas reçu le SMS ? <button type="button" onClick={() => setStep('phone')} className="text-cyan-600 dark:text-cyan-400 font-bold underline">Modifier le numéro</button>
+                Vous n'avez pas reçu le SMS ? <button type="button" onClick={() => setStep('phone')} className="text-blue-600 dark:text-blue-400 font-bold underline">Modifier le numéro</button>
               </p>
             </div>
 
             <button
               type="button"
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white font-bold text-sm shadow-md shadow-cyan-600/20 transition-all active:scale-98 flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-xs transition-all active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
               onClick={() => setStep('id')}
             >
               <CheckCircle2 size={16} />
@@ -223,7 +223,7 @@ export function TrustVerificationModal({
                 type="button"
                 className={`p-4 rounded-2xl border text-left transition-all ${
                   idType === 'passport'
-                    ? 'border-cyan-500 bg-cyan-50/60 dark:bg-cyan-950/40 text-cyan-950 dark:text-cyan-100 ring-2 ring-cyan-500/20 shadow-xs'
+                    ? 'border-blue-600 bg-blue-50/60 dark:bg-blue-950/40 text-slate-900 dark:text-white ring-2 ring-blue-500/20 shadow-xs'
                     : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 hover:border-slate-300'
                 }`}
                 onClick={() => setIdType('passport')}
@@ -237,7 +237,7 @@ export function TrustVerificationModal({
                 type="button"
                 className={`p-4 rounded-2xl border text-left transition-all ${
                   idType === 'id_card'
-                    ? 'border-cyan-500 bg-cyan-50/60 dark:bg-cyan-950/40 text-cyan-950 dark:text-cyan-100 ring-2 ring-cyan-500/20 shadow-xs'
+                    ? 'border-blue-600 bg-blue-50/60 dark:bg-blue-950/40 text-slate-900 dark:text-white ring-2 ring-blue-500/20 shadow-xs'
                     : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 hover:border-slate-300'
                 }`}
                 onClick={() => setIdType('id_card')}
@@ -249,10 +249,10 @@ export function TrustVerificationModal({
               </button>
             </div>
 
-            <div className="rounded-2xl border-2 border-dashed border-cyan-400/40 bg-cyan-50/20 dark:bg-cyan-950/10 p-8 text-center">
+            <div className="rounded-2xl border-2 border-dashed border-blue-400/40 bg-blue-50/20 dark:bg-blue-950/10 p-8 text-center">
               {scanning ? (
                 <div className="py-4 space-y-3">
-                  <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-cyan-500 border-t-transparent" />
+                  <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
                   <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
                     Analyse optique des sécurités et filigranes en cours…
                   </p>
@@ -262,7 +262,7 @@ export function TrustVerificationModal({
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <FileCheck size={40} className="mx-auto text-cyan-600 dark:text-cyan-400" />
+                  <FileCheck size={40} className="mx-auto text-blue-600 dark:text-blue-400" />
                   <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
                     Détection automatique des bordures et filigranes
                   </p>
@@ -275,7 +275,7 @@ export function TrustVerificationModal({
 
             <button
               type="button"
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white font-bold text-sm shadow-md shadow-cyan-600/20 transition-all active:scale-98 flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-xs transition-all active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               disabled={scanning}
               onClick={simulateIdScan}
             >

@@ -148,7 +148,7 @@ export const KycDocumentsModal: React.FC = () => {
                     completed
                       ? 'bg-emerald-500 text-white'
                       : active
-                      ? 'bg-[#072a4a] text-white dark:bg-cyan-400 dark:text-[#072a4a]'
+                      ? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white'
                       : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
                   }`}
                 >
@@ -164,7 +164,7 @@ export const KycDocumentsModal: React.FC = () => {
         </div>
 
         {/* Security Trust Banner */}
-        <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 border border-emerald-500/20 dark:border-emerald-500/30 flex items-start gap-3.5">
+        <div className="p-4 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-800/50 flex items-start gap-3.5">
           <div className="p-2.5 rounded-xl bg-emerald-500 text-white shrink-0 shadow-sm shadow-emerald-500/30">
             <ShieldCheck size={22} />
           </div>
@@ -202,7 +202,7 @@ export const KycDocumentsModal: React.FC = () => {
             <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               1. Choix de votre activité principale
             </label>
-            <span className="text-[11px] text-cyan-600 dark:text-cyan-400 font-medium">
+            <span className="text-[11px] text-blue-600 dark:text-blue-400 font-medium">
               Modifiable à tout moment
             </span>
           </div>
@@ -275,7 +275,7 @@ export const KycDocumentsModal: React.FC = () => {
                 >
                   <div className="flex items-start gap-3.5">
                     <div className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 shrink-0">
-                      <Icon size={22} className="text-[#072a4a] dark:text-cyan-300" />
+                      <Icon size={22} className="text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
@@ -337,7 +337,7 @@ export const KycDocumentsModal: React.FC = () => {
 
         {/* Step 3: Explanation Trust Card */}
         <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 flex items-start gap-3">
-          <Info size={18} className="text-cyan-600 dark:text-cyan-400 shrink-0 mt-0.5" />
+          <Info size={18} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
           <div className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
             <strong className="text-slate-900 dark:text-slate-200 block mb-0.5">
               Pourquoi ces documents sont-ils indispensables ?

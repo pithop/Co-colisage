@@ -639,32 +639,46 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">Type d'enseigne</label>
-                      <select
-                        value={storeCategory}
-                        onChange={(e) => setStoreCategory(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold cursor-pointer"
-                      >
-                        <option value="Duty Free Aérogare">Duty Free Aérogare</option>
-                        <option value="Sephora / Parfumerie">Sephora / Parfumerie</option>
-                        <option value="Apple Store / Fnac">Apple Store / Fnac</option>
-                        <option value="Pharmacie & Soins">Pharmacie &amp; Soins</option>
-                        <option value="Mode & Prêt-à-porter">Mode &amp; Prêt-à-porter</option>
-                      </select>
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5">
+                      Type d'enseigne / Boutique
+                    </label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        'Duty Free Aérogare',
+                        'Sephora / Parfumerie',
+                        'Apple Store / Fnac',
+                        'Pharmacie & Soins',
+                        'Mode & Prêt-à-porter',
+                      ].map((cat) => {
+                        const isSelected = storeCategory === cat;
+                        return (
+                          <button
+                            key={cat}
+                            type="button"
+                            onClick={() => setStoreCategory(cat)}
+                            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
+                              isSelected
+                                ? 'bg-blue-600 text-white shadow-xs'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            {cat}
+                          </button>
+                        );
+                      })}
                     </div>
+                  </div>
 
-                    <div>
-                      <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">Ville de réception</label>
-                      <CityAutocomplete
-                        name="receiverCity"
-                        value={receiverCity}
-                        onChange={setReceiverCity}
-                        placeholder="Ex: Alger (ALG), Oran..."
-                        required
-                      />
-                    </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">Ville de réception</label>
+                    <CityAutocomplete
+                      name="receiverCity"
+                      value={receiverCity}
+                      onChange={setReceiverCity}
+                      placeholder="Ex: Alger (ALG), Oran..."
+                      required
+                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
@@ -695,7 +709,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
               {/* Submit CTA */}
               <button
                 type="submit"
-                className="w-full py-3.5 bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white font-extrabold text-xs sm:text-sm rounded-full shadow-md hover:shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2 mt-4 cursor-pointer"
+                className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-xs hover:shadow-sm transition-all active:scale-[0.99] flex items-center justify-center gap-2 mt-4 cursor-pointer"
               >
                 <span>Publier mon annonce</span>
                 <ArrowRight className="w-4 h-4" />

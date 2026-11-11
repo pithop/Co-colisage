@@ -1051,15 +1051,30 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
                 <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Délai souhaité
                 </label>
-                <select
-                  value={urgency}
-                  onChange={(e) => setUrgency(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
-                >
-                  <option value="Normal">Normal (sous 3 à 5 jours)</option>
-                  <option value="Urgent">Urgent (sous 48h)</option>
-                  <option value="Très urgent">Très urgent (sous 24h)</option>
-                </select>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { id: 'Normal', label: 'Standard', sub: '3 à 5 j.' },
+                    { id: 'Urgent', label: 'Urgent', sub: '≤ 48h' },
+                    { id: 'Très urgent', label: 'Express', sub: '≤ 24h' },
+                  ].map((u) => {
+                    const isSelected = urgency === u.id;
+                    return (
+                      <button
+                        key={u.id}
+                        type="button"
+                        onClick={() => setUrgency(u.id)}
+                        className={`p-2 rounded-xl text-center transition-all cursor-pointer border ${
+                          isSelected
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                            : 'bg-slate-50/70 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                        }`}
+                      >
+                        <div className="font-bold text-xs">{u.label}</div>
+                        <div className={`text-[10px] ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>{u.sub}</div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <div>

@@ -97,44 +97,66 @@ export function AirportLockersModal({
             Consignes sécurisées 24/7 en aéroports partenaires (Paris CDG, Orly, Lyon, Marseille, Alger Houari Boumediene, Oran Ahmed Ben Bella).
           </span>
         </p>
-        <div className="bv-tool-grid bv-tool-form">
-          <label>
-            Aéroport ou port
-            <select
-              value={airportCode}
-              onChange={(event) => {
-                const next = airportLockers.find(
-                  (item) => item.code === event.target.value,
+        <div className="space-y-4 my-3">
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+              Aéroport ou port partenaire
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {airportLockers.map((item) => {
+                const isSelected = item.code === airportCode;
+                return (
+                  <button
+                    key={item.code}
+                    type="button"
+                    onClick={() => {
+                      clearCode();
+                      setAirportCode(item.code);
+                      setTerminalId(item.terminals[0].id);
+                    }}
+                    className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 border ${
+                      isSelected
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                        : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                    }`}
+                  >
+                    <span>{item.name}</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                      {item.code}
+                    </span>
+                  </button>
                 );
-                if (!next) return;
-                clearCode();
-                setAirportCode(next.code);
-                setTerminalId(next.terminals[0].id);
-              }}
-            >
-              {airportLockers.map((item) => (
-                <option key={item.code} value={item.code}>
-                  {item.name} ({item.code})
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Terminal ou point relais
-            <select
-              value={terminal.id}
-              onChange={(event) => {
-                clearCode();
-                setTerminalId(event.target.value);
-              }}
-            >
-              {airport.terminals.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
+              })}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+              Terminal ou point relais
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {airport.terminals.map((item) => {
+                const isSelected = item.id === terminal.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      clearCode();
+                      setTerminalId(item.id);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer border ${
+                      isSelected
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                        : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                    }`}
+                  >
+                    {item.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
         <section className="bv-locker-card">
           <div className="bv-locker-location">

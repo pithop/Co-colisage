@@ -239,30 +239,64 @@ export function ParcelComposer({
         <h3>
           <ShieldCheck size={19} /> Préparer le passage en douane
         </h3>
-        <label>
-          Sens du passage
-          <select
-            value={direction}
-            onChange={(event) => {
-              setDirection(event.target.value as typeof direction);
-              setValue(0);
-            }}
-          >
-            <option value="FR-DZ">France vers Algérie</option>
-            <option value="DZ-FR">Algérie vers France</option>
-          </select>
-        </label>
+        <div>
+          <span className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+            Sens du transit
+          </span>
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            {[
+              { id: "FR-DZ", label: "France → Algérie" },
+              { id: "DZ-FR", label: "Algérie → France" },
+            ].map((d) => {
+              const isSelected = direction === d.id;
+              return (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => {
+                    setDirection(d.id as typeof direction);
+                    setValue(0);
+                  }}
+                  className={`p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                    isSelected
+                      ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                      : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                  }`}
+                >
+                  {d.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
         {direction === "DZ-FR" && (
-          <label>
-            Mode de passage
-            <select
-              value={transport}
-              onChange={(event) => setTransport(event.target.value)}
-            >
-              <option value="air">Avion ou bateau</option>
-              <option value="road">Voiture ou train</option>
-            </select>
-          </label>
+          <div>
+            <span className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+              Mode de transport
+            </span>
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              {[
+                { id: "air", label: "Avion ou bateau" },
+                { id: "road", label: "Voiture ou train" },
+              ].map((m) => {
+                const isSelected = transport === m.id;
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => setTransport(m.id)}
+                    className={`p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                      isSelected
+                        ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                        : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                    }`}
+                  >
+                    {m.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         )}
         <label>
           Valeur marchande déclarée ({currency})

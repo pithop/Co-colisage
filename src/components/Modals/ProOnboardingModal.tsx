@@ -76,7 +76,7 @@ export function ProOnboardingModal({
                   completed
                     ? 'bg-emerald-500 text-white'
                     : active
-                    ? 'bg-[#072a4a] text-white dark:bg-cyan-400 dark:text-[#072a4a]'
+                    ? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white'
                     : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
                 }`}
               >
@@ -161,18 +161,31 @@ export function ProOnboardingModal({
           />
         </label>
         <div className="form-grid">
-          <label>
-            Pays d’immatriculation
-            <select
-              value={country}
-              onChange={(event) =>
-                setCountry(event.target.value as typeof country)
-              }
-            >
-              <option value="FR">France</option>
-              <option value="DZ">Algérie</option>
-            </select>
-          </label>
+          <div>
+            <span className="block text-xs font-semibold mb-1.5">Pays d’immatriculation</span>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { id: "FR", label: "France" },
+                { id: "DZ", label: "Algérie" },
+              ].map((c) => {
+                const isSelected = country === c.id;
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setCountry(c.id as typeof country)}
+                    className={`p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                      isSelected
+                        ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                        : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                    }`}
+                  >
+                    {c.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <label>
             {country === "FR" ? "Numéro SIRET" : "Numéro CNRC"}
             <input

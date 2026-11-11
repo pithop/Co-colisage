@@ -581,24 +581,34 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
                       Type d'enseigne / Boutique
                     </label>
-                    <select
-                      value={newItemStoreCat}
-                      onChange={(e) => {
-                        setNewItemStoreCat(e.target.value);
-                        setNewItemStoreName(e.target.value);
-                      }}
-                      className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 font-semibold text-xs text-slate-900 dark:text-white outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 cursor-pointer"
-                    >
-                      {STORE_CATEGORIES.map((cat) => (
-                        <option key={cat.id} value={cat.label}>
-                          {cat.label}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {STORE_CATEGORIES.map((cat) => {
+                        const isSelected = newItemStoreCat === cat.label;
+                        const CatIcon = cat.icon;
+                        return (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => {
+                              setNewItemStoreCat(cat.label);
+                              setNewItemStoreName(cat.label);
+                            }}
+                            className={`p-2 rounded-xl text-left transition-all border flex items-center gap-2 cursor-pointer ${
+                              isSelected
+                                ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400'
+                            }`}
+                          >
+                            <CatIcon size={14} className={isSelected ? 'text-white' : 'text-blue-600 dark:text-blue-400'} />
+                            <span className="text-[11px] font-bold truncate">{cat.label.split('(')[0].trim()}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   <div>
@@ -631,17 +641,25 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                     <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
                       Quantité
                     </label>
-                    <select
-                      value={newItemQuantity}
-                      onChange={(e) => setNewItemQuantity(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold text-xs text-slate-900 dark:text-white outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
-                    >
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                    </select>
+                    <div className="flex items-center gap-1">
+                      {['1', '2', '3', '4', '5'].map((q) => {
+                        const isSelected = newItemQuantity === q;
+                        return (
+                          <button
+                            key={q}
+                            type="button"
+                            onClick={() => setNewItemQuantity(q)}
+                            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                              isSelected
+                                ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                            }`}
+                          >
+                            {q}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   <div className="sm:col-span-2">
