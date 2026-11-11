@@ -317,20 +317,32 @@ function LocalAdminDashboard() {
                 ))}
               </div>
             </div>
-            <label>
-              Compagnie ou véhicule
-              <select
-                value={airline}
-                onChange={(event) => setAirline(event.target.value)}
-              >
-                <option value="all">Toutes les compagnies</option>
+            <div className="admin-status-pills-filter">
+              <span className="admin-filter-label">Compagnie ou véhicule</span>
+              <div className="admin-pills-group admin-pills-scroll" role="group" aria-label="Filtrer par compagnie">
+                <button
+                  type="button"
+                  aria-pressed={airline === "all"}
+                  className={`admin-pill-btn ${airline === "all" ? "active" : ""}`}
+                  onClick={() => setAirline("all")}
+                >
+                  Toutes
+                </button>
                 {[...new Set(trips.rows.map((row) => row.transportLabel))].map(
                   (name) => (
-                    <option key={name}>{name}</option>
+                    <button
+                      key={name}
+                      type="button"
+                      aria-pressed={airline === name}
+                      className={`admin-pill-btn ${airline === name ? "active" : ""}`}
+                      onClick={() => setAirline(name)}
+                    >
+                      {name}
+                    </button>
                   ),
                 )}
-              </select>
-            </label>
+              </div>
+            </div>
           </div>
           <div className="admin-table-scroll">
             <table>
@@ -513,21 +525,23 @@ function LocalAdminDashboard() {
                   </div>
                 </div>
                 {targetType === "user" && (
-                  <label>
-                    Destinataire utilisateur
-                    <select
-                      required
-                      value={userId}
-                      onChange={(event) => setUserId(event.target.value)}
-                    >
-                      <option value="">Choisir un utilisateur</option>
+                  <div className="admin-status-pills-filter">
+                    <span className="admin-filter-label">Destinataire utilisateur</span>
+                    <div className="admin-pills-group admin-user-select-grid" role="group" aria-label="Choisir un utilisateur">
                       {users.rows.map((user) => (
-                        <option key={user.id} value={user.id}>
-                          {user.name} / {user.email}
-                        </option>
+                        <button
+                          key={user.id}
+                          type="button"
+                          aria-pressed={userId === user.id}
+                          className={`admin-pill-btn ${userId === user.id ? "active" : ""}`}
+                          onClick={() => setUserId(user.id)}
+                        >
+                          <span>{user.name}</span>
+                          <span className="admin-pill-subtext">{user.email}</span>
+                        </button>
                       ))}
-                    </select>
-                  </label>
+                    </div>
+                  </div>
                 )}
                 <label>
                   Message officiel
