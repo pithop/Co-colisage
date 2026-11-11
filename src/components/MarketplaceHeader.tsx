@@ -135,9 +135,9 @@ export function MarketplaceHeader(props: Props) {
             role="radio"
             aria-checked={activePlatform === "bagandgo"}
             onClick={() => handleSelectPlatform("bagandgo")}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 cursor-pointer ${
               activePlatform === "bagandgo"
-                ? "bg-white dark:bg-slate-900 text-[#00838f] dark:text-cyan-300 shadow-sm shadow-slate-200/50 dark:shadow-none scale-[1.02]"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs scale-[1.01]"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
@@ -145,7 +145,7 @@ export function MarketplaceHeader(props: Props) {
               size={15}
               className={
                 activePlatform === "bagandgo"
-                  ? "text-[#00838f] dark:text-cyan-400"
+                  ? "text-blue-600 dark:text-blue-400"
                   : "text-slate-400"
               }
             />
@@ -160,9 +160,9 @@ export function MarketplaceHeader(props: Props) {
             role="radio"
             aria-checked={activePlatform === "voyageur"}
             onClick={() => handleSelectPlatform("voyageur")}
-            className={`flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 cursor-pointer ${
               activePlatform === "voyageur"
-                ? "bg-white dark:bg-slate-900 text-[#00838f] dark:text-cyan-300 shadow-sm shadow-slate-200/50 dark:shadow-none scale-[1.02]"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs scale-[1.01]"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
@@ -170,7 +170,7 @@ export function MarketplaceHeader(props: Props) {
               size={15}
               className={
                 activePlatform === "voyageur"
-                  ? "text-[#00838f] dark:text-cyan-400"
+                  ? "text-blue-600 dark:text-blue-400"
                   : "text-slate-400"
               }
             />
@@ -185,9 +185,9 @@ export function MarketplaceHeader(props: Props) {
             role="radio"
             aria-checked={activePlatform === "shopandgo"}
             onClick={() => handleSelectPlatform("shopandgo")}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 cursor-pointer ${
               activePlatform === "shopandgo"
-                ? "bg-white dark:bg-slate-900 text-[#00838f] dark:text-cyan-300 shadow-sm shadow-slate-200/50 dark:shadow-none scale-[1.02]"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs scale-[1.01]"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
@@ -195,7 +195,7 @@ export function MarketplaceHeader(props: Props) {
               size={15}
               className={
                 activePlatform === "shopandgo"
-                  ? "text-[#00838f] dark:text-cyan-400"
+                  ? "text-blue-600 dark:text-blue-400"
                   : "text-slate-400"
               }
             />
@@ -212,7 +212,7 @@ export function MarketplaceHeader(props: Props) {
           <button
             type="button"
             onClick={props.onPublish}
-            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-gradient-to-r from-[#00838f] to-[#00bcd4] hover:from-[#00737d] hover:to-[#00acc1] text-white font-extrabold text-xs sm:text-sm shadow-sm hover:shadow-md transition-all active:scale-95 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all active:scale-95 cursor-pointer"
             aria-label="Publier"
           >
             <CirclePlus size={16} strokeWidth={2.4} />
@@ -224,7 +224,7 @@ export function MarketplaceHeader(props: Props) {
             type="button"
             onClick={() => navigate("messages")}
             className={`relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer ${
-              route === "messages" ? "bg-slate-100 dark:bg-slate-800 text-[#00838f]" : ""
+              route === "messages" ? "bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400" : ""
             }`}
             aria-label="Messagerie sécurisée"
             title="Messagerie sécurisée"
@@ -241,13 +241,13 @@ export function MarketplaceHeader(props: Props) {
             onClick={() => navigate("wallet")}
             className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 font-extrabold text-xs transition-all cursor-pointer ${
               route === "wallet"
-                ? "bg-[#00838f] text-white border-transparent"
+                ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-transparent"
                 : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300"
             }`}
             aria-label={`Mon portefeuille, solde disponible ${props.balance}`}
             title="Mon Portefeuille"
           >
-            <Wallet size={14} className="text-[#00838f] dark:text-cyan-400" />
+            <Wallet size={14} className="text-blue-600 dark:text-blue-400" />
             <span>{props.balance}</span>
           </button>
 
@@ -260,7 +260,7 @@ export function MarketplaceHeader(props: Props) {
               aria-label="Menu du compte et outils"
               aria-expanded={menuOpen}
             >
-              <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[#00838f] to-[#00bcd4] text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              <div className="w-7 h-7 rounded-full bg-slate-900 dark:bg-slate-800 text-white flex items-center justify-center font-bold text-xs shadow-xs">
                 {props.userName ? props.userName.slice(0, 2).toUpperCase() : <UserRound size={14} />}
               </div>
               <ChevronDown
@@ -315,7 +315,7 @@ export function MarketplaceHeader(props: Props) {
                     }}
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                   >
-                    <Package size={15} className="text-[#00838f]" />
+                    <Package size={15} className="text-blue-600 dark:text-blue-400" />
                     <span>Mes expéditions &amp; commandes</span>
                   </button>
 
@@ -328,10 +328,10 @@ export function MarketplaceHeader(props: Props) {
                     className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5">
-                      <Wallet size={15} className="text-[#00838f]" />
+                      <Wallet size={15} className="text-blue-600 dark:text-blue-400" />
                       <span>Mon Portefeuille</span>
                     </div>
-                    <span className="font-bold text-[#00838f]">{props.balance}</span>
+                    <span className="font-bold text-blue-600 dark:text-blue-400">{props.balance}</span>
                   </button>
                 </div>
 
@@ -350,7 +350,7 @@ export function MarketplaceHeader(props: Props) {
                       }}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                     >
-                      <Scan size={15} className="text-cyan-500" />
+                      <Scan size={15} className="text-blue-500" />
                       <span>Scanner billet IATA</span>
                     </button>
                   )}
@@ -497,15 +497,15 @@ export function MarketplaceHeader(props: Props) {
             role="radio"
             aria-checked={activePlatform === "bagandgo"}
             onClick={() => handleSelectPlatform("bagandgo")}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1.5 rounded-xl text-xs font-bold transition-all min-h-[40px] ${
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1.5 rounded-xl text-xs font-bold transition-all min-h-[40px] cursor-pointer ${
               activePlatform === "bagandgo"
-                ? "bg-white dark:bg-slate-900 text-[#00838f] dark:text-cyan-300 shadow-sm"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
             }`}
           >
             <Package
               size={14}
-              className={activePlatform === "bagandgo" ? "text-[#00838f]" : "text-slate-400"}
+              className={activePlatform === "bagandgo" ? "text-blue-600 dark:text-blue-400" : "text-slate-400"}
             />
             <div className="flex flex-col text-left leading-tight">
               <span className="text-[11px] font-bold">Bag&amp;Go</span>
@@ -518,15 +518,15 @@ export function MarketplaceHeader(props: Props) {
             role="radio"
             aria-checked={activePlatform === "voyageur"}
             onClick={() => handleSelectPlatform("voyageur")}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-bold transition-all min-h-[40px] ${
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-bold transition-all min-h-[40px] cursor-pointer ${
               activePlatform === "voyageur"
-                ? "bg-white dark:bg-slate-900 text-[#00838f] dark:text-cyan-300 shadow-sm"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
             }`}
           >
             <UserRound
               size={14}
-              className={activePlatform === "voyageur" ? "text-[#00838f]" : "text-slate-400"}
+              className={activePlatform === "voyageur" ? "text-blue-600 dark:text-blue-400" : "text-slate-400"}
             />
             <span className="text-[11px] font-bold">Voyageur</span>
           </button>
@@ -536,15 +536,15 @@ export function MarketplaceHeader(props: Props) {
             role="radio"
             aria-checked={activePlatform === "shopandgo"}
             onClick={() => handleSelectPlatform("shopandgo")}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1.5 rounded-xl text-xs font-bold transition-all min-h-[40px] ${
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1.5 rounded-xl text-xs font-bold transition-all min-h-[40px] cursor-pointer ${
               activePlatform === "shopandgo"
-                ? "bg-white dark:bg-slate-900 text-[#00838f] dark:text-cyan-300 shadow-sm"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
             }`}
           >
             <ShoppingCart
               size={14}
-              className={activePlatform === "shopandgo" ? "text-[#00838f]" : "text-slate-400"}
+              className={activePlatform === "shopandgo" ? "text-blue-600 dark:text-blue-400" : "text-slate-400"}
             />
             <div className="flex flex-col text-left leading-tight">
               <span className="text-[11px] font-bold">Shop&amp;Go</span>

@@ -40,13 +40,13 @@ export const CarrierDashboard: React.FC<CarrierDashboardProps> = ({
         {/* Header */}
         <div className="px-6 py-4 bg-slate-900 dark:bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#00838f] to-[#00bcd4] text-white flex items-center justify-center font-bold shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold shadow-xs">
               <Building2 className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 id="carrier-title" className="font-extrabold text-base text-white">{user.companyName || user.name}</h3>
-                <span className="text-[10px] bg-[#00838f]/20 text-[#00bcd4] border border-[#00bcd4]/30 px-2 py-0.5 rounded-full font-bold">
+                <span className="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full font-bold">
                   {user.siret ? "PRO SIRET Vérifié" : "Compte Professionnel"}
                 </span>
               </div>
@@ -76,7 +76,7 @@ export const CarrierDashboard: React.FC<CarrierDashboardProps> = ({
 
             <div className="bg-white dark:bg-slate-800/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs">
               <span className="text-xs font-bold text-slate-400 dark:text-slate-400 uppercase">Fret Sous Séquestre Stripe</span>
-              <p className="text-3xl font-black text-[#00838f] dark:text-cyan-400 mt-1">{(user.pendingEscrow || 0).toFixed(2)} €</p>
+              <p className="text-3xl font-black text-blue-600 dark:text-blue-400 mt-1">{(user.pendingEscrow || 0).toFixed(2)} €</p>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                 {(user.completedDeliveries || 0) > 0
                   ? `${user.completedDeliveries} expéditions terminées`
@@ -93,7 +93,7 @@ export const CarrierDashboard: React.FC<CarrierDashboardProps> = ({
               </div>
               <button
                 onClick={onOpenPublish}
-                className="mt-3 py-2.5 bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95"
+                className="mt-3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-xs transition-all active:scale-95"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Déposer un chargement groupé</span>
@@ -102,14 +102,14 @@ export const CarrierDashboard: React.FC<CarrierDashboardProps> = ({
           </div>
 
           {/* Compliance & Legal notice */}
-          <div className="p-4 bg-cyan-50/70 dark:bg-cyan-950/40 border border-cyan-200/80 dark:border-cyan-800/60 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2 text-slate-800 dark:text-cyan-100">
-              <ShieldCheck className="w-5 h-5 text-[#00838f] dark:text-cyan-400 shrink-0" />
+          <div className="p-4 bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200">
+              <ShieldCheck className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0" />
               <span>
                 <strong>Statut Fiscal Conforme :</strong> Édition automatique des factures de commissions avec mentions légales ANPDP et droit douanier.
               </span>
             </div>
-            <button className="px-3.5 py-1.5 bg-white dark:bg-slate-800 border border-cyan-200 dark:border-cyan-700 text-[#00838f] dark:text-cyan-300 font-bold rounded-xl flex items-center gap-1 shrink-0 hover:bg-cyan-50 dark:hover:bg-slate-700 transition-colors">
+            <button className="px-3.5 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-bold rounded-xl flex items-center gap-1 shrink-0 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
               <Download className="w-3.5 h-3.5" />
               <span>Export Comptable</span>
             </button>

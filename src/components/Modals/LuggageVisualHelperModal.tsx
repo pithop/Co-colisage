@@ -71,28 +71,28 @@ export const LuggageVisualHelperModal: React.FC<LuggageVisualHelperModalProps> =
         role="dialog"
         aria-modal="true"
         aria-labelledby="luggage-title"
-        className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-cyan-500/30 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Oceanic Brand Header */}
-        <div className="relative bg-gradient-to-r from-[#072a4a] via-[#05375c] to-[#0276aa] px-6 py-5 text-white flex items-center justify-between border-b border-cyan-500/25">
+        {/* Brand Header */}
+        <div className="relative bg-slate-900 px-6 py-5 text-white flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-cyan-400/20 text-cyan-300">
+            <div className="p-2 rounded-xl bg-blue-500/10 text-blue-400">
               <Box className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-200 block mb-0.5">
-                Standardisation IATA & Fret
+              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-400 block mb-0.5">
+                Standardisation IATA &amp; Fret
               </span>
               <h3 id="luggage-title" className="font-black text-base text-white">
-                Gabarits Visuels & Équivalents Colis
+                Gabarits Visuels &amp; Équivalents Colis
               </h3>
             </div>
           </div>
           <button 
             onClick={onClose} 
             aria-label="Fermer"
-            className="p-1.5 rounded-full text-cyan-200 hover:bg-white/10 hover:text-white transition-colors"
+            className="p-1.5 rounded-full text-slate-400 hover:bg-white/10 hover:text-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -101,7 +101,7 @@ export const LuggageVisualHelperModal: React.FC<LuggageVisualHelperModalProps> =
         {/* Content */}
         <div className="p-6 overflow-y-auto space-y-6">
           <div>
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#00838f] dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-950/40 px-3 py-1 rounded-full border border-cyan-200 dark:border-cyan-800">
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 px-3 py-1 rounded-full border border-blue-200 dark:border-blue-800">
               <span>Évaluation Volumétrique Instantanée</span>
             </span>
             <h4 className="text-xl font-black text-slate-900 dark:text-white mt-2">
@@ -122,8 +122,8 @@ export const LuggageVisualHelperModal: React.FC<LuggageVisualHelperModalProps> =
                   onClick={() => setSelectedFormat(f.id as any)}
                   className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between ${
                     isSelected
-                      ? 'border-[#00bcd4] bg-cyan-50/50 dark:bg-cyan-950/30 ring-2 ring-[#00bcd4]/20 shadow-md'
-                      : 'border-slate-200 dark:border-slate-800 hover:border-cyan-400/50 bg-slate-50/50 dark:bg-slate-800/40'
+                      ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-950/30 ring-2 ring-blue-500/20 shadow-xs'
+                      : 'border-slate-200 dark:border-slate-800 hover:border-blue-400/50 bg-slate-50/50 dark:bg-slate-800/40'
                   }`}
                 >
                   <div>
@@ -131,24 +131,24 @@ export const LuggageVisualHelperModal: React.FC<LuggageVisualHelperModalProps> =
                       <span className="font-bold text-xs text-slate-900 dark:text-white">{f.title}</span>
                       <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
                         isSelected 
-                          ? 'bg-[#00c2cb] text-[#072a4a]' 
+                          ? 'bg-blue-600 text-white' 
                           : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
                       }`}>
                         {f.badge}
                       </span>
                     </div>
 
-                    <p className="text-xs text-[#00838f] dark:text-cyan-300 font-semibold mb-2">
+                    <p className="text-xs text-blue-600 dark:text-blue-400 font-semibold mb-2">
                       ≈ {f.equivalent}
                     </p>
 
                     <div className="space-y-1.5 text-[11px] text-slate-600 dark:text-slate-300">
                       <div className="flex items-center gap-1.5">
-                        <Scale className="w-3.5 h-3.5 text-[#00838f] dark:text-cyan-400 shrink-0" />
+                        <Scale className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
                         <span>Poids : <strong className="text-slate-900 dark:text-white">{f.weight}</strong></span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <Maximize2 className="w-3.5 h-3.5 text-[#00838f] dark:text-cyan-400 shrink-0" />
+                        <Maximize2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
                         <span>Dimensions : <strong className="text-slate-900 dark:text-white">{f.dimensions}</strong></span>
                       </div>
                     </div>
@@ -166,7 +166,7 @@ export const LuggageVisualHelperModal: React.FC<LuggageVisualHelperModalProps> =
           <div className="p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-xs space-y-2">
             <div className="flex items-center gap-2 text-amber-900 dark:text-amber-300 font-bold">
               <AlertOctagon className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
-              <span>Conformité Douanière & Sanctions Pénales (Loi n°79-07)</span>
+              <span>Conformité Douanière &amp; Sanctions Pénales (Loi n°79-07)</span>
             </div>
             <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
               Le voyageur endosse l'entière responsabilité légale du contenu vis-à-vis des douanes dès la prise en charge. Sont strictement interdits :
@@ -206,7 +206,7 @@ export const LuggageVisualHelperModal: React.FC<LuggageVisualHelperModalProps> =
               if (onSelectFormat) onSelectFormat(selectedFormat);
               onClose();
             }}
-            className="px-6 py-2.5 bg-[#00c2cb] hover:bg-cyan-400 text-[#072a4a] font-black text-xs rounded-xl shadow-lg shadow-cyan-500/25 active:scale-95 transition-all flex items-center gap-2"
+            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs active:scale-95 transition-all flex items-center gap-2"
           >
             <span>Confirmer le Format ({selectedFormat})</span>
             <ArrowRight className="w-4 h-4" />

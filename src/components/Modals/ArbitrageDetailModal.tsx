@@ -52,23 +52,23 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
       onClick={onClose}
     >
       <div 
-        className="relative w-full max-w-xl bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-cyan-500/30 overflow-hidden flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 text-slate-900 dark:text-white"
+        className="relative w-full max-w-xl bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 text-slate-900 dark:text-white"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Oceanic Brand Header */}
-        <div className="px-6 py-5 bg-gradient-to-r from-[#072a4a] via-[#05375c] to-[#0276aa] text-white flex items-center justify-between border-b border-cyan-500/25">
+        {/* Brand Header */}
+        <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#00c2cb] text-[#072a4a] flex items-center justify-center font-black shadow-md shadow-cyan-500/30">
-              <Zap className="w-5 h-5 text-[#072a4a]" />
+            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black shadow-xs">
+              <Zap className="w-5 h-5 text-white" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-black text-base text-white">Algorithme d'Arbitrage IA</h3>
-                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full font-black">
+                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full font-bold">
                   {opportunity.netProfit >= 0 ? 'Billet 100% financé' : 'Billet subventionné'}
                 </span>
               </div>
-              <p className="text-xs text-cyan-100/90 font-medium">
+              <p className="text-xs text-slate-400 font-medium">
                 Optimisation temps réel du coût de votre vol par les missions
               </p>
             </div>
@@ -77,7 +77,7 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
           <button 
             onClick={onClose} 
             aria-label="Fermer" 
-            className="p-1.5 rounded-full text-cyan-200 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -105,10 +105,10 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
               <div className="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-extrabold text-slate-400 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <Plane className="w-4 h-4 text-[#00838f] dark:text-cyan-400" />
+                    <Plane className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     Billet le moins cher détecté
                   </span>
-                  <span className="font-black text-[#00838f] dark:text-cyan-400 text-sm">
+                  <span className="font-black text-blue-600 dark:text-blue-400 text-sm">
                     {opportunity.flight.flightPrice} €
                   </span>
                 </div>
@@ -198,7 +198,7 @@ export const ArbitrageDetailModal: React.FC<ArbitrageDetailModalProps> = ({
               {/* Bouton CTA */}
               <button
                 onClick={handleConfirm}
-                className="w-full py-3.5 bg-[#00c2cb] hover:bg-cyan-400 active:scale-[0.98] text-[#072a4a] font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-cyan-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>Confirmer les missions sélectionnées</span>
                 <ArrowRight className="w-4 h-4" />

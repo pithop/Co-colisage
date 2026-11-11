@@ -23,7 +23,7 @@ interface TicketScannerModalProps {
 }
 
 const steps = ['Compagnie', 'N° Vol', 'PNR', 'Passager', 'Dates', 'Franchise bagage'];
-const focus = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2';
+const focus = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2';
 const dateLabel = (date: string) =>
   new Intl.DateTimeFormat('fr-FR', {
     day: '2-digit',
@@ -208,21 +208,20 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({
             }
           }
         }}
-        className="flex max-h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-[28px] border border-cyan-500/30 bg-slate-50 text-slate-900 shadow-[0_32px_100px_-24px_rgba(7,42,74,0.7)]"
+        className="flex max-h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-[28px] border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xl"
       >
-        {/* Header with Oceanic Brand Palette */}
-        <header className="relative shrink-0 overflow-hidden bg-gradient-to-r from-[#072a4a] via-[#05375c] to-[#0276aa] px-6 pb-6 pt-6 text-white sm:px-8">
-          <div className="pointer-events-none absolute -right-12 -top-24 h-64 w-64 rounded-full bg-cyan-400/20 blur-3xl" />
+        {/* Header */}
+        <header className="relative shrink-0 overflow-hidden bg-slate-900 px-6 pb-6 pt-6 text-white sm:px-8 border-b border-slate-800">
           <div className="relative flex items-start justify-between gap-4">
             <div>
-              <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-cyan-300">
+              <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-blue-400">
                 <ScanLine className="h-4 w-4" />
                 <span>Scanner IATA Intelligent</span>
               </div>
               <h2 id="ticket-scanner-title" className="text-xl sm:text-2xl font-black tracking-tight">
                 Votre billet. Votre prochain trajet certifié.
               </h2>
-              <p className="mt-1.5 max-w-md text-xs sm:text-sm leading-relaxed text-cyan-100/90 font-medium">
+              <p className="mt-1.5 max-w-md text-xs sm:text-sm leading-relaxed text-slate-400 font-medium">
                 Déposez votre carte d’embarquement pour extraire le vol et calculer votre franchise disponible en toute sécurité.
               </p>
             </div>
@@ -231,14 +230,14 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({
               type="button"
               onClick={close}
               aria-label="Fermer le scanner"
-              className={`-mr-2 -mt-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-cyan-200 hover:bg-white/15 hover:text-white transition-all ${focus}`}
+              className={`-mr-2 -mt-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-slate-400 hover:bg-white/15 hover:text-white transition-all ${focus}`}
             >
               <X className="h-5 w-5" />
             </button>
           </div>
 
           {/* 3-Step Visual Progress Bar */}
-          <div className="mt-5 grid grid-cols-3 gap-2 pt-2 border-t border-cyan-400/20">
+          <div className="mt-5 grid grid-cols-3 gap-2 pt-2 border-t border-slate-800">
             {[
               { num: 1, title: 'Téléversement', subtitle: 'PDF ou Photo' },
               { num: 2, title: 'Analyse OCR', subtitle: 'Décodage IATA' },
@@ -251,19 +250,19 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({
                   key={s.num}
                   className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition-all ${
                     completed
-                      ? 'bg-cyan-400/20 text-cyan-200 border border-cyan-400/30'
+                      ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                       : active
-                      ? 'bg-white/20 text-white border border-white/30 ring-1 ring-white/30'
-                      : 'bg-black/15 text-cyan-200/50 border border-transparent'
+                      ? 'bg-white/15 text-white border border-white/20 ring-1 ring-white/20'
+                      : 'bg-black/20 text-slate-500 border border-transparent'
                   }`}
                 >
                   <span
                     className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 ${
                       completed
-                        ? 'bg-cyan-400 text-[#072a4a]'
+                        ? 'bg-blue-600 text-white'
                         : active
-                        ? 'bg-white text-[#072a4a]'
-                        : 'bg-white/20 text-cyan-100'
+                        ? 'bg-white text-slate-900'
+                        : 'bg-white/20 text-slate-300'
                     }`}
                   >
                     {completed ? <Check size={12} strokeWidth={3} /> : s.num}
@@ -313,18 +312,18 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({
                 }}
                 className={`group flex w-full flex-col items-center rounded-2xl border-2 border-dashed px-5 py-10 text-center transition-all ${
                   dragging
-                    ? 'border-cyan-500 bg-cyan-50/70 ring-4 ring-cyan-500/20'
-                    : 'border-slate-300 bg-white hover:border-cyan-500 hover:bg-cyan-50/30'
+                    ? 'border-blue-500 bg-blue-50/70 ring-4 ring-blue-500/20'
+                    : 'border-slate-300 bg-white hover:border-blue-500 hover:bg-blue-50/30'
                 } ${focus}`}
               >
-                <span className="mb-3.5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#00bcd4]/15 to-[#0077b6]/15 text-[#0097a7] transition-transform motion-safe:group-hover:-translate-y-1">
-                  <UploadCloud className="h-7 w-7 text-cyan-600" />
+                <span className="mb-3.5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 transition-transform motion-safe:group-hover:-translate-y-1">
+                  <UploadCloud className="h-7 w-7 text-blue-600" />
                 </span>
                 <span className="text-base font-bold text-slate-900">
                   Glissez votre carte d'embarquement ici
                 </span>
                 <span className="mt-1 text-xs text-slate-500">
-                  ou <span className="font-semibold text-cyan-600 underline">parcourir vos fichiers</span>
+                  ou <span className="font-semibold text-blue-600 underline">parcourir vos fichiers</span>
                 </span>
                 <span className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600">
                   PDF, JPG, PNG, WebP · Jusqu'à 15 Mo
@@ -346,7 +345,7 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({
                 </div>
 
                 <div className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex items-start gap-3">
-                  <div className="p-2 rounded-xl bg-cyan-50 text-cyan-600 shrink-0">
+                  <div className="p-2 rounded-xl bg-blue-50 text-blue-600 shrink-0">
                     <Lock className="h-5 w-5" />
                   </div>
                   <div>
@@ -375,13 +374,13 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({
           {/* STATE 2: Scanning in progress */}
           {scanning && (
             <div role="status" aria-live="polite" className="py-2">
-              <div className="relative mb-6 overflow-hidden rounded-2xl border border-cyan-100 bg-white p-8 text-center shadow-sm">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-cyan-100 to-blue-100 text-cyan-700">
+              <div className="relative mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-xs">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
                   <FileText className="h-8 w-8" />
                 </div>
                 <p className="text-base font-bold text-slate-900">Lecture et décodage IATA en cours</p>
                 <p className="mt-1 truncate text-xs text-slate-500 font-mono">{fileName}</p>
-                <div className="ticket-scan-laser pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_24px_8px_rgba(6,182,212,0.4)]" />
+                <div className="ticket-scan-laser pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent shadow-[0_0_24px_8px_rgba(59,130,246,0.4)]" />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -392,14 +391,14 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({
                       i < progress
                         ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
                         : i === progress
-                        ? 'border-cyan-300 bg-cyan-50/70 text-cyan-900 shadow-xs ring-1 ring-cyan-400/30'
+                        ? 'border-blue-300 bg-blue-50/70 text-blue-900 shadow-xs ring-1 ring-blue-400/30'
                         : 'border-slate-200 bg-white text-slate-400'
                     }`}
                   >
                     {i < progress ? (
                       <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                     ) : i === progress ? (
-                      <Loader2 className="h-4 w-4 motion-safe:animate-spin text-cyan-600 shrink-0" />
+                      <Loader2 className="h-4 w-4 motion-safe:animate-spin text-blue-600 shrink-0" />
                     ) : (
                       <span className="h-4 w-4 rounded-full border border-slate-300 shrink-0" />
                     )}
@@ -429,11 +428,11 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({
               {/* Boarding Pass Preview Card */}
               <article
                 aria-label="Carte d’embarquement extraite"
-                className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md relative"
+                className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs relative"
               >
-                <div className="flex items-center justify-between bg-gradient-to-r from-[#072a4a] to-[#0276aa] px-5 py-3 text-white">
+                <div className="flex items-center justify-between bg-slate-900 px-5 py-3 text-white">
                   <span className="text-sm font-bold tracking-wide">{ticket.airline}</span>
-                  <span className="text-[10px] font-bold tracking-[0.18em] text-cyan-200">
+                  <span className="text-[10px] font-bold tracking-[0.18em] text-blue-300">
                     BOARDING PASS
                   </span>
                 </div>
@@ -445,9 +444,9 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({
                       </p>
                       <p className="mt-0.5 text-xs text-slate-500 font-medium">{ticket.origin}</p>
                     </div>
-                    <div className="flex flex-1 items-center gap-2 text-cyan-600">
+                    <div className="flex flex-1 items-center gap-2 text-blue-600">
                       <span className="flex-1 border-t border-dashed border-slate-300" />
-                      <Plane className="h-5 w-5 transform rotate-90 text-cyan-600" />
+                      <Plane className="h-5 w-5 transform rotate-90 text-blue-600" />
                       <span className="flex-1 border-t border-dashed border-slate-300" />
                     </div>
                     <div className="text-right">
@@ -489,14 +488,14 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({
               {/* Explanatory Safety Margin Callout */}
               <div
                 role="note"
-                className="flex gap-3 rounded-2xl border border-cyan-100 bg-cyan-50/60 p-4 text-xs"
+                className="flex gap-3 rounded-2xl border border-blue-100 bg-blue-50/60 p-4 text-xs"
               >
-                <Info className="mt-0.5 h-5 w-5 shrink-0 text-cyan-700" />
+                <Info className="mt-0.5 h-5 w-5 shrink-0 text-blue-700" />
                 <div>
-                  <p className="font-bold text-cyan-950 text-sm">
+                  <p className="font-bold text-blue-950 text-sm">
                     {maximum} kg maximum autorisés à la proposition
                   </p>
-                  <p id="baggage-explanation" className="mt-1 leading-relaxed text-cyan-900 font-normal">
+                  <p id="baggage-explanation" className="mt-1 leading-relaxed text-blue-900 font-normal">
                     Sur vos {ticket.baggageAllowanceKg} kg de franchise, {ticket.baggageAllowanceKg - maximum} kg sont sanctuarisés pour vos effets personnels (réserve légale de 10%, minimum 1 kg).
                   </p>
                 </div>
@@ -552,7 +551,7 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({
                 type="button"
                 onClick={publish}
                 disabled={!onTripCreated}
-                className={`flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] px-4 py-4 text-sm font-bold text-white shadow-lg shadow-cyan-600/25 transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 ${focus}`}
+                className={`flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 hover:bg-blue-700 px-4 py-4 text-sm font-bold text-white shadow-xs transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 ${focus}`}
               >
                 <Check className="h-4 w-4 shrink-0" />
                 <span>Publier mon trajet avec les données du billet</span>
@@ -564,7 +563,7 @@ export const TicketScannerModal: React.FC<TicketScannerModalProps> = ({
                   setTicket(null);
                   setError('');
                 }}
-                className={`mx-auto block rounded-lg px-3 py-2 text-xs font-semibold text-slate-500 hover:text-cyan-600 transition-colors ${focus}`}
+                className={`mx-auto block rounded-lg px-3 py-2 text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors ${focus}`}
               >
                 Scanner un autre billet
               </button>
@@ -610,7 +609,7 @@ function Slider({
         <label htmlFor={id} className="text-xs font-bold text-slate-700">
           {label}
         </label>
-        <output htmlFor={id} className="text-sm font-black text-cyan-700 tabular-nums">
+        <output htmlFor={id} className="text-sm font-black text-blue-600 tabular-nums">
           {value} {unit}
         </output>
       </div>
@@ -624,7 +623,7 @@ function Slider({
         aria-describedby={description}
         aria-valuetext={`${value} ${unit}`}
         onChange={(event) => onChange(Number(event.target.value))}
-        className={`h-2 w-full cursor-pointer rounded-lg bg-slate-200 accent-[#00bcd4] ${focus}`}
+        className={`h-2 w-full cursor-pointer rounded-lg bg-slate-200 accent-blue-600 ${focus}`}
       />
       <div className="mt-1 flex justify-between text-[10px] text-slate-400 font-medium">
         <span>

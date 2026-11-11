@@ -93,9 +93,9 @@ export function LuggageVisualizer({
                 <stop offset="1" stopColor="#dbeafe" stopOpacity=".3" />
               </linearGradient>
               <linearGradient id={`${id}-fill`} x1="0" y1="0" x2="1" y2="1">
-                <stop stopColor="#00e5ff" />
-                <stop offset=".5" stopColor="#00bcd4" />
-                <stop offset="1" stopColor="#00838f" />
+                <stop stopColor="#3b82f6" />
+                <stop offset=".5" stopColor="#2563eb" />
+                <stop offset="1" stopColor="#1d4ed8" />
               </linearGradient>
               <clipPath id={`${id}-clip`}>
                 <rect x="39" y="49" width="122" height="160" rx="22" />
@@ -106,8 +106,8 @@ export function LuggageVisualizer({
               cy="229"
               rx="68"
               ry="6"
-              fill="#00bcd4"
-              opacity=".2"
+              fill="#2563eb"
+              opacity=".12"
             />
             <path
               d="M78 43V22a8 8 0 0 1 8-8h28a8 8 0 0 1 8 8v21"
@@ -297,7 +297,7 @@ export function LuggageVisualizer({
         </span>
       </p>
       <button
-        className="w-full py-3.5 px-6 rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
+        className="w-full py-3.5 px-6 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98]"
         onClick={() => onSelectCapacity?.(capacity)}
       >
         <span>Filtrer les annonces pour {capacity} {unitLabel}</span>

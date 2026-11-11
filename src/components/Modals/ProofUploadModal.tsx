@@ -59,29 +59,29 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby="proof-title"
-        className="relative w-full max-w-xl bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-cyan-500/30 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-xl bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Oceanic Brand Header */}
-        <div className="relative bg-gradient-to-r from-[#072a4a] via-[#05375c] to-[#0276aa] px-6 py-5 text-white flex items-center justify-between border-b border-cyan-500/25">
+        {/* Brand Header */}
+        <div className="relative bg-slate-900 px-6 py-5 text-white flex items-center justify-between border-b border-slate-800">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Sparkles className="w-4 h-4 text-cyan-300" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-200">
+              <Sparkles className="w-4 h-4 text-blue-400" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-400">
                 Protocole Shop &amp; Go
               </span>
             </div>
             <h3 id="proof-title" className="font-black text-lg text-white">
               Validation Obligatoire du Shopper
             </h3>
-            <p className="text-xs text-cyan-100/90 font-medium">
+            <p className="text-xs text-slate-400 font-medium">
               Téléversement des deux preuves tangibles pour débloquer la remise
             </p>
           </div>
           <button 
             onClick={onClose} 
             aria-label="Fermer" 
-            className="p-1.5 rounded-full text-cyan-200 hover:bg-white/10 hover:text-white transition-colors"
+            className="p-1.5 rounded-full text-slate-400 hover:bg-white/10 hover:text-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -101,8 +101,8 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-2 p-2 rounded-xl border bg-cyan-50 dark:bg-cyan-950/40 border-[#00c2cb] text-[#072a4a] dark:text-cyan-200 ring-2 ring-cyan-400/20">
-              <div className="w-5 h-5 rounded-full bg-[#00c2cb] text-[#072a4a] flex items-center justify-center text-[10px] font-black">
+            <div className="flex items-center gap-2 p-2 rounded-xl border bg-blue-50 dark:bg-blue-950/40 border-blue-600 text-blue-600 dark:text-blue-300 ring-2 ring-blue-500/20">
+              <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-black">
                 2
               </div>
               <div className="min-w-0">
@@ -122,7 +122,7 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
             </div>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/25">
+          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
             <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
               Pour éliminer toute fraude ou contrefaçon, vous devez prouver que vous avez acheté l'article vous-même en boutique officielle et que votre vol est confirmé.
             </p>
@@ -132,7 +132,7 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
           <div className="border border-slate-200 dark:border-slate-700/80 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/50">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-[#00838f] dark:text-cyan-400" />
+                <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 <span className="font-bold text-xs text-slate-900 dark:text-white">
                   1. Preuve d'achat officielle (Ticket / Facture)
                 </span>
@@ -166,11 +166,11 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
               <button
                 onClick={handleSimulateReceipt}
                 disabled={loadingReceipt}
-                className="w-full py-5 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[#00bcd4] dark:hover:border-cyan-400 rounded-xl bg-white dark:bg-slate-800/80 flex flex-col items-center justify-center gap-1 text-slate-600 dark:text-slate-300 hover:text-[#00838f] dark:hover:text-cyan-300 transition-colors cursor-pointer"
+                className="w-full py-5 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-400 rounded-xl bg-white dark:bg-slate-800/80 flex flex-col items-center justify-center gap-1 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-300 transition-colors cursor-pointer"
               >
                 {loadingReceipt ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin text-[#00bcd4]" />
+                    <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
                     <span className="text-xs font-semibold">Analyse OCR du ticket en cours...</span>
                   </>
                 ) : (
@@ -188,7 +188,7 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
           <div className="border border-slate-200 dark:border-slate-700/80 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/50">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Plane className="w-4 h-4 text-[#00838f] dark:text-cyan-400 -rotate-45" />
+                <Plane className="w-4 h-4 text-blue-600 dark:text-blue-400 -rotate-45" />
                 <span className="font-bold text-xs text-slate-900 dark:text-white">
                   2. Preuve de voyage (Billet d'avion / Carte d'embarquement)
                 </span>
@@ -222,11 +222,11 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
               <button
                 onClick={handleSimulateTicket}
                 disabled={loadingTicket}
-                className="w-full py-5 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[#00bcd4] dark:hover:border-cyan-400 rounded-xl bg-white dark:bg-slate-800/80 flex flex-col items-center justify-center gap-1 text-slate-600 dark:text-slate-300 hover:text-[#00838f] dark:hover:text-cyan-300 transition-colors cursor-pointer"
+                className="w-full py-5 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-400 rounded-xl bg-white dark:bg-slate-800/80 flex flex-col items-center justify-center gap-1 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-300 transition-colors cursor-pointer"
               >
                 {loadingTicket ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin text-[#00bcd4]" />
+                    <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
                     <span className="text-xs font-semibold">Vérification IATA du vol...</span>
                   </>
                 ) : (
@@ -242,24 +242,24 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
 
           {/* 3 Reassurance Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-slate-100 dark:border-slate-800">
-            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-cyan-50/50 dark:bg-slate-800/60 border border-cyan-100 dark:border-slate-700">
-              <ShieldCheck size={16} className="text-[#00c2cb] shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <ShieldCheck size={16} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
               <div>
                 <p className="text-[11px] font-bold text-slate-900 dark:text-white">Séquestre Stripe</p>
                 <p className="text-[10px] text-slate-500 dark:text-slate-400">Remboursement garanti sous séquestre.</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-cyan-50/50 dark:bg-slate-800/60 border border-cyan-100 dark:border-slate-700">
-              <Plane size={16} className="text-[#00c2cb] shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <Plane size={16} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
               <div>
                 <p className="text-[11px] font-bold text-slate-900 dark:text-white">Vol IATA Confirmé</p>
                 <p className="text-[10px] text-slate-500 dark:text-slate-400">Rapprochement PNR et carte d'embarquement.</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-cyan-50/50 dark:bg-slate-800/60 border border-cyan-100 dark:border-slate-700">
-              <Lock size={16} className="text-[#00c2cb] shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <Lock size={16} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
               <div>
                 <p className="text-[11px] font-bold text-slate-900 dark:text-white">Facture Officielle</p>
                 <p className="text-[10px] text-slate-500 dark:text-slate-400">Contrôle de ticket contre la contrefaçon.</p>
@@ -272,16 +272,16 @@ export const ProofUploadModal: React.FC<ProofUploadModalProps> = ({
         {/* Footer Actions */}
         <div className="p-4 sm:p-5 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-            <ShieldAlert className="w-4 h-4 text-[#00c2cb]" />
+            <ShieldAlert className="w-4 h-4 text-blue-600" />
             <span>Preuves cryptées AES-256 de bout en bout</span>
           </div>
 
           <button
             onClick={onProceedToDelivery}
             disabled={!isAllValid}
-            className={`w-full sm:w-auto px-6 py-2.5 rounded-xl font-black text-xs transition-all flex items-center justify-center gap-2 ${
+            className={`w-full sm:w-auto px-6 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 ${
               isAllValid
-                ? 'bg-[#00c2cb] hover:bg-cyan-400 text-[#072a4a] shadow-lg shadow-cyan-500/25 active:scale-95'
+                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-xs active:scale-95'
                 : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'
             }`}
           >

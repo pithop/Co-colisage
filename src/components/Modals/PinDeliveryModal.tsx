@@ -106,7 +106,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
           particleCount: 120,
           spread: 80,
           origin: { y: 0.6 },
-          colors: ['#00bcd4', '#10B981', '#0077b6', '#F59E0B']
+          colors: ['#2563EB', '#10B981', '#1E293B', '#F59E0B']
         });
       } else {
         setError('Code PIN invalide. Veuillez vérifier le code à 4 chiffres fourni par le destinataire.');
@@ -120,23 +120,23 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in duration-200">
       <div 
-        className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-cyan-500/30 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
         role="dialog"
         aria-modal="true"
         aria-labelledby="pin-delivery-title"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header with Oceanic Brand */}
-        <header className="relative bg-gradient-to-r from-[#072a4a] via-[#05375c] to-[#0276aa] px-6 py-5 text-white flex items-center justify-between">
+        {/* Header */}
+        <header className="relative bg-slate-900 px-6 py-5 text-white flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-cyan-400/20 text-cyan-300">
+            <div className="p-2 rounded-xl bg-blue-500/10 text-blue-400">
               <KeyRound className="w-5 h-5" />
             </div>
             <div>
               <h3 id="pin-delivery-title" className="font-black text-base text-white">
                 Remise Sécurisée par Code PIN
               </h3>
-              <p className="text-[11px] text-cyan-200">
+              <p className="text-[11px] text-slate-400">
                 Protocole de déblocage instantané Stripe Escrow
               </p>
             </div>
@@ -144,7 +144,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
           <button
             onClick={onClose}
             aria-label="Fermer"
-            className="p-1.5 rounded-full text-cyan-200 hover:bg-white/10 hover:text-white transition-colors"
+            className="p-1.5 rounded-full text-slate-400 hover:bg-white/10 hover:text-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -176,7 +176,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
                       completed
                         ? 'bg-emerald-500 text-white'
                         : active
-                        ? 'bg-[#072a4a] text-white dark:bg-cyan-400 dark:text-[#072a4a]'
+                        ? 'bg-slate-900 text-white dark:bg-blue-600 dark:text-white'
                         : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
                     }`}
                   >
@@ -197,7 +197,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
           {!isSuccess ? (
             <>
               <div>
-                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-700 dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-950/40 px-3 py-1 rounded-full border border-cyan-200 dark:border-cyan-800">
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 px-3 py-1 rounded-full border border-blue-200 dark:border-blue-800">
                   <PackageCheck size={13} />
                   <span>Validation physique de livraison</span>
                 </span>
@@ -210,9 +210,9 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
               </div>
 
               {/* Explanatory security callout */}
-              <div className="p-3 rounded-2xl bg-cyan-50/60 dark:bg-cyan-950/20 border border-cyan-100 dark:border-cyan-800/60 flex items-start gap-2.5 text-left">
-                <ShieldCheck size={16} className="text-cyan-600 dark:text-cyan-400 shrink-0 mt-0.5" />
-                <p className="text-[11px] text-cyan-950 dark:text-cyan-200 leading-snug">
+              <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-start gap-2.5 text-left">
+                <ShieldCheck size={16} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                <p className="text-[11px] text-slate-700 dark:text-slate-300 leading-snug">
                   La validation du code PIN à 4 chiffres déclenche le virement automatique de <strong>+{totalPayout} €</strong> vers votre compte bancaire.
                 </p>
               </div>
@@ -231,7 +231,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
                     key={idx}
                     className={`w-14 h-16 rounded-2xl border-2 flex items-center justify-center text-3xl font-black transition-all ${
                       digit 
-                        ? 'border-cyan-500 bg-cyan-50/50 dark:bg-cyan-950/30 text-cyan-700 dark:text-cyan-300 shadow-sm scale-105' 
+                        ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-300 shadow-xs scale-105' 
                         : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-300'
                     }`}
                   >
@@ -248,7 +248,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
                     type="button"
                     disabled={isVerifying}
                     onClick={() => handleDigitPress(digit)}
-                    className="h-12 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-cyan-100 active:text-cyan-800 text-slate-800 dark:text-slate-100 font-bold text-lg transition-all active:scale-95"
+                    className="h-12 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-blue-50 active:text-blue-700 text-slate-800 dark:text-slate-100 font-bold text-lg transition-all active:scale-95"
                   >
                     {digit}
                   </button>
@@ -298,7 +298,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
               </div>
 
               {/* Stripe Payout Notification Card */}
-              <div className="bg-gradient-to-br from-[#072a4a] via-[#05375c] to-[#0276aa] text-white p-5 rounded-2xl shadow-xl text-left border border-cyan-400/30 space-y-3">
+              <div className="bg-slate-900 text-white p-5 rounded-2xl shadow-xl text-left border border-slate-800 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -306,30 +306,30 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
                       Virement Instantané Réussi
                     </span>
                   </div>
-                  <span className="text-xs font-black text-cyan-300 tracking-wider">STRIPE CONNECT</span>
+                  <span className="text-xs font-bold text-blue-400 tracking-wider">STRIPE CONNECT</span>
                 </div>
 
                 <div className="pt-1">
                   <p className="text-3xl font-black text-white">
                     +{totalPayout} €
                   </p>
-                  <p className="text-xs text-cyan-100 mt-0.5">
+                  <p className="text-xs text-slate-400 mt-0.5">
                     Rémunération pour la mission : {subjectLabel}
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-cyan-400/20 flex items-center justify-between text-[11px] text-cyan-200">
+                <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
                   <div className="flex items-center gap-1.5">
-                    <Building className="w-3.5 h-3.5 text-cyan-300" />
+                    <Building className="w-3.5 h-3.5 text-blue-400" />
                     <span>Compte bancaire IBAN (••• 4291)</span>
                   </div>
-                  <span className="text-emerald-300 font-bold">Crédité</span>
+                  <span className="text-emerald-400 font-bold">Crédité</span>
                 </div>
               </div>
 
               <button
                 onClick={() => onSuccessFinished ? onSuccessFinished(payoutNumber) : onClose()}
-                className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-sm shadow-md shadow-emerald-600/30 transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="w-full py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-xs transition-all active:scale-95 flex items-center justify-center gap-2"
               >
                 <span>Terminer et retourner à l'accueil</span>
                 <ArrowRight className="w-4 h-4" />

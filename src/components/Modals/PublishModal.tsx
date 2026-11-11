@@ -213,7 +213,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
         {/* Header */}
         <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-800/60">
           <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#00838f] to-[#00bcd4] text-white flex items-center justify-center font-bold text-xs shadow-sm">
+            <span className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
               +
             </span>
             <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">Publier une annonce</h3>
@@ -229,7 +229,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
             type="button"
             onClick={() => setTab('voyageur')}
             className={`py-2 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
-              tab === 'voyageur' ? 'bg-white dark:bg-slate-700 text-[#00838f] dark:text-cyan-300 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+              tab === 'voyageur' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
             }`}
           >
             <Plane className="w-3.5 h-3.5 shrink-0" />
@@ -240,7 +240,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
             type="button"
             onClick={() => setTab('expediteur')}
             className={`py-2 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
-              tab === 'expediteur' ? 'bg-white dark:bg-slate-700 text-[#00838f] dark:text-cyan-300 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+              tab === 'expediteur' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
             }`}
           >
             <Package className="w-3.5 h-3.5 shrink-0" />
@@ -251,7 +251,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
             type="button"
             onClick={() => setTab('destinataire')}
             className={`py-2 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
-              tab === 'destinataire' ? 'bg-white dark:bg-slate-700 text-[#00838f] dark:text-cyan-300 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+              tab === 'destinataire' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
             }`}
           >
             <ShoppingBag className="w-3.5 h-3.5 shrink-0" />
@@ -299,7 +299,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                             onClick={() => setTransportMode(m.id as TransportType)}
                             className={`p-2 rounded-xl text-center flex flex-col items-center justify-center gap-1 border transition-all ${
                               isSel
-                                ? 'border-[#00bcd4] bg-cyan-50 dark:bg-cyan-950/40 text-[#00838f] dark:text-cyan-300 font-bold ring-2 ring-[#00bcd4]/30'
+                                ? 'border-blue-600 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-bold ring-2 ring-blue-500/20'
                                 : 'border-slate-200 dark:border-slate-800 text-slate-500 hover:border-slate-300'
                             }`}
                           >
@@ -315,11 +315,11 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setScannerOpen(true)}
-                      className="group relative flex w-full items-start gap-4 overflow-hidden rounded-2xl border border-cyan-400/20 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 p-4 text-left text-white shadow-md transition duration-200 hover:shadow-cyan-900/20"
+                      className="group relative flex w-full items-start gap-4 overflow-hidden rounded-2xl border border-blue-500/20 bg-slate-900 p-4 text-left text-white shadow-md transition duration-200 hover:border-blue-500/40 hover:shadow-blue-950/20"
                     >
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/10 text-cyan-200"><Sparkles className="h-5 w-5" /></span>
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/10 text-blue-300"><Sparkles className="h-5 w-5" /></span>
                       <span className="relative min-w-0 flex-1">
-                        <span className="mb-1 block text-[9px] font-semibold uppercase tracking-[0.2em] text-cyan-200">Scanner mon billet</span>
+                        <span className="mb-1 block text-[9px] font-semibold uppercase tracking-[0.2em] text-blue-300">Scanner mon billet</span>
                         <span className="block text-sm font-semibold tracking-tight">Auto-remplissage IA depuis billet IATA</span>
                       </span>
                     </button>
@@ -410,7 +410,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                         type="checkbox"
                         checked={canCarryParcel}
                         onChange={(e) => setCanCarryParcel(e.target.checked)}
-                        className="accent-[#00bcd4] w-4 h-4 rounded"
+                        className="accent-blue-600 w-4 h-4 rounded"
                       />
                       <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Prêt à transporter des colis</span>
                     </label>
@@ -423,7 +423,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                           onChange={(e) => setPricePerKg(parseInt(e.target.value) || 0)} 
                           className="w-16 px-2 py-1 text-xs border rounded bg-white dark:bg-slate-800 font-bold"
                         />
-                        <span className="text-xs font-bold text-[#00838f] dark:text-cyan-400">
+                        <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
                           €/{transportMode === 'voiture' ? 'L' : transportMode === 'camion' ? 'm³' : 'kg'}
                         </span>
                       </div>
@@ -498,7 +498,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                           onClick={() => handlePresetChange(p.id as any)}
                           className={`py-1.5 px-2 rounded-xl text-xs font-bold border transition-all ${
                             parcelPreset === p.id
-                              ? 'border-[#00bcd4] bg-cyan-50 dark:bg-cyan-950/40 text-[#00838f] dark:text-cyan-300'
+                              ? 'border-blue-600 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400'
                               : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
                           }`}
                         >
@@ -512,7 +512,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                   <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
                     <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
                       <span>Dimensions (cm)</span>
-                      <span className="text-[11px] text-[#00838f] dark:text-cyan-400 font-bold">
+                      <span className="text-[11px] text-blue-600 dark:text-blue-400 font-bold">
                         {volumeL} L · Poids volumétrique : {volumetricWeightKg} kg
                       </span>
                     </div>
@@ -599,7 +599,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                         type="checkbox"
                         checked={hasBattery}
                         onChange={(e) => setHasBattery(e.target.checked)}
-                        className="accent-cyan-500 rounded"
+                        className="accent-blue-600 rounded"
                       />
                       <span className="font-semibold text-slate-700 dark:text-slate-300">Batterie Lithium</span>
                     </label>
@@ -622,8 +622,8 @@ export const PublishModal: React.FC<PublishModalProps> = ({
               {/* TAB 3 : DESTINATAIRE / SHOP & GO */}
               {tab === 'destinataire' && (
                 <>
-                  <div className="p-3 rounded-xl bg-cyan-50/60 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800/60 flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300">
-                    <Receipt size={16} className="text-[#00838f] dark:text-cyan-400 shrink-0" />
+                  <div className="p-3 rounded-xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300">
+                    <Receipt size={16} className="text-blue-600 dark:text-blue-400 shrink-0" />
                     <span><strong>Ticket de caisse obligatoire :</strong> Le voyageur avance le paiement en magasin certifié et est remboursé sous séquestre Stripe.</span>
                   </div>
 

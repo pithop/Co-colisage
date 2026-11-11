@@ -59,7 +59,7 @@ export const ExpediteurDashboard: React.FC<ExpediteurDashboardProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 id="expediteur-title" className="font-extrabold text-base text-white">{user.name}</h3>
-                <span className="text-[10px] bg-[#00838f]/20 text-[#00bcd4] border border-[#00bcd4]/30 px-2 py-0.5 rounded-full font-bold">
+                <span className="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full font-bold">
                   Client Acheteur &amp; Expéditeur
                 </span>
               </div>
@@ -78,10 +78,10 @@ export const ExpediteurDashboard: React.FC<ExpediteurDashboardProps> = ({
         <div className="p-6 overflow-y-auto space-y-6">
           {activeOrder ? (
             /* Active order card with real PIN code */
-            <div className="bg-white dark:bg-slate-800/90 rounded-2xl border-2 border-[#00838f]/30 p-5 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-slate-800/90 rounded-2xl border border-blue-200 dark:border-blue-800/60 p-5 shadow-xs space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
                 <div className="flex items-center gap-2">
-                  <Package className="w-4 h-4 text-[#00838f] dark:text-cyan-400" />
+                  <Package className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   <span className="font-bold text-xs text-slate-900 dark:text-white">
                     Expédition {activeOrder.id} en cours
                   </span>
@@ -95,7 +95,7 @@ export const ExpediteurDashboard: React.FC<ExpediteurDashboardProps> = ({
                 <div>
                   <p className="text-xs text-slate-500 dark:text-slate-400">Objet &amp; Trajet :</p>
                   <p className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5 mt-0.5">
-                    <MapPin className="w-4 h-4 text-[#00838f] dark:text-cyan-400" />
+                    <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     {activeOrder.origin} &rarr; {activeOrder.destination}
                   </p>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">Voyageur en charge :</p>
@@ -123,9 +123,9 @@ export const ExpediteurDashboard: React.FC<ExpediteurDashboardProps> = ({
               <div className="pt-2 flex flex-wrap gap-2">
                 <button
                   onClick={onOpenGps}
-                  className="px-4 py-2.5 bg-cyan-50 dark:bg-cyan-950/40 hover:bg-cyan-100 dark:hover:bg-cyan-900/60 text-[#00838f] dark:text-cyan-300 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors"
+                  className="px-4 py-2.5 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-600 dark:text-blue-300 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors"
                 >
-                  <Radio className="w-3.5 h-3.5 animate-pulse text-[#00838f] dark:text-cyan-400" />
+                  <Radio className="w-3.5 h-3.5 animate-pulse text-blue-600 dark:text-blue-400" />
                   <span>Suivre le trajet en direct (GPS)</span>
                 </button>
                 <button
@@ -138,7 +138,7 @@ export const ExpediteurDashboard: React.FC<ExpediteurDashboardProps> = ({
             </div>
           ) : (
             <div className="bg-white dark:bg-slate-800/80 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 p-8 text-center space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 text-[#00838f] dark:text-cyan-400 flex items-center justify-center mx-auto">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto">
                 <Package className="w-6 h-6" />
               </div>
               <div>
@@ -153,7 +153,7 @@ export const ExpediteurDashboard: React.FC<ExpediteurDashboardProps> = ({
                   onClose();
                   onOpenMessaging();
                 }}
-                className="px-5 py-2.5 bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#00a2c7] hover:to-[#00669e] text-white text-xs font-bold rounded-xl shadow-sm transition-all"
+                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all"
               >
                 Explorer mes messages &amp; commandes
               </button>

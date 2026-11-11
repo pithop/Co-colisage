@@ -3129,7 +3129,7 @@ img.vehicle-illustration {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #06b6d4, #2563eb, #10b981);
+  background: linear-gradient(90deg, #3b82f6, #2563eb, #10b981);
   transition: width 0.4s ease;
 }
 .traveler-status .reputation-criterion p {

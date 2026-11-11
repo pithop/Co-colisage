@@ -36,18 +36,18 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       onClick={onClose}
     >
       <div 
-        className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-cyan-500/30 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Oceanic Top Header */}
-        <div className="relative bg-gradient-to-r from-[#072a4a] via-[#05375c] to-[#0276aa] px-6 py-4 border-b border-cyan-500/25 flex items-center justify-between text-white">
+        {/* Brand Top Header */}
+        <div className="relative bg-slate-900 px-6 py-4 border-b border-slate-800 flex items-center justify-between text-white">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-200 bg-white/10 px-2 py-0.5 rounded-full">
+            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-400 bg-white/10 px-2 py-0.5 rounded-full">
               {product.brand}
             </span>
-            <span className="text-cyan-400">•</span>
+            <span className="text-slate-600">•</span>
             <span className="text-xs font-bold text-white flex items-center gap-1">
-              <Sparkles size={14} className="text-cyan-300" />
+              <Sparkles size={14} className="text-blue-400" />
               Boutique Inversée
             </span>
           </div>
@@ -55,7 +55,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <button
             onClick={onClose}
             aria-label="Fermer"
-            className="p-1.5 rounded-full text-cyan-200 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -72,7 +72,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 alt={product.name} 
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-3 left-3 bg-blue-600 text-white px-2.5 py-1 rounded-full text-xs font-bold shadow-md flex items-center gap-1">
+              <div className="absolute top-3 left-3 bg-blue-600 text-white px-2.5 py-1 rounded-full text-xs font-bold shadow-xs flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5" />
                 <span>Destination : {product.destination}</span>
               </div>
@@ -106,7 +106,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     href={product.officialUrl} 
                     target="_blank" 
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-[#00838f] dark:text-cyan-400 hover:underline font-semibold mt-3"
+                    className="inline-flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400 hover:underline font-semibold mt-3"
                   >
                     <span>Voir sur la boutique officielle</span>
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -135,7 +135,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           {/* Detailed Financial Calculation breakdown (Escrow) */}
           <div className="bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 rounded-2xl p-4">
             <h4 className="font-bold text-xs uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-3 flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-[#00838f] dark:text-cyan-400" />
+              <CreditCard className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               <span>Transparence Financière &amp; Séquestre Stripe</span>
             </h4>
 
@@ -154,7 +154,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
               <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between text-sm font-extrabold text-slate-900 dark:text-white">
                 <span>Total sécurisé sur le séquestre Stripe</span>
-                <span className="text-[#00838f] dark:text-cyan-400">{totalEscrow.toFixed(2)} €</span>
+                <span className="text-blue-600 dark:text-blue-400">{totalEscrow.toFixed(2)} €</span>
               </div>
             </div>
 
@@ -179,7 +179,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
           <button
             onClick={() => onAcceptMission(product)}
-            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#00c2cb] hover:bg-cyan-400 text-[#072a4a] font-black text-xs shadow-lg shadow-cyan-500/25 transition-all flex items-center justify-center gap-2 active:scale-95"
+            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-2 active:scale-95"
           >
             <Plane className="w-4 h-4 -rotate-45" />
             <span>Accepter d'acheter et transporter (Shopper)</span>

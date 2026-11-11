@@ -896,7 +896,7 @@ export function AwwwardsLanding({
             <strong>{weight} kg</strong>
             <input
               style={{
-                background: `linear-gradient(to right, #00bcd4 ${((weight - 1) / 29) * 100}%, #e2e8f0 ${((weight - 1) / 29) * 100}%)`,
+                background: `linear-gradient(to right, #2563eb ${((weight - 1) / 29) * 100}%, #e2e8f0 ${((weight - 1) / 29) * 100}%)`,
               }}
               type="range"
               min="1"
