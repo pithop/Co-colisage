@@ -413,6 +413,9 @@ export function AwwwardsLanding({
             className="landing-nav"
             aria-label={text("Présentation de BagVoyage", "About BagVoyage")}
           >
+            <a href="/#voyageur">{text("Voyageur", "Traveler")}</a>
+            <a href="/#bagandgo">Bag & Go</a>
+            <a href="/#shopandgo">Shop & Go</a>
             <a href="/#how-it-works">{text("Comment ça marche", "How it works")}</a>
             <a href="/#pricing">{text("Tarifs", "Pricing")}</a>
             <a href="/#trust">{text("Sécurité", "Security")}</a>
@@ -1118,6 +1121,7 @@ export function AwwwardsLanding({
               ),
               action: text("Je veux envoyer", "Send a parcel"),
               kind: "parcel",
+              platformRoute: "bagandgo",
             },
             {
               Icon: ShoppingBag,
@@ -1132,6 +1136,7 @@ export function AwwwardsLanding({
               ),
               action: text("Découvrir Shop & Go", "Discover Shop & Go"),
               kind: "requests",
+              platformRoute: "shopandgo",
             },
             {
               Icon: Plane,
@@ -1146,8 +1151,9 @@ export function AwwwardsLanding({
               ),
               action: text("Je prends la route", "Share a journey"),
               kind: "trips",
+              platformRoute: "voyageur",
             },
-          ].map(({ Icon, number, title, copy: description, action, kind }) => (
+          ].map(({ Icon, number, title, copy: description, action, kind, platformRoute }) => (
             <article key={number} className={`universe universe-${number}`}>
               <header>
                 <span>
@@ -1255,10 +1261,16 @@ export function AwwwardsLanding({
                   </div>
                 )}
               </div>
-              <a href={`/#publish/${kind}`}>
-                {action}
-                <ArrowUpRight size={19} />
-              </a>
+              <div className="universe-actions-dual" style={{ display: "flex", gap: "10px", marginTop: "16px", flexWrap: "wrap" }}>
+                <a href={`/#${platformRoute}`} className="universe-explore-link" style={{ flex: "1 1 120px", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                  {text("Explorer", "Explore")} {number === "01" ? "Bag&Go" : number === "02" ? "Shop&Go" : "Voyageur"}
+                  <ArrowRight size={16} />
+                </a>
+                <a href={`/#publish/${kind}`} className="universe-publish-link" style={{ flex: "1 1 130px", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                  {action}
+                  <ArrowUpRight size={16} />
+                </a>
+              </div>
             </article>
           ))}
         </div>

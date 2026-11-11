@@ -452,12 +452,21 @@ function Marketplace() {
   useEffect(() => {
     if (route.startsWith("publish/")) {
       const kind = route.split("/")[1];
-      if (kind === "parcel" || kind === "requests" || kind === "trips") {
-        setPublishKind(kind);
+      if (kind === "parcel") {
+        setActivePlatform("bagandgo");
+        setPublishKind("parcel");
+        setPublish(true);
+      } else if (kind === "requests") {
+        setActivePlatform("shopandgo");
+        setPublishKind("requests");
+        setPublish(true);
+      } else if (kind === "trips") {
+        setActivePlatform("voyageur");
+        setPublishKind("trips");
         setPublish(true);
       }
     }
-  }, [route]);
+  }, [route, setActivePlatform]);
   useEffect(() => {
     const previous = previousRoute.current;
     previousRoute.current = route;

@@ -1,10 +1,11 @@
 import { useEffect, useId, useMemo, useState } from "react";
-import { ArrowRight, ArrowUpRight, Check, Package, Plane, RefreshCw, ShoppingBag, SlidersHorizontal } from "lucide-react";
+import { ArrowLeftRight, ArrowRight, ArrowUpRight, Check, Package, Plane, RefreshCw, ShoppingBag, SlidersHorizontal, Sparkles } from "lucide-react";
 import { euro, type PurchaseRequest } from "../data/marketplace";
 import {
   calculateProfit, estimatedFlightOffers, filterOpportunities, flightArbitrageApi, matchFlight,
   type ArbitrageSnapshot, type MatchedOpportunity,
 } from "../services/flightArbitrageApi";
+import { CityAutocomplete } from "./common/CityAutocomplete";
 import "../arbitrage.css";
 
 interface Props {
@@ -85,12 +86,51 @@ export function SmartFlightArbitrage({ requests, reservedRequestIds = [], initia
   return (
     <section className="flight-arbitrage" aria-labelledby={`${id}-title`}>
       <header className="arbitrage-heading">
-        <div><span className="arbitrage-eyebrow"><Plane size={15} /> LE BON VOL, LES BONNES MISSIONS</span><h2 id={`${id}-title`}>Un billet. Plusieurs possibilités.</h2><p>Les demandes compatibles avec votre trajet, réunies dans un seul calcul.</p></div>
-        <div className="arbitrage-source"><span>{snapshot.source === "live" ? "Tarifs fournisseur" : "Tarifs indicatifs"}</span><small>Actualisé à {new Date(snapshot.updatedAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</small><button aria-label="Actualiser les vols" onClick={() => setRefreshKey(value => value + 1)} disabled={loading}><RefreshCw size={15} />Actualiser</button></div>
+        <div>
+          <span className="arbitrage-eyebrow"><Plane size={15} /> ALGORITHME D'ARBITRAGE IA · VOYAGEZ GRATUIT & GAGNEZ DE L'ARGENT</span>
+          <h2 id={`${id}-title`}>Monétisez votre vol avec l'arbitrage automatique</h2>
+          <p>L'algorithme rapproche les billets d'avion les moins chers avec les commandes en attente pour financer votre vol et dégager un bénéfice net.</p>
+        </div>
+        <div className="arbitrage-source">
+          <span>{snapshot.source === "live" ? "Tarifs IATA vérifiés" : "Tarifs indicatifs"}</span>
+          <small>Actualisé à {new Date(snapshot.updatedAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</small>
+          <button aria-label="Actualiser les vols" onClick={() => setRefreshKey(value => value + 1)} disabled={loading}><RefreshCw size={15} />Actualiser</button>
+        </div>
       </header>
       <div className="arbitrage-filters">
-        <label>Ville de départ<select aria-label="Ville de départ" value={origin} onChange={event => { setOrigin(event.target.value); setExcluded([]); }}><option value="">Toutes les villes</option>{[...new Set(snapshot.offers.map(item => item.origin))].sort().map(city => <option key={city}>{city}</option>)}</select></label>
-        <label>Ville d’arrivée<select aria-label="Ville d’arrivée" value={destination} onChange={event => { setDestination(event.target.value); setExcluded([]); }}><option value="">Toutes les villes</option>{[...new Set(snapshot.offers.map(item => item.destination))].sort().map(city => <option key={city}>{city}</option>)}</select></label>
+        <div className="arbitrage-city-input-group">
+          <label htmlFor={`${id}-origin`}>Ville de départ</label>
+          <CityAutocomplete
+            id={`${id}-origin`}
+            name="origin"
+            value={origin}
+            onChange={(val) => { setOrigin(val); setExcluded([]); }}
+            placeholder="Toutes les villes (ex: Paris, Marseille)"
+          />
+        </div>
+        <button
+          type="button"
+          className="arbitrage-swap-btn"
+          aria-label="Inverser les villes"
+          onClick={() => {
+            const temp = origin;
+            setOrigin(destination);
+            setDestination(temp);
+            setExcluded([]);
+          }}
+        >
+          <ArrowLeftRight size={16} />
+        </button>
+        <div className="arbitrage-city-input-group">
+          <label htmlFor={`${id}-destination`}>Ville d’arrivée</label>
+          <CityAutocomplete
+            id={`${id}-destination`}
+            name="destination"
+            value={destination}
+            onChange={(val) => { setDestination(val); setExcluded([]); }}
+            placeholder="Toutes les villes (ex: Alger, Oran)"
+          />
+        </div>
         <label>Gain net minimum (€)<input type="number" step="1" placeholder="Aucun minimum" value={minimum} onChange={event => { setMinimum(event.target.value); setExcluded([]); }} /></label>
         <label>Trier les vols<select aria-label="Trier les vols" value={sort} onChange={event => setSort(event.target.value as "profit" | "roi")}><option value="profit">Gain net décroissant</option><option value="roi">ROI décroissant</option></select></label>
       </div>

@@ -11,6 +11,7 @@ import {
   Package,
   Plane,
   ShieldCheck,
+  ShoppingBag,
   Sparkles,
   UserPlus,
   UserRound,
@@ -95,6 +96,36 @@ export function LandingMobileMenu({
   };
 
   const navSections = [
+    {
+      title: isFr ? "Les 3 Univers BagVoyage" : "The 3 Platforms",
+      items: [
+        {
+          route: "voyageur",
+          label: isFr ? "Espace Voyageur" : "Traveler Universe",
+          description: isFr
+            ? "Monétisez vos kilos en cabine et soute"
+            : "Monetize your unused luggage space",
+          icon: Plane,
+          badge: isFr ? "Populaire" : "Popular",
+        },
+        {
+          route: "bagandgo",
+          label: isFr ? "Bag & Go (Expédition)" : "Bag & Go (Shipment)",
+          description: isFr
+            ? "Envoyez un colis au millimètre près"
+            : "Send parcels with verified travellers",
+          icon: Package,
+        },
+        {
+          route: "shopandgo",
+          label: isFr ? "Shop & Go (Achat boutique)" : "Shop & Go (Shopping)",
+          description: isFr
+            ? "Commandez en Duty-Free et boutiques"
+            : "Shop overseas stores with receipt",
+          icon: ShoppingBag,
+        },
+      ],
+    },
     {
       title: isFr ? "Découverte & Informations" : "Discovery & Information",
       items: [
