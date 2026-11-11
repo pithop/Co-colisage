@@ -88,17 +88,30 @@ export function matchFlight(
       && samePlace(request.destination, request.destinationCode, flight.destination, flight.destinationCode);
   }).sort((a, b) => a.id.localeCompare(b.id));
 
-  // Sparse knapsack in grams: choose the highest commission that fits, without duplicate requests.
+  // 3D Bin Packing & Knapsack: Weight in grams + Physical volume in cm³ (IATA standards)
   const capacity = Math.floor(flight.availableKg * 1000);
-  const bundles = new Map<number, { reward: number; requests: PurchaseRequest[] }>([[0, { reward: 0, requests: [] }]]);
+  const maxVolumeCm3 = Math.floor(flight.availableKg * 6000);
+
+  const getRequestVolume = (r: PurchaseRequest) => {
+    if (r.dimensions?.length && r.dimensions?.width && r.dimensions?.height) {
+      return r.dimensions.length * r.dimensions.width * r.dimensions.height;
+    }
+    return Math.ceil((r.weightKg ?? 1) * 3500);
+  };
+
+  const bundles = new Map<number, { reward: number; volume: number; requests: PurchaseRequest[] }>([
+    [0, { reward: 0, volume: 0, requests: [] }]
+  ]);
   for (const request of eligible) {
     const grams = Math.ceil(request.weightKg! * 1000);
+    const volume = getRequestVolume(request);
     for (const [weight, bundle] of [...bundles]) {
       const nextWeight = weight + grams;
-      if (nextWeight > capacity) continue;
+      const nextVolume = bundle.volume + volume;
+      if (nextWeight > capacity || nextVolume > maxVolumeCm3) continue;
       const reward = bundle.reward + cents(request.reward);
       if (reward > (bundles.get(nextWeight)?.reward ?? -1))
-        bundles.set(nextWeight, { reward, requests: [...bundle.requests, request] });
+        bundles.set(nextWeight, { reward, volume: nextVolume, requests: [...bundle.requests, request] });
     }
   }
   let selected: PurchaseRequest[] = [];

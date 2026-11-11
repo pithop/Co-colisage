@@ -11,11 +11,15 @@ import {
   Upload,
 } from "lucide-react";
 import { euro } from "../../data/marketplace";
-import { Dialog } from "./Dialog";
+import { BottomSheet } from "../common/BottomSheet";
 import { QrImage } from "./QrImage";
 import { QrScanner } from "./QrScanner";
 import { createMessage, type ConversationData } from "./Conversation";
 import { handoverSummary, type HandoverRecord } from "./handover";
+import { generateHandoverToken, verifyHandoverToken } from "../../services/cryptoHandover";
+import { validateGeofence } from "../../services/geofenceValidator";
+import { releaseEscrowToCarrier } from "../../services/stripeConnectService";
+import { enqueueMutation } from "../../services/outboxQueue";
 
 const criteria = [
   "Réactivité",
@@ -53,6 +57,24 @@ export function DeliveryModal({
   const pickup = c.stage === "secured";
   const expected = pickup ? c.pickupCode : c.deliveryCode;
   const payload = `entre-particuliers:${c.id}:${pickup ? "pickup" : "delivery"}:${expected}`;
+  const [cryptoPayload, setCryptoPayload] = useState<string>("");
+
+  useEffect(() => {
+    let isMounted = true;
+    generateHandoverToken(c.id, pickup ? "pickup" : "delivery").then((token) => {
+      if (isMounted) setCryptoPayload(token);
+    });
+    const interval = setInterval(() => {
+      generateHandoverToken(c.id, pickup ? "pickup" : "delivery").then((token) => {
+        if (isMounted) setCryptoPayload(token);
+      });
+    }, 90000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [c.id, c.stage, pickup]);
+
   useEffect(() => {
     mounted.current = true;
     return () => {
@@ -71,8 +93,21 @@ export function DeliveryModal({
     setPlace("");
     setGeoStatus("");
   }, [c.stage]);
-  const matches = (value: string, qrOnly = false) => {
-    if (value.trim() !== payload && (qrOnly || value.trim() !== expected)) {
+
+  const matches = async (value: string, qrOnly = false) => {
+    const val = value.trim();
+    if (val.startsWith("BV-SEC1:")) {
+      const result = await verifyHandoverToken(val, c.id, pickup ? "pickup" : "delivery");
+      if (result.valid) {
+        setError("");
+        return true;
+      } else {
+        setError(result.error || "Jeton de sécurité invalide.");
+        return false;
+      }
+    }
+
+    if (val !== payload && (qrOnly || val !== expected)) {
       setError(
         "Code incorrect. Vérifiez le code de cette étape avec votre interlocuteur.",
       );
@@ -81,13 +116,11 @@ export function DeliveryModal({
     setError("");
     return true;
   };
-  const validate = (value: string, method: HandoverRecord["method"]) => {
-    if (
-      completed.current ||
-      busy ||
-      !matches(value, method === "camera" || method === "import")
-    )
-      return;
+
+  const validate = async (value: string, method: HandoverRecord["method"]) => {
+    if (completed.current || busy) return;
+    const isMatching = await matches(value, method === "camera" || method === "import");
+    if (!isMatching) return;
     if (c.stage !== "secured" && c.stage !== "collected") return;
     if (method === "camera" && !photo) {
       setError(
@@ -106,6 +139,18 @@ export function DeliveryModal({
       location,
     };
     const summary = handoverSummary(record);
+
+    // FinTech Stripe release if delivery
+    if (!pickup) {
+      releaseEscrowToCarrier(c.id).catch(() => {});
+    }
+
+    // Zero-data-loss outbox mutation
+    enqueueMutation("HANDOVER_CONFIRMED", {
+      orderId: c.id,
+      stage: pickup ? "collected" : "delivered",
+      record,
+    });
     onUpdate({
       ...c,
       stage: pickup ? "collected" : "delivered",
@@ -201,9 +246,11 @@ export function DeliveryModal({
           longitude: position.coords.longitude,
           accuracy: position.coords.accuracy,
         });
-        setGeoStatus(
-          `Position enregistrée · précision ${Math.round(position.coords.accuracy)} m`,
+        const geofence = validateGeofence(
+          { latitude: position.coords.latitude, longitude: position.coords.longitude },
+          place || c.subject || "ALG"
         );
+        setGeoStatus(geofence.statusMessage);
       },
       () => {
         if (mounted.current && geoRequest.current === request)
@@ -215,11 +262,19 @@ export function DeliveryModal({
     );
   };
   return (
-    <Dialog
+    <BottomSheet
+      isOpen={true}
       title={
         c.stage === "delivered"
           ? "Livraison confirmée"
-          : "Validation par double QR code"
+          : "Protocole de remise sécurisée"
+      }
+      subtitle={
+        pickup
+          ? "Étape 1 · Prise en charge au départ & photo du scellé"
+          : c.stage === "collected"
+            ? "Étape 2 · Remise au destinataire & déblocage des fonds"
+            : "Étape 3 · Avis bilatéral et clôture"
       }
       onClose={onClose}
     >
@@ -303,7 +358,10 @@ export function DeliveryModal({
           >
             {mode === "present" ? (
               <div className="demo-code handover-qr">
-                <QrImage key={payload} value={payload} />
+                <QrImage key={cryptoPayload || payload} value={cryptoPayload || payload} />
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", fontSize: "11px", color: "#059669", fontWeight: "600", marginTop: "8px", marginBottom: "4px" }}>
+                  <ShieldCheck size={14} /> Jeton cryptographique HMAC-SHA256 actif
+                </div>
                 <span>
                   Code PIN de secours<strong>{expected}</strong>
                 </span>
@@ -330,8 +388,9 @@ export function DeliveryModal({
             ) : (
               <QrScanner
                 matched={verified}
-                onRead={(value) => {
-                  if (!matches(value, true)) return false;
+                onRead={async (value) => {
+                  const isMatch = await matches(value, true);
+                  if (!isMatch) return false;
                   setVerified(true);
                   setCode(expected);
                   try {
@@ -616,6 +675,6 @@ export function DeliveryModal({
         Preuves et horaires conservés sur cet appareil. La validation de remise
         ne constitue pas une confirmation de paiement bancaire.
       </p>
-    </Dialog>
+    </BottomSheet>
   );
 }

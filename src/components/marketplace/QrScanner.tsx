@@ -5,7 +5,7 @@ export function QrScanner({
   onRead,
   matched,
 }: {
-  onRead: (value: string) => boolean;
+  onRead: (value: string) => boolean | Promise<boolean>;
   matched: boolean;
 }) {
   const video = useRef<HTMLVideoElement>(null);
@@ -79,9 +79,18 @@ export function QrScanner({
             const result = jsQR(pixels.data, pixels.width, pixels.height, {
               inversionAttempts: "attemptBoth",
             });
-            if (result && read.current(result.data)) {
-              stop();
-              return;
+            if (result) {
+              const res = read.current(result.data);
+              if (res === true) {
+                stop();
+                return;
+              }
+              if (res instanceof Promise) {
+                res.then((isValid) => {
+                  if (isValid) stop();
+                });
+                return;
+              }
             }
           }
           frame = requestAnimationFrame(scan);
