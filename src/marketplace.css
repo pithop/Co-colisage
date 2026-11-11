@@ -1,22 +1,66 @@
 :root {
-  --ink: #0a1128;
+  --ink: #0f172a;
+  --ink-secondary: #334155;
   --muted: #64748b;
+  --muted-light: #94a3b8;
   --line: #e2e8f0;
+  --line-subtle: rgba(226, 232, 240, 0.75);
   --blue: #2563eb;
-  --paper: #fff;
+  --blue-hover: #1d4ed8;
+  --blue-light: #eff6ff;
+  --blue-border: #bfdbfe;
+  --emerald: #059669;
+  --emerald-hover: #047857;
+  --emerald-light: #ecfdf5;
+  --emerald-border: #a7f3d0;
+  --amber: #d97706;
+  --amber-light: #fffbeb;
+  --amber-border: #fde68a;
+  --paper: #ffffff;
   --soft: #f8fafc;
-  --shadow: 0 2px 4px #0a112803, 0 8px 24px #0a112805;
-  --shadow-raised: 0 4px 8px #0a112804, 0 16px 40px #0a11280c;
+  --surface-elevated: #ffffff;
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --shadow-raised: 0 10px 15px -3px rgba(15, 23, 42, 0.07), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --shadow-glow: 0 0 24px -4px rgba(37, 99, 235, 0.16);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-pill: 9999px;
   --nav-height: calc(64px + env(safe-area-inset-bottom, 0px));
+}
+:root[data-theme="dark"],
+.dark {
+  --ink: #f8fafc;
+  --ink-secondary: #cbd5e1;
+  --muted: #94a3b8;
+  --muted-light: #64748b;
+  --line: #334155;
+  --line-subtle: rgba(51, 65, 85, 0.7);
+  --paper: #1e293b;
+  --soft: #0f172a;
+  --surface-elevated: #1e293b;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+  --shadow-raised: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
 }
 body {
   padding-bottom: 0 !important;
   background: var(--soft);
   color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 .marketplace {
   min-height: 100dvh;
-  font-family: var(--font-apple-system, -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   font-size: 14px;
   line-height: 1.6;
   padding-bottom: 48px;
@@ -4704,3 +4748,125 @@ img.vehicle-illustration {
   background: #fff;
   color: #142b43;
 }
+
+/* Tactile segmented controls and chip buttons (0 raw selects) */
+.bv-vehicle-type-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bv-vehicle-label,
+.bv-franchise-label,
+.bv-dial-label,
+.admin-filter-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted, #64748b);
+}
+.bv-vehicle-type-segmented,
+.bv-franchise-segmented,
+.admin-pills-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px;
+  background: var(--bg-secondary, #f1f5f9);
+  border: 1px solid var(--border-subtle, #e2e8f0);
+  border-radius: 12px;
+}
+:root[data-theme="dark"] .bv-vehicle-type-segmented,
+.dark .bv-vehicle-type-segmented,
+:root[data-theme="dark"] .bv-franchise-segmented,
+.dark .bv-franchise-segmented,
+:root[data-theme="dark"] .admin-pills-group,
+.dark .admin-pills-group {
+  background: #0f172a;
+  border-color: #334155;
+}
+.bv-vehicle-type-btn,
+.bv-franchise-btn,
+.admin-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary, #64748b);
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+.bv-vehicle-type-btn:hover,
+.bv-franchise-btn:hover,
+.admin-pill-btn:hover {
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--text-primary, #0f172a);
+}
+:root[data-theme="dark"] .bv-vehicle-type-btn:hover,
+.dark .bv-vehicle-type-btn:hover,
+:root[data-theme="dark"] .bv-franchise-btn:hover,
+.dark .bv-franchise-btn:hover,
+:root[data-theme="dark"] .admin-pill-btn:hover,
+.dark .admin-pill-btn:hover {
+  background: #1e293b;
+  color: #f8fafc;
+}
+.bv-vehicle-type-btn.active,
+.bv-franchise-btn.active,
+.admin-pill-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
+}
+
+.bv-dial-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.bv-dial-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.bv-dial-chip {
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid var(--border-subtle, #e2e8f0);
+  background: var(--bg-surface, #ffffff);
+  color: var(--text-secondary, #475569);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.bv-dial-chip:hover {
+  border-color: #93c5fd;
+  color: #2563eb;
+}
+.bv-dial-chip.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+:root[data-theme="dark"] .bv-dial-chip,
+.dark .bv-dial-chip {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+:root[data-theme="dark"] .bv-dial-chip.active,
+.dark .bv-dial-chip.active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+

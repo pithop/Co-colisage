@@ -474,19 +474,24 @@ export function AwwwardsLanding({
         </div>
         <div className="landing-masthead-controls">
           <ThemeToggle />
-          <label className="landing-language">
-            <Globe2 size={16} />
-            <select
-              aria-label="Langue / Language"
-              value={language}
-              onChange={(event) =>
-                setLanguage(event.target.value as typeof language)
-              }
+          <div className="landing-lang-segmented" role="group" aria-label="Langue / Language">
+            <button
+              type="button"
+              className={`landing-lang-btn ${language === "fr" ? "active" : ""}`}
+              onClick={() => setLanguage("fr")}
+              aria-pressed={language === "fr"}
             >
-              <option value="fr">FR</option>
-              <option value="en">EN</option>
-            </select>
-          </label>
+              FR
+            </button>
+            <button
+              type="button"
+              className={`landing-lang-btn ${language === "en" ? "active" : ""}`}
+              onClick={() => setLanguage("en")}
+              aria-pressed={language === "en"}
+            >
+              EN
+            </button>
+          </div>
           <button
             type="button"
             className="landing-mobile-menu-trigger"
@@ -1445,93 +1450,153 @@ export function AwwwardsLanding({
               <div className={`universe-specimen specimen-${kind}`}>
                 {kind === "parcel" ? (
                   <div className="parcel-label">
-                    <div>
-                      <Package size={20} />
-                      <span>
-                        {text("EXPÉDITION SÉCURISÉE", "SECURE DELIVERY")}
+                    <div className="parcel-specimen-header">
+                      <div className="parcel-specimen-brand">
+                        <Package size={18} />
+                        <span>{text("EXPÉDITION EXPRESS OACI", "ICAO EXPRESS DELIVERY")}</span>
+                      </div>
+                      <span className="parcel-steb-pill">
+                        <ShieldCheck size={13} />
+                        STEB-SEAL
                       </span>
-                      <ShieldCheck size={18} />
                     </div>
-                    <strong>{text("Colis #DZ-8491", "Parcel #DZ-8491")}</strong>
-                    <p>
-                      Paris CDG <ArrowRight size={15} /> Alger ALG
-                    </p>
-                    <PassBarcode />
-                    <span className="specimen-verified">
-                      <CircleCheck size={14} />
-                      {text(
-                        "Scellé STEB inviolable vérifié",
-                        "Verified tamper-evident STEB seal",
-                      )}
-                    </span>
-                    <footer>
-                      {text("Livraison 24h–48h", "24–48h delivery")}
-                      <span>4.0 KG</span>
-                    </footer>
+
+                    <div className="parcel-specimen-route">
+                      <div className="parcel-airport">
+                        <strong>CDG</strong>
+                        <small>Paris Charles-de-Gaulle</small>
+                      </div>
+                      <div className="parcel-flight-arrow">
+                        <Plane size={16} />
+                        <span>Vol 2h20</span>
+                      </div>
+                      <div className="parcel-airport">
+                        <strong>ALG</strong>
+                        <small>Alger Houari-Boumédiène</small>
+                      </div>
+                    </div>
+
+                    <div className="parcel-specimen-meta">
+                      <div>
+                        <span>{text("Référence", "Reference")}</span>
+                        <strong>#DZ-8491-EX</strong>
+                      </div>
+                      <div>
+                        <span>{text("Poids déclaré", "Weight")}</span>
+                        <strong>4.0 kg</strong>
+                      </div>
+                      <div>
+                        <span>{text("Délai garanti", "Delivery")}</span>
+                        <strong>24h–48h</strong>
+                      </div>
+                    </div>
+
+                    <div className="parcel-specimen-barcode">
+                      <PassBarcode />
+                      <span>*BV-DZ8491-STEB-2026*</span>
+                    </div>
+
+                    <div className="parcel-specimen-footer">
+                      <div className="parcel-verified-badge">
+                        <CheckCircle2 size={14} />
+                        <span>{text("Scellé inviolable & Séquestre Stripe actif", "Tamper-proof seal & Stripe escrow active")}</span>
+                      </div>
+                    </div>
                   </div>
                 ) : kind === "requests" ? (
-                  <>
+                  <div className="shopping-receipt">
                     <div className="brand-chips">
-                      {["Sephora", "Decathlon", "Apple Store", "Zara"].map(
+                      {["Apple Store", "Sephora", "Duty-Free CDG", "Pharmacie"].map(
                         (brand) => (
                           <span key={brand}>{brand}</span>
                         ),
                       )}
                     </div>
-                    <div className="shopping-receipt">
-                      <ReceiptText size={24} />
-                      <strong>
-                        {text(
-                          "Une envie. Un reçu. C’est tout.",
-                          "Your wish. Your receipt. All set.",
-                        )}
-                      </strong>
-                      <span>
-                        {text(
-                          "Reçu officiel avec TVA certifiée",
-                          "Official receipt with certified VAT",
-                        )}
-                      </span>
-                      <div>
+
+                    <div className="shop-specimen-body">
+                      <div className="shop-specimen-header">
+                        <div className="shop-specimen-badge">
+                          <ShoppingBag size={16} />
+                          <span>{text("COMMANDE CERTIFIÉE EN BOUTIQUE", "CERTIFIED STORE ORDER")}</span>
+                        </div>
+                        <span className="shop-vat-tag">{text("TVA Déductible", "Tax-Free VAT")}</span>
+                      </div>
+
+                      <div className="shop-specimen-item">
+                        <strong>Apple AirPods Pro 2 · MagSafe USB-C</strong>
+                        <p>{text("Acheté en magasin officiel Champs-Élysées", "Purchased at official Champs-Élysées store")}</p>
+                      </div>
+
+                      <div className="shop-specimen-receipt-row">
+                        <Receipt size={14} />
+                        <span>{text("Ticket de caisse & Facture nominative joints", "Original receipt & itemized invoice included")}</span>
+                      </div>
+
+                      <div className="shop-specimen-guarantee">
                         <LockKeyhole size={14} />
-                        {text(
-                          "Budget sous séquestre",
-                          "Budget secured in escrow",
-                        )}
+                        <div>
+                          <strong>{text("Séquestre 100 % sécurisé", "100% Escrow Protection")}</strong>
+                          <small>{text("0 € d'avance demandée au voyageur · Déblocage à réception conforme", "No cash advance required from traveler · Payout upon compliant delivery")}</small>
+                        </div>
                       </div>
                     </div>
-                  </>
+                  </div>
                 ) : (
                   <div className="traveller-receipt">
-                    <span className="receipt-check">
-                      <Check size={22} />
-                    </span>
-                    <span>
-                      {text(
-                        "VOTRE VOYAGE A DE LA VALEUR",
-                        "YOUR JOURNEY HAS VALUE",
-                      )}
-                    </span>
-                    <strong>
-                      +120 € <small>net</small>
-                    </strong>
-                    <p>
-                      {text(
-                        "Vol AH1000 · 15 kg partagés",
-                        "Flight AH1000 · 15 kg shared",
-                      )}
-                    </p>
-                    <div>
-                      <CircleCheck size={14} />
-                      {text("Versés directement", "Paid directly")}
+                    <div className="travel-boarding-header">
+                      <div className="travel-airline-tag">
+                        <Plane size={16} />
+                        <strong>AIR ALGÉRIE · AH1000</strong>
+                      </div>
+                      <span className="travel-class-badge">CABIN + SOUTE</span>
                     </div>
-                    <footer>
-                      <ShieldCheck size={14} />
-                      {text(
-                        "Assurance bagages incluse",
-                        "Luggage insurance included",
-                      )}
-                    </footer>
+
+                    <div className="travel-passenger-row">
+                      <div>
+                        <span>{text("Voyageur vérifié", "Verified Traveler")}</span>
+                        <strong>Karim B.</strong>
+                      </div>
+                      <div className="travel-pnr">
+                        <span>PNR</span>
+                        <strong>BV-782K</strong>
+                      </div>
+                    </div>
+
+                    <div className="travel-route-display">
+                      <div className="travel-leg">
+                        <strong>CDG</strong>
+                        <span>09:40 Paris</span>
+                      </div>
+                      <div className="travel-leg-duration">
+                        <span>2h 20m</span>
+                        <div className="travel-leg-line" />
+                      </div>
+                      <div className="travel-leg">
+                        <strong>ALG</strong>
+                        <span>12:05 Alger</span>
+                      </div>
+                    </div>
+
+                    <div className="travel-luggage-gauge">
+                      <div className="gauge-header">
+                        <span>{text("Capacité partagée", "Shared Capacity")}</span>
+                        <strong>15 kg / 23 kg (65 %)</strong>
+                      </div>
+                      <div className="gauge-bar">
+                        <div className="gauge-fill" style={{ width: "65%" }} />
+                      </div>
+                    </div>
+
+                    <div className="travel-reward-row">
+                      <div>
+                        <span>{text("Gain net garanti", "Guaranteed Net Earning")}</span>
+                        <strong className="travel-reward-val">+160 €</strong>
+                      </div>
+                      <div className="travel-escrow-badge">
+                        <ShieldCheck size={14} />
+                        <span>{text("Payé sous 24h", "Paid in 24h")}</span>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1940,6 +2005,25 @@ export function AwwwardsLanding({
         <div className="landing-footer-theme">
           <ThemeToggle showLabel />
         </div>
+        <div className="landing-footer-trust-badges">
+          <div className="landing-trust-badge-item">
+            <ShieldCheck size={16} />
+            <span>{text("Séquestre Stripe Connect", "Stripe Connect Escrow")}</span>
+          </div>
+          <div className="landing-trust-badge-item">
+            <CheckCircle2 size={16} />
+            <span>{text("Norme OACI Scellé STEB", "ICAO Standard STEB Seal")}</span>
+          </div>
+          <div className="landing-trust-badge-item">
+            <LockKeyhole size={16} />
+            <span>{text("Chiffrement TLS 256-bit", "256-bit TLS Encryption")}</span>
+          </div>
+          <div className="landing-trust-badge-item">
+            <Globe2 size={16} />
+            <span>{text("Conformité RGPD / CNIL", "GDPR / CNIL Compliant")}</span>
+          </div>
+        </div>
+
         <details className="landing-legal">
           <summary>
             {text("Mentions & données personnelles", "Legal & personal data")}

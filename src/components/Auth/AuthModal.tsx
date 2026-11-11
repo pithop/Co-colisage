@@ -438,21 +438,7 @@ export function AuthModal({
                 </small>
               </section>
             )}
-            {tab === "register" && (
-              <label className="native-control-bridge">
-                Je souhaite m’inscrire comme
-                <select
-                  value={profile.role}
-                  onChange={(e) => change("role", e.target.value)}
-                >
-                  <option value="voyageur">Voyageur</option>
-                  <option value="expediteur">Expéditeur</option>
-                  <option value="transporteur_pro">
-                    Transporteur professionnel
-                  </option>
-                </select>
-              </label>
-            )}
+
             {tab === "register" && (
               <div
                 className="auth-role-picker"

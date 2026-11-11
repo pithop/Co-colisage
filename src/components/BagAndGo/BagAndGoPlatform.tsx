@@ -679,23 +679,35 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
                   Catégorie de contenu
                 </label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none cursor-pointer focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
-                >
-                  <option value="Pharmacie & Médical">Pharmacie &amp; Médical (médicaments scellés, ordonnances)</option>
-                  <option value="High-Tech & Électronique">High-Tech &amp; Électronique (téléphones, PC, accessoires)</option>
-                  <option value="Textile & Vêtements">Textile, Chaussures &amp; Prêt-à-porter</option>
-                  <option value="Documents & Papiers">Documents officiels, Passeports &amp; Diplômes</option>
-                  <option value="Cosmétiques & Parfums">Cosmétiques, Parfumerie &amp; Soins</option>
-                  <option value="Alimentation & Terroir">Alimentation, Épicerie fine &amp; Produits du terroir</option>
-                  <option value="Pièces auto & Outillage">Pièces détachées, Outillage &amp; Bricolage</option>
-                  <option value="Autre">Autre marchandise licite</option>
-                </select>
+                <div className="flex flex-wrap gap-1.5" role="group" aria-label="Catégorie de marchandise">
+                  {[
+                    "Pharmacie & Médical",
+                    "High-Tech & Électronique",
+                    "Textile & Vêtements",
+                    "Documents & Papiers",
+                    "Cosmétiques & Parfums",
+                    "Alimentation & Terroir",
+                    "Pièces auto & Outillage",
+                    "Autre",
+                  ].map((catId) => (
+                    <button
+                      key={catId}
+                      type="button"
+                      className={`text-xs font-semibold px-3 py-1.5 rounded-xl border transition-all cursor-pointer ${
+                        category === catId
+                          ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                          : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                      }`}
+                      aria-pressed={category === catId}
+                      onClick={() => setCategory(catId)}
+                    >
+                      {catId}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

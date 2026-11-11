@@ -886,3 +886,56 @@
     animation: none;
   }
 }
+
+/* Dark mode overrides for FinTech Wallet & Transactions */
+:root[data-theme="dark"] .wallet-escrow,
+.dark .wallet-escrow {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+:root[data-theme="dark"] .wallet-escrow .wallet-card-top,
+.dark .wallet-escrow .wallet-card-top {
+  color: #94a3b8;
+}
+:root[data-theme="dark"] .wallet-escrow > p,
+.dark .wallet-escrow > p {
+  color: #94a3b8;
+}
+:root[data-theme="dark"] .escrow-provider,
+.dark .escrow-provider {
+  background: #1e3a8a33;
+  border: 1px solid #3b82f644;
+  color: #93c5fd;
+}
+:root[data-theme="dark"] .wallet-cash,
+.dark .wallet-cash {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+:root[data-theme="dark"] .wallet-cash p,
+.dark .wallet-cash p {
+  color: #94a3b8;
+}
+:root[data-theme="dark"] .transaction-item,
+.dark .transaction-item {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+:root[data-theme="dark"] .transaction-filters button,
+.dark .transaction-filters button {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+:root[data-theme="dark"] .transaction-filters button.active,
+:root[data-theme="dark"] .transaction-filters button[aria-pressed="true"],
+.dark .transaction-filters button.active,
+.dark .transaction-filters button[aria-pressed="true"] {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+

@@ -44,5 +44,20 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 export const useLanguage = () => useContext(LanguageContext);
 export function LanguageSelector({ location }: { location: 'header' | 'footer' }) {
   const { language, setLanguage } = useLanguage();
-  return <label className="bv-language"><Languages size={16} aria-hidden="true" /><span className="sr-only">{location === 'header' ? 'Langue de l’application' : 'Langue du pied de page'}</span><select value={language} onChange={e => setLanguage(e.target.value as Language)}><option value="fr">FR · Français</option><option value="en">EN · English</option><option value="ar">AR · العربية</option></select></label>;
+  return (
+    <div className={`bv-language-selector bv-language-selector-${location}`} role="group" aria-label={location === 'header' ? 'Langue de l’application' : 'Langue du pied de page'}>
+      <Languages size={13} className="bv-lang-icon" aria-hidden="true" />
+      {(['fr', 'en', 'ar'] as const).map((l) => (
+        <button
+          key={l}
+          type="button"
+          className={`bv-lang-btn ${language === l ? 'active' : ''}`}
+          aria-pressed={language === l}
+          onClick={() => setLanguage(l)}
+        >
+          {l.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
 }

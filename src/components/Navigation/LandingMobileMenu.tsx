@@ -268,20 +268,30 @@ export function LandingMobileMenu({
             <ThemeToggle />
 
             {onLanguageChange && (
-              <label className="landing-mobile-menu-lang">
-                <Globe2 size={15} aria-hidden="true" />
-                <select
-                  aria-label={isFr ? "Changer la langue" : "Change language"}
-                  value={language}
-                  onChange={(e) => {
+              <div className="landing-mobile-menu-lang-segmented" role="group" aria-label={isFr ? "Changer la langue" : "Change language"}>
+                <button
+                  type="button"
+                  className={`mobile-lang-btn ${language === "fr" ? "active" : ""}`}
+                  onClick={() => {
                     triggerHaptic();
-                    onLanguageChange(e.target.value as "fr" | "en");
+                    onLanguageChange("fr");
                   }}
+                  aria-pressed={language === "fr"}
                 >
-                  <option value="fr">FR</option>
-                  <option value="en">EN</option>
-                </select>
-              </label>
+                  FR
+                </button>
+                <button
+                  type="button"
+                  className={`mobile-lang-btn ${language === "en" ? "active" : ""}`}
+                  onClick={() => {
+                    triggerHaptic();
+                    onLanguageChange("en");
+                  }}
+                  aria-pressed={language === "en"}
+                >
+                  EN
+                </button>
+              </div>
             )}
 
             <button

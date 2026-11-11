@@ -251,20 +251,21 @@ export function ProOnboardingModal({
           <legend>Votre flotte</legend>
           {fleet.map((vehicle, index) => (
             <div className="fleet-row" key={vehicle.id}>
-              <label>
-                Véhicule {index + 1}
-                <select
-                  aria-label={`Véhicule ${index + 1}`}
-                  value={vehicle.type}
-                  onChange={(event) =>
-                    updateVehicle(vehicle.id, { type: event.target.value })
-                  }
-                >
+              <div className="bv-vehicle-type-group">
+                <span className="bv-vehicle-label">Véhicule {index + 1}</span>
+                <div className="bv-vehicle-type-segmented" role="group" aria-label={`Type de véhicule ${index + 1}`}>
                   {["Camionnette", "Fourgon", "Poids lourd"].map((type) => (
-                    <option key={type}>{type}</option>
+                    <button
+                      key={type}
+                      type="button"
+                      className={`bv-vehicle-type-btn ${vehicle.type === type ? "active" : ""}`}
+                      onClick={() => updateVehicle(vehicle.id, { type })}
+                    >
+                      {type}
+                    </button>
                   ))}
-                </select>
-              </label>
+                </div>
+              </div>
               <label>
                 Charge utile {index + 1} (kg)
                 <input

@@ -329,24 +329,28 @@ export function RegisterPage() {
                   </label>
                 </div>
                 <div className="bv-phone-fields">
-                  <label>
-                    Indicatif
-                    <select
-                      value={dialCode}
-                      onChange={(e) => setDialCode(e.target.value)}
-                      autoComplete="tel-country-code"
-                    >
-                      <option value="+33">France +33</option>
-                      <option value="+213">Algérie +213</option>
-                      <option value="+32">Belgique +32</option>
-                      <option value="+41">Suisse +41</option>
-                      <option value="+44">Royaume-Uni +44</option>
-                      <option value="+49">Allemagne +49</option>
-                      <option value="+1">Canada / USA +1</option>
-                      <option value="+212">Maroc +212</option>
-                      <option value="+216">Tunisie +216</option>
-                    </select>
-                  </label>
+                  <div className="bv-dial-selector">
+                    <span className="bv-dial-label">Indicatif</span>
+                    <div className="bv-dial-chips" role="group" aria-label="Indicatif téléphonique">
+                      {[
+                        { code: "+33", label: "FR +33" },
+                        { code: "+213", label: "DZ +213" },
+                        { code: "+32", label: "BE +32" },
+                        { code: "+212", label: "MA +212" },
+                        { code: "+216", label: "TN +216" },
+                        { code: "+1", label: "CA/US +1" },
+                      ].map(({ code, label }) => (
+                        <button
+                          key={code}
+                          type="button"
+                          className={`bv-dial-chip ${dialCode === code ? "active" : ""}`}
+                          onClick={() => setDialCode(code)}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <label>
                     Téléphone
                     <input

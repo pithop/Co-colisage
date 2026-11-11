@@ -563,23 +563,7 @@ export function Publish({
               </button>
               <fieldset className="transport-selector">
                 <legend>Comment voyagez-vous ?</legend>
-                <label className="native-control-bridge">
-                  Véhicule
-                  <select
-                    name="vehicle"
-                    aria-label="Véhicule"
-                    value={vehicle}
-                    onChange={(e) =>
-                      setVehicle(e.target.value as Trip["transportType"])
-                    }
-                  >
-                    {transports.map(({ value, label }) => (
-                      <option key={value} value={value}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+
                 <div className="transport-selector-grid">
                   {transports.map(({ value, label, detail, Icon }) => (
                     <button

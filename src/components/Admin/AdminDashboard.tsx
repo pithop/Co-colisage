@@ -295,20 +295,28 @@ function LocalAdminDashboard() {
             <span>{trips.rows.length} trajets</span>
           </div>
           <div className="admin-filters">
-            <label>
-              Statut du trajet
-              <select
-                value={status}
-                onChange={(event) => setStatus(event.target.value)}
-              >
-                <option value="all">Tous les statuts</option>
-                <option value="scheduled">Planifié</option>
-                <option value="in_transit">En cours</option>
-                <option value="completed">Terminé</option>
-                <option value="cancelled">Annulé</option>
-                <option value="delayed">Retard signalé</option>
-              </select>
-            </label>
+            <div className="admin-status-pills-filter">
+              <span className="admin-filter-label">Statut du trajet</span>
+              <div className="admin-pills-group" role="group" aria-label="Filtre par statut">
+                {[
+                  { value: "all", label: "Tous" },
+                  { value: "scheduled", label: "Planifié" },
+                  { value: "in_transit", label: "En cours" },
+                  { value: "completed", label: "Terminé" },
+                  { value: "cancelled", label: "Annulé" },
+                  { value: "delayed", label: "Retard" },
+                ].map((item) => (
+                  <button
+                    key={item.value}
+                    type="button"
+                    className={`admin-pill-btn ${status === item.value ? "active" : ""}`}
+                    onClick={() => setStatus(item.value)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             <label>
               Compagnie ou véhicule
               <select
@@ -485,16 +493,25 @@ function LocalAdminDashboard() {
                 }}
               >
                 <h3>Message direct du support</h3>
-                <label>
-                  Type de destinataire
-                  <select
-                    value={targetType}
-                    onChange={(event) => setTargetType(event.target.value)}
-                  >
-                    <option value="conversation">Conversation affichée</option>
-                    <option value="user">Utilisateur</option>
-                  </select>
-                </label>
+                <div className="admin-target-type-selector">
+                  <span className="admin-filter-label">Type de destinataire</span>
+                  <div className="admin-pills-group" role="group" aria-label="Type de destinataire">
+                    <button
+                      type="button"
+                      className={`admin-pill-btn ${targetType === "conversation" ? "active" : ""}`}
+                      onClick={() => setTargetType("conversation")}
+                    >
+                      Conversation affichée
+                    </button>
+                    <button
+                      type="button"
+                      className={`admin-pill-btn ${targetType === "user" ? "active" : ""}`}
+                      onClick={() => setTargetType("user")}
+                    >
+                      Utilisateur
+                    </button>
+                  </div>
+                </div>
                 {targetType === "user" && (
                   <label>
                     Destinataire utilisateur

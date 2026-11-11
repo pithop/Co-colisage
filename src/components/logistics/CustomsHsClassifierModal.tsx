@@ -207,23 +207,31 @@ export function CustomsHsClassifierModal({
             </a>
           </p>
           {destination === "TN" && (
-            <label>
-              Référence de franchise
-              <select
-                value={legacyTunisia ? "legacy" : "current"}
-                onChange={(event) => {
-                  setLegacyTunisia(event.target.value === "legacy");
-                  setPersonal(false);
-                }}
-              >
-                <option value="current">
-                  Retour provisoire actuel · 5 000 TND
-                </option>
-                <option value="legacy">
-                  Scénario historique du rapport · 2 000 TND
-                </option>
-              </select>
-            </label>
+            <div className="bv-franchise-picker">
+              <span className="bv-franchise-label">Référence de franchise</span>
+              <div className="bv-franchise-segmented" role="group" aria-label="Référence de franchise Tunisie">
+                <button
+                  type="button"
+                  className={`bv-franchise-btn ${!legacyTunisia ? "active" : ""}`}
+                  onClick={() => {
+                    setLegacyTunisia(false);
+                    setPersonal(false);
+                  }}
+                >
+                  Retour provisoire actuel (5 000 TND)
+                </button>
+                <button
+                  type="button"
+                  className={`bv-franchise-btn ${legacyTunisia ? "active" : ""}`}
+                  onClick={() => {
+                    setLegacyTunisia(true);
+                    setPersonal(false);
+                  }}
+                >
+                  Scénario historique (2 000 TND)
+                </button>
+              </div>
+            </div>
           )}
           <label className="bv-tool-check">
             <input
