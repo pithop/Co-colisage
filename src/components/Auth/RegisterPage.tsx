@@ -83,6 +83,7 @@ export function RegisterPage() {
   const [dialCode, setDialCode] = useState("+33");
   const [confirmation, setConfirmation] = useState("");
   const [visible, setVisible] = useState(false);
+  const [confirmVisible, setConfirmVisible] = useState(false);
   const [consent, setConsent] = useState(false);
   const [terms, setTerms] = useState(false);
   const [kyc, setKyc] = useState<"idle" | "scanning" | "simulated">("idle");
@@ -422,13 +423,27 @@ export function RegisterPage() {
                 </ul>
                 <label>
                   Confirmer le mot de passe
-                  <input
-                    type={visible ? "text" : "password"}
-                    autoComplete="new-password"
-                    required
-                    value={confirmation}
-                    onChange={(e) => setConfirmation(e.target.value)}
-                  />
+                  <span className="bv-password-field">
+                    <input
+                      type={confirmVisible ? "text" : "password"}
+                      autoComplete="new-password"
+                      required
+                      value={confirmation}
+                      onChange={(e) => setConfirmation(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      aria-label={
+                        confirmVisible
+                          ? "Masquer la confirmation du mot de passe"
+                          : "Afficher la confirmation du mot de passe"
+                      }
+                      aria-pressed={confirmVisible}
+                      onClick={() => setConfirmVisible(!confirmVisible)}
+                    >
+                      {confirmVisible ? <EyeOff size={19} /> : <Eye size={19} />}
+                    </button>
+                  </span>
                 </label>
               </>
             )}

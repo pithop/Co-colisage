@@ -316,6 +316,22 @@ export function Publish({
           Trajet
         </button>
       </div>
+      <div className="publish-stepper-bar" role="navigation" aria-label="Étapes de publication">
+        <div className="publish-step active">
+          <span className="step-num">1</span>
+          <span className="step-label">Itinéraire</span>
+        </div>
+        <div className="step-connector" />
+        <div className="publish-step active">
+          <span className="step-num">2</span>
+          <span className="step-label">{kind === "requests" ? "Articles" : "Capacité"}</span>
+        </div>
+        <div className="step-connector" />
+        <div className="publish-step active">
+          <span className="step-num">3</span>
+          <span className="step-label">Tarifs & Gains</span>
+        </div>
+      </div>
       {kind === "parcel" ? (
         <ParcelComposer
           initialRoute={initialRoute}
@@ -1020,10 +1036,22 @@ export function Publish({
               </div>
             </article>
           </section>
-          <button className="primary-button" type="submit">
-            {kind === "requests" ? "Publier ma demande" : "Publier mon trajet"}
-            <ArrowRight size={18} />
-          </button>
+          <div className="publish-sticky-dock">
+            <div className="dock-summary">
+              <span className="dock-summary-label">
+                {kind === "trips" ? "Tarif proposé" : "Budget total estimé"}
+              </span>
+              <strong className="dock-summary-value">
+                {kind === "trips"
+                  ? `${currency(price)} € / kg`
+                  : `${currency(totalPurchase + (Number(draft.reward) || 0))} €`}
+              </strong>
+            </div>
+            <button className="primary-button publish-submit-btn" type="submit">
+              {kind === "requests" ? "Publier ma demande" : "Publier mon trajet"}
+              <ArrowRight size={18} />
+            </button>
+          </div>
         </form>
       )}
     </Dialog>

@@ -1096,8 +1096,201 @@ img.vehicle-illustration {
   border: 1px solid var(--line);
   border-radius: 20px;
   overflow: hidden;
-  background: white;
+  background: var(--paper, white);
   box-shadow: var(--shadow);
+}
+.dark .trip-detail {
+  background: #0f172a;
+  border-color: #1e293b;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+}
+.dark .trip-detail .detail-content {
+  background: #0f172a;
+  color: #f1f5f9;
+}
+.dark .detail-actions {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: #1e293b;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.dark .detail-photo {
+  background: #1e293b;
+}
+.dark .detail-photo > span {
+  background: rgba(15, 23, 42, 0.85);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.dark .info-box {
+  background: rgba(37, 99, 235, 0.1);
+  border-color: rgba(37, 99, 235, 0.25);
+  color: #93c5fd;
+}
+.dark .info-box strong {
+  color: #60a5fa;
+}
+.dark .spec-list dt {
+  color: #94a3b8;
+}
+.dark .spec-list dd {
+  color: #f8fafc;
+}
+.dark .buyer-row strong {
+  color: #f8fafc;
+}
+.dark .trip-published-options dt {
+  color: #94a3b8;
+}
+.dark .trip-published-options dd {
+  color: #f1f5f9;
+}
+
+.parcel-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+.parcel-spec-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+.dark .parcel-spec-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+.spec-label {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 2px;
+}
+.dark .spec-label {
+  color: #94a3b8;
+}
+.spec-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.35;
+}
+.dark .spec-val {
+  color: #f8fafc;
+}
+.recipient-trust-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  font-size: 12px;
+  color: #1e40af;
+  margin-top: 10px;
+}
+.dark .recipient-trust-card {
+  background: rgba(37, 99, 235, 0.1);
+  border-color: rgba(37, 99, 235, 0.2);
+  color: #93c5fd;
+}
+.request-photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.request-photo-thumb {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  transition: transform 0.2s ease;
+}
+.request-photo-thumb:hover {
+  transform: scale(1.05);
+}
+.dark .request-photo-thumb {
+  border-color: #334155;
+}
+.shopping-items-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.shopping-item-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+.dark .shopping-item-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+.shopping-item-img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.shopping-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.shopping-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.shopping-item-header h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.dark .shopping-item-header h4 {
+  color: #f8fafc;
+}
+.shopping-item-price {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2563eb;
+}
+.dark .shopping-item-price {
+  color: #60a5fa;
+}
+.shopping-item-spec {
+  font-size: 12px;
+  color: #64748b;
+  margin: 2px 0 6px;
+}
+.dark .shopping-item-spec {
+  color: #94a3b8;
+}
+.shopping-item-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+}
+.shopping-item-link:hover {
+  text-decoration: underline;
+}
+.dark .shopping-item-link {
+  color: #93c5fd;
 }
 .trip-detail-banner {
   position: relative;
@@ -1105,16 +1298,31 @@ img.vehicle-illustration {
   background: linear-gradient(120deg, #0a1128, #1e293b);
   color: white;
   overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
 }
-.trip-detail-banner > span,
-.trip-detail-banner h1,
-.trip-detail-banner p {
+.trip-banner-content {
+  flex: 1;
+  min-width: 260px;
   position: relative;
   z-index: 1;
 }
-.trip-detail-banner > span {
-  font-size: 12px;
+.trip-vehicle-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
   color: #bfdbfe;
+  margin-bottom: 8px;
 }
 .trip-detail-banner h1 {
   display: flex;
@@ -1124,7 +1332,7 @@ img.vehicle-illustration {
   font-size: 34px;
   font-weight: 700;
   letter-spacing: -1px;
-  margin: 20px 0;
+  margin: 14px 0;
 }
 .trip-detail-banner p {
   display: flex;
@@ -1137,11 +1345,11 @@ img.vehicle-illustration {
   width: 150px;
   height: 88px;
   object-fit: contain;
-  float: right;
-  margin: 0 0 12px 20px;
   background: #ffffffeb;
   border-radius: 14px;
   padding: 8px;
+  position: relative;
+  z-index: 1;
 }
 .trip-detail .detail-content {
   padding: 28px 32px;
@@ -1155,6 +1363,203 @@ img.vehicle-illustration {
 .scan-detail {
   margin-top: 12px;
 }
+.account-hero-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #0a1128, #111e38);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  color: white;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.dark .account-hero-card {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-color: #334155;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+}
+.account-hero-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 240px;
+}
+.account-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.account-avatar-ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+}
+.account-avatar-initials {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: white;
+}
+.account-status-dot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 2px solid #0a1128;
+}
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.account-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.account-name-row h2 {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: white;
+  margin: 0;
+}
+.eidas-verified-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+  font-size: 11px;
+  font-weight: 700;
+}
+.kyc-pending-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.kyc-pending-pill:hover {
+  opacity: 0.85;
+}
+.account-email {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+}
+.account-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 2px;
+}
+.account-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #cbd5e1;
+}
+.account-logout-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f1f5f9;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.account-logout-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+.account-auth-actions {
+  display: flex;
+  gap: 8px;
+}
+.account-login-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+.account-reg-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+}
+.dark .intention-card {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+.dark .intention-card.is-selected {
+  background: rgba(37, 99, 235, 0.15);
+  border-color: #2563eb;
+}
+.dark .intention-icon {
+  background: #0f172a;
+  color: #94a3b8;
+}
+.dark .profile-wallet {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+.dark .role-workspace {
+  background: #1e293b;
+  border-color: #334155;
+}
+.dark .role-tabs button {
+  color: #94a3b8;
+}
+.dark .role-tabs button[aria-pressed="true"] {
+  background: #0f172a;
+  color: #60a5fa;
+  border-color: #334155;
+}
+.dark .role-dashboard-button {
+  background: #0f172a;
+  color: #f1f5f9;
+  border-color: #334155;
+}
+.dark .role-dashboard-button:hover {
+  background: #1e293b;
+  border-color: #2563eb;
+}
+
 .profile-page {
   max-width: 600px;
   margin: 48px auto 0;
@@ -1747,15 +2152,87 @@ img.vehicle-illustration {
 .message.mine > small {
   justify-content: flex-end;
 }
+.dark .messages-page {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+.dark .conversation-list {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+.dark .conversation-preview {
+  border-bottom-color: #1e293b;
+}
+.dark .conversation-preview:hover {
+  background: #1e293b;
+}
+.dark .conversation-preview.selected {
+  background: rgba(37, 99, 235, 0.15);
+}
+.dark .conversation-preview strong {
+  color: #f8fafc;
+}
+.dark .conversation-preview small,
+.dark .conversation-preview p {
+  color: #94a3b8;
+}
+.dark .conversation-detail {
+  background: #0f172a;
+}
+.dark .conversation-detail > header {
+  background: #0f172a;
+  border-bottom-color: #1e293b;
+}
+.dark .conversation-detail header strong {
+  color: #f8fafc;
+}
+.dark .escrow-strip {
+  background: rgba(16, 185, 129, 0.12);
+  border-bottom-color: rgba(16, 185, 129, 0.25);
+  color: #34d399;
+}
+.dark .escrow-strip > button {
+  background: #1e293b;
+  border-color: #334155;
+  color: #34d399;
+}
+.dark .chat-safety-note {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+}
+.dark .message-feed {
+  background: #0b1120;
+}
+.dark .message > div {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+.dark .message.mine > div {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: white;
+}
 .conversation-detail > footer {
-  padding: 14px 20px;
+  padding: 14px 20px calc(14px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--line);
   background: white;
+}
+.dark .conversation-detail > footer {
+  background: #0f172a;
+  border-top-color: #1e293b;
 }
 .chat-tools {
   display: flex;
   gap: 8px;
   margin-bottom: 10px;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.chat-tools::-webkit-scrollbar {
+  display: none;
 }
 .chat-tools button {
   display: flex;
@@ -1764,9 +2241,25 @@ img.vehicle-illustration {
   border: 1px solid var(--line);
   border-radius: 24px;
   font-size: 11px;
-  min-height: 40px;
-  padding: 8px 12px;
+  min-height: 44px;
+  padding: 8px 14px;
   color: #475569;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.chat-tools button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.dark .chat-tools button {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+.dark .chat-tools button:hover:not(:disabled) {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
 }
 .message-composer {
   display: flex;
@@ -1775,6 +2268,98 @@ img.vehicle-illustration {
   border-radius: 28px;
   background: var(--soft);
   padding: 6px 6px 6px 16px;
+}
+.dark .message-composer {
+  background: #1e293b;
+  border-color: #334155;
+}
+.dark .message-composer input {
+  color: #f8fafc;
+}
+.dark .quick-replies button {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+/* Handover Pass Card */
+.handover-pass-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 16px;
+  background: white;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 8px;
+}
+.dark .handover-pass-card {
+  background: #0f172a;
+  border-color: #334155;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+.handover-pass-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: #059669;
+  text-transform: uppercase;
+}
+.dark .handover-pass-header {
+  color: #34d399;
+}
+.handover-qr-container {
+  padding: 8px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+.handover-qr-container img {
+  width: 140px;
+  height: 140px;
+  display: block;
+}
+.handover-pin-display {
+  text-align: center;
+  margin-top: 4px;
+}
+.handover-pin-label {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+.dark .handover-pin-label {
+  color: #94a3b8;
+}
+.handover-pin-code {
+  font-size: 24px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 6px 14px;
+  border-radius: 10px;
+  border: 1px dashed #93c5fd;
+  display: inline-block;
+}
+.dark .handover-pin-code {
+  color: #60a5fa;
+  background: rgba(37, 99, 235, 0.15);
+  border-color: rgba(96, 165, 250, 0.4);
+}
+.handover-note {
+  font-size: 12px;
+  color: #475569;
+}
+.dark .handover-note {
+  color: #cbd5e1;
 }
 .message-composer input {
   background: transparent;
@@ -4892,4 +5477,112 @@ img.vehicle-illustration {
   opacity: 0.7;
   margin-top: 2px;
 }
+
+/* Publish Stepper & Sticky Dock (Apple HIG / Linear Level) */
+.publish-stepper-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 0 24px;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+.dark .publish-stepper-bar {
+  background: #1e293b;
+  border-color: #334155;
+}
+.publish-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.publish-step .step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.publish-step .step-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+}
+.dark .publish-step .step-label {
+  color: #f8fafc;
+}
+.step-connector {
+  flex: 1;
+  height: 2px;
+  background: #cbd5e1;
+  margin: 0 10px;
+}
+.dark .step-connector {
+  background: #334155;
+}
+.publish-sticky-dock {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 24px -24px -24px;
+  padding: 16px 24px calc(16px + env(safe-area-inset-bottom, 0px));
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+}
+.dark .publish-sticky-dock {
+  background: rgba(15, 23, 42, 0.95);
+  border-top-color: #1e293b;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+}
+.dock-summary {
+  display: flex;
+  flex-direction: column;
+}
+.dock-summary-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.dock-summary-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: #2563eb;
+}
+.dark .dock-summary-value {
+  color: #60a5fa;
+}
+.publish-submit-btn {
+  width: auto !important;
+  padding: 12px 24px !important;
+}
+.dark .earnings-calculator {
+  background: radial-gradient(at 100% 0, rgba(37, 99, 235, 0.15), transparent 70%), #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+.dark .earnings-calculator output strong {
+  color: #34d399;
+}
+.dark .earnings-calculator label {
+  color: #cbd5e1;
+}
+.dark .earnings-calculator input {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
 

@@ -311,15 +311,38 @@ export function Conversation({
                       transcriptionStatus={m.audio.transcriptionStatus}
                     />
                   )}
-                  {m.qr && <QrImage value={m.qr} />}
-                  <p>
-                    {m.official && (
-                      <strong className="official-badge">
-                        Support Officiel BagVoyage
-                      </strong>
-                    )}
-                    {m.text}
-                  </p>
+                  {m.qr ? (
+                    <div className="handover-pass-card">
+                      <div className="handover-pass-header">
+                        <ShieldCheck size={16} className="text-emerald-500" />
+                        <span>Pass de Remise Certifié BagVoyage</span>
+                      </div>
+                      <div className="handover-qr-container">
+                        <QrImage value={m.qr} />
+                      </div>
+                      {m.text.includes(":") ? (
+                        <div className="handover-pin-display">
+                          <span className="handover-pin-label">
+                            Code de validation à usage unique :
+                          </span>
+                          <code className="handover-pin-code">
+                            {m.text.split(":").pop()?.trim()}
+                          </code>
+                        </div>
+                      ) : (
+                        <p className="handover-note">{m.text}</p>
+                      )}
+                    </div>
+                  ) : (
+                    <p>
+                      {m.official && (
+                        <strong className="official-badge">
+                          Support Officiel BagVoyage
+                        </strong>
+                      )}
+                      {m.text}
+                    </p>
+                  )}
                 </div>
                 <small>
                   {m.time}

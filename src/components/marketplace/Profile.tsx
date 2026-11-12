@@ -114,6 +114,70 @@ export function Profile({
   };
   return (
     <section className="profile-page">
+      {/* Apple HIG Account Header */}
+      <div className="account-hero-card">
+        <div className="account-hero-identity">
+          <div className="account-avatar-wrap">
+            <div className="account-avatar-ring">
+              <span className="account-avatar-initials">
+                {userName ? userName.slice(0, 2).toUpperCase() : "BV"}
+              </span>
+            </div>
+            <span className="account-status-dot" aria-hidden="true" />
+          </div>
+          <div className="account-info">
+            <div className="account-name-row">
+              <h2>{userName || "Membre Invité"}</h2>
+              {isKycVerified ? (
+                <span className="eidas-verified-pill">
+                  <ShieldCheck size={13} aria-hidden="true" />
+                  eIDAS v2.1 Vérifié
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={openKycModal}
+                  className="kyc-pending-pill"
+                >
+                  <AlertCircle size={13} aria-hidden="true" />
+                  Vérification Requise
+                </button>
+              )}
+            </div>
+            <p className="account-email">{userEmail || "Session locale sécurisée"}</p>
+            <div className="account-meta-row">
+              <span className="account-meta-item">
+                <Award size={13} className="text-amber-500" />
+                Score Confiance 98/100
+              </span>
+              <span className="account-meta-item">
+                <Clock3 size={13} className="text-blue-500" />
+                Membre certifié
+              </span>
+            </div>
+          </div>
+        </div>
+        {userName ? (
+          <button
+            type="button"
+            className="account-logout-btn"
+            onClick={onLogout}
+            title="Se déconnecter de la session"
+          >
+            Déconnexion
+          </button>
+        ) : (
+          <div className="account-auth-actions">
+            <button type="button" className="account-login-btn" onClick={onLogin}>
+              Connexion
+            </button>
+            <button type="button" className="account-reg-btn" onClick={onRegister}>
+              Inscription
+            </button>
+          </div>
+        )}
+      </div>
+
       <span className="eyebrow">VOTRE PROFIL, VOS ENVIES</span>
       <h1>Que souhaitez-vous faire ?</h1>
       <p className="profile-subtitle">Un compte, plusieurs possibilités.</p>
@@ -335,7 +399,7 @@ export function Profile({
             </p>
           </div>
           {application?.status === "approved" && onOpenCarrierDashboard && (
-            <button type="button" onClick={onOpenCarrierDashboard}>
+            <button type="button" className="role-dashboard-button" onClick={onOpenCarrierDashboard}>
               Tableau de bord Pro
             </button>
           )}

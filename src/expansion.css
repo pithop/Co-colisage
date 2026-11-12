@@ -6949,7 +6949,144 @@
 .bv-demo-profiles button:nth-of-type(2) > span { background: #e4ebf3; }
 .bv-demo-profiles button:nth-of-type(3) > span { background: #f1e9df; }
 .bv-demo-profiles strong { font-size: 11px; font-weight: 600; }
-.bv-demo-profiles small { font-size: 9px; color: #536776; }
+.bv-oauth-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.bv-oauth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 46px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid #cbd5e1;
+  background: white;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.bv-oauth-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+.bv-oauth-btn.apple {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+.bv-oauth-btn.apple:hover {
+  background: #1e293b;
+}
+.bv-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  color: #64748b;
+  font-size: 11px;
+}
+.bv-auth-divider::before,
+.bv-auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+.bv-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.bv-forgot-link {
+  font-size: 11px;
+  font-weight: 500;
+  color: #2563eb;
+  text-decoration: none;
+}
+.bv-forgot-link:hover {
+  text-decoration: underline;
+}
+
+/* Dark Mode for Auth Shell & Forms */
+.dark .bv-auth-shell {
+  background: #0f172a;
+  color: #f8fafc;
+}
+.dark .bv-auth-form-panel {
+  background: #0f172a;
+  color: #f8fafc;
+}
+.dark .bv-auth-topline {
+  color: #94a3b8;
+}
+.dark .bv-auth-topline a,
+.dark .bv-auth-footer a {
+  color: #60a5fa;
+}
+.dark .bv-auth-content h2 {
+  color: #f8fafc;
+}
+.dark .bv-auth-content > p {
+  color: #94a3b8;
+}
+.dark .bv-expansion .bv-form label {
+  color: #cbd5e1;
+}
+.dark .bv-expansion .bv-form input:not([type=checkbox]):not([type=radio]),
+.dark .bv-expansion .bv-form select {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+.dark .bv-password-field > button {
+  color: #94a3b8;
+}
+.dark .bv-auth-divider {
+  color: #64748b;
+}
+.dark .bv-auth-divider::before,
+.dark .bv-auth-divider::after {
+  background: #334155;
+}
+.dark .bv-oauth-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+.dark .bv-oauth-btn:hover {
+  background: #334155;
+}
+.dark .bv-session-card {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+.dark .bv-role-options label {
+  border-color: #334155;
+  color: #cbd5e1;
+}
+.dark .bv-role-options label.selected {
+  background: rgba(37, 99, 235, 0.15);
+  border-color: #2563eb;
+}
+.dark .bv-role-options strong {
+  color: #f8fafc;
+}
+.dark .bv-role-options small {
+  color: #94a3b8;
+}
+.dark .bv-kyc-panel {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
 .bv-auth-footer { margin-top: auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 9px; color: #536776; }
 .bv-biometric-demo { display: grid; justify-items: center; gap: 20px; text-align: center; }
 .bv-biometric-demo > svg { color: #146e68; }
