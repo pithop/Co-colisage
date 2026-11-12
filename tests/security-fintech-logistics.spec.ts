@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Sûreté Cryptographique, FinTech Séquestre & Ergonomie Apple HIG", () => {
   test("Crypto Handover: HMAC-SHA256 signature, anti-replay expiry & tamper detection", async ({ page }) => {
-    await page.goto("/#voyageur");
+    await page.goto("/#voyageur", { waitUntil: "domcontentloaded" });
 
     const result = await page.evaluate(async () => {
       const { generateHandoverToken, verifyHandoverToken } = await import("/src/services/cryptoHandover.ts");
@@ -48,7 +48,7 @@ test.describe("Sûreté Cryptographique, FinTech Séquestre & Ergonomie Apple HI
   });
 
   test("GPS Geofencing: Haversine distance & Hub proximity validation", async ({ page }) => {
-    await page.goto("/#voyageur");
+    await page.goto("/#voyageur", { waitUntil: "domcontentloaded" });
 
     const result = await page.evaluate(async () => {
       const {
@@ -88,7 +88,7 @@ test.describe("Sûreté Cryptographique, FinTech Séquestre & Ergonomie Apple HI
   });
 
   test("FinTech Stripe Connect: Escrow state machine & COD guarantee hold", async ({ page }) => {
-    await page.goto("/#voyageur");
+    await page.goto("/#voyageur", { waitUntil: "domcontentloaded" });
 
     const result = await page.evaluate(async () => {
       const {
@@ -151,7 +151,7 @@ test.describe("Sûreté Cryptographique, FinTech Séquestre & Ergonomie Apple HI
   });
 
   test("Offline Outbox Queue: Queue persistence & mutation replay", async ({ page }) => {
-    await page.goto("/#voyageur");
+    await page.goto("/#voyageur", { waitUntil: "domcontentloaded" });
 
     const result = await page.evaluate(async () => {
       const {

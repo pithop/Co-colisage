@@ -9,6 +9,7 @@ import {
   Info,
   MapPin,
   Package,
+  Plane,
   Scale,
   ScanLine,
   ShieldCheck,
@@ -16,6 +17,7 @@ import {
   UserCheck,
   Wallet,
 } from "lucide-react";
+
 import {
   PurchaseRequest,
   Trip,
@@ -44,16 +46,27 @@ export function RequestDetails({
         </span>
       </div>
       <div className="detail-content">
-        <span className="purchase-badge">
-          {r.kind === "parcel" ? "Colis à transporter" : "À acheter et livrer"}
-        </span>
-        <h1>{r.title}</h1>
+        <div className="flex flex-wrap items-center gap-2 mb-2">
+
+          <span className="purchase-badge">
+            {r.kind === "parcel" ? "Colis à transporter" : "À acheter et livrer"}
+          </span>
+          {r.origin && r.destination && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/80">
+              <MapPin size={12} className="text-blue-500" />
+              <span>{r.origin}</span>
+              <ArrowRight size={12} className="text-blue-400" />
+              <span>{r.destination}</span>
+            </span>
+          )}
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-1 mb-2">{r.title}</h1>
         <div className="verified-status-pill"><ShieldCheck size={14} aria-hidden="true" /> <span>Annonce vérifiée · Membre certifié BagVoyage</span></div>
         <button className="buyer-row" onClick={() => onChat(false)}>
           <Avatar name={r.buyer} src={r.buyerAvatar} />
           <span>
             <strong>{r.buyer}</strong>
-            <small>Demande publiée par</small>
+            <small>Demande publiée par · Expéditeur vérifié</small>
           </span>
           {r.buyerAvatar && (
             <span className="verified-badge">
@@ -68,6 +81,7 @@ export function RequestDetails({
             <dt>Article recherché</dt>
             <dd>{r.specifications}</dd>
           </div>
+
           <div>
             <MapPin />
             <dt>Livraison souhaitée</dt>
@@ -232,9 +246,17 @@ export function TripDetails({
     <article className="trip-detail">
       <div className="trip-detail-banner">
         <div className="trip-banner-content">
-          <span className="trip-vehicle-pill">
-            {vehicleLabel(t)} · {t.transportLabel}
-          </span>
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <span className="trip-vehicle-pill">
+              {vehicleLabel(t)} · {t.transportLabel}
+            </span>
+            {t.flightNumber && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-blue-500/20 text-blue-200 border border-blue-400/30">
+                <Plane size={13} className="text-blue-300" />
+                Vol {t.flightNumber}
+              </span>
+            )}
+          </div>
           <h1>
             {t.origin} <ArrowRight size={24} className="shrink-0 text-blue-300" aria-hidden="true" /> {t.destination}
           </h1>
@@ -264,14 +286,41 @@ export function TripDetails({
         </div>
         <p className="trip-description">{t.description}</p>
         <div className="verified-status-pill"><ShieldCheck size={14} aria-hidden="true" /> <span>Profil vérifié · Pièce d’identité et vol confirmés</span></div>
-        {!!t.reviews?.length && <section className="traveler-reviews" aria-label="Avis sur ce voyageur">
-          <h2>Retours sur les remises</h2>
-          <p className="verified-reviews-notice"><CheckCircle2 size={13} aria-hidden="true" /> Avis certifiés suite à livraison sous séquestre</p>
-          {t.reviews.map(review => <article key={review.id}>
-            <div><strong>{review.author}</strong><span className="rating"><Star size={14} />{review.rating}/5</span><time dateTime={review.date}>{dateLabel(review.date, true)}</time></div>
-            <p>{review.comment}</p>
-          </article>)}
-        </section>}
+        {!!t.reviews?.length && (
+          <section className="traveler-reviews" aria-label="Avis sur ce voyageur">
+            <h2>Retours d’expéditeurs ({t.reviews.length})</h2>
+            <p className="verified-reviews-notice">
+              <CheckCircle2 size={13} aria-hidden="true" /> Avis certifiés suite à livraison sous séquestre
+            </p>
+            <div className="space-y-3 mt-3">
+              {t.reviews.map((review) => (
+                <article key={review.id} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/60 p-4">
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <div className="flex items-center gap-2.5">
+                      <Avatar name={review.author} />
+                      <div>
+                        <strong className="block text-xs font-bold text-slate-900 dark:text-white leading-none">
+                          {review.author}
+                        </strong>
+                        <time dateTime={review.date} className="text-[10px] text-slate-400 mt-0.5 block">
+                          {dateLabel(review.date, true)}
+                        </time>
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-extrabold">
+                      <Star size={12} className="fill-amber-400 text-amber-500" />
+                      {review.rating}/5
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed m-0">
+                    {review.comment}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
         {(t.autoAccept ||
           t.canBuyProduct ||
           t.acceptedCategories?.length ||

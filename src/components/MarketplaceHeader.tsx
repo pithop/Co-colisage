@@ -13,6 +13,7 @@ import {
   Package,
   Plane,
   Radio,
+  RefreshCw,
   Scan,
   Share2,
   ShieldCheck,
@@ -31,6 +32,8 @@ import { LanguageSelector } from "../context/LanguageContext";
 import { ThemeToggle } from "./common/ThemeToggle";
 import { useAuth } from "../context/AuthContext";
 import { ActivePlatform } from "../types/auth";
+import { subscribeToSyncReport, getSyncReport, type SyncReport } from "../services/apiSync";
+
 
 interface Props {
   route: string;
@@ -67,8 +70,14 @@ export function MarketplaceHeader(props: Props) {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [syncReport, setSyncReport] = useState<SyncReport>(getSyncReport());
+
+  useEffect(() => {
+    return subscribeToSyncReport((report) => setSyncReport(report));
+  }, []);
 
   // Close menu when clicking outside or pressing Escape
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -235,6 +244,27 @@ export function MarketplaceHeader(props: Props) {
             )}
           </button>
 
+          {/* Live Sync / Offline Pill */}
+          {(!isOnline || syncReport.status === "offline") && (
+            <span
+              className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-bold"
+              title="Vos données sont enregistrées en local dans IndexedDB v2"
+            >
+              <WifiOff size={13} className="text-amber-500 shrink-0" />
+              <span>Hors-ligne (Local v2)</span>
+            </span>
+          )}
+
+          {syncReport.status === "syncing" && (
+            <span
+              className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs font-bold"
+              title="Synchronisation des mutations avec le serveur distant"
+            >
+              <RefreshCw size={12} className="text-blue-500 animate-spin shrink-0" />
+              <span>Synchronisation…</span>
+            </span>
+          )}
+
           {/* 3. Wallet Pill (Portefeuille avec solde) */}
           <button
             type="button"
@@ -251,6 +281,7 @@ export function MarketplaceHeader(props: Props) {
             <Wallet size={14} className="text-blue-600 dark:text-blue-400" />
             <span>{props.balance}</span>
           </button>
+
 
           {/* 4. Dropdown Menu Trigger (Profil, Outils & Préférences) */}
           <div className="relative" ref={menuRef}>

@@ -2,8 +2,9 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Tri-Modal Platforms & Multi-Modal Capabilities", () => {
   test("Mode Voyageur: 5-mode transport switcher & dynamic fields", async ({ page }) => {
-    await page.goto("/#voyageur");
+    await page.goto("/#voyageur", { waitUntil: "domcontentloaded" });
     await expect(page.locator("h1")).toContainText("bagages sur vos vols");
+
 
     // Check 3-way platform switcher presence
     const platformSwitcher = page.locator("[role='radiogroup']:visible");
@@ -40,7 +41,7 @@ test.describe("Tri-Modal Platforms & Multi-Modal Capabilities", () => {
   });
 
   test("Mode Bag&Go: Granular parcel presets, custom dimensions & IATA volumetric weight", async ({ page }) => {
-    await page.goto("/#bagandgo");
+    await page.goto("/#bagandgo", { waitUntil: "domcontentloaded" });
     await expect(page.locator("h1")).toContainText("Expédiez vos colis au millimètre près");
 
     // Check 5 preset cards
@@ -72,7 +73,7 @@ test.describe("Tri-Modal Platforms & Multi-Modal Capabilities", () => {
   });
 
   test("Mode Shop&Go: Multi-item basket, store selector & mandatory proof-of-purchase", async ({ page }) => {
-    await page.goto("/#shopandgo");
+    await page.goto("/#shopandgo", { waitUntil: "domcontentloaded" });
     await expect(page.locator("h1")).toContainText("Commandez en boutique & Duty-Free");
 
     // Check mandatory proof-of-purchase policy banner
@@ -95,7 +96,7 @@ test.describe("Tri-Modal Platforms & Multi-Modal Capabilities", () => {
 
   test("Mobile responsive layout: 5-tab Apple HIG navigation", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/#voyageur");
+    await page.goto("/#voyageur", { waitUntil: "domcontentloaded" });
 
     // Bottom nav should be visible on mobile viewport
     const bottomNav = page.locator("nav[aria-label='Navigation mobile principale']");
@@ -110,7 +111,7 @@ test.describe("Tri-Modal Platforms & Multi-Modal Capabilities", () => {
   });
 
   test("PublishModal: 5-mode transport selection, parcel presets & shop options", async ({ page }) => {
-    await page.goto("/#voyageur");
+    await page.goto("/#voyageur", { waitUntil: "domcontentloaded" });
     
     // Open publish modal
     const publishBtn = page.locator("button:has-text('Proposer un trajet')").first();
@@ -134,7 +135,8 @@ test.describe("Tri-Modal Platforms & Multi-Modal Capabilities", () => {
   });
 
   test("Landing Page: Tri-modal search & action console switches modes, computes earnings, and links to platforms", async ({ page }) => {
-    await page.goto("/#landing");
+    await page.goto("/#landing", { waitUntil: "domcontentloaded" });
+
 
     // Check new Apple/Stripe-grade hero presence and headline
     await expect(page.locator(".bv-hero-headline")).toContainText("Rentabilisez vos voyages", { timeout: 15000 });

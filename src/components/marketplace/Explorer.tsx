@@ -554,14 +554,40 @@ export function Explorer({
                 })}
             {!count && (
               <div className="empty-state">
-                <Search size={30} />
-                <h2>Aucune annonce pour le moment</h2>
-                <p>Essayez une autre ville ou élargissez vos filtres.</p>
+                <div className="w-16 h-16 rounded-3xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200/60 dark:border-blue-800/60 flex items-center justify-center text-blue-600 dark:text-blue-400 mx-auto mb-3 shadow-inner">
+                  <Search size={28} />
+                </div>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Aucune annonce sur ce critère</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-4">
+                  Élargissez vos critères ou explorez les départs fréquents sur nos couloirs actifs :
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-2 mb-5">
+                  {[
+                    { label: "Paris ➔ Alger", dest: "Alger" },
+                    { label: "Marseille ➔ Oran", dest: "Oran" },
+                    { label: "Lyon ➔ Constantine", dest: "Constantine" },
+                  ].map((crd) => (
+                    <button
+                      key={crd.label}
+                      type="button"
+                      onClick={() => {
+                        reset();
+                        setDestination(crd.dest);
+                        setWorldwide(true);
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-blue-50 dark:bg-slate-800 dark:hover:bg-blue-950/50 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 border border-slate-200 dark:border-slate-700 text-xs font-semibold transition-all cursor-pointer"
+                    >
+                      <Plane size={11} className="rotate-45" />
+                      {crd.label}
+                    </button>
+                  ))}
+                </div>
                 <button className="outline-button" onClick={reset}>
-                  Réinitialiser les filtres
+                  Réinitialiser tous les filtres
                 </button>
               </div>
             )}
+
           </div>
         </section>
         <aside className="discovery-column">

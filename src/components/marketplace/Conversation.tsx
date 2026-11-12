@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowUp,
+  Check,
   CheckCheck,
+  Copy,
   Info,
   LockKeyhole,
   MessageCircle,
@@ -10,6 +12,7 @@ import {
   QrCode,
   ShieldCheck,
 } from "lucide-react";
+
 import { QrImage } from "./QrImage";
 import { DeliveryModal } from "./DeliveryModal";
 import { OrderTracking, FlightDelayDialog } from "./OrderTracking";
@@ -98,7 +101,9 @@ export function Conversation({
   const [delivery, setDelivery] = useState(false);
   const [tracking, setTracking] = useState(false);
   const [delay, setDelay] = useState(false);
+  const [copiedPin, setCopiedPin] = useState<string | null>(null);
   const c = conversations.find((c) => c.id === activeId);
+
   const feed = useRef<HTMLDivElement>(null);
   useEffect(() => {
     setRecording(false);
@@ -325,13 +330,42 @@ export function Conversation({
                           <span className="handover-pin-label">
                             Code de validation à usage unique :
                           </span>
-                          <code className="handover-pin-code">
-                            {m.text.split(":").pop()?.trim()}
-                          </code>
+                          <div className="flex items-center justify-center gap-2 mt-1">
+                            <code className="handover-pin-code">
+                              {m.text.split(":").pop()?.trim()}
+                            </code>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const pin = m.text.split(":").pop()?.trim() || "";
+                                if (navigator.clipboard) {
+                                  navigator.clipboard.writeText(pin).then(() => {
+                                    setCopiedPin(pin);
+                                    setTimeout(() => setCopiedPin(null), 2000);
+                                  });
+                                }
+                              }}
+                              className="p-1.5 rounded-lg border border-blue-200 dark:border-blue-800/80 bg-blue-50/80 dark:bg-blue-950/60 hover:bg-blue-100 text-blue-600 dark:text-blue-400 text-xs font-semibold cursor-pointer transition-colors"
+                              title="Copier le code PIN"
+                              aria-label="Copier le code PIN"
+                            >
+                              {copiedPin === m.text.split(":").pop()?.trim() ? (
+                                <Check size={14} className="text-emerald-500" />
+                              ) : (
+                                <Copy size={14} />
+                              )}
+                            </button>
+                          </div>
+                          {copiedPin === m.text.split(":").pop()?.trim() && (
+                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold block mt-1">
+                              Code copié dans le presse-papier !
+                            </span>
+                          )}
                         </div>
                       ) : (
                         <p className="handover-note">{m.text}</p>
                       )}
+
                     </div>
                   ) : (
                     <p>
