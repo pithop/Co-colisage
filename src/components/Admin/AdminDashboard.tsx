@@ -8,6 +8,12 @@ import {
   Scale,
   ArrowUpRight,
   Search,
+  Database,
+  Download,
+  Sparkles,
+  Trash2,
+  Eye,
+  RefreshCw,
 } from "lucide-react";
 import { useDatabaseQuery } from "../../hooks/useDatabaseQuery";
 import {
@@ -17,6 +23,13 @@ import {
   reviewKyc,
   resolveEscrow,
 } from "../../services/adminOperations";
+import {
+  exportDatabaseAsJson,
+  exportDatabaseAsSql,
+  seedDemoDatabase,
+  deleteRecord,
+  type StoreName,
+} from "../../services/productionDb";
 import { money, walletBalances } from "../../data/wallet";
 import type { Attachment } from "../../services/uploads";
 import { Dialog } from "../marketplace/Dialog";
@@ -41,6 +54,7 @@ const sections = [
   ["chats", "Conversations", MessageSquare],
   ["kyc", "Dossiers KYC & Pro", FileCheck],
   ["escrow", "Litiges & Séquestre", Scale],
+  ["database", "Studio Base de Données", Database],
 ] as const;
 export function AdminDashboard() {
   if (!localAdminEnabled)
@@ -67,6 +81,9 @@ function LocalAdminDashboard() {
   const trips = useDatabaseQuery("trips");
   const conversations = useDatabaseQuery("conversations");
   const users = useDatabaseQuery("users");
+  const profiles = useDatabaseQuery("profiles");
+  const requests = useDatabaseQuery("purchase_requests");
+  const orders = useDatabaseQuery("orders");
   const applications = useDatabaseQuery("pro_applications");
   const kyc = useDatabaseQuery("kyc_records");
   const ledger = useDatabaseQuery("wallet_transactions");
@@ -90,6 +107,12 @@ function LocalAdminDashboard() {
     amount: number;
   } | null>(null);
   const [decisionReason, setDecisionReason] = useState("");
+
+  // Database Studio State
+  const [selectedTable, setSelectedTable] = useState<StoreName>("users");
+  const [selectedRecord, setSelectedRecord] = useState<Record<string, unknown> | null>(null);
+  const [dbSearch, setDbSearch] = useState("");
+  const [dbNotice, setDbNotice] = useState("");
   const chat =
     conversations.rows.find((row) => row.id === chatId) ||
     conversations.rows[0];
@@ -853,6 +876,294 @@ function LocalAdminDashboard() {
                 )}
               </article>
             ))}
+        </section>
+      )}
+      {tab === "database" && (
+        <section className="space-y-6 text-left">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Database size={22} className="text-blue-600 dark:text-blue-400" />
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                  Studio Base de Données
+                </h2>
+                <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20">
+                  IndexedDB v2
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Explorez, inspectez, modifiez et exportez les tables de votre application BagVoyage en temps réel.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    const res = await seedDemoDatabase();
+                    setDbNotice(`${res.createdCount} comptes & profils vérifiés ont été injectés dans la base.`);
+                    setTimeout(() => setDbNotice(""), 4000);
+                  } catch (err) {
+                    setDbNotice("Erreur lors de l'initialisation.");
+                  }
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors"
+              >
+                <Sparkles size={14} />
+                Peupler données de test
+              </button>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  const data = await exportDatabaseAsJson();
+                  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                  const url = URL.createObjectURL(blob);
+                  const a = window.document.createElement("a");
+                  a.href = url;
+                  a.download = `bagvoyage_database_${new Date().toISOString().slice(0, 10)}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors shadow-2xs"
+              >
+                <Download size={14} />
+                Export JSON
+              </button>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  const sql = await exportDatabaseAsSql();
+                  const blob = new Blob([sql], { type: "text/plain" });
+                  const url = URL.createObjectURL(blob);
+                  const a = window.document.createElement("a");
+                  a.href = url;
+                  a.download = `bagvoyage_schema_${new Date().toISOString().slice(0, 10)}.sql`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors shadow-2xs"
+              >
+                <Download size={14} />
+                Export SQL (Postgres)
+              </button>
+            </div>
+          </div>
+
+          {dbNotice && (
+            <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs font-semibold text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+              <Sparkles size={16} />
+              {dbNotice}
+            </div>
+          )}
+
+          {/* Table Selector Chips */}
+          <div className="space-y-2">
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+              Tables du schéma
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { name: "users" as const, label: "users", count: users.rows.length },
+                { name: "profiles" as const, label: "profiles", count: profiles.rows.length },
+                { name: "trips" as const, label: "trips", count: trips.rows.length },
+                { name: "purchase_requests" as const, label: "purchase_requests", count: requests.rows.length },
+                { name: "orders" as const, label: "orders", count: orders.rows.length },
+                { name: "conversations" as const, label: "conversations", count: conversations.rows.length },
+                { name: "wallet_transactions" as const, label: "wallet_transactions", count: ledger.rows.length },
+                { name: "kyc_records" as const, label: "kyc_records", count: kyc.rows.length },
+                { name: "pro_applications" as const, label: "pro_applications", count: applications.rows.length },
+              ].map((tbl) => (
+                <button
+                  key={tbl.name}
+                  type="button"
+                  onClick={() => {
+                    setSelectedTable(tbl.name);
+                    setSelectedRecord(null);
+                    setDbSearch("");
+                  }}
+                  className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all ${
+                    selectedTable === tbl.name
+                      ? "bg-blue-600 border-blue-600 text-white shadow-xs"
+                      : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700"
+                  }`}
+                >
+                  <span>{tbl.label}</span>
+                  <span
+                    className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+                      selectedTable === tbl.name
+                        ? "bg-white/20 text-white"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                    }`}
+                  >
+                    {tbl.count}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Table Data Viewer */}
+          {(() => {
+            let currentRows: Record<string, unknown>[] = [];
+            if (selectedTable === "users") currentRows = users.rows as unknown as Record<string, unknown>[];
+            else if (selectedTable === "profiles") currentRows = profiles.rows as unknown as Record<string, unknown>[];
+            else if (selectedTable === "trips") currentRows = trips.rows as unknown as Record<string, unknown>[];
+            else if (selectedTable === "purchase_requests") currentRows = requests.rows as unknown as Record<string, unknown>[];
+            else if (selectedTable === "orders") currentRows = orders.rows as unknown as Record<string, unknown>[];
+            else if (selectedTable === "conversations") currentRows = conversations.rows as unknown as Record<string, unknown>[];
+            else if (selectedTable === "wallet_transactions") currentRows = ledger.rows as unknown as Record<string, unknown>[];
+            else if (selectedTable === "kyc_records") currentRows = kyc.rows as unknown as Record<string, unknown>[];
+            else if (selectedTable === "pro_applications") currentRows = applications.rows as unknown as Record<string, unknown>[];
+
+            const filteredRows = currentRows.filter((row) => {
+              if (!dbSearch) return true;
+              const text = JSON.stringify(row).toLowerCase();
+              return text.includes(dbSearch.toLowerCase());
+            });
+
+            return (
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 overflow-hidden shadow-xs">
+                <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50 dark:bg-slate-800/40">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs font-bold text-slate-900 dark:text-white">
+                      Table : {selectedTable}
+                    </span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                      ({filteredRows.length} {filteredRows.length === 1 ? "ligne" : "lignes"})
+                    </span>
+                  </div>
+
+                  <div className="relative w-full sm:w-64">
+                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Filtrer les enregistrements..."
+                      value={dbSearch}
+                      onChange={(e) => setDbSearch(e.target.value)}
+                      className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                {filteredRows.length === 0 ? (
+                  <div className="p-8 text-center text-xs text-slate-500 dark:text-slate-400">
+                    Aucun enregistrement trouvé dans la table <code className="font-mono">{selectedTable}</code>.
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto max-h-[500px]">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead className="sticky top-0 bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 uppercase tracking-wider font-semibold text-[10px] border-b border-slate-200 dark:border-slate-700">
+                        <tr>
+                          <th className="p-3">ID Clé</th>
+                          <th className="p-3">Attribut Principal</th>
+                          <th className="p-3">Détail / Statut</th>
+                          <th className="p-3 text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-sans">
+                        {filteredRows.map((row, idx) => {
+                          const id = String(row.id || idx);
+                          const mainAttr =
+                            String(row.name || row.title || row.email || row.companyName || row.origin || "N/A");
+                          const subAttr =
+                            String(row.role || row.status || row.departureDate || row.type || row.updatedAt || "");
+
+                          return (
+                            <tr
+                              key={id}
+                              className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                            >
+                              <td className="p-3 font-mono text-[11px] text-blue-600 dark:text-blue-400 max-w-[180px] truncate">
+                                {id}
+                              </td>
+                              <td className="p-3 font-semibold text-slate-900 dark:text-white max-w-[240px] truncate">
+                                {mainAttr}
+                              </td>
+                              <td className="p-3 text-slate-500 dark:text-slate-400">
+                                {subAttr ? (
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
+                                    {subAttr}
+                                  </span>
+                                ) : (
+                                  "-"
+                                )}
+                              </td>
+                              <td className="p-3 text-right space-x-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedRecord(row)}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-[11px] font-semibold text-slate-700 dark:text-slate-300 transition-colors"
+                                >
+                                  <Eye size={12} />
+                                  Inspecter
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={async () => {
+                                    if (confirm(`Supprimer l'enregistrement ${id} de la table ${selectedTable} ?`)) {
+                                      await deleteRecord(selectedTable, id);
+                                    }
+                                  }}
+                                  className="inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-rose-200 dark:border-rose-900/60 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[11px] font-semibold text-rose-600 dark:text-rose-400 transition-colors"
+                                  title="Supprimer l'enregistrement"
+                                >
+                                  <Trash2 size={12} />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* Record JSON Inspector Dialog */}
+          {selectedRecord && (
+            <Dialog
+              title={`Inspecteur : ${selectedTable} [${selectedRecord.id || "N/A"}]`}
+              onClose={() => setSelectedRecord(null)}
+              wide
+            >
+              <div className="space-y-4 text-left p-1">
+                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                    Schéma : <code className="font-mono text-blue-600">{selectedTable}</code>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(JSON.stringify(selectedRecord, null, 2));
+                      alert("JSON copié dans le presse-papier !");
+                    }}
+                    className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Copier le JSON
+                  </button>
+                </div>
+
+                <div className="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-auto max-h-[380px] leading-relaxed border border-slate-800">
+                  <pre>{JSON.stringify(selectedRecord, null, 2)}</pre>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRecord(null)}
+                    className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    Fermer
+                  </button>
+                </div>
+              </div>
+            </Dialog>
+          )}
         </section>
       )}
       {document && (

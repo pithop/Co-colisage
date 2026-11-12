@@ -406,12 +406,12 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                   className="group p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between gap-4"
                 >
                   <div className="flex items-start gap-3.5">
-                    <div className="relative w-18 h-18 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/60 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+                    <div className="relative w-20 h-20 min-w-20 min-h-20 sm:w-24 sm:h-24 sm:min-w-24 sm:min-h-24 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
                       {req.image ? (
                         <img
                           src={req.image}
                           alt={req.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform shrink-0"
                           loading="lazy"
                         />
                       ) : (
@@ -967,9 +967,9 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                 className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-700 transition-all shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 cursor-pointer"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/40 flex items-center justify-center shrink-0 overflow-hidden">
+                  <div className="w-14 h-14 min-w-14 min-h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/40 flex items-center justify-center shrink-0 overflow-hidden">
                     {req.image && req.image.startsWith('http') ? (
-                      <img src={req.image} alt={req.title} className="w-full h-full object-cover" />
+                      <img src={req.image} alt={req.title} className="w-full h-full object-cover shrink-0" />
                     ) : (
                       <ShoppingCart size={24} className="text-blue-600 dark:text-blue-400" />
                     )}

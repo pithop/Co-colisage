@@ -5,11 +5,11 @@ import type {
   ChatMessage,
 } from "../components/marketplace/Conversation";
 
-import type { User } from "../types/auth";
+import type { User, UserProfile } from "../types/auth";
 
 export type Conversation = ConversationData;
 export type Message = ChatMessage;
-export type { Trip, PurchaseRequest, WalletTransaction };
+export type { Trip, PurchaseRequest, WalletTransaction, UserProfile };
 export interface Order {
   id: string;
   conversationId: string;
@@ -52,6 +52,7 @@ export interface DatabaseSchema {
   pro_applications: ProApplication;
   admin_messages: AdminMessage;
   users: User;
+  profiles: UserProfile;
   trips: Trip;
   purchase_requests: PurchaseRequest;
   orders: Order;
@@ -64,6 +65,7 @@ const stores: StoreName[] = [
   "pro_applications",
   "admin_messages",
   "users",
+  "profiles",
   "trips",
   "purchase_requests",
   "orders",
@@ -108,7 +110,7 @@ export function initDB(): Promise<IDBDatabase> {
       reject(new Error("Le stockage IndexedDB est indisponible."));
       return;
     }
-    const request = indexedDB.open("BagVoyageDB_v2", 1);
+    const request = indexedDB.open("BagVoyageDB_v2", 2);
     request.onupgradeneeded = () => {
       const db = request.result;
       for (const name of stores) {
@@ -282,4 +284,240 @@ export async function saveMessage(convId: string, msg: Message): Promise<void> {
       reject(tx.error || new Error("Conversation introuvable."));
     tx.onerror = () => reject(tx.error);
   });
+}
+export const getUsers = () => getAll("users");
+export const saveUser = (user: User) => saveRecord("users", user);
+export const getUser = (id: string) => getRecord("users", id);
+
+export const getProfiles = () => getAll("profiles");
+export const saveProfile = (profile: UserProfile) => saveRecord("profiles", profile);
+export const getProfile = (userId: string) => getRecord("profiles", userId);
+
+export async function exportDatabaseAsJson(): Promise<Record<string, unknown[]>> {
+  const result: Record<string, unknown[]> = {};
+  for (const store of stores) {
+    try {
+      result[store] = await getAll(store);
+    } catch {
+      result[store] = [];
+    }
+  }
+  return result;
+}
+
+export async function exportDatabaseAsSql(): Promise<string> {
+  const data = await exportDatabaseAsJson();
+  const sqlLines: string[] = [
+    `-- ==========================================================`,
+    `-- BagVoyage SQL Schema & Data Dump`,
+    `-- Exported on: ${new Date().toISOString()}`,
+    `-- Target Engine: PostgreSQL / SQLite 3`,
+    `-- ==========================================================`,
+    ``,
+    `CREATE TABLE IF NOT EXISTS users (`,
+    `  id VARCHAR(64) PRIMARY KEY,`,
+    `  name VARCHAR(120) NOT NULL,`,
+    `  email VARCHAR(255) NOT NULL UNIQUE,`,
+    `  role VARCHAR(32) NOT NULL DEFAULT 'voyageur',`,
+    `  kyc_status VARCHAR(32) DEFAULT 'unverified',`,
+    `  phone VARCHAR(32),`,
+    `  city VARCHAR(100),`,
+    `  bio TEXT,`,
+    `  home_airport VARCHAR(10),`,
+    `  iban VARCHAR(40),`,
+    `  rating NUMERIC(3,2) DEFAULT 5.0,`,
+    `  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`,
+    `);`,
+    ``,
+    `CREATE TABLE IF NOT EXISTS profiles (`,
+    `  id VARCHAR(64) PRIMARY KEY,`,
+    `  user_id VARCHAR(64) NOT NULL REFERENCES users(id),`,
+    `  first_name VARCHAR(80),`,
+    `  last_name VARCHAR(80),`,
+    `  email VARCHAR(255),`,
+    `  phone VARCHAR(32),`,
+    `  city VARCHAR(100),`,
+    `  country VARCHAR(50),`,
+    `  bio TEXT,`,
+    `  home_airport VARCHAR(10),`,
+    `  iban VARCHAR(40),`,
+    `  phone_verified BOOLEAN DEFAULT FALSE,`,
+    `  trust_score INT DEFAULT 80,`,
+    `  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`,
+    `);`,
+    ``,
+    `CREATE TABLE IF NOT EXISTS trips (`,
+    `  id VARCHAR(64) PRIMARY KEY,`,
+    `  owner_id VARCHAR(64) NOT NULL,`,
+    `  origin VARCHAR(100) NOT NULL,`,
+    `  destination VARCHAR(100) NOT NULL,`,
+    `  departure_date DATE NOT NULL,`,
+    `  available_kg NUMERIC(6,2) NOT NULL,`,
+    `  price_per_kg NUMERIC(6,2) NOT NULL,`,
+    `  transport_type VARCHAR(32),`,
+    `  transport_label VARCHAR(100),`,
+    `  status VARCHAR(32) DEFAULT 'scheduled'`,
+    `);`,
+    ``,
+    `CREATE TABLE IF NOT EXISTS purchase_requests (`,
+    `  id VARCHAR(64) PRIMARY KEY,`,
+    `  owner_id VARCHAR(64) NOT NULL,`,
+    `  title VARCHAR(200) NOT NULL,`,
+    `  category VARCHAR(64),`,
+    `  kind VARCHAR(32) DEFAULT 'shop',`,
+    `  origin VARCHAR(100) NOT NULL,`,
+    `  destination VARCHAR(100) NOT NULL,`,
+    `  item_price NUMERIC(10,2) NOT NULL,`,
+    `  reward NUMERIC(10,2) NOT NULL,`,
+    `  status VARCHAR(32) DEFAULT 'open'`,
+    `);`,
+    ``,
+    `CREATE TABLE IF NOT EXISTS orders (`,
+    `  id VARCHAR(64) PRIMARY KEY,`,
+    `  conversation_id VARCHAR(64) NOT NULL,`,
+    `  status VARCHAR(32) NOT NULL,`,
+    `  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`,
+    `);`,
+    ``,
+    `CREATE TABLE IF NOT EXISTS wallet_transactions (`,
+    `  id VARCHAR(64) PRIMARY KEY,`,
+    `  user_id VARCHAR(64),`,
+    `  cents BIGINT NOT NULL,`,
+    `  type VARCHAR(32) NOT NULL,`,
+    `  label VARCHAR(255),`,
+    `  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`,
+    `);`,
+    ``,
+  ];
+
+  for (const [storeName, rows] of Object.entries(data)) {
+    if (!rows.length) continue;
+    sqlLines.push(`-- Table: ${storeName} (${rows.length} enregistrements)`);
+    for (const row of rows) {
+      const sanitized = JSON.stringify(row).replace(/'/g, "''");
+      sqlLines.push(
+        `-- RECORD: ${storeName} -> id: ${(row as { id?: string }).id || 'N/A'}`
+      );
+    }
+    sqlLines.push(``);
+  }
+
+  return sqlLines.join("\n");
+}
+
+export async function seedDemoDatabase(): Promise<{ createdCount: number }> {
+  let createdCount = 0;
+  const existingUsers = await getAll("users");
+  
+  // Seed Amine Belkacem if not exists
+  if (!existingUsers.some((u) => u.email === "amine.belkacem@gmail.com")) {
+    const amineUser: User = {
+      id: "user-demo-amine",
+      name: "Amine Belkacem",
+      email: "amine.belkacem@gmail.com",
+      firstName: "Amine",
+      lastName: "Belkacem",
+      city: "Paris",
+      country: "France",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
+      role: "voyageur",
+      activePlatform: "shopandgo",
+      profileSelection: "both",
+      kycStatus: "verified",
+      phone: "+33 6 12 34 56 78",
+      phoneVerified: true,
+      emailVerified: true,
+      homeAirport: "CDG",
+      iban: "FR7630001007941234567890185",
+      trustScore: 98,
+      rating: 4.95,
+      reviewsCount: 38,
+      stripeBalance: 320,
+      pendingEscrow: 85,
+      completedDeliveries: 42,
+      activeTripsCount: 2,
+      bio: "Navette bi-hebdomadaire Paris CDG ✈️ Alger ALG. Transport sécurisé d'achats scellés et électronique.",
+      createdAt: new Date().toISOString(),
+    };
+    await saveUser(amineUser);
+    await saveProfile({
+      id: amineUser.id,
+      userId: amineUser.id,
+      firstName: "Amine",
+      lastName: "Belkacem",
+      email: amineUser.email,
+      phone: "+33 6 12 34 56 78",
+      city: "Paris",
+      country: "France",
+      bio: amineUser.bio,
+      homeAirport: "CDG",
+      preferredCorridors: ["Paris CDG → Alger ALG", "Paris ORY → Oran ORN"],
+      iban: "FR7630001007941234567890185",
+      bankName: "BNP Paribas",
+      phoneVerified: true,
+      emailVerified: true,
+      trustScore: 98,
+      avatarUrl: amineUser.avatar,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+    createdCount++;
+  }
+
+  // Seed Sarah Benali if not exists
+  if (!existingUsers.some((u) => u.email === "sarah.benali@gmail.com")) {
+    const sarahUser: User = {
+      id: "user-demo-sarah",
+      name: "Sarah Benali",
+      email: "sarah.benali@gmail.com",
+      firstName: "Sarah",
+      lastName: "Benali",
+      city: "Lyon",
+      country: "France",
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+      role: "expediteur",
+      activePlatform: "bagandgo",
+      profileSelection: "expediteur",
+      kycStatus: "verified",
+      phone: "+33 7 89 01 23 45",
+      phoneVerified: true,
+      emailVerified: true,
+      homeAirport: "LYS",
+      iban: "FR7610058000011234567890123",
+      trustScore: 96,
+      rating: 5.0,
+      reviewsCount: 19,
+      stripeBalance: 0,
+      pendingEscrow: 45,
+      completedDeliveries: 15,
+      activeTripsCount: 0,
+      bio: "Expéditrice régulière Lyon - Oran pour colis familiaux et cosmétiques.",
+      createdAt: new Date().toISOString(),
+    };
+    await saveUser(sarahUser);
+    await saveProfile({
+      id: sarahUser.id,
+      userId: sarahUser.id,
+      firstName: "Sarah",
+      lastName: "Benali",
+      email: sarahUser.email,
+      phone: "+33 7 89 01 23 45",
+      city: "Lyon",
+      country: "France",
+      bio: sarahUser.bio,
+      homeAirport: "LYS",
+      preferredCorridors: ["Lyon LYS → Oran ORN"],
+      iban: "FR7610058000011234567890123",
+      bankName: "Crédit Agricole",
+      phoneVerified: true,
+      emailVerified: true,
+      trustScore: 96,
+      avatarUrl: sarahUser.avatar,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+    createdCount++;
+  }
+
+  return { createdCount };
 }

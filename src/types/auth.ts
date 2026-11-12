@@ -16,6 +16,30 @@ export interface KycDocument {
   rejectionReason?: string;
 }
 
+export interface UserProfile {
+  id: string; // matches user.id
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  city: string;
+  country: string;
+  bio?: string;
+  homeAirport?: string;
+  preferredCorridors?: string[];
+  iban?: string;
+  bic?: string;
+  bankName?: string;
+  phoneVerified: boolean;
+  emailVerified: boolean;
+  trustScore: number;
+  avatarUrl?: string;
+  googleSub?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface User {
   id: string;
   name: string;
@@ -25,6 +49,7 @@ export interface User {
   lastName?: string;
   birthDate?: string;
   city?: string;
+  country?: string;
   avatar: string;
   role: UserRole;
   activePlatform?: ActivePlatform;
@@ -42,5 +67,14 @@ export interface User {
   pendingEscrow: number;
   completedDeliveries: number;
   activeTripsCount: number;
+  googleId?: string;
+  bio?: string;
+  homeAirport?: string;
+  iban?: string;
+  bic?: string;
+  phoneVerified?: boolean;
+  emailVerified?: boolean;
+  trustScore?: number;
+  createdAt?: string;
 }
 

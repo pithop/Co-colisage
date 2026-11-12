@@ -11370,3 +11370,146 @@ html[data-theme="dark"] .bv-secondary:hover,
 .dark .bv-secondary:hover {
   background: #334155;
 }
+
+/* Corridor Benchmark Grid (Landing Page 10/10) */
+.landing-simulator-clean {
+  padding: 80px 6%;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+:root.dark .landing-simulator-clean, .dark .landing-simulator-clean {
+  background: #0b0f19;
+  border-color: #1e293b;
+}
+.simulator-clean-header {
+  max-width: 680px;
+  margin: 0 auto 48px auto;
+  text-align: center;
+}
+.simulator-clean-header h2 {
+  font-size: clamp(26px, 3.2vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+  margin: 12px 0 16px 0;
+  line-height: 1.2;
+}
+:root.dark .simulator-clean-header h2, .dark .simulator-clean-header h2 {
+  color: #f8fafc;
+}
+.simulator-clean-sub {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #64748b;
+}
+:root.dark .simulator-clean-sub, .dark .simulator-clean-sub {
+  color: #94a3b8;
+}
+.corridor-rates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto 56px auto;
+}
+.corridor-rate-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.corridor-rate-card:hover {
+  transform: translateY(-2px);
+  border-color: #3b82f6;
+  box-shadow: 0 12px 28px -6px rgba(59, 130, 246, 0.12);
+}
+:root.dark .corridor-rate-card, .dark .corridor-rate-card {
+  background: #0f172a;
+  border-color: #1e293b;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+:root.dark .corridor-rate-card:hover, .dark .corridor-rate-card:hover {
+  border-color: #60a5fa;
+  box-shadow: 0 12px 28px -6px rgba(96, 165, 250, 0.2);
+}
+.corridor-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.corridor-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+:root.dark .corridor-badge, .dark .corridor-badge {
+  background: #1e3a8a33;
+  color: #93c5fd;
+  border-color: #1d4ed844;
+}
+.corridor-transit {
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+}
+:root.dark .corridor-transit, .dark .corridor-transit {
+  color: #94a3b8;
+}
+.corridor-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.4;
+  margin: 0;
+}
+:root.dark .corridor-name, .dark .corridor-name {
+  color: #f8fafc;
+}
+.corridor-price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed #e2e8f0;
+}
+:root.dark .corridor-price-row, .dark .corridor-price-row {
+  border-top-color: #1e293b;
+}
+.corridor-price-row strong {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+}
+:root.dark .corridor-price-row strong, .dark .corridor-price-row strong {
+  color: #f8fafc;
+}
+.corridor-savings-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: #059669;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+:root.dark .corridor-savings-tag, .dark .corridor-savings-tag {
+  background: #064e3b33;
+  color: #34d399;
+  border-color: #05966944;
+}

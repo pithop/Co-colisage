@@ -18,7 +18,13 @@ import {
   AlertCircle,
   Sliders,
   Globe,
+  Edit3,
+  Save,
+  CreditCard,
+  Building,
+  Plane,
 } from "lucide-react";
+import { saveRecord, saveProfile } from "../../services/productionDb";
 import { ThemeToggle } from "../common/ThemeToggle";
 import { LanguageSelector } from "../../context/LanguageContext";
 export type Intention = "request" | "shop" | "carry" | "send" | "receive";
@@ -69,10 +75,65 @@ export function Profile({
   onOpenExpediteurDashboard?: () => void;
   onOpenCarrierDashboard?: () => void;
 }) {
-  const { user, profileSelection, setProfileSelection, isKycVerified, openKycModal } = useAuth();
+  const { user, profileSelection, setProfileSelection, isKycVerified, openKycModal, openGoogleModal } = useAuth();
   const [activeRole, setActiveRole] = useState<
     "carry" | "send" | "request" | "receive"
   >("request");
+
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveBusy, setSaveBusy] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    name: user?.name || userName || "Amine Belkacem",
+    phone: user?.phone || "+33 6 12 34 56 78",
+    city: user?.city || "Paris",
+    homeAirport: user?.homeAirport || "CDG",
+    bio: user?.bio || "Voyageur régulier entre la France et l'Algérie. Engagé pour des remises fiables et ponctuelles.",
+    iban: user?.iban || "FR7630001007941234567890185",
+  });
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    setSaveBusy(true);
+    try {
+      const updatedUser = {
+        ...user,
+        name: profileForm.name,
+        phone: profileForm.phone,
+        city: profileForm.city,
+        homeAirport: profileForm.homeAirport,
+        bio: profileForm.bio,
+        iban: profileForm.iban,
+      };
+      await saveRecord("users", updatedUser);
+      await saveProfile({
+        id: user.id,
+        userId: user.id,
+        firstName: profileForm.name.split(" ")[0] || profileForm.name,
+        lastName: profileForm.name.split(" ").slice(1).join(" ") || "",
+        email: user.email,
+        phone: profileForm.phone,
+        city: profileForm.city,
+        country: user.country || "France",
+        bio: profileForm.bio,
+        homeAirport: profileForm.homeAirport,
+        preferredCorridors: [`${profileForm.city} → Alger ALG`],
+        iban: profileForm.iban,
+        phoneVerified: true,
+        emailVerified: true,
+        trustScore: user.trustScore || 98,
+        avatarUrl: user.avatar,
+        createdAt: user.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+      setEditingProfile(false);
+    } finally {
+      setSaveBusy(false);
+    }
+  };
   const { rows: trips } = useDatabaseQuery("trips");
   const { rows: requests } = useDatabaseQuery("purchase_requests");
   const { rows: applications } = useDatabaseQuery("pro_applications");
@@ -168,6 +229,19 @@ export function Profile({
           </button>
         ) : (
           <div className="account-auth-actions">
+            <button
+              type="button"
+              className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5 shadow-2xs"
+              onClick={openGoogleModal}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05" />
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335" />
+              </svg>
+              Google
+            </button>
             <button type="button" className="account-login-btn" onClick={onLogin}>
               Connexion
             </button>
@@ -279,6 +353,161 @@ export function Profile({
             );
           })}
         </div>
+      </div>
+
+      {/* Informations Personnelles & Coordonnées Bancaires */}
+      <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 space-y-4 my-2 text-left">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
+          <div>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <CreditCard size={18} className="text-blue-600 dark:text-blue-400" />
+              Identité &amp; Coordonnées Bancaires
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Gérez votre profil public et vos coordonnées bancaires pour les virements instantanés.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            {saveSuccess && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 animate-in fade-in">
+                <Check size={13} />
+                Enregistré dans la base de données
+              </span>
+            )}
+            {!editingProfile ? (
+              <button
+                type="button"
+                onClick={() => setEditingProfile(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors shadow-2xs"
+              >
+                <Edit3 size={14} />
+                Modifier mon profil
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setEditingProfile(false)}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-300 transition-colors"
+              >
+                Annuler
+              </button>
+            )}
+          </div>
+        </div>
+
+        {editingProfile ? (
+          <form onSubmit={handleSaveProfile} className="space-y-4 pt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">
+                  Nom et prénom
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={profileForm.name}
+                  onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">
+                  Téléphone
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={profileForm.phone}
+                  onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">
+                  Ville de résidence
+                </label>
+                <input
+                  type="text"
+                  value={profileForm.city}
+                  onChange={(e) => setProfileForm({ ...profileForm, city: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">
+                  Aéroport de rattachement
+                </label>
+                <input
+                  type="text"
+                  placeholder="ex. CDG, ORY, LYS, MRS, ALG, ORN"
+                  value={profileForm.homeAirport}
+                  onChange={(e) => setProfileForm({ ...profileForm, homeAirport: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">
+                Biographie &amp; Engagement de confiance
+              </label>
+              <textarea
+                rows={2}
+                value={profileForm.bio}
+                onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">
+                IBAN pour le virement de vos gains (Stripe Payout)
+              </label>
+              <input
+                type="text"
+                value={profileForm.iban}
+                onChange={(e) => setProfileForm({ ...profileForm, iban: e.target.value })}
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="submit"
+                disabled={saveBusy}
+                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-md transition-colors flex items-center gap-1.5"
+              >
+                <Save size={14} />
+                {saveBusy ? "Sauvegarde..." : "Sauvegarder dans la base"}
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+            <div className="p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40">
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 block mb-0.5">Contact</span>
+              <strong className="text-xs text-slate-900 dark:text-white block">{profileForm.name}</strong>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400">{profileForm.phone}</span>
+            </div>
+
+            <div className="p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40">
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 block mb-0.5">Localisation</span>
+              <strong className="text-xs text-slate-900 dark:text-white block">{profileForm.city}</strong>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400">Hub aérien : {profileForm.homeAirport}</span>
+            </div>
+
+            <div className="p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 sm:col-span-2 lg:col-span-1">
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 block mb-0.5">Virement Bancaire SEPA</span>
+              <strong className="text-xs font-mono text-slate-900 dark:text-white block">
+                {profileForm.iban ? `${profileForm.iban.slice(0, 4)} •••• •••• •••• ${profileForm.iban.slice(-4)}` : "Non renseigné"}
+              </strong>
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">Stripe Connect Actif</span>
+            </div>
+          </div>
+        )}
       </div>
       <section className="role-workspace" aria-label="Mes quatre rôles">
         <div className="role-tabs" aria-label="Choisir une activité">

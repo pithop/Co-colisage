@@ -1038,188 +1038,70 @@ export function AwwwardsLanding({
       </section>
       <section
         id="simulator"
-        className="landing-simulator"
+        className="landing-simulator-clean"
         role="region"
         aria-labelledby="simulator-title"
       >
-        <div>
+        <div className="simulator-clean-header">
           <span className="eyebrow">
-            01 / {text("FAITES LE CALCUL", "DO THE MATH")}
+            01 / {text("TARIFICATION TRANSPARENTE", "TRANSPARENT PRICING")}
           </span>
-          <h2 id="simulator-title">{c.simulate}</h2>
-          <p>{c.estimated}</p>
-          <div className="simulator-explainer" aria-hidden="true">
-            <span>
-              <Plane size={20} />
-            </span>
-            <i />
-            <span>
-              <Package size={20} />
-            </span>
-            <i />
-            <span>
-              <Check size={20} />
-            </span>
-          </div>
-          <div className="simulator-caption">
-            <ShieldCheck size={15} />
+          <h2 id="simulator-title">
+            {text("Jusqu'à 70 % plus économique que le fret express", "Up to 70% cheaper than traditional express")}
+          </h2>
+          <p className="simulator-clean-sub">
             {text(
-              "Vos kilos disponibles ont de la valeur.",
-              "Your spare luggage space has value.",
+              "Fini les surtaxes carburant et les frais de douane imprévus. Les tarifs BagVoyage sont clairs par couloir aérien, négociés en toute confiance et garantis par séquestre bancaire.",
+              "No fuel surcharges or surprise customs fees. BagVoyage rates are transparent per corridor, negotiated with trust, and protected by bank escrow."
             )}
-          </div>
+          </p>
         </div>
-        <div className="simulator-controls">
-          <div
-            className="simulator-presets route-presets"
-            role="group"
-            aria-label={text("Lignes populaires", "Popular routes")}
-          >
-            {[
-              ["Paris", "Alger"],
-              ["Marseille", "Oran"],
-              ["Lyon", "Constantine"],
-              ["Montréal", "Alger"],
-            ].map(([from, to]) => (
-              <button
-                type="button"
-                key={from}
-                aria-pressed={origin === from && destination === to}
-                onClick={() => {
-                  setOrigin(from);
-                  setDestination(to);
-                }}
-              >
-                {from}
-                <ArrowLeftRight size={12} aria-hidden="true" />
-                {to}
-              </button>
-            ))}
-          </div>
-          <div className="simulator-route">
-            <div className="simulator-route-col">
-              <span className="simulator-col-label">{c.from}</span>
-              <CityAutocomplete
-                name="origin"
-                value={origin}
-                onChange={(val) => setOrigin(val)}
-                placeholder={text("Ex. Paris, Marseille, Alger...", "Ex. Paris, Marseille, Algiers...")}
-              />
+
+        <div className="corridor-rates-grid">
+          {[
+            {
+              corridor: text("France / Europe ➔ Algérie", "France / Europe ➔ Algeria"),
+              rate: "8 € / kg",
+              transit: text("24h – 48h vol direct", "24h – 48h direct flight"),
+              badge: text("Corridor Populaire", "Popular Route"),
+              saving: text("Économie ~72 % vs DHL", "~72% savings vs DHL"),
+            },
+            {
+              corridor: text("Europe ➔ Transatlantique (Canada / USA)", "Europe ➔ Transatlantic (Canada / USA)"),
+              rate: "12 € / kg",
+              transit: text("48h – 72h vol régulier", "48h – 72h regular flight"),
+              badge: "Transatlantique",
+              saving: text("Économie ~65 % vs FedEx", "~65% savings vs FedEx"),
+            },
+            {
+              corridor: text("Europe ➔ Moyen-Orient (Dubaï, Doha)", "Europe ➔ Middle East (Dubai, Doha)"),
+              rate: "11 € / kg",
+              transit: text("24h – 48h vol direct", "24h – 48h direct flight"),
+              badge: "Moyen-Orient",
+              saving: text("Économie ~68 % vs DHL", "~68% savings vs DHL"),
+            },
+            {
+              corridor: text("Europe ➔ Afrique Subsaharienne", "Europe ➔ Sub-Saharan Africa"),
+              rate: "10 € / kg",
+              transit: text("48h – 72h vols directs", "48h – 72h direct flights"),
+              badge: "Afrique",
+              saving: text("Économie ~70 % vs Express", "~70% savings vs Courier"),
+            },
+          ].map((item, i) => (
+            <div key={i} className="corridor-rate-card">
+              <div className="corridor-card-top">
+                <span className="corridor-badge">{item.badge}</span>
+                <span className="corridor-transit">{item.transit}</span>
+              </div>
+              <h3 className="corridor-name">{item.corridor}</h3>
+              <div className="corridor-price-row">
+                <strong>{item.rate}</strong>
+                <span className="corridor-savings-tag">{item.saving}</span>
+              </div>
             </div>
-            <button
-              type="button"
-              className="simulator-swap-btn"
-              aria-label={text("Inverser le trajet", "Reverse route")}
-              onClick={() => {
-                triggerHaptic(8);
-                setOrigin(destination);
-                setDestination(origin);
-                setRouteTurns((turns) => turns + 1);
-              }}
-            >
-              <ArrowLeftRight
-                size={19}
-                style={{
-                  transform: `rotate(${routeTurns * 180}deg)`,
-                  transition: "transform 360ms cubic-bezier(0.34, 1.56, 0.64, 1)",
-                }}
-              />
-            </button>
-            <div className="simulator-route-col">
-              <span className="simulator-col-label">{c.to}</span>
-              <CityAutocomplete
-                name="destination"
-                value={destination}
-                onChange={(val) => setDestination(val)}
-                placeholder={text("Ex. Alger, Oran, Montréal...", "Ex. Algiers, Oran, Montreal...")}
-              />
-            </div>
-          </div>
-          <fieldset>
-            <legend>{c.need}</legend>
-            <div className="simulator-segment">
-              <button
-                aria-pressed={need === "parcel"}
-                onClick={() => {
-                  triggerHaptic(6);
-                  setNeed("parcel");
-                }}
-              >
-                <Package size={17} />
-                {c.parcel}
-              </button>
-              <button
-                aria-pressed={need === "shop"}
-                onClick={() => {
-                  triggerHaptic(6);
-                  setNeed("shop");
-                }}
-              >
-                <ShoppingBag size={17} />
-                {c.shop}
-              </button>
-            </div>
-          </fieldset>
-          <label className="simulator-weight">
-            {c.weight}
-            <strong>{weight} kg</strong>
-            <input
-              style={{
-                background: `linear-gradient(to right, #2563eb ${((weight - 1) / 29) * 100}%, #e2e8f0 ${((weight - 1) / 29) * 100}%)`,
-              }}
-              type="range"
-              min="1"
-              max="30"
-              value={weight}
-              onChange={(event) => setWeight(Number(event.target.value))}
-            />
-          </label>
-          <div
-            className="simulator-presets weight-presets"
-            role="group"
-            aria-label={text("Gabarits de bagages", "Luggage presets")}
-          >
-            {[
-              { label: text("Documents", "Documents"), kg: 1 },
-              { label: text("Cadeaux", "Gifts"), kg: 5 },
-              { label: text("Valise", "Suitcase"), kg: 15 },
-              { label: text("Max Soute", "Checked max"), kg: 23 },
-            ].map(({ label, kg }) => (
-              <button
-                type="button"
-                key={kg}
-                aria-pressed={weight === kg}
-                onClick={() => setWeight(kg)}
-              >
-                {label} <span>({kg} kg)</span>
-              </button>
-            ))}
-          </div>
-          {origin === destination && (
-            <p role="alert">
-              {text(
-                "Choisissez deux villes différentes.",
-                "Choose two different cities.",
-              )}
-            </p>
-          )}
-          <div className="simulator-results" aria-live="polite">
-            <div>
-              <span>{c.cost}</span>
-              <output>{gross.toLocaleString(language)} €</output>
-            </div>
-            <div>
-              <span>{c.gain}</span>
-              <output>{net.toLocaleString(language)} €</output>
-            </div>
-          </div>
-          <small>
-            {text(
-              "Frais plateforme : 15 % du service brut. Shop & Go : achats en supplément.",
-              "Platform fee: 15% of gross service. Shop & Go purchases are additional.",
-            )}
-          </small>
+          ))}
         </div>
+
         <div className="landing-comparison">
           <div>
             <span className="eyebrow">

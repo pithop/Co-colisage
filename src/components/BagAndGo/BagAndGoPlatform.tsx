@@ -1201,7 +1201,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
                       <img
                         src={req.image}
                         alt={req.title}
-                        className="w-14 h-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 shadow-sm shrink-0"
+                        className="w-14 h-14 min-w-14 min-h-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 shadow-sm shrink-0"
                         loading="lazy"
                       />
                     ) : (

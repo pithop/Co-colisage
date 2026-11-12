@@ -1,7 +1,8 @@
-import { getRecord, saveRecord, subscribeToDatabase } from '../services/productionDb';
+import { getRecord, saveRecord, subscribeToDatabase, saveProfile } from '../services/productionDb';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import {
   User,
+  UserProfile,
   UserRole,
   ActivePlatform,
   UserProfileSelection,
@@ -9,6 +10,7 @@ import {
   KycDocumentType,
 } from '../types/auth';
 import { authenticateLocalAccount, registerLocalAccount, Registration } from '../lib/localAuth';
+import { GoogleSignInModal } from '../components/Auth/GoogleSignInModal';
 
 interface AuthContextType {
   user: User | null;
@@ -26,7 +28,10 @@ interface AuthContextType {
   login: (email: string, role?: UserRole, remember?: boolean) => void;
   signIn: (email: string, password: string, remember?: boolean) => Promise<void>;
   register: (input: Registration) => Promise<void>;
-  loginWithGoogle: () => void;
+  loginWithGoogle: (customUser?: User) => void;
+  isGoogleModalOpen: boolean;
+  openGoogleModal: () => void;
+  closeGoogleModal: () => void;
   logout: () => void;
   switchRole: (role: UserRole) => void;
   isAuthModalOpen: boolean;
@@ -66,6 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [user?.id]);
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
   const [isKycModalOpen, setIsKycModalOpen] = useState(false);
   const [activeDashboard, setActiveDashboard] = useState<'none' | 'voyageur' | 'transporteur' | 'expediteur'>('none');
 
@@ -206,29 +212,61 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsAuthModalOpen(false);
   };
 
-  const loginWithGoogle = () => {
-    // Authenticated Google account
-    const googleUser: User = {
-      id: `google-${Date.now()}`,
-      name: 'Utilisateur Google',
-      email: 'user.google@gmail.com',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-      role: 'voyageur',
-      kycStatus: 'unverified',
+  const loginWithGoogle = (customUser?: User) => {
+    const googleUser: User = customUser || {
+      id: "user-demo-amine",
+      name: "Amine Belkacem",
+      email: "amine.belkacem@gmail.com",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
+      role: "voyageur",
+      kycStatus: "verified",
       kycDocuments: [],
-      rating: 5.0,
-      reviewsCount: 0,
-      stripeBalance: 0,
-      pendingEscrow: 0,
-      completedDeliveries: 0,
-      activeTripsCount: 0,
-      activePlatform: 'shopandgo',
-      profileSelection: 'both'
+      rating: 4.95,
+      reviewsCount: 38,
+      stripeBalance: 320,
+      pendingEscrow: 85,
+      completedDeliveries: 42,
+      activeTripsCount: 2,
+      activePlatform: "shopandgo",
+      profileSelection: "both",
+      phone: "+33 6 12 34 56 78",
+      phoneVerified: true,
+      emailVerified: true,
+      city: "Paris",
+      country: "France",
+      homeAirport: "CDG",
+      iban: "FR7630001007941234567890185",
+      trustScore: 98,
+      bio: "Navette bi-hebdomadaire Paris CDG ✈️ Alger ALG.",
+      googleId: `google_oauth_${Date.now()}`,
+      createdAt: new Date().toISOString(),
     };
     setUser(googleUser);
-    setActivePlatformState('shopandgo');
-    setProfileSelectionState('both');
+    setActivePlatformState(googleUser.activePlatform || "shopandgo");
+    setProfileSelectionState(googleUser.profileSelection || "both");
+    void saveRecord("users", googleUser).catch(() => undefined);
+    void saveProfile({
+      id: googleUser.id,
+      userId: googleUser.id,
+      firstName: googleUser.name.split(" ")[0] || googleUser.name,
+      lastName: googleUser.name.split(" ").slice(1).join(" ") || "",
+      email: googleUser.email,
+      phone: googleUser.phone || "+33 6 12 34 56 78",
+      city: googleUser.city || "Paris",
+      country: googleUser.country || "France",
+      bio: googleUser.bio,
+      homeAirport: googleUser.homeAirport || "CDG",
+      preferredCorridors: ["Paris CDG → Alger ALG"],
+      iban: googleUser.iban,
+      phoneVerified: true,
+      emailVerified: true,
+      trustScore: googleUser.trustScore || 98,
+      avatarUrl: googleUser.avatar,
+      createdAt: googleUser.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }).catch(() => undefined);
     setIsAuthModalOpen(false);
+    setIsGoogleModalOpen(false);
   };
 
   const logout = () => {
@@ -272,6 +310,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setIsAuthModalOpen(false);
         },
         loginWithGoogle,
+        isGoogleModalOpen,
+        openGoogleModal: () => setIsGoogleModalOpen(true),
+        closeGoogleModal: () => setIsGoogleModalOpen(false),
         logout,
         switchRole,
         isAuthModalOpen,
@@ -282,6 +323,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }}
     >
       {children}
+      <GoogleSignInModal
+        isOpen={isGoogleModalOpen}
+        onClose={() => setIsGoogleModalOpen(false)}
+      />
     </AuthContext.Provider>
   );
 };
