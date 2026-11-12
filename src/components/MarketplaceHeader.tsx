@@ -212,8 +212,8 @@ export function MarketplaceHeader(props: Props) {
           <button
             type="button"
             onClick={props.onPublish}
-            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all active:scale-95 cursor-pointer"
-            aria-label="Publier"
+            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold text-xs sm:text-sm shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all active:scale-95 cursor-pointer"
+            aria-label="Publier une annonce"
           >
             <CirclePlus size={16} strokeWidth={2.4} />
             <span className="hidden sm:inline">Publier</span>
@@ -239,14 +239,15 @@ export function MarketplaceHeader(props: Props) {
           <button
             type="button"
             onClick={() => navigate("wallet")}
-            className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 font-extrabold text-xs transition-all cursor-pointer ${
+            className={`hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border font-extrabold text-xs transition-all cursor-pointer ${
               route === "wallet"
-                ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-transparent"
-                : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300"
+                ? "bg-slate-950 dark:bg-white text-white dark:text-slate-900 border-transparent shadow-xs"
+                : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-xs"
             }`}
             aria-label={`Mon portefeuille, solde disponible ${props.balance}`}
             title="Mon Portefeuille"
           >
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <Wallet size={14} className="text-blue-600 dark:text-blue-400" />
             <span>{props.balance}</span>
           </button>
@@ -518,7 +519,7 @@ export function MarketplaceHeader(props: Props) {
             role="radio"
             aria-checked={activePlatform === "voyageur"}
             onClick={() => handleSelectPlatform("voyageur")}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-bold transition-all min-h-[40px] cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1.5 rounded-xl text-xs font-bold transition-all min-h-[40px] cursor-pointer ${
               activePlatform === "voyageur"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
@@ -528,7 +529,10 @@ export function MarketplaceHeader(props: Props) {
               size={14}
               className={activePlatform === "voyageur" ? "text-blue-600 dark:text-blue-400" : "text-slate-400"}
             />
-            <span className="text-[11px] font-bold">Voyageur</span>
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-[11px] font-bold">Voyageur</span>
+              <span className="text-[7.5px] opacity-80 font-medium">Rentabiliser</span>
+            </div>
           </button>
 
           <button

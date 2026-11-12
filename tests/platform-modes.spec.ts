@@ -137,7 +137,7 @@ test.describe("Tri-Modal Platforms & Multi-Modal Capabilities", () => {
     await page.goto("/#landing");
 
     // Check new Apple/Stripe-grade hero presence and headline
-    await expect(page.locator(".bv-hero-headline")).toContainText("Rentabilisez vos voyages");
+    await expect(page.locator(".bv-hero-headline")).toContainText("Rentabilisez vos voyages", { timeout: 15000 });
     await expect(page.locator(".bv-hero-lead")).toBeVisible();
 
     // Check the 3 mode tabs

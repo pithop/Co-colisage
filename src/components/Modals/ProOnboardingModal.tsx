@@ -51,44 +51,46 @@ export function ProOnboardingModal({
 
   return (
     <Dialog title="Devenir transporteur professionnel agréé" onClose={onClose} wide>
-      {/* 3-Step Timeline */}
-      <div className="grid grid-cols-3 gap-2 mb-4 p-2 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
-        {[
-          { num: 1, title: 'Entreprise', subtitle: 'SIRET / CNRC' },
-          { num: 2, title: 'Licences & RC', subtitle: 'DREAL & Assurance' },
-          { num: 3, title: 'Flotte & Capacités', subtitle: 'Charges utiles (kg/m³)' },
-        ].map((s) => {
-          const active = currentStep === s.num;
-          const completed = currentStep > s.num;
-          return (
-            <div
-              key={s.num}
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all ${
-                completed
-                  ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30'
-                  : active
-                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs border border-slate-200 dark:border-slate-600'
-                  : 'text-slate-400 dark:text-slate-500'
-              }`}
-            >
-              <span
-                className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 ${
+      {/* Stepper with connected sleek indicators */}
+      <div className="mb-5 p-3.5 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 backdrop-blur-md">
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { num: 1, title: 'Entreprise', subtitle: 'SIRET / CNRC' },
+            { num: 2, title: 'Licences & RC', subtitle: 'DREAL & Assurance' },
+            { num: 3, title: 'Flotte & Capacités', subtitle: 'Charges utiles (kg/m³)' },
+          ].map((s) => {
+            const active = currentStep === s.num;
+            const completed = currentStep > s.num;
+            return (
+              <div
+                key={s.num}
+                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all border ${
                   completed
-                    ? 'bg-emerald-500 text-white'
+                    ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/30'
                     : active
-                    ? 'bg-blue-600 text-white dark:bg-blue-500 dark:text-white'
-                    : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
+                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs border-blue-500/40 dark:border-blue-500/50 ring-2 ring-blue-500/10'
+                    : 'border-transparent text-slate-400 dark:text-slate-500 opacity-60'
                 }`}
               >
-                {completed ? <Check size={12} strokeWidth={3} /> : s.num}
-              </span>
-              <div className="min-w-0 hidden sm:block">
-                <p className="text-xs font-bold leading-tight truncate">{s.title}</p>
-                <p className="text-[10px] opacity-75 truncate">{s.subtitle}</p>
+                <span
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black shrink-0 transition-transform ${
+                    completed
+                      ? 'bg-emerald-600 text-white'
+                      : active
+                      ? 'bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-xs'
+                      : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
+                  }`}
+                >
+                  {completed ? <Check size={13} strokeWidth={3} /> : s.num}
+                </span>
+                <div className="min-w-0 hidden sm:block">
+                  <p className="text-xs font-bold leading-tight truncate">{s.title}</p>
+                  <p className="text-[10px] opacity-75 truncate">{s.subtitle}</p>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
       <div className="composer-heading">
