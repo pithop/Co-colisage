@@ -1,12 +1,14 @@
 {
-  "name": "BagVoyage · Entre particuliers",
+  "name": "BagVoyage · Co-colisage & Shop & Go",
   "short_name": "BagVoyage",
-  "description": "Plateforme de co-colisage et shopping collaboratif sécurisé entre particuliers.",
-  "start_url": "/app",
+  "description": "Plateforme sécurisée de co-colisage et shopping collaboratif entre voyageurs et particuliers.",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#FFFFFF",
+  "background_color": "#0F172A",
   "theme_color": "#2563EB",
   "orientation": "portrait-primary",
+  "categories": ["travel", "logistics", "shopping", "finance"],
   "icons": [
     {
       "src": "/icon.svg",
@@ -16,3 +18,4 @@
     }
   ]
 }
+

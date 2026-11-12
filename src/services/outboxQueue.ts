@@ -6,6 +6,8 @@
  * are immediately persisted locally and sequentially synced upon reconnect.
  */
 
+import { executeRemoteMutation } from "./apiSync";
+
 export interface QueuedMutation {
   id: string;
   type: "MESSAGE_SENT" | "HANDOVER_CONFIRMED" | "ORDER_STATUS_CHANGED" | "PROOF_UPLOADED";
@@ -15,6 +17,7 @@ export interface QueuedMutation {
   status: "pending" | "processing" | "synced" | "failed";
   lastError?: string;
 }
+
 
 const OUTBOX_STORAGE_KEY = "bv_offline_outbox_queue_v1";
 
@@ -141,9 +144,9 @@ export async function flushOutboxQueue(): Promise<{
 }
 
 async function simulateRemoteSync(mutation: QueuedMutation): Promise<void> {
-  // Simulates reliable network roundtrip (20ms)
-  await new Promise((resolve) => setTimeout(resolve, 20));
+  await executeRemoteMutation(mutation);
 }
+
 
 // Auto-register network listeners in browser environment
 if (typeof window !== "undefined") {
@@ -151,3 +154,4 @@ if (typeof window !== "undefined") {
     flushOutboxQueue();
   });
 }
+
