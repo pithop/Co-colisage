@@ -57,6 +57,21 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
     return () => clearTimeout(verificationTimer.current);
   }, [conversation?.id, product?.id]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isSuccess || isVerifying) return;
+      if (e.key >= '0' && e.key <= '9') {
+        handleDigitPress(e.key);
+      } else if (e.key === 'Backspace') {
+        handleBackspace();
+      } else if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [pin, isSuccess, isVerifying, onClose]);
+
   if (!conversation && !product) return null;
 
   const handleDigitPress = (digit: string) => {

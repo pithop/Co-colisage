@@ -6331,6 +6331,12 @@
   gap: 16px;
   margin-bottom: 20px;
 }
+@media (max-width: 640px) {
+  .bv-paper-parties {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
 .bv-paper-parties section {
   padding: 12px;
   background: #f8fafc;
@@ -6488,6 +6494,12 @@
   gap: 8px;
   margin-bottom: 20px;
 }
+@media (max-width: 680px) {
+  .radar-selector {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
 .radar-tab {
   display: flex;
   flex-direction: column;
@@ -6544,6 +6556,13 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin-bottom: 24px;
+}
+@media (max-width: 680px) {
+  .radar-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
 }
 .radar-metric {
   background: #f8fafc;
@@ -10626,4 +10645,431 @@ html[data-theme="dark"] .bv-sheet-close-btn:hover,
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   flex: 1 1 auto;
+}
+
+/* ==========================================================================
+   TRACKING & LOGISTICS CENTER 10/10 UPGRADES (Apple HIG / Linear Standard)
+   ========================================================================== */
+
+/* Photographic Parcel & Carrier Thumbnail */
+.bv-shipment-photo-wrap {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  overflow: visible;
+}
+
+.bv-shipment-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.bv-carrier-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bv-carrier-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.bv-verified-dot {
+  position: absolute;
+  bottom: -1px;
+  right: -2px;
+  width: 14px;
+  height: 14px;
+  background: #10b981;
+  color: #ffffff;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #ffffff;
+}
+
+/* Telemetry & Security Strip */
+.bv-telemetry-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 26px;
+  background: #f8fafc;
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 11px;
+}
+
+.bv-telemetry-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-weight: 550;
+}
+
+.bv-telemetry-pill.live {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.bv-telemetry-pill.verified {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #047857;
+}
+
+.bv-telemetry-pill svg {
+  flex-shrink: 0;
+}
+
+/* Interactive Demo Showcase Banner */
+.bv-demo-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 22px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.06) 100%);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.04);
+}
+
+.bv-demo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.bv-demo-info h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 4px 0 2px;
+}
+
+.bv-demo-info p {
+  font-size: 12px;
+  color: #475569;
+}
+
+/* ==========================================================================
+   DARK MODE ADAPTATIONS FOR TRACKING & MODALS (Obsidian Standard)
+   ========================================================================== */
+
+/* Live Radar Dark Mode */
+html[data-theme="dark"] .radar-display,
+.dark .radar-display {
+  background: #111827;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .radar-title,
+.dark .radar-title {
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .radar-airline,
+.dark .radar-airline {
+  color: #60a5fa;
+}
+
+html[data-theme="dark"] .radar-metric,
+.dark .radar-metric {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .radar-metric span,
+.dark .radar-metric span {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .radar-metric strong,
+.dark .radar-metric strong {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .radar-tab,
+.dark .radar-tab {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .radar-tab.active,
+.dark .radar-tab.active {
+  background: #2563eb;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .radar-info-box,
+.dark .radar-info-box {
+  background: rgba(30, 58, 138, 0.25);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+
+html[data-theme="dark"] .radar-step-label,
+.dark .radar-step-label {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .radar-step.done .radar-step-label,
+.dark .radar-step.done .radar-step-label {
+  color: #f8fafc;
+}
+
+/* Tool Modals & Cargo Pass Dark Mode */
+html[data-theme="dark"] .bv-tool-modal,
+.dark .bv-tool-modal {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+}
+
+html[data-theme="dark"] .bv-tool-header,
+.dark .bv-tool-header {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .bv-tool-footer,
+.dark .bv-tool-footer {
+  background: #111827;
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .notch,
+.dark .notch {
+  background: #111827;
+}
+
+html[data-theme="dark"] .bv-tool-close-btn,
+.dark .bv-tool-close-btn {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .bv-tool-close-btn:hover,
+.dark .bv-tool-close-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+/* Tracking Page & Shipment Cards Dark Mode */
+html[data-theme="dark"] .bv-shipment,
+.dark .bv-shipment {
+  background: #141d2e;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .bv-shipment h2,
+.dark .bv-shipment h2 {
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .bv-shipment header p,
+.dark .bv-shipment header p {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .bv-carrier-avatar,
+.dark .bv-carrier-avatar {
+  border-color: #141d2e;
+}
+
+html[data-theme="dark"] .bv-verified-dot,
+.dark .bv-verified-dot {
+  border-color: #141d2e;
+}
+
+html[data-theme="dark"] .bv-shipment-photo,
+.dark .bv-shipment-photo {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="dark"] .bv-telemetry-strip,
+.dark .bv-telemetry-strip {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+html[data-theme="dark"] .bv-telemetry-pill,
+.dark .bv-telemetry-pill {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .bv-telemetry-pill.live,
+.dark .bv-telemetry-pill.live {
+  background: rgba(37, 99, 235, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #93c5fd;
+}
+
+html[data-theme="dark"] .bv-telemetry-pill.verified,
+.dark .bv-telemetry-pill.verified {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #6ee7b7;
+}
+
+html[data-theme="dark"] .bv-demo-banner,
+.dark .bv-demo-banner {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+html[data-theme="dark"] .bv-demo-info h3,
+.dark .bv-demo-info h3 {
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .bv-demo-info p,
+.dark .bv-demo-info p {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .bv-shipment-route,
+.dark .bv-shipment-route {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .bv-shipment-route strong,
+.dark .bv-shipment-route strong {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .bv-shipment-timeline li,
+.dark .bv-shipment-timeline li {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .bv-shipment-timeline li strong,
+.dark .bv-shipment-timeline li strong {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .bv-shipment-timeline li > span,
+.dark .bv-shipment-timeline li > span {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .bv-shipment-timeline li.complete > span,
+.dark .bv-shipment-timeline li.complete > span {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+html[data-theme="dark"] .bv-shipment-timeline li.current > span,
+.dark .bv-shipment-timeline li.current > span {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25);
+}
+
+html[data-theme="dark"] .bv-shipment > footer,
+.dark .bv-shipment > footer {
+  background: #0f172a;
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .bv-shipment footer button,
+html[data-theme="dark"] .bv-shipment footer a,
+.dark .bv-shipment footer button,
+.dark .bv-shipment footer a {
+  color: #93c5fd;
+}
+
+html[data-theme="dark"] .bv-kpis,
+.dark .bv-kpis {
+  background: #111c2e;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .bv-kpis section,
+.dark .bv-kpis section {
+  border-right-color: rgba(255, 255, 255, 0.08);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .bv-kpis section > strong,
+.dark .bv-kpis section > strong {
+  color: #f1f5f9;
+}
+
+html[data-theme="dark"] .bv-kpis section > div,
+.dark .bv-kpis section > div,
+html[data-theme="dark"] .bv-kpis section > p,
+.dark .bv-kpis section > p {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .bv-radar-workspace,
+.dark .bv-radar-workspace {
+  background: #111c2e;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .bv-segmented,
+.dark .bv-segmented {
+  background: #1e293b;
+}
+
+html[data-theme="dark"] .bv-segmented button[aria-pressed=true],
+.dark .bv-segmented button[aria-pressed=true] {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+@media (max-width: 768px) {
+  .bv-telemetry-strip {
+    padding: 8px 16px;
+    gap: 6px;
+  }
+  .bv-demo-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px 16px;
+  }
 }

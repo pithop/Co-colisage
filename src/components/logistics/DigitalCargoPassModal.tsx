@@ -81,6 +81,7 @@ Document conforme aux specifications IATA Res. 792 & OACI STEB.`;
         className="market-dialog-box bv-tool-modal cargo-pass-modal"
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="sheet-drag-handle" aria-hidden="true" />
         <div className="bv-tool-header">
           <div className="bv-tool-header-meta">
             <span className="bv-tool-tag">
