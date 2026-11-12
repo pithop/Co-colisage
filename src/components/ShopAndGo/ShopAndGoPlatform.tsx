@@ -33,6 +33,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { PurchaseRequest, Trip } from '../../data/marketplace';
+import { products } from '../../data/mockData';
 import { useAuth } from '../../context/AuthContext';
 import { ShopBudgetVisualizer } from '../marketplace/ShopBudgetVisualizer';
 import { CityAutocomplete } from '../common/CityAutocomplete';
@@ -155,8 +156,34 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
     setBasket(basket.filter((it) => it.id !== id));
   };
 
-  // Filter shopping requests
-  const shoppingRequests = requests.filter((r) => r.kind !== 'parcel');
+  // Filter shopping requests & connect verified Duty-Free demo catalog
+  const userShoppingRequests = requests.filter((r) => r.kind !== 'parcel');
+  const demoShoppingRequests: PurchaseRequest[] = products.map((p) => ({
+    id: p.id,
+    title: p.name,
+    origin: p.originCity || 'Paris (CDG)',
+    destination: p.destination || 'Alger (ALG)',
+    date: p.deliveryPeriod || new Date().toISOString().slice(0, 10),
+    budget: Math.round(p.price + (p.gain || 25) + 10),
+    reward: p.gain || 25,
+    serviceGross: p.price,
+    platformFee: 10,
+    image: p.image,
+    buyer: 'Client Boutique Vérifié',
+    buyerAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    specifications: `Articles: 1x ${p.name} · Boutique: ${p.originStore} · Franchise Duty-Free appliquée · Reçu fiscal garanti`,
+    location: `${p.originCity || 'Paris'} → ${p.destination || 'Alger'}`,
+    kind: 'shopping',
+    status: 'available',
+    flexibility: 'deadline',
+    declaredValue: p.price,
+    declaredCurrency: 'EUR',
+  }));
+
+  const shoppingRequests = [
+    ...userShoppingRequests,
+    ...demoShoppingRequests.filter((d) => !userShoppingRequests.some((u) => u.id === d.id)),
+  ];
   const [browseSearch, setBrowseSearch] = useState('');
   const [browseCategory, setBrowseCategory] = useState('all');
 
@@ -200,7 +227,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
       date: deadlineDate || new Date().toISOString().slice(0, 10),
       budget: totalBudget,
       reward: commNum,
-      image: photoPreview || '/images/hero-luxury-shopping-arcade.jpg',
+      image: photoPreview || '/images/hero-luxury-shopper.jpg',
       buyer: user?.name || recipient || 'Acheteur vérifié',
       specifications: `Articles: ${itemsSummary} · Sous-total: ${itemsSubtotal} € · Rémunération voyageur: ${commNum} € · Protection Stripe: ${stripeEscrowFee} € · Négociable: ${acceptNegotiation ? 'Oui' : 'Non'}`,
       location: deliveryLocation || 'Alger, Algérie',
@@ -228,7 +255,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
       <section className="relative overflow-hidden rounded-[28px] bg-slate-950 text-white shadow-lg border border-slate-800/80">
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105 opacity-40"
-          style={{ backgroundImage: "url('/images/hero-luxury-shopping-arcade.jpg')" }}
+          style={{ backgroundImage: "url('/images/hero-luxury-shopper.jpg')" }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/50 sm:to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-black/20" />
@@ -379,9 +406,14 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                   className="group p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between gap-4"
                 >
                   <div className="flex items-start gap-3.5">
-                    <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/60 flex items-center justify-center shrink-0 overflow-hidden">
-                      {req.image && req.image.startsWith('http') ? (
-                        <img src={req.image} alt={req.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    <div className="relative w-18 h-18 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/60 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+                      {req.image ? (
+                        <img
+                          src={req.image}
+                          alt={req.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                          loading="lazy"
+                        />
                       ) : (
                         <ShoppingCart size={26} className="text-blue-600 dark:text-blue-400" />
                       )}
@@ -400,11 +432,22 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                       <h4 className="font-extrabold text-sm text-slate-900 dark:text-white line-clamp-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {req.title}
                       </h4>
-                      <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-600 dark:text-slate-300">
+                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-600 dark:text-slate-300">
                         <span>Articles : <strong className="text-slate-800 dark:text-white">{req.budget - req.reward} €</strong></span>
                         <span className="text-slate-300 dark:text-slate-700">•</span>
                         <span className="text-emerald-700 dark:text-emerald-400 font-extrabold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md">
                           Gain net : +{req.reward} €
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                        <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50">
+                          Détaxe Aérogare (-25%)
+                        </span>
+                        <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200/50">
+                          Ticket Reçu
+                        </span>
+                        <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200/50">
+                          Scellé STEB
                         </span>
                       </div>
                     </div>
@@ -985,6 +1028,27 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
           </div>
         )}
       </section>
+
+      {/* 5. Mobile Sticky Shopping Dock */}
+      <div className="fixed bottom-[calc(var(--nav-height,64px)+env(safe-area-inset-bottom,0px))] inset-x-0 z-30 p-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 sm:hidden shadow-lg">
+        <div className="min-w-0 flex-1">
+          <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            {basket.length} article(s) · {itemsSubtotal} €
+          </span>
+          <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 truncate block">
+            Gain voyageur : +{commNum} €
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={basket.length === 0}
+          className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all shrink-0 cursor-pointer"
+        >
+          <ShoppingCart size={14} />
+          <span>Commander ({totalBudget} €)</span>
+        </button>
+      </div>
     </div>
   );
 };

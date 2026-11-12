@@ -50,9 +50,9 @@ export const categories: CategoryItem[] = [
 export const products: ProductItem[] = [
   {
     id: 'prod-alg-1',
-    name: 'Dior Sauvage Eau de Parfum (100ml)',
-    brand: 'Dior',
-    price: 99.00,
+    name: 'Bleu de Chanel Eau de Parfum (100ml)',
+    brand: 'Chanel',
+    price: 105.00,
     gain: 25.00,
     destination: 'Alger',
     destinationCode: 'ALG',

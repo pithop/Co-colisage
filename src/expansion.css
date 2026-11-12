@@ -7037,7 +7037,7 @@
   .bv-manifest td, .bv-manifest th { padding-inline: 12px; }
 }
 @media (max-width: 700px) {
-  .bv-radar-page, .bv-tracking-page { padding: 28px 0 36px; }
+  .bv-radar-page, .bv-tracking-page { padding: 24px 0 calc(96px + env(safe-area-inset-bottom, 0px)); }
   .bv-page-heading { gap: 20px; align-items: flex-start; flex-direction: column; margin-bottom: 24px; }
   .bv-page-heading h1 { font-size: 40px; }
   .bv-page-heading p { font-size: 12px; line-height: 1.7; }
@@ -7094,7 +7094,7 @@
   .bv-tracking-kpis section > strong { font-size: 24px; }
   .bv-shipment > header { padding: 20px 16px; flex-wrap: wrap; gap: 12px; }
   .bv-shipment > header > div:nth-child(2) { flex: 1; min-width: 0; }
-  .bv-shipment header > .bv-status-pill { margin-left: 60px; }
+  .bv-shipment header > .bv-status-pill { margin-left: auto; max-width: 100%; }
   .bv-shipment h2 { font-size: 16px; }
   .bv-shipment-route { padding-inline: 16px; font-size: 11px; }
   .bv-shipment-timeline { grid-template-columns: 1fr; margin: 24px 20px; gap: 24px; }

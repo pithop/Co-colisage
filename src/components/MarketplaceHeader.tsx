@@ -274,7 +274,7 @@ export function MarketplaceHeader(props: Props) {
 
             {/* Elite Dropdown Panel */}
             {menuOpen && (
-              <div className="absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-2 z-50 text-slate-800 dark:text-slate-200 animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute right-0 mt-2 w-72 sm:w-80 max-h-[calc(100dvh-90px)] overflow-y-auto rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-2 z-50 text-slate-800 dark:text-slate-200 animate-in fade-in zoom-in-95 duration-150">
                 {/* User Info Header */}
                 <div className="p-3 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-center justify-between">
@@ -498,14 +498,14 @@ export function MarketplaceHeader(props: Props) {
             role="radio"
             aria-checked={activePlatform === "bagandgo"}
             onClick={() => handleSelectPlatform("bagandgo")}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1.5 rounded-xl text-xs font-bold transition-all min-h-[40px] cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all min-h-[44px] cursor-pointer ${
               activePlatform === "bagandgo"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
             }`}
           >
             <Package
-              size={14}
+              size={15}
               className={activePlatform === "bagandgo" ? "text-blue-600 dark:text-blue-400" : "text-slate-400"}
             />
             <div className="flex flex-col text-left leading-tight">
@@ -519,14 +519,14 @@ export function MarketplaceHeader(props: Props) {
             role="radio"
             aria-checked={activePlatform === "voyageur"}
             onClick={() => handleSelectPlatform("voyageur")}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1.5 rounded-xl text-xs font-bold transition-all min-h-[40px] cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all min-h-[44px] cursor-pointer ${
               activePlatform === "voyageur"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
             }`}
           >
             <UserRound
-              size={14}
+              size={15}
               className={activePlatform === "voyageur" ? "text-blue-600 dark:text-blue-400" : "text-slate-400"}
             />
             <div className="flex flex-col text-left leading-tight">
@@ -540,14 +540,14 @@ export function MarketplaceHeader(props: Props) {
             role="radio"
             aria-checked={activePlatform === "shopandgo"}
             onClick={() => handleSelectPlatform("shopandgo")}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1.5 rounded-xl text-xs font-bold transition-all min-h-[40px] cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all min-h-[44px] cursor-pointer ${
               activePlatform === "shopandgo"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
             }`}
           >
             <ShoppingCart
-              size={14}
+              size={15}
               className={activePlatform === "shopandgo" ? "text-blue-600 dark:text-blue-400" : "text-slate-400"}
             />
             <div className="flex flex-col text-left leading-tight">

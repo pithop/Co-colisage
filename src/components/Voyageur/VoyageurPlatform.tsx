@@ -135,14 +135,33 @@ const MODE_CONFIGS: Record<TransportMode, ModeConfig> = {
   },
 };
 
+const MODE_DEFAULT_IMAGES: Record<TransportMode, string> = {
+  avion: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80",
+  voiture: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80",
+  train: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=800&q=80",
+  bateau: "https://images.unsplash.com/photo-1565026057447-bc90a3dceb87?auto=format&fit=crop&w=800&q=80",
+  camion: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=800&q=80",
+};
+
+const MODE_DEFAULT_AVATARS: string[] = [
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
+  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+  "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=200&q=80",
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80",
+  "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&q=80",
+];
+
 // Helper to instantiate realistic FreightItem trips conforming to Trip interface
 function makeSampleTrip(base: Partial<Trip> & Pick<Trip, "id" | "title" | "origin" | "destination" | "originCode" | "destinationCode" | "departureDate" | "pricePerKg" | "availableKg" | "transportType" | "transportLabel">): Trip {
+  const mode = (base.transportType || "avion") as TransportMode;
+  const avatarIndex = Math.abs(base.id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)) % MODE_DEFAULT_AVATARS.length;
   return {
     travelerName: base.title.split("(")[0].trim(),
-    travelerAvatar: "/images/carrier-fleet.jpg",
-    rating: 4.9,
-    reviewsCount: 112,
-    image: "/images/hero-airport-traveler.jpg",
+    travelerAvatar: base.travelerAvatar || MODE_DEFAULT_AVATARS[avatarIndex],
+    rating: 4.95,
+    reviewsCount: 38,
+    image: base.image || MODE_DEFAULT_IMAGES[mode] || "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80",
     description: `Trajet certifié en ${base.transportLabel} entre ${base.origin} et ${base.destination}.`,
     isIdentityVerified: true,
     isTicketVerified: true,
@@ -766,8 +785,27 @@ export function VoyageurPlatform({
                 className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-700 transition-all shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                    <Package size={22} />
+                  <div className="relative shrink-0">
+                    {req.image ? (
+                      <img
+                        src={req.image}
+                        alt={req.title}
+                        className="w-14 h-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 shadow-sm shrink-0"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 border border-blue-100 dark:border-blue-900/50">
+                        <Package size={24} />
+                      </div>
+                    )}
+                    {req.buyerAvatar && (
+                      <img
+                        src={req.buyerAvatar}
+                        alt={req.buyer}
+                        className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full object-cover border-2 border-white dark:border-slate-900 shadow-sm"
+                        title={`Expéditeur certifié : ${req.buyer}`}
+                      />
+                    )}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
@@ -814,10 +852,24 @@ export function VoyageurPlatform({
               >
                 <div className="flex items-start sm:items-center gap-4">
                   <div className="relative shrink-0">
-                    <div className="w-12 h-12 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-bold flex items-center justify-center text-sm shadow-xs">
-                      {trip.title ? trip.title.slice(0, 2).toUpperCase() : "VO"}
-                    </div>
-                    <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900 flex items-center justify-center shadow-xs" title="Profil vérifié" />
+                    {trip.travelerAvatar ? (
+                      <img
+                        src={trip.travelerAvatar}
+                        alt={trip.travelerName || trip.title}
+                        className="w-14 h-14 rounded-2xl object-cover border-2 border-white dark:border-slate-800 shadow-md ring-2 ring-blue-500/20"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-14 h-14 rounded-2xl bg-slate-900 dark:bg-slate-800 text-white font-bold flex items-center justify-center text-sm shadow-xs">
+                        {trip.title ? trip.title.slice(0, 2).toUpperCase() : "VO"}
+                      </div>
+                    )}
+                    <span
+                      className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900 flex items-center justify-center shadow-xs"
+                      title="Profil vérifié eIDAS"
+                    >
+                      <Check size={9} className="text-white" strokeWidth={3} />
+                    </span>
                   </div>
 
                   <div className="space-y-1">

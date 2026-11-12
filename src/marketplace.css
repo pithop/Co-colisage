@@ -2345,7 +2345,7 @@ img.vehicle-illustration {
   }
   .detail-actions {
     width: 100%;
-    bottom: 0;
+    bottom: calc(var(--nav-height, 64px) + env(safe-area-inset-bottom, 0px) + 8px);
     padding: 14px;
     gap: 12px;
     flex-wrap: wrap;

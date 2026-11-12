@@ -252,7 +252,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
       <section className="relative overflow-hidden rounded-[28px] bg-slate-950 text-white shadow-lg border border-slate-800/80">
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105 opacity-40"
-          style={{ backgroundImage: "url('/images/hero-airport-traveler.jpg')" }}
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80')" }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/50 sm:to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-black/20" />
@@ -1196,8 +1196,26 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
                 className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-700 transition-all shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 cursor-pointer"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                    <Package size={22} />
+                  <div className="relative shrink-0">
+                    {req.image ? (
+                      <img
+                        src={req.image}
+                        alt={req.title}
+                        className="w-14 h-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 shadow-sm shrink-0"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                        <Package size={24} />
+                      </div>
+                    )}
+                    {req.buyerAvatar && (
+                      <img
+                        src={req.buyerAvatar}
+                        alt={req.buyer}
+                        className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full object-cover border-2 border-white dark:border-slate-900 shadow-xs"
+                      />
+                    )}
                   </div>
 
                   <div>
@@ -1255,6 +1273,26 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
           </div>
         )}
       </section>
+
+      {/* 5. Mobile Sticky CTA Dock */}
+      <div className="fixed bottom-[calc(var(--nav-height,64px)+env(safe-area-inset-bottom,0px))] inset-x-0 z-30 p-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 sm:hidden shadow-lg">
+        <div className="min-w-0 flex-1">
+          <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            {weightKg} kg · {category.split("&")[0].trim()}
+          </span>
+          <span className="text-sm font-extrabold text-slate-900 dark:text-white truncate block">
+            {departureCity} → {destination}
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={handleSubmit}
+          className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all shrink-0 cursor-pointer"
+        >
+          <Send size={14} />
+          <span>Publier ({proposedPrice} €)</span>
+        </button>
+      </div>
     </div>
   );
 };

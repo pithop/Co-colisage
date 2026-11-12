@@ -17,17 +17,18 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate, onNotif
         route === "explore" ||
         route === "" ||
         route === "voyageur" ||
-        (route === "bagandgo" && activePlatform === "bagandgo")
+        route === "bagandgo" ||
+        route === "shopandgo"
       );
     }
     if (key === "missions") {
-      return route === "tracking" || route === "shopandgo";
+      return route === "tracking";
     }
     if (key === "messages") {
       return route === "messages";
     }
     if (key === "notifications") return route === "notifications";
-    if (key === "account") return route === "profile";
+    if (key === "account") return route === "profile" || route === "wallet";
     return false;
   };
 

@@ -836,6 +836,7 @@
   }
   .wallet-page {
     padding-top: 28px;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
   }
   .wallet-intro h1 {
     font-size: 32px;
