@@ -6855,23 +6855,23 @@
 .bv-manifest meter { width: 70px; height: 5px; margin-top: 5px; display: block; }
 .bv-expansion meter, .bv-telemetry meter { appearance: none; background: #e7eeed; border-radius: 6px; border: 0; }
 .bv-expansion meter::-webkit-meter-bar, .bv-telemetry meter::-webkit-meter-bar { background: #e7eeed; border: 0; height: 5px; }
-.bv-expansion meter::-webkit-meter-optimum-value, .bv-telemetry meter::-webkit-meter-optimum-value { background: #087b72; border-radius: 6px; }
-.bv-expansion meter::-moz-meter-bar, .bv-telemetry meter::-moz-meter-bar { background: #087b72; }
+.bv-expansion meter::-webkit-meter-optimum-value, .bv-telemetry meter::-webkit-meter-optimum-value { background: #059669; border-radius: 6px; }
+.bv-expansion meter::-moz-meter-bar, .bv-telemetry meter::-moz-meter-bar { background: #059669; }
 .bv-manifest-footer { display: flex; align-items: center; gap: 9px; padding: 18px 24px; color: #536776; font-size: 10px; line-height: 1.6; }
 .bv-icon-button { display: grid; place-items: center; width: 36px; height: 36px; background: transparent; color: #536776; border: 1px solid #dce4e8; border-radius: 8px; }
 .bv-primary, .bv-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 46px; padding: 12px 18px; border-radius: 8px; font-size: 12px; font-weight: 650; text-decoration: none; transition: background .2s, transform .2s; }
-.bv-primary { background: #163c42; color: #fff; border: 1px solid #163c42; }
-.bv-primary:hover:not(:disabled) { background: #0b5153; transform: translateY(-1px); }
-.bv-secondary { background: white; color: #254254; border: 1px solid #d3dfe4; }
-.bv-secondary:hover { background: #f1f6f7; }
-.bv-text-button { display: inline-flex; align-items: center; gap: 7px; border: 0; background: transparent; color: #146e68; padding: 0; font-size: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.bv-primary { background: #2563eb; color: #fff; border: 1px solid #1d4ed8; }
+.bv-primary:hover:not(:disabled) { background: #1d4ed8; transform: translateY(-1px); }
+.bv-secondary { background: white; color: #1e293b; border: 1px solid #cbd5e1; }
+.bv-secondary:hover { background: #f8fafc; }
+.bv-text-button { display: inline-flex; align-items: center; gap: 7px; border: 0; background: transparent; color: #2563eb; padding: 0; font-size: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .bv-empty { display: grid; justify-items: center; gap: 12px; padding: 48px 24px; text-align: center; color: #536776; }
 .bv-empty h2, .bv-empty h3 { color: #152e45; font-weight: 550; }
 .bv-empty p { font-size: 13px; max-width: 400px; line-height: 1.7; }
 .bv-telemetry-backdrop { position: fixed; inset: 0; z-index: 100; background: #0a243d50; backdrop-filter: blur(4px); display: flex; justify-content: flex-end; }
 .bv-telemetry { width: 440px; max-width: 100%; height: 100%; overflow: auto; padding: 24px 28px 40px; background: #fcfdfc; color: #152e45; box-shadow: -20px 0 60px #0a243d20; animation: bv-drawer-in .25s ease-out; }
 .bv-telemetry > header { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 30px; }
-.bv-vehicle-emblem { width: 76px; height: 76px; border-radius: 18px; border: 1px solid #d3e2df; background: #eaf3ef; color: #17675e; display: grid; place-items: center; margin-bottom: 22px; }
+.bv-vehicle-emblem { width: 76px; height: 76px; border-radius: 18px; border: 1px solid #bfdbfe; background: #eff6ff; color: #2563eb; display: grid; place-items: center; margin-bottom: 22px; }
 .bv-telemetry h2 { font-size: 32px; letter-spacing: -.04em; margin: 8px 0; font-weight: 550; }
 .bv-route-pair { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px 0; }
 .bv-route-pair > div { width: 43%; display: grid; gap: 7px; }
@@ -6879,25 +6879,25 @@
 .bv-route-pair strong { font-size: 28px; font-weight: 550; letter-spacing: -.04em; }
 .bv-route-pair span { color: #536776; font-size: 11px; line-height: 1.5; }
 .bv-inline-between { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 11px; }
-.bv-progress { width: 100%; height: 5px; margin-top: 14px; border: 0; border-radius: 4px; accent-color: #087b72; }
+.bv-progress { width: 100%; height: 5px; margin-top: 14px; border: 0; border-radius: 4px; accent-color: #2563eb; }
 .bv-progress::-webkit-progress-bar { background: #dfe8e5; border-radius: 4px; }
-.bv-progress::-webkit-progress-value { background: #087b72; border-radius: 4px; }
+.bv-progress::-webkit-progress-value { background: #2563eb; border-radius: 4px; }
 .bv-telemetry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 28px 0; }
 .bv-telemetry-grid dt { color: #536776; font-size: 11px; margin-bottom: 6px; }
 .bv-telemetry-grid dd { margin: 0; font-size: 16px; font-variant-numeric: tabular-nums; }
 .bv-weather { padding: 16px; border: 1px solid #dce4e8; border-radius: 10px; margin-bottom: 20px; }
 .bv-weather h3 { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 8px; }
 .bv-weather p { font-size: 11px; color: #536776; line-height: 1.8; }
-.bv-cargo { padding: 20px; background: #eef5f1; border-radius: 10px; margin-bottom: 24px; }
-.bv-cargo h3 { font-size: 13px; font-weight: 600; }
+.bv-cargo { padding: 20px; background: #f0fdf4; border: 1px solid #dcfce7; border-radius: 10px; margin-bottom: 24px; }
+.bv-cargo h3 { font-size: 13px; font-weight: 600; color: #065f46; }
 .bv-cargo p { font-size: 11px; color: #536776; margin: 20px 0 8px; }
-.bv-cargo p strong { font-size: 25px; color: #17675e; font-weight: 550; }
+.bv-cargo p strong { font-size: 25px; color: #059669; font-weight: 600; }
 .bv-cargo meter { display: block; width: 100%; height: 6px; margin-bottom: 18px; }
 .bv-telemetry > .bv-primary { width: 100%; }
 .bv-fine-print { color: #536776; font-size: 10px; line-height: 1.7; margin-top: 14px !important; }
 .bv-fine-print svg { display: inline; vertical-align: middle; margin-right: 4px; flex-shrink: 0; }
 .bv-auth-shell { display: grid; grid-template-columns: .95fr 1.05fr; max-width: 1440px; min-height: 820px; margin: auto; background: white; }
-.bv-auth-brand { position: relative; isolation: isolate; display: flex; flex-direction: column; padding: 48px; overflow: hidden; background: #123b40; color: #fff; }
+.bv-auth-brand { position: relative; isolation: isolate; display: flex; flex-direction: column; padding: 48px; overflow: hidden; background: #0a1628; color: #fff; }
 .bv-auth-brand > a { color: white; position: relative; z-index: 1; align-self: flex-start; }
 .bv-auth-brand .bagvoyage-insignia { background: #ffffff14; border-color: #ffffff30; }
 .bv-auth-brand .bagvoyage-wordmark { color: #fff; background: none; -webkit-text-fill-color: #fff; }
@@ -11209,4 +11209,164 @@ html[data-theme="dark"] .bv-segmented button[aria-pressed=true],
     align-items: flex-start;
     padding: 14px 16px;
   }
+}
+
+/* -------------------------------------------------------------------------
+   Dark Mode Overrides: Telemetry Drawer, Radar Manifest & Maps
+   ------------------------------------------------------------------------- */
+html[data-theme="dark"] .bv-telemetry,
+.dark .bv-telemetry {
+  background: #0f172a;
+  color: #f8fafc;
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.6);
+}
+
+html[data-theme="dark"] .bv-telemetry h2,
+.dark .bv-telemetry h2,
+html[data-theme="dark"] .bv-route-pair strong,
+.dark .bv-route-pair strong {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .bv-vehicle-emblem,
+.dark .bv-vehicle-emblem {
+  background: rgba(37, 99, 235, 0.15);
+  border-color: rgba(37, 99, 235, 0.3);
+  color: #60a5fa;
+}
+
+html[data-theme="dark"] .bv-weather,
+.dark .bv-weather {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .bv-weather h3,
+.dark .bv-weather h3 {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .bv-weather p,
+.dark .bv-weather p {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .bv-cargo,
+.dark .bv-cargo {
+  background: rgba(5, 150, 105, 0.12);
+  border-color: rgba(5, 150, 105, 0.25);
+}
+
+html[data-theme="dark"] .bv-cargo h3,
+.dark .bv-cargo h3 {
+  color: #34d399;
+}
+
+html[data-theme="dark"] .bv-cargo p,
+.dark .bv-cargo p {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .bv-cargo p strong,
+.dark .bv-cargo p strong {
+  color: #10b981;
+}
+
+html[data-theme="dark"] .bv-telemetry-grid dd,
+.dark .bv-telemetry-grid dd {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .bv-manifest th,
+.dark .bv-manifest th {
+  background: #1e293b;
+  color: #94a3b8;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .bv-manifest td,
+.dark .bv-manifest td {
+  border-color: rgba(255, 255, 255, 0.06);
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .bv-manifest tr:hover td,
+.dark .bv-manifest tr:hover td {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+html[data-theme="dark"] .bv-manifest-identity,
+.dark .bv-manifest-identity {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .bv-manifest-identity > span:first-child,
+.dark .bv-manifest-identity > span:first-child {
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #60a5fa;
+  background: #1e293b;
+}
+
+html[data-theme="dark"] .bv-search,
+.dark .bv-search {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .bv-search input,
+.dark .bv-search input {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .bv-map-controls,
+.dark .bv-map-controls {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="dark"] .bv-map-controls button,
+.dark .bv-map-controls button {
+  background: #1e293b;
+  color: #f8fafc;
+  border-right-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .bv-map-controls button:hover,
+.dark .bv-map-controls button:hover {
+  background: #334155;
+}
+
+html[data-theme="dark"] .bv-map-hud,
+.dark .bv-map-hud {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+}
+
+html[data-theme="dark"] .bv-map-node-info,
+.dark .bv-map-node-info {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .bv-empty h2,
+html[data-theme="dark"] .bv-empty h3,
+.dark .bv-empty h2,
+.dark .bv-empty h3 {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .bv-secondary,
+.dark .bv-secondary {
+  background: #1e293b;
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+html[data-theme="dark"] .bv-secondary:hover,
+.dark .bv-secondary:hover {
+  background: #334155;
 }
