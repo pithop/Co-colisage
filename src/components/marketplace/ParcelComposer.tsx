@@ -379,18 +379,24 @@ export function ParcelComposer({
           {error}
         </p>
       )}
-      <div className="publish-sticky-dock">
-        <div className="dock-summary">
-          <span className="dock-summary-label">Rémunération voyageur</span>
-          <strong className="dock-summary-value">
-            {reward > 0 ? `${reward.toFixed(2)} €` : "0.00 €"}
+      <section
+        aria-label="Validation et récapitulatif financier du colis"
+        className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 space-y-3 shadow-xs tabular-nums"
+      >
+        <div className="flex items-center justify-between text-xs text-slate-600">
+          <span>Rémunération nette voyageur (séquestre Stripe)</span>
+          <strong className="text-base font-black text-[#059669]">
+            +{reward > 0 ? `${reward.toFixed(2)} €` : "0.00 €"}
           </strong>
         </div>
-        <button type="submit" className="primary-button publish-submit-btn">
-          Publier mon colis
+        <button
+          type="submit"
+          className="w-full py-3.5 px-6 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer tabular-nums"
+        >
+          <span>Publier mon colis ({reward > 0 ? `${reward.toFixed(2)} €` : "0.00 €"})</span>
           <ArrowRight size={18} />
         </button>
-      </div>
+      </section>
     </form>
   );
 }

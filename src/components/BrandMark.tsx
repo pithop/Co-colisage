@@ -15,10 +15,10 @@ export function BrandMark({ platform = "voyageur" }: { platform?: ActivePlatform
         };
       case "bagandgo":
         return {
-          tag: "BAG & GO",
-          sub: "Expédition Fret Aérien OACI",
-          accentDot: "bg-emerald-500",
-          badgeBg: "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200/60 dark:border-emerald-800/60",
+          tag: "COLIS",
+          sub: "Expédition Colis Express",
+          accentDot: "bg-[#059669]",
+          badgeBg: "bg-emerald-50 dark:bg-emerald-950/60 text-[#059669] dark:text-emerald-300 border-emerald-200/60 dark:border-emerald-800/60",
           icon: Package,
         };
       case "voyageur":

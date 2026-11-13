@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
+  ArrowRight,
   ArrowUp,
+  Camera,
   Check,
   CheckCheck,
   Copy,
   Info,
+  KeyRound,
   LockKeyhole,
   MessageCircle,
   Mic,
@@ -19,7 +22,6 @@ import { OrderTracking, FlightDelayDialog } from "./OrderTracking";
 import type { HandoverRecord, FlightDelay } from "./handover";
 import confetti from "canvas-confetti";
 import { euro } from "../../data/marketplace";
-import { Dialog } from "./Dialog";
 import { Avatar } from "./Avatar";
 import { AudioMessagePlayer, voiceTime, voiceWave } from "./AudioMessagePlayer";
 import type { AudioTranscription } from "../../types/audio";
@@ -102,6 +104,7 @@ export function Conversation({
   const [tracking, setTracking] = useState(false);
   const [delay, setDelay] = useState(false);
   const [copiedPin, setCopiedPin] = useState<string | null>(null);
+  const [offerProposed, setOfferProposed] = useState(false);
   const c = conversations.find((c) => c.id === activeId);
 
   const feed = useRef<HTMLDivElement>(null);
@@ -112,6 +115,7 @@ export function Conversation({
     setDelivery(false);
     setTracking(false);
     setDelay(false);
+    setOfferProposed(false);
   }, [activeId]);
   useEffect(() => {
     feed.current?.scrollTo({ top: feed.current.scrollHeight });
@@ -191,41 +195,37 @@ export function Conversation({
 
   const handleAdjustOffer = () => {
     if (!c || c.stage !== "discussion") return;
-    const input = window.prompt("Proposer un nouveau montant pour cette mission (€) :", String(c.amount));
-    if (!input) return;
-    const newAmount = Number(input.replace(",", "."));
+    const input = window.prompt(
+      "Proposer un montant pour cette mission (€) :",
+      String(c.amount),
+    );
+    if (input === null) return;
+    const newAmount = Number(input.replace(",", ".").trim() || c.amount);
     if (Number.isFinite(newAmount) && newAmount > 0) {
+      setOfferProposed(true);
       onUpdate({
         ...c,
         amount: newAmount,
         serviceAmount: newAmount,
         messages: [
           ...c.messages,
-          createMessage(`Nouvelle proposition de rémunération convenant aux deux parties : ${euro(newAmount)}.`, true),
+          createMessage(
+            `Nouvelle proposition de rémunération convenant aux deux parties : ${euro(newAmount)}.`,
+            true,
+          ),
         ],
       });
-      onNotice(`Montant de l'offre ajusté à ${euro(newAmount)}.`);
+      onNotice(`Montant de l'offre fixé à ${euro(newAmount)}. Vous pouvez maintenant séquestrer les fonds.`);
     }
   };
 
-  const stageText = c?.resolution
-    ? c.resolution.outcome === "refund"
-      ? "Expéditeur remboursé"
-      : "Fonds débloqués au voyageur"
-    : c?.stage === "discussion"
-      ? "En attente d’accord"
-      : c?.stage === "secured"
-        ? "Fonds sous séquestre"
-        : c?.stage === "collected"
-          ? "Article pris en charge"
-          : "Fonds libérés";
   return (
-    <section className={`messages-page ${c ? "has-conversation" : ""}`}>
-      <aside className="conversation-list">
+    <section className={`messages-page bg-[#F8FAFC] ${c ? "has-conversation" : ""}`}>
+      <aside className="conversation-list bg-[#FFFFFF] border-r border-[#E2E8F0]">
         <h1>Messages</h1>
         <p className="muted">Chaque rencontre commence ici.</p>
         {!conversations.length && (
-          <div className="empty-state">
+          <div className="empty-state rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] p-5">
             <MessageCircle size={30} />
             <h2>La conversation est ouverte</h2>
             <p>
@@ -235,7 +235,11 @@ export function Conversation({
         )}
         {conversations.map((t) => (
           <button
-            className={`conversation-preview ${t.id === activeId ? "selected" : ""}`}
+            className={`conversation-preview rounded-2xl border transition-all ${
+              t.id === activeId
+                ? "selected border-[#2563EB] bg-[#F8FAFC]"
+                : "border-[#E2E8F0] bg-[#FFFFFF]"
+            }`}
             key={t.id}
             onClick={() => onSelect(t.id)}
           >
@@ -252,8 +256,8 @@ export function Conversation({
         ))}
       </aside>
       {c ? (
-        <div className="conversation-detail">
-          <header>
+        <div className="conversation-detail bg-[#F8FAFC]">
+          <header className="bg-[#FFFFFF] border-b border-[#E2E8F0]">
             <button
               className="icon-button chat-back"
               aria-label="Retour aux conversations"
@@ -266,80 +270,163 @@ export function Conversation({
               <h2>{c.name}</h2>
               <p>{c.subject}</p>
               {c.arbitrage && (
-                <small className="demo-label">
+                <small className="demo-label tabular-nums">
                   Groupe de {c.arbitrage.requestIds.length} missions · accords à
                   confirmer
                 </small>
               )}
             </div>
           </header>
-          {/* 4-Stage Visual Deal Progress Stepper */}
-          <div className="flex items-center justify-between px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-semibold">
-            <span className={c.stage === "discussion" ? "text-blue-600 dark:text-blue-400 font-bold flex items-center gap-1" : "text-emerald-600 flex items-center gap-1"}>
-              {c.stage !== "discussion" ? <Check size={12} strokeWidth={3} /> : "1."} Échange
-            </span>
-            <span className="text-slate-300 dark:text-slate-700">➔</span>
-            <span className={c.stage === "secured" ? "text-blue-600 dark:text-blue-400 font-bold flex items-center gap-1" : c.stage === "collected" || c.stage === "delivered" ? "text-emerald-600 flex items-center gap-1" : "text-slate-400"}>
-              {c.stage === "collected" || c.stage === "delivered" ? <Check size={12} strokeWidth={3} /> : "2."} Séquestre
-            </span>
-            <span className="text-slate-300 dark:text-slate-700">➔</span>
-            <span className={c.stage === "collected" ? "text-blue-600 dark:text-blue-400 font-bold flex items-center gap-1" : c.stage === "delivered" ? "text-emerald-600 flex items-center gap-1" : "text-slate-400"}>
-              {c.stage === "delivered" ? <Check size={12} strokeWidth={3} /> : "3."} Prise en charge
-            </span>
-            <span className="text-slate-300 dark:text-slate-700">➔</span>
-            <span className={c.stage === "delivered" ? "text-emerald-600 font-bold flex items-center gap-1" : "text-slate-400"}>
-              {c.stage === "delivered" ? <Check size={12} strokeWidth={3} /> : "4."} Livré
-            </span>
-          </div>
-          <div className="escrow-strip">
-            <LockKeyhole size={17} />
-            <div>
-              <strong>
-                {stageText} · {euro(c.amount)}
-              </strong>
-              <small>Séquestre bancaire Stripe Escrow</small>
-            </div>
-            {c.resolution || c.id.startsWith("support-") ? null : c.stage ===
-              "discussion" ? (
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  className="px-2.5 py-1.5 text-xs rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                  onClick={handleAdjustOffer}
-                  title="Ajuster la rémunération ou faire une contre-proposition"
-                >
-                  Ajuster l'offre
-                </button>
-                <button
-                  className="agreement-button"
-                  onClick={() => {
-                    secureAgreement();
-                  }}
-                >
-                  Enregistrer l’accord
-                </button>
+
+          {/* Barre d'action contextuelle unique : affiche uniquement l'action attendue à l'étape en cours */}
+          {!c.id.startsWith("support-") && (
+            <div
+              role="region"
+              aria-label="Action contextuelle de la mission"
+              className="mx-3 mt-3 rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 tabular-nums"
+            >
+              <div className="flex items-start sm:items-center gap-3.5 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-[#ECFDF5] border border-[#059669]/20 text-[#059669] flex items-center justify-center shrink-0">
+                  {c.stage === "discussion" ? (
+                    <LockKeyhole size={18} />
+                  ) : c.stage === "secured" ? (
+                    <Camera size={18} />
+                  ) : c.stage === "collected" ? (
+                    <KeyRound size={18} />
+                  ) : (
+                    <Check size={18} strokeWidth={2.5} />
+                  )}
+                </div>
+                <div className="space-y-0.5 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#059669]/20 whitespace-nowrap">
+                      {c.resolution
+                        ? c.resolution.outcome === "refund"
+                          ? "Remboursé"
+                          : "Fonds libérés"
+                        : c.stage === "discussion" && !offerProposed
+                          ? "Étape 1/4 · Offre"
+                          : c.stage === "discussion" && offerProposed
+                            ? "Étape 2/4 · Séquestre"
+                            : c.stage === "secured"
+                              ? "Étape 3/4 · Prise en charge"
+                              : c.stage === "collected"
+                                ? "Étape 4/4 · Code PIN"
+                                : "Mission livrée"}
+                    </span>
+                    <strong className="text-sm sm:text-base font-black text-[#059669] tabular-nums whitespace-nowrap">
+                      {euro(c.amount)}
+                    </strong>
+                  </div>
+                  <p className="text-xs text-slate-600 font-medium truncate">
+                    {c.resolution
+                      ? c.resolution.reason
+                      : c.stage === "discussion" && !offerProposed
+                        ? "Proposez votre tarif ou séquestrez directement le montant convenu."
+                        : c.stage === "discussion" && offerProposed
+                          ? "Offre validée : bloquez les fonds sur le compte séquestre Stripe."
+                          : c.stage === "secured"
+                            ? "Fonds séquestrés : validez la remise du colis avec photo de conformité."
+                            : c.stage === "collected"
+                              ? "Colis en transit : saisissez le code PIN à 4 chiffres du destinataire."
+                              : "Code PIN vérifié : les fonds ont été transférés au voyageur."}
+                  </p>
+                </div>
               </div>
-            ) : (
-              <button
-                onClick={() => {
-                  confetti.reset();
-                  onNotice("");
-                  setDelivery(true);
-                }}
-              >
-                {c.stage === "secured"
-                  ? "Confirmer la prise en charge"
-                  : c.stage === "collected"
-                    ? "Valider la remise finale"
-                    : "Voir la remise"}
-              </button>
-            )}
-          </div>
-          <div className="chat-safety-note">
-            <ShieldCheck size={17} />
+
+              {!c.resolution && (
+                <div className="w-full sm:w-auto flex flex-wrap items-center justify-end gap-2 shrink-0">
+                  {c.stage === "discussion" && !offerProposed && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleAdjustOffer}
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-xs transition-all cursor-pointer whitespace-nowrap"
+                      >
+                        <span>Faire une offre</span>
+                        <ArrowRight size={14} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={secureAgreement}
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 text-slate-800 text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
+                      >
+                        <LockKeyhole size={14} className="text-[#059669]" />
+                        <span>Séquestrer les fonds</span>
+                      </button>
+                    </>
+                  )}
+
+                  {c.stage === "discussion" && offerProposed && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleAdjustOffer}
+                        className="px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 text-slate-600 text-xs font-semibold transition-all cursor-pointer whitespace-nowrap"
+                      >
+                        Modifier l’offre
+                      </button>
+                      <button
+                        type="button"
+                        onClick={secureAgreement}
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-xs transition-all cursor-pointer whitespace-nowrap"
+                      >
+                        <LockKeyhole size={14} />
+                        <span>Séquestrer les fonds</span>
+                      </button>
+                    </>
+                  )}
+
+                  {c.stage === "secured" && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        confetti.reset();
+                        onNotice("");
+                        setDelivery(true);
+                      }}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-xs transition-all cursor-pointer whitespace-nowrap"
+                    >
+                      <Camera size={14} />
+                      <span>Valider prise en charge + photo</span>
+                    </button>
+                  )}
+
+                  {c.stage === "collected" && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        confetti.reset();
+                        onNotice("");
+                        setDelivery(true);
+                      }}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-xs transition-all cursor-pointer whitespace-nowrap"
+                    >
+                      <KeyRound size={14} />
+                      <span>Saisir le code PIN 4 chiffres</span>
+                    </button>
+                  )}
+
+                  {c.stage === "delivered" && (
+                    <button
+                      type="button"
+                      onClick={() => setTracking(true)}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-[#059669]/30 bg-[#ECFDF5] text-[#059669] text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
+                    >
+                      <Check size={14} strokeWidth={2.5} />
+                      <span>Mission livrée · Voir preuves</span>
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="chat-safety-note mx-3 mt-2 rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] px-4 py-3">
+            <ShieldCheck size={17} className="text-[#059669]" />
             <p>
               Gardez vos échanges et paiements ici. Ne partagez jamais votre
-              code avant la remise de l’article.
+              code PIN 4 chiffres avant la remise effective.
             </p>
           </div>
           <div
@@ -368,21 +455,21 @@ export function Conversation({
                       />
                     )}
                     {m.qr ? (
-                      <div className="handover-pass-card">
+                      <div className="handover-pass-card rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5">
                         <div className="handover-pass-header">
-                          <ShieldCheck size={16} className="text-emerald-500" />
+                          <ShieldCheck size={16} className="text-[#059669]" />
                           <span>Pass de Remise Certifié BagVoyage</span>
                         </div>
                         <div className="handover-qr-container">
                           <QrImage value={m.qr} />
                         </div>
                         {m.text.includes(":") ? (
-                          <div className="handover-pin-display">
+                          <div className="handover-pin-display tabular-nums">
                             <span className="handover-pin-label">
-                              Code de validation à usage unique :
+                              Code PIN 4 chiffres à usage unique :
                             </span>
                             <div className="flex items-center justify-center gap-2 mt-1">
-                              <code className="handover-pin-code">
+                              <code className="handover-pin-code tabular-nums text-[#059669]">
                                 {m.text.split(":").pop()?.trim()}
                               </code>
                               <button
@@ -396,19 +483,19 @@ export function Conversation({
                                     });
                                   }
                                 }}
-                                className="p-1.5 rounded-lg border border-blue-200 dark:border-blue-800/80 bg-blue-50/80 dark:bg-blue-950/60 hover:bg-blue-100 text-blue-600 dark:text-blue-400 text-xs font-semibold cursor-pointer transition-colors"
+                                className="p-1.5 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 text-slate-700 text-xs font-semibold cursor-pointer transition-colors"
                                 title="Copier le code PIN"
                                 aria-label="Copier le code PIN"
                               >
                                 {copiedPin === m.text.split(":").pop()?.trim() ? (
-                                  <Check size={14} className="text-emerald-500" />
+                                  <Check size={14} className="text-[#059669]" />
                                 ) : (
                                   <Copy size={14} />
                                 )}
                               </button>
                             </div>
                             {copiedPin === m.text.split(":").pop()?.trim() && (
-                              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold block mt-1">
+                              <span className="text-[10px] text-[#059669] font-semibold block mt-1">
                                 Code copié dans le presse-papier !
                               </span>
                             )}
@@ -429,7 +516,7 @@ export function Conversation({
                       </p>
                     )}
                   </div>
-                  <small>
+                  <small className="tabular-nums">
                     {m.time}
                     {m.mine && (
                       i === c.messages.length - 1 && !pendingReplies.includes(c.id) ? (
@@ -442,7 +529,7 @@ export function Conversation({
                 </div>
               ))}
             </div>
-            <footer>
+            <footer className="bg-[#FFFFFF] border-t border-[#E2E8F0]">
               {pendingReplies.includes(c.id) && (
                 <p className="typing-indicator" role="status">
                   {c.name} écrit…
@@ -471,7 +558,7 @@ export function Conversation({
                   onClick={() => setDelivery(true)}
                 >
                   <QrCode size={16} />
-                  Ouvrir le scanner / code de remise
+                  Ouvrir le scanner / code PIN
                 </button>
               </div>
             <div
@@ -491,25 +578,29 @@ export function Conversation({
               ))}
             </div>
             {hasOffPlatformRisk && (
-              <div className="antifraud-warning">
-                <ShieldCheck size={20} aria-hidden="true" />
-                <p role="alert">
+              <div className="antifraud-warning rounded-2xl border border-[#E2E8F0] bg-[#FFFFFF] p-4">
+                <ShieldCheck size={20} className="text-[#059669]" aria-hidden="true" />
+                <p role="alert" className="tabular-nums">
                   Bouclier Séquestre BagVoyage : Ne communiquez pas hors
                   plateforme afin de garantir le séquestre et l’assurance de 1
                   500 €.
                 </p>
-                <button type="button" onClick={secureAgreement}>
-                  Sécuriser l’accord
+                <button
+                  type="button"
+                  onClick={secureAgreement}
+                  className="!bg-[#2563EB] !text-white rounded-xl px-4 py-2 font-bold text-xs"
+                >
+                  Séquestrer les fonds
                 </button>
               </div>
             )}
             {recording && (
               <div
-                className="voice-recorder"
+                className="voice-recorder rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5"
                 role="region"
                 aria-label="Enregistrement de note vocale"
               >
-                <div className="voice-recording-status">
+                <div className="voice-recording-status tabular-nums">
                   <span className="voice-recording-dot" aria-hidden="true" />
                   <strong>Note vocale</strong>
                   <time aria-label="Durée de capture">
@@ -533,14 +624,18 @@ export function Conversation({
                     />
                   ))}
                 </svg>
-                <p>
+                <p className="tabular-nums">
                   Enregistrement audio chiffré · Note vocale de 14 s prête à l'envoi.
                 </p>
                 <div className="voice-recorder-actions">
                   <button type="button" onClick={stopRecording}>
                     Annuler
                   </button>
-                  <button type="button" onClick={sendVoice}>
+                  <button
+                    type="button"
+                    onClick={sendVoice}
+                    className="!bg-[#2563EB] !text-white"
+                  >
                     <ArrowUp size={16} aria-hidden="true" />
                     Envoyer la note vocale
                   </button>
@@ -578,6 +673,7 @@ export function Conversation({
                 type="submit"
                 aria-label="Envoyer le message"
                 disabled={!draft.trim()}
+                className="!bg-[#2563EB] !text-white"
               >
                 <ArrowUp size={19} />
               </button>
@@ -590,7 +686,7 @@ export function Conversation({
           </footer>
         </div>
       ) : (
-        <div className="chat-placeholder">
+        <div className="chat-placeholder bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl m-4 p-8">
           <MessageCircle size={40} />
           <h2>Vos échanges, au même endroit.</h2>
           <p>Sélectionnez une conversation pour la retrouver.</p>

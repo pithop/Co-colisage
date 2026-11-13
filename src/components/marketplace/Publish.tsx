@@ -16,6 +16,7 @@ import {
   Package,
   ArrowUpRight,
   Luggage,
+  ShieldCheck,
 } from "lucide-react";
 import {
   acceptedCategories,
@@ -28,6 +29,7 @@ import { PhotoGallery } from "./PhotoGallery";
 import { ParcelComposer } from "./ParcelComposer";
 import { localActorId } from "../../services/uploads";
 import { CityAutocomplete } from "../common/CityAutocomplete";
+import { TicketScannerModal } from "../Modals/TicketScannerModal";
 const shoppingSuggestions = [
   {
     name: "Dior Sauvage 100ml",
@@ -124,7 +126,7 @@ export function Publish({
   onClose,
   onRequest,
   onTrip,
-  onScan,
+  onScan: _onScan,
   defaultAutoAccept = false,
   ownerId = localActorId(),
   initialKind,
@@ -144,6 +146,7 @@ export function Publish({
   const [kind, setKind] = useState<"requests" | "trips" | "parcel">(
     initialKind || mode,
   );
+  const [scannerOpen, setScannerOpen] = useState(false);
   const [professional, setProfessional] = useState(false);
   const [items, setItems] = useState<ShoppingItem[]>([
     {
@@ -170,8 +173,6 @@ export function Publish({
   const corridor = corridors.find(
     (route) => route.origin === origin && route.destination === destination,
   );
-  const TransportIcon =
-    transports.find((item) => item.value === vehicle)?.Icon || Plane;
   const currency = (amount: number) =>
     new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2 }).format(amount);
   const totalPurchase =
@@ -258,807 +259,755 @@ export function Publish({
       });
     onClose();
   };
+  const totalServiceGross =
+    Math.round(((Number(draft.reward) || 0) * 100) / 0.85) / 100;
+  const totalPlatformFee = totalServiceGross - (Number(draft.reward) || 0);
+  const totalEstimatedBudget = totalPurchase + totalServiceGross;
+
   return (
     <Dialog title="Publier une annonce" onClose={onClose} wide>
-      <div className="publish-intro">
-        <span className="eyebrow">
-          {kind === "requests"
-            ? "SHOPPING INVERSÉ SHOP & GO"
-            : kind === "parcel"
-              ? "EXPÉDITION DE COLIS SÉCURISÉE"
-              : "VOYAGEUR & TRANSPORTEUR"}
-        </span>
-        <h3>
-          {kind === "requests" ? (
-            <>
-              Faites-vous livrer
-              <br />
-              vos trouvailles.
-            </>
-          ) : kind === "parcel" ? (
-            <>
-              Envoyez votre colis
-              <br />
-              en toute sérénité.
-            </>
-          ) : (
-            <>
-              Votre prochain départ
-              <br />a de la valeur.
-            </>
-          )}
-        </h3>
-        <p>
-          {kind === "requests"
-            ? "Renseignez vos articles et convenez d’une commission avec un voyageur."
-            : kind === "parcel"
-              ? "Un colis pour vos proches, confié en main propre à un voyageur vérifié."
-              : "Un itinéraire. Un peu de place. De nouvelles possibilités."}
-        </p>
-      </div>
-      <div className="segment publish-universes">
-        <button
-          aria-pressed={kind === "requests"}
-          onClick={() => setKind("requests")}
+      <div className="space-y-5 bg-[#F8FAFC] p-4 sm:p-6 rounded-2xl border border-[#E2E8F0]">
+        {/* Carte d'action principale : Scanner OCR de billet (TicketScannerModal) en haut du formulaire */}
+        <section
+          aria-label="Scanner OCR de billet"
+          className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
         >
-          Demande d’achat
-        </button>
-        <button
-          aria-pressed={kind === "parcel"}
-          onClick={() => setKind("parcel")}
-        >
-          Envoi de colis
-        </button>
-        <button
-          aria-pressed={kind === "trips"}
-          onClick={() => setKind("trips")}
-        >
-          Trajet
-        </button>
-      </div>
-      <div className="publish-stepper-bar" role="navigation" aria-label="Étapes de publication">
-        <div className="publish-step active">
-          <span className="step-num">1</span>
-          <span className="step-label">Itinéraire</span>
-        </div>
-        <div className="step-connector" />
-        <div className="publish-step active">
-          <span className="step-num">2</span>
-          <span className="step-label">{kind === "requests" ? "Articles" : "Capacité"}</span>
-        </div>
-        <div className="step-connector" />
-        <div className="publish-step active">
-          <span className="step-num">3</span>
-          <span className="step-label">Tarifs & Gains</span>
-        </div>
-      </div>
-      {kind === "parcel" ? (
-        <ParcelComposer
-          initialRoute={initialRoute}
-          name={name}
-          ownerId={ownerId}
-          onPublish={(request) => {
-            onRequest(request);
-            onClose();
-          }}
-        />
-      ) : (
-        <form
-          key={kind}
-          className="publish-form premium-publish"
-          onChange={(event) => {
-            const values = new FormData(event.currentTarget);
-            setDraft(
-              Object.fromEntries(
-                [...values.entries()].filter(
-                  (entry): entry is [string, string] =>
-                    typeof entry[1] === "string",
-                ),
-              ),
-            );
-          }}
-          onSubmit={(e) => {
-            e.preventDefault();
-            submit(e.currentTarget);
-          }}
-        >
-          {kind === "requests" ? (
-            <>
-              <fieldset className="shopping-suggestions">
-                <legend>Suggestions directes France ⇄ Algérie</legend>
-                <div>
-                  {shoppingSuggestions.map((suggestion) => (
-                    <button
-                      type="button"
-                      key={suggestion.name}
-                      onClick={() => changeItem(items[0].id, suggestion)}
-                    >
-                      <Package size={15} aria-hidden="true" />
-                      {suggestion.name} ({suggestion.price} EUR)
-                    </button>
-                  ))}
-                </div>
-                <small>
-                  Une idée pour commencer. Tous les champs restent modifiables.
-                </small>
-              </fieldset>
-              <label>
-                Article recherché
-                <input
-                  value={items[0].name}
-                  onChange={(event) =>
-                    changeItem(items[0].id, { name: event.target.value })
-                  }
-                  name="title"
-                  required
-                  maxLength={100}
-                  placeholder="Ex. Nike Air Max · pointure 42"
-                />
-              </label>
-              <label>
-                Précisions
-                <input
-                  value={items[0].specifications}
-                  onChange={(event) =>
-                    changeItem(items[0].id, {
-                      specifications: event.target.value,
-                    })
-                  }
-                  name="specifications"
-                  required
-                  maxLength={200}
-                  placeholder="État, couleur, taille…"
-                />
-              </label>
-              <label>
-                Lien URL de l’article
-                <input
-                  type="url"
-                  placeholder="https://…"
-                  value={items[0].url}
-                  onChange={(event) =>
-                    changeItem(items[0].id, { url: event.target.value })
-                  }
-                  pattern="https?://.+"
-                  maxLength={2000}
-                />
-              </label>
-              <PhotoGallery
-                label="Photo de l’article 1"
-                photos={items[0].photo ? [items[0].photo] : []}
-                limit={1}
-                onChange={(photos) =>
-                  changeItem(items[0].id, { photo: photos[0] })
-                }
-              />
-              {items.slice(1).map((item, index) => (
-                <fieldset className="shopping-item" key={item.id}>
-                  <legend>Article {index + 2}</legend>
-                  <button
-                    type="button"
-                    className="text-button"
-                    onClick={() =>
-                      setItems((current) =>
-                        current.filter((row) => row.id !== item.id),
-                      )
-                    }
-                  >
-                    Retirer l’article {index + 2}
-                  </button>
-                  <label>
-                    Nom de l’article {index + 2}
-                    <input
-                      required
-                      maxLength={100}
-                      value={item.name}
-                      onChange={(event) =>
-                        changeItem(item.id, { name: event.target.value })
-                      }
-                    />
-                  </label>
-                  <label>
-                    Lien URL de l’article {index + 2}
-                    <input
-                      type="url"
-                      pattern="https?://.+"
-                      maxLength={2000}
-                      value={item.url}
-                      onChange={(event) =>
-                        changeItem(item.id, { url: event.target.value })
-                      }
-                    />
-                  </label>
-                  <label>
-                    Taille et spécifications de l’article {index + 2}
-                    <input
-                      required
-                      maxLength={200}
-                      value={item.specifications}
-                      onChange={(event) =>
-                        changeItem(item.id, {
-                          specifications: event.target.value,
-                        })
-                      }
-                    />
-                  </label>
-                  <label>
-                    Prix magasin de l’article {index + 2} (€)
-                    <input
-                      required
-                      type="number"
-                      min="1"
-                      max="10000"
-                      step="0.01"
-                      value={item.price || ""}
-                      onChange={(event) =>
-                        changeItem(item.id, {
-                          price: Number(event.target.value),
-                        })
-                      }
-                    />
-                  </label>
-                  <PhotoGallery
-                    label={`Photo de l’article ${index + 2}`}
-                    photos={item.photo ? [item.photo] : []}
-                    limit={1}
-                    onChange={(photos) =>
-                      changeItem(item.id, { photo: photos[0] })
-                    }
-                  />
-                </fieldset>
-              ))}
-              <button
-                className="outline-button"
-                type="button"
-                disabled={items.length >= 20}
-                onClick={() =>
-                  setItems((current) => [
-                    ...current,
-                    {
-                      id: crypto.randomUUID(),
-                      name: "",
-                      url: "",
-                      specifications: "",
-                      price: 0,
-                    },
-                  ])
-                }
-              >
-                Ajouter un article
-              </button>
-            </>
-          ) : (
-            <>
-              <label className="check-row pro-toggle">
-                <input
-                  type="checkbox"
-                  checked={professional}
-                  onChange={(event) => setProfessional(event.target.checked)}
-                />
-                Transporteur Professionnel
-              </label>
-              {professional && (
-                <div className="pro-fields animated-field">
-                  <label>
-                    Entreprise
-                    <input name="companyName" required maxLength={150} />
-                  </label>
-                  <label>
-                    SIRET ou CNRC
-                    <input
-                      name="registration"
-                      required
-                      minLength={6}
-                      maxLength={30}
-                    />
-                  </label>
-                  <label>
-                    Volume utilitaire (m³)
-                    <input
-                      name="volume"
-                      required
-                      type="number"
-                      min="0.1"
-                      max="200"
-                      step="0.1"
-                    />
-                  </label>
-                  <small>
-                    Le badge professionnel est attribué après examen du dossier
-                    depuis votre profil.
-                  </small>
-                </div>
-              )}
-              <button type="button" className="scan-publish" onClick={onScan}>
-                <ScanLine size={21} />
-                <span>
-                  <strong>Scanner mon billet d’avion</strong>
-                  <small>Franchise de 10 kg → 9 kg maximum</small>
+          <div className="flex items-start gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-[#ECFDF5] border border-[#059669]/20 text-[#059669] flex items-center justify-center shrink-0">
+              <ScanLine size={22} />
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#059669]/20">
+                  OCR Billet Automatique
                 </span>
-                <ArrowRight size={17} />
-              </button>
-              <fieldset className="transport-selector">
-                <legend>Comment voyagez-vous ?</legend>
+                <span className="text-xs font-semibold text-slate-500 tabular-nums">
+                  Franchise 10 kg → 23 kg détectée
+                </span>
+              </div>
+              <h3 className="text-sm sm:text-base font-extrabold text-slate-900">
+                Scanner mon billet d’avion ou de traversée
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Importez votre billet (PDF ou photo) pour extraire automatiquement le vol, les dates et votre franchise bagage vérifiée.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setScannerOpen(true)}
+            className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm shadow-xs transition-all cursor-pointer"
+          >
+            <ScanLine size={16} />
+            <span>Scanner mon billet</span>
+            <ArrowRight size={15} />
+          </button>
+        </section>
 
-                <div className="transport-selector-grid">
-                  {transports.map(({ value, label, detail, Icon }) => (
-                    <button
-                      type="button"
-                      key={value}
-                      className="transport-selector-card"
-                      aria-pressed={vehicle === value}
-                      onClick={() => setVehicle(value)}
-                    >
-                      <Icon size={30} strokeWidth={1.5} aria-hidden="true" />
-                      <strong>{label}</strong>
-                      <small>{detail}</small>
-                      <span
-                        className="transport-selected-mark"
-                        aria-hidden="true"
-                      />
-                    </button>
-                  ))}
-                </div>
-              </fieldset>
-              {vehicle === "avion" && (
-                <section
-                  className="flight-allowance animated-field"
-                  aria-label="Franchise bagage"
-                >
+        {/* Sélecteur d'univers unifié */}
+        <div
+          className="grid grid-cols-3 gap-1.5 p-1.5 rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0]"
+          role="group"
+          aria-label="Type d'annonce"
+        >
+          <button
+            type="button"
+            aria-pressed={kind === "requests"}
+            onClick={() => setKind("requests")}
+            className={`py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
+              kind === "requests"
+                ? "bg-[#2563EB] text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 hover:bg-[#F8FAFC]"
+            }`}
+          >
+            Demande d’achat
+          </button>
+          <button
+            type="button"
+            aria-pressed={kind === "parcel"}
+            onClick={() => setKind("parcel")}
+            className={`py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
+              kind === "parcel"
+                ? "bg-[#2563EB] text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 hover:bg-[#F8FAFC]"
+            }`}
+          >
+            Envoi de colis
+          </button>
+          <button
+            type="button"
+            aria-pressed={kind === "trips"}
+            onClick={() => setKind("trips")}
+            className={`py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
+              kind === "trips"
+                ? "bg-[#2563EB] text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 hover:bg-[#F8FAFC]"
+            }`}
+          >
+            Trajet
+          </button>
+        </div>
+
+        {kind === "parcel" ? (
+          <ParcelComposer
+            initialRoute={initialRoute}
+            name={name}
+            ownerId={ownerId}
+            onPublish={(request) => {
+              onRequest(request);
+              onClose();
+            }}
+          />
+        ) : (
+          <form
+            key={kind}
+            className="publish-form premium-publish space-y-5"
+            onChange={(event) => {
+              const values = new FormData(event.currentTarget);
+              setDraft(
+                Object.fromEntries(
+                  [...values.entries()].filter(
+                    (entry): entry is [string, string] =>
+                      typeof entry[1] === "string",
+                  ),
+                ),
+              );
+            }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              submit(e.currentTarget);
+            }}
+          >
+            {kind === "requests" ? (
+              <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 space-y-4">
+                <fieldset className="shopping-suggestions">
+                  <legend>Suggestions directes France ⇄ Algérie</legend>
                   <div>
-                    <Luggage size={20} />
-                    <strong>Votre franchise bagage</strong>
-                    <span>
-                      {weight} / {allowance} kg
-                    </span>
-                  </div>
-                  <div className="allowance-track">
-                    <span
-                      style={{
-                        width: `${Math.min(100, (weight / allowance) * 100)}%`,
-                      }}
-                    />
-                  </div>
-                  <div className="allowance-options">
-                    {[10, 23].map((kg) => (
+                    {shoppingSuggestions.map((suggestion) => (
                       <button
                         type="button"
-                        key={kg}
-                        aria-pressed={allowance === kg}
-                        onClick={() => setAllowance(kg)}
+                        key={suggestion.name}
+                        onClick={() => changeItem(items[0].id, suggestion)}
+                        className="tabular-nums"
                       >
-                        {kg} kg
+                        <Package size={15} aria-hidden="true" />
+                        {suggestion.name} ({suggestion.price} EUR)
                       </button>
                     ))}
-                    <small>Vérifiez la franchise sur votre billet.</small>
                   </div>
-                  {weight > allowance && (
-                    <p role="status">
-                      La place proposée dépasse votre franchise sélectionnée.
-                    </p>
-                  )}
-                </section>
-              )}
-              <label>
-                Modèle ou compagnie
-                <input
-                  required
-                  name="label"
-                  placeholder={
-                    vehicle === "avion" ? "Ex. Air France" : "Ex. Peugeot 208"
-                  }
-                />
-              </label>
-              {vehicle === "avion" && (
-                <label className="animated-field">
-                  Numéro de vol
-                  <input
-                    name="flightNumber"
-                    placeholder="Ex. AH1001, AF1384"
-                    maxLength={10}
-                    autoCapitalize="characters"
-                    aria-describedby="flight-number-hint"
-                  />
-                  <small id="flight-number-hint">
-                    Optionnel, recommandé pour retrouver votre vol.
+                  <small>
+                    Une idée pour commencer. Tous les champs restent modifiables.
                   </small>
-                </label>
-              )}
-            </>
-          )}
-          <div className="corridor-picker">
-            <span className="field-caption">Les grands départs</span>
-            <div>
-              {corridors.map((route) => (
-                <button
-                  type="button"
-                  key={route.to}
-                  aria-pressed={corridor?.to === route.to}
-                  onClick={() => {
-                    setOrigin(route.origin);
-                    setDestination(route.destination);
-                  }}
-                >
-                  {route.label}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="form-grid">
-            <label>
-              Départ
-              <CityAutocomplete
-                name="origin"
-                value={origin}
-                onChange={setOrigin}
-                placeholder="Ex. Paris, Marseille, Alger..."
-                required
-              />
-            </label>
-            <label>
-              Destination
-              <CityAutocomplete
-                name="destination"
-                value={destination}
-                onChange={setDestination}
-                placeholder="Ex. Alger, Oran, Montréal..."
-                required
-              />
-            </label>
-          </div>
-          <label>
-            {kind === "requests"
-              ? "Livraison souhaitée avant le"
-              : "Date de départ"}
-            <input
-              name="date"
-              required
-              type="date"
-              min={new Date().toLocaleDateString("en-CA")}
-            />
-          </label>
-          {kind === "requests" ? (
-            <>
-              <label>
-                Lieu de livraison
-                <input
-                  name="location"
-                  placeholder="Ex. Lyon, Part-Dieu"
-                  maxLength={150}
-                />
-              </label>
-              <label>
-                Poids estimé du colis (kg)
-                <input
-                  name="weightKg"
-                  type="number"
-                  min="0.1"
-                  max="1000"
-                  step="0.5"
-                  placeholder="Ex. 2"
-                />
-                <small>
-                  Optionnel. Permet aux voyageurs de retrouver votre demande
-                  selon la place disponible.
-                </small>
-              </label>
-              <div className="form-grid">
+                </fieldset>
                 <label>
-                  Budget article (€)
+                  Article recherché
                   <input
-                    value={items[0].price || ""}
+                    value={items[0].name}
+                    onChange={(event) =>
+                      changeItem(items[0].id, { name: event.target.value })
+                    }
+                    name="title"
+                    required
+                    maxLength={100}
+                    placeholder="Ex. Nike Air Max · pointure 42"
+                  />
+                </label>
+                <label>
+                  Précisions
+                  <input
+                    value={items[0].specifications}
                     onChange={(event) =>
                       changeItem(items[0].id, {
-                        price: Number(event.target.value),
+                        specifications: event.target.value,
                       })
                     }
-                    name="budget"
-                    type="number"
-                    min="1"
-                    max="10000"
-                    step="0.01"
+                    name="specifications"
                     required
+                    maxLength={200}
+                    placeholder="État, couleur, taille…"
                   />
                 </label>
                 <label>
-                  Service (€)
+                  Lien URL de l’article
                   <input
-                    name="reward"
-                    type="number"
-                    min="1"
-                    max="1000"
-                    step="0.01"
-                    required
+                    type="url"
+                    placeholder="https://…"
+                    value={items[0].url}
+                    onChange={(event) =>
+                      changeItem(items[0].id, { url: event.target.value })
+                    }
+                    pattern="https?://.+"
+                    maxLength={2000}
                   />
                 </label>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="form-grid">
-                <label>
-                  Heure de départ
-                  <input name="time" type="time" required />
-                </label>
-                <label>
-                  Place disponible (kg)
-                  <input
-                    name="weight"
-                    type="number"
-                    min="1"
-                    max="1000"
-                    step="0.5"
-                    required
-                  />
-                </label>
-              </div>
-              <div className="form-grid">
-                <label>
-                  Prix par kilo (€)
-                  <input
-                    name="price"
-                    type="number"
-                    min="1"
-                    max="1000"
-                    step="0.01"
-                    required
-                  />
-                </label>
-                <label>
-                  Dimensions (cm)
-                  <input name="dimensions" placeholder="80 × 60 × 40" />
-                </label>
-              </div>
-              <section
-                className="earnings-calculator"
-                aria-label="Calculateur de gains"
-              >
-                <div className="earnings-heading">
-                  <span>
-                    <ArrowUpRight size={18} /> Votre place vaut plus
-                  </span>
-                  <small>ESTIMATION</small>
-                </div>
-                <output aria-live="polite">
-                  Gain estimé voyageur : <strong>+{currency(gain)} €</strong>
-                </output>
-                <div
-                  className="earnings-track"
-                  role="progressbar"
-                  aria-label="Part estimée du billet financée"
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={
-                    fare > 0
-                      ? Math.min(100, Math.round((gain / fare) * 100))
-                      : 0
+                <PhotoGallery
+                  label="Photo de l’article 1"
+                  photos={items[0].photo ? [items[0].photo] : []}
+                  limit={1}
+                  onChange={(photos) =>
+                    changeItem(items[0].id, { photo: photos[0] })
+                  }
+                />
+                {items.slice(1).map((item, index) => (
+                  <fieldset className="shopping-item rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] p-5" key={item.id}>
+                    <legend>Article {index + 2}</legend>
+                    <button
+                      type="button"
+                      className="text-button"
+                      onClick={() =>
+                        setItems((current) =>
+                          current.filter((row) => row.id !== item.id),
+                        )
+                      }
+                    >
+                      Retirer l’article {index + 2}
+                    </button>
+                    <label>
+                      Nom de l’article {index + 2}
+                      <input
+                        required
+                        maxLength={100}
+                        value={item.name}
+                        onChange={(event) =>
+                          changeItem(item.id, { name: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      Lien URL de l’article {index + 2}
+                      <input
+                        type="url"
+                        pattern="https?://.+"
+                        maxLength={2000}
+                        value={item.url}
+                        onChange={(event) =>
+                          changeItem(item.id, { url: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      Taille et spécifications de l’article {index + 2}
+                      <input
+                        required
+                        maxLength={200}
+                        value={item.specifications}
+                        onChange={(event) =>
+                          changeItem(item.id, {
+                            specifications: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      Prix magasin de l’article {index + 2} (€)
+                      <input
+                        required
+                        type="number"
+                        min="1"
+                        max="10000"
+                        step="0.01"
+                        className="tabular-nums"
+                        value={item.price || ""}
+                        onChange={(event) =>
+                          changeItem(item.id, {
+                            price: Number(event.target.value),
+                          })
+                        }
+                      />
+                    </label>
+                    <PhotoGallery
+                      label={`Photo de l’article ${index + 2}`}
+                      photos={item.photo ? [item.photo] : []}
+                      limit={1}
+                      onChange={(photos) =>
+                        changeItem(item.id, { photo: photos[0] })
+                      }
+                    />
+                  </fieldset>
+                ))}
+                <button
+                  className="outline-button"
+                  type="button"
+                  disabled={items.length >= 20}
+                  onClick={() =>
+                    setItems((current) => [
+                      ...current,
+                      {
+                        id: crypto.randomUUID(),
+                        name: "",
+                        url: "",
+                        specifications: "",
+                        price: 0,
+                      },
+                    ])
                   }
                 >
-                  <span
-                    style={{
-                      width: `${fare > 0 ? Math.min(100, (gain / fare) * 100) : 0}%`,
-                    }}
-                  />
-                </div>
-                <label>
-                  Prix du billet (€)
-                  <input
-                    type="number"
-                    min="1"
-                    max="100000"
-                    value={fare || ""}
-                    onChange={(e) => setFare(Number(e.target.value))}
-                  />
-                </label>
-                <p>
-                  {price > 0 && fare > 0
-                    ? `Financement estimé du billet dès ${Math.ceil(fare / price)} kg réservés.`
-                    : "Renseignez votre tarif pour estimer le financement du billet."}
-                </p>
-                <small>
-                  Montant brut, sous réserve de réservations confirmées, avant
-                  frais éventuels.
-                </small>
-              </section>
-              <label>
-                À propos du trajet
-                <textarea
-                  name="description"
-                  maxLength={1000}
-                  placeholder="Point de rendez-vous, objets acceptés…"
-                />
-              </label>
-              <fieldset className="trip-options">
-                <legend>Un trajet à votre façon</legend>
-                <label className="trip-option">
+                  Ajouter un article
+                </button>
+              </div>
+            ) : (
+              <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 space-y-4">
+                <label className="check-row pro-toggle">
                   <input
                     type="checkbox"
-                    name="autoAccept"
-                    defaultChecked={defaultAutoAccept}
+                    checked={professional}
+                    onChange={(event) => setProfessional(event.target.checked)}
                   />
-                  <span>
-                    <strong>Acceptation automatique des réservations</strong>
-                    <small>
-                      Accepter instantanément les réservations des profils
-                      vérifiés
-                    </small>
-                  </span>
+                  Transporteur Professionnel
                 </label>
-                <label className="trip-option">
-                  <input type="checkbox" name="canBuyProduct" />
-                  <span>
-                    <strong>Service d’achat en magasin</strong>
+                {professional && (
+                  <div className="pro-fields animated-field">
+                    <label>
+                      Entreprise
+                      <input name="companyName" required maxLength={150} />
+                    </label>
+                    <label>
+                      SIRET ou CNRC
+                      <input
+                        name="registration"
+                        required
+                        minLength={6}
+                        maxLength={30}
+                      />
+                    </label>
+                    <label>
+                      Volume utilitaire (m³)
+                      <input
+                        name="volume"
+                        required
+                        type="number"
+                        min="0.1"
+                        max="200"
+                        step="0.1"
+                        className="tabular-nums"
+                      />
+                    </label>
                     <small>
-                      J’accepte d’aller acheter la marchandise sur place
+                      Le badge professionnel est attribué après examen du dossier
+                      depuis votre profil.
                     </small>
-                  </span>
-                </label>
-              </fieldset>
-              <fieldset className="accepted-categories">
-                <legend>Catégories acceptées</legend>
-                <p>
-                  Choisissez une ou plusieurs catégories. Sans sélection : à
-                  convenir ensemble.
-                </p>
-                <div>
-                  {acceptedCategories.map((category) => {
-                    const Icon = categoryIcons[category];
-                    return (
-                      <label key={category} className="category-chip">
-                        <input
-                          type="checkbox"
-                          name="categories"
-                          value={category}
+                  </div>
+                )}
+                <fieldset className="transport-selector">
+                  <legend>Comment voyagez-vous ?</legend>
+
+                  <div className="transport-selector-grid">
+                    {transports.map(({ value, label, detail, Icon }) => (
+                      <button
+                        type="button"
+                        key={value}
+                        className="transport-selector-card"
+                        aria-pressed={vehicle === value}
+                        onClick={() => setVehicle(value)}
+                      >
+                        <Icon size={30} strokeWidth={1.5} aria-hidden="true" />
+                        <strong>{label}</strong>
+                        <small>{detail}</small>
+                        <span
+                          className="transport-selected-mark"
+                          aria-hidden="true"
                         />
-                        <Icon size={18} aria-hidden="true" />
-                        <span>{category}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </fieldset>
-            </>
-          )}
-          {kind === "requests" && (
-            <section className="shopping-total" aria-label="Budget Shop & Go">
-              <span>
-                {items.length} article{items.length > 1 ? "s" : ""} dans votre
-                panier
-              </span>
-              <div>
-                <span>Achats estimés</span>
-                <strong>{currency(totalPurchase)} €</strong>
-              </div>
-              <div>
-                <span>Commission nette offerte au voyageur</span>
-                <strong>{currency(Number(draft.reward) || 0)} €</strong>
-              </div>
-              <div>
-                <span>Frais plateforme (15 % du service brut)</span>
-                <strong>
-                  {currency(
-                    Math.round(((Number(draft.reward) || 0) * 100) / 0.85) /
-                      100 -
-                      (Number(draft.reward) || 0),
-                  )}{" "}
-                  €
-                </strong>
-              </div>
-              <output aria-live="polite">
-                Budget total estimé :{" "}
-                <strong>
-                  {currency(
-                    totalPurchase +
-                      Math.round(((Number(draft.reward) || 0) * 100) / 0.85) /
-                        100,
-                  )}{" "}
-                  €
-                </strong>
-              </output>
-              <small>
-                Hors transport supplémentaire, droits et taxes douanières.
-              </small>
-            </section>
-          )}
-          <section
-            className="live-card-preview"
-            aria-label="Aperçu de votre annonce"
-          >
-            <div className="preview-caption">
-              <span>Aperçu de votre annonce</span>
-              <span>
-                <i /> En direct
-              </span>
-            </div>
-            <article>
-              <div className="preview-author">
-                <span className="preview-monogram">
-                  {name.charAt(0).toUpperCase()}
-                </span>
-                <div>
-                  <strong>{name}</strong>
-                  <small>
-                    {kind === "trips"
-                      ? "Votre prochain voyage"
-                      : "Votre prochaine trouvaille"}
-                  </small>
-                </div>
-                {kind === "trips" ? (
-                  <TransportIcon size={26} />
-                ) : (
-                  <Package size={26} />
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+                {vehicle === "avion" && (
+                  <section
+                    className="flight-allowance animated-field rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] p-4"
+                    aria-label="Franchise bagage"
+                  >
+                    <div className="tabular-nums">
+                      <Luggage size={20} />
+                      <strong>Votre franchise bagage</strong>
+                      <span className="font-bold text-[#059669]">
+                        {weight} / {allowance} kg
+                      </span>
+                    </div>
+                    <div className="allowance-track">
+                      <span
+                        style={{
+                          width: `${Math.min(100, (weight / allowance) * 100)}%`,
+                        }}
+                      />
+                    </div>
+                    <div className="allowance-options tabular-nums">
+                      {[10, 23].map((kg) => (
+                        <button
+                          type="button"
+                          key={kg}
+                          aria-pressed={allowance === kg}
+                          onClick={() => setAllowance(kg)}
+                        >
+                          {kg} kg
+                        </button>
+                      ))}
+                      <small>Vérifiez la franchise sur votre billet.</small>
+                    </div>
+                    {weight > allowance && (
+                      <p role="status">
+                        La place proposée dépasse votre franchise sélectionnée.
+                      </p>
+                    )}
+                  </section>
+                )}
+                <label>
+                  Modèle ou compagnie
+                  <input
+                    required
+                    name="label"
+                    placeholder={
+                      vehicle === "avion" ? "Ex. Air France" : "Ex. Peugeot 208"
+                    }
+                  />
+                </label>
+                {vehicle === "avion" && (
+                  <label className="animated-field">
+                    Numéro de vol
+                    <input
+                      name="flightNumber"
+                      placeholder="Ex. AH1001, AF1384"
+                      maxLength={10}
+                      autoCapitalize="characters"
+                      aria-describedby="flight-number-hint"
+                    />
+                    <small id="flight-number-hint">
+                      Optionnel, recommandé pour retrouver votre vol.
+                    </small>
+                  </label>
                 )}
               </div>
-              <div className="flight-route-indicator">
+            )}
+
+            <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 space-y-4">
+              <div className="corridor-picker">
+                <span className="field-caption">Les grands départs</span>
                 <div>
-                  <small>{corridor?.from || "DÉPART"}</small>
-                  <strong>{origin || "Votre ville"}</strong>
-                </div>
-                <span>
-                  <i />
-                  <Plane size={20} />
-                  <i />
-                </span>
-                <div>
-                  <small>{corridor?.to || "ARRIVÉE"}</small>
-                  <strong>{destination || "Votre destination"}</strong>
+                  {corridors.map((route) => (
+                    <button
+                      type="button"
+                      key={route.to}
+                      aria-pressed={corridor?.to === route.to}
+                      onClick={() => {
+                        setOrigin(route.origin);
+                        setDestination(route.destination);
+                      }}
+                    >
+                      {route.label}
+                    </button>
+                  ))}
                 </div>
               </div>
-              {kind === "requests" && (
-                <h4>{items[0].name || "L’article que vous recherchez"}</h4>
+              <div className="form-grid">
+                <label>
+                  Départ
+                  <CityAutocomplete
+                    name="origin"
+                    value={origin}
+                    onChange={setOrigin}
+                    placeholder="Ex. Paris, Marseille, Alger..."
+                    required
+                  />
+                </label>
+                <label>
+                  Destination
+                  <CityAutocomplete
+                    name="destination"
+                    value={destination}
+                    onChange={setDestination}
+                    placeholder="Ex. Alger, Oran, Montréal..."
+                    required
+                  />
+                </label>
+              </div>
+              <label>
+                {kind === "requests"
+                  ? "Livraison souhaitée avant le"
+                  : "Date de départ"}
+                <input
+                  name="date"
+                  required
+                  type="date"
+                  className="tabular-nums"
+                  min={new Date().toLocaleDateString("en-CA")}
+                />
+              </label>
+              {kind === "requests" ? (
+                <>
+                  <label>
+                    Lieu de livraison
+                    <input
+                      name="location"
+                      placeholder="Ex. Lyon, Part-Dieu"
+                      maxLength={150}
+                    />
+                  </label>
+                  <label>
+                    Poids estimé du colis (kg)
+                    <input
+                      name="weightKg"
+                      type="number"
+                      min="0.1"
+                      max="1000"
+                      step="0.5"
+                      className="tabular-nums"
+                      placeholder="Ex. 2"
+                    />
+                    <small>
+                      Optionnel. Permet aux voyageurs de retrouver votre demande
+                      selon la place disponible.
+                    </small>
+                  </label>
+                  <div className="form-grid">
+                    <label>
+                      Budget article (€)
+                      <input
+                        value={items[0].price || ""}
+                        onChange={(event) =>
+                          changeItem(items[0].id, {
+                            price: Number(event.target.value),
+                          })
+                        }
+                        name="budget"
+                        type="number"
+                        min="1"
+                        max="10000"
+                        step="0.01"
+                        className="tabular-nums"
+                        required
+                      />
+                    </label>
+                    <label>
+                      Service (€)
+                      <input
+                        name="reward"
+                        type="number"
+                        min="1"
+                        max="1000"
+                        step="0.01"
+                        className="tabular-nums"
+                        required
+                      />
+                    </label>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="form-grid">
+                    <label>
+                      Heure de départ
+                      <input name="time" type="time" className="tabular-nums" required />
+                    </label>
+                    <label>
+                      Place disponible (kg)
+                      <input
+                        name="weight"
+                        type="number"
+                        min="1"
+                        max="1000"
+                        step="0.5"
+                        className="tabular-nums"
+                        required
+                      />
+                    </label>
+                  </div>
+                  <div className="form-grid">
+                    <label>
+                      Prix par kilo (€)
+                      <input
+                        name="price"
+                        type="number"
+                        min="1"
+                        max="1000"
+                        step="0.01"
+                        className="tabular-nums"
+                        required
+                      />
+                    </label>
+                    <label>
+                      Dimensions (cm)
+                      <input name="dimensions" className="tabular-nums" placeholder="80 × 60 × 40" />
+                    </label>
+                  </div>
+                  <section
+                    className="earnings-calculator rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] p-5"
+                    aria-label="Calculateur de gains"
+                  >
+                    <div className="earnings-heading">
+                      <span>
+                        <ArrowUpRight size={18} className="text-[#059669]" /> Votre place vaut plus
+                      </span>
+                      <small>ESTIMATION</small>
+                    </div>
+                    <output aria-live="polite" className="tabular-nums">
+                      Gain estimé voyageur : <strong className="text-[#059669]">+{currency(gain)} €</strong>
+                    </output>
+                    <div
+                      className="earnings-track"
+                      role="progressbar"
+                      aria-label="Part estimée du billet financée"
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuenow={
+                        fare > 0
+                          ? Math.min(100, Math.round((gain / fare) * 100))
+                          : 0
+                      }
+                    >
+                      <span
+                        style={{
+                          width: `${fare > 0 ? Math.min(100, (gain / fare) * 100) : 0}%`,
+                        }}
+                      />
+                    </div>
+                    <label>
+                      Prix du billet (€)
+                      <input
+                        type="number"
+                        min="1"
+                        max="100000"
+                        className="tabular-nums"
+                        value={fare || ""}
+                        onChange={(e) => setFare(Number(e.target.value))}
+                      />
+                    </label>
+                    <p className="tabular-nums">
+                      {price > 0 && fare > 0
+                        ? `Financement estimé du billet dès ${Math.ceil(fare / price)} kg réservés.`
+                        : "Renseignez votre tarif pour estimer le financement du billet."}
+                    </p>
+                  </section>
+                  <label>
+                    À propos du trajet
+                    <textarea
+                      name="description"
+                      maxLength={1000}
+                      placeholder="Point de rendez-vous, objets acceptés…"
+                    />
+                  </label>
+                  <fieldset className="trip-options">
+                    <legend>Un trajet à votre façon</legend>
+                    <label className="trip-option">
+                      <input
+                        type="checkbox"
+                        name="autoAccept"
+                        defaultChecked={defaultAutoAccept}
+                      />
+                      <span>
+                        <strong>Acceptation automatique des réservations</strong>
+                        <small>
+                          Accepter instantanément les réservations des profils
+                          vérifiés
+                        </small>
+                      </span>
+                    </label>
+                    <label className="trip-option">
+                      <input type="checkbox" name="canBuyProduct" />
+                      <span>
+                        <strong>Service d’achat en magasin</strong>
+                        <small>
+                          J’accepte d’aller acheter la marchandise sur place
+                        </small>
+                      </span>
+                    </label>
+                  </fieldset>
+                  <fieldset className="accepted-categories">
+                    <legend>Catégories acceptées</legend>
+                    <p>
+                      Choisissez une ou plusieurs catégories. Sans sélection : à
+                      convenir ensemble.
+                    </p>
+                    <div>
+                      {acceptedCategories.map((category) => {
+                        const Icon = categoryIcons[category];
+                        return (
+                          <label key={category} className="category-chip">
+                            <input
+                              type="checkbox"
+                              name="categories"
+                              value={category}
+                            />
+                            <Icon size={18} aria-hidden="true" />
+                            <span>{category}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </fieldset>
+                </>
               )}
-              <p className="preview-description">
-                {kind === "trips"
-                  ? draft.description || "Chaque départ rapproche quelqu’un."
-                  : items[0].specifications ||
-                    "Ajoutez les détails qui font la différence."}
-              </p>
-              <div className="preview-footer">
-                <span>
-                  {draft.date
-                    ? new Date(`${draft.date}T12:00:00`).toLocaleDateString(
-                        "fr-FR",
-                        { day: "numeric", month: "long", year: "numeric" },
-                      )
-                    : "Date à préciser"}
-                  {kind === "trips" && draft.time ? ` · ${draft.time}` : ""}
-                  <small>
-                    {kind === "trips"
-                      ? `${weight} kg disponibles`
-                      : `Budget article : ${currency(totalPurchase)} €`}
-                  </small>
-                </span>
-                <strong>
-                  {kind === "trips"
-                    ? `${currency(price)} €`
-                    : `+${currency(Number(draft.reward) || 0)} €`}
-                  <small>{kind === "trips" ? "/ kilo" : "de service"}</small>
-                </strong>
-              </div>
-            </article>
-          </section>
-          <div className="publish-sticky-dock">
-            <div className="dock-summary">
-              <span className="dock-summary-label">
-                {kind === "trips" ? "Tarif proposé" : "Budget total estimé"}
-              </span>
-              <strong className="dock-summary-value">
-                {kind === "trips"
-                  ? `${currency(price)} € / kg`
-                  : `${currency(
-                      totalPurchase +
-                        Math.round(((Number(draft.reward) || 0) * 100) / 0.85) /
-                          100,
-                    )} €`}
-              </strong>
             </div>
-            <button className="primary-button publish-submit-btn" type="submit">
-              {kind === "requests" ? "Publier ma demande" : "Publier mon trajet"}
-              <ArrowRight size={18} />
-            </button>
-          </div>
-        </form>
-      )}
+
+            {/* Bloc unique fusionnant le récapitulatif financier et le bouton de validation principal (zéro double barre sticky sur mobile) */}
+            <section
+              aria-label="Validation et récapitulatif financier"
+              className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 space-y-4 shadow-xs tabular-nums"
+            >
+              {kind === "requests" ? (
+                <div className="space-y-2 text-xs text-slate-600">
+                  <div className="flex items-center justify-between">
+                    <span>
+                      Achats estimés ({items.length} article{items.length > 1 ? "s" : ""})
+                    </span>
+                    <strong className="text-slate-900">{currency(totalPurchase)} €</strong>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Commission nette voyageur</span>
+                    <strong className="text-[#059669]">+{currency(Number(draft.reward) || 0)} €</strong>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Protection séquestre Stripe (15 %)</span>
+                    <strong className="text-slate-700">{currency(totalPlatformFee)} €</strong>
+                  </div>
+                  <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-sm">
+                    <span className="font-bold text-slate-900">Budget total sous séquestre</span>
+                    <strong className="text-base font-black text-[#059669]">
+                      {currency(totalEstimatedBudget)} €
+                    </strong>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck size={16} className="text-[#059669]" />
+                    <span>
+                      Capacité déclarée : <strong className="text-slate-900">{weight} kg</strong> · Tarif :{" "}
+                      <strong className="text-slate-900">{currency(price)} € / kg</strong>
+                    </span>
+                  </div>
+                  <div className="text-sm font-bold text-slate-900">
+                    Gain potentiel :{" "}
+                    <strong className="text-base font-black text-[#059669]">
+                      +{currency(gain)} €
+                    </strong>
+                  </div>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="w-full py-3.5 px-6 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer tabular-nums"
+              >
+                <span>
+                  {kind === "requests"
+                    ? `Publier ma demande (${currency(totalEstimatedBudget)} €)`
+                    : `Publier mon trajet (${currency(price)} € / kg · +${currency(gain)} €)`}
+                </span>
+                <ArrowRight size={18} />
+              </button>
+            </section>
+          </form>
+        )}
+      </div>
+
+      <TicketScannerModal
+        isOpen={scannerOpen}
+        onClose={() => setScannerOpen(false)}
+        onTripCreated={(trip) => {
+          onTrip(trip);
+          setScannerOpen(false);
+          onClose();
+        }}
+      />
     </Dialog>
   );
 }

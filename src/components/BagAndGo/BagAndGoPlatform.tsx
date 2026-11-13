@@ -37,6 +37,10 @@ import { Trip, PurchaseRequest } from '../../data/marketplace';
 import { useAuth } from '../../context/AuthContext';
 import { ParcelVisualizer } from '../marketplace/ParcelVisualizer';
 import { CityAutocomplete } from '../common/CityAutocomplete';
+import {
+  ExploreUnifiedNavigation,
+  UnifiedListingCard,
+} from '../marketplace/UnifiedListingCard';
 
 export interface BagAndGoPlatformProps {
   trips: Trip[];
@@ -123,8 +127,9 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
   onTracking,
   onAddRequest,
 }) => {
-  const { user } = useAuth();
+  const { user, activePlatform, setActivePlatform } = useAuth();
   const id = useId();
+  const [selectedCorridor, setSelectedCorridor] = useState<string>('');
 
   // Category
   const [category, setCategory] = useState('Pharmacie & Médical');
@@ -247,7 +252,21 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
   };
 
   return (
-    <div className="bagandgo-platform-container max-w-5xl mx-auto px-4 py-3 space-y-6 pb-36 text-left">
+    <div className="bagandgo-platform-container max-w-5xl mx-auto px-4 py-4 space-y-6 pb-36 text-left">
+      {/* Unified Navigation: Segmented Control (Colis | Trajets | Shopping) + Quick Corridors */}
+      <ExploreUnifiedNavigation
+        activeSegment={activePlatform}
+        onSelectSegment={(seg) => setActivePlatform(seg)}
+        selectedCorridor={selectedCorridor}
+        onSelectCorridor={(c) => {
+          setSelectedCorridor(c.label);
+          setDepartureCity(c.from);
+          setDestination(c.to);
+          setCarrierOrigin(c.from);
+          setCarrierDestination(c.to);
+        }}
+      />
+
       {/* 1. Hero Photographic Banner */}
       <section className="relative overflow-hidden rounded-[28px] bg-slate-950 text-white shadow-lg border border-slate-800/80">
         <div
@@ -435,52 +454,12 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
             ) : (
               <div className="grid grid-cols-1 gap-3.5">
                 {filteredTrips.map((trip) => (
-                  <div
+                  <UnifiedListingCard
                     key={trip.id}
-                    className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-700 transition-all shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-800 text-white font-extrabold flex items-center justify-center text-sm shadow-xs shrink-0">
-                        {trip.title ? trip.title.slice(0, 2).toUpperCase() : "TR"}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
-                            {trip.title || "Transporteur vérifié"}
-                          </h3>
-                          <ShieldCheck size={15} className="text-blue-600 dark:text-blue-400" />
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60">
-                            {trip.transportLabel || "Trajet certifié"}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 mt-1">
-                          <span>{trip.origin}</span>
-                          <span className="text-slate-400">→</span>
-                          <span>{trip.destination}</span>
-                        </div>
-                        <div className="flex items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400 mt-1">
-                          <span>Départ : {trip.departureDate}</span>
-                          <span className="text-slate-400">•</span>
-                          <span className="font-semibold text-blue-600 dark:text-blue-400">
-                            {trip.availableKg ? `${trip.availableKg} kg disponibles` : "Espace disponible"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-full sm:w-auto flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0">
-                      <span className="text-sm font-black text-slate-900 dark:text-white">
-                        Dès {trip.startingPrice || trip.pricePerKg || 12} € / kg
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => _onTrip?.(trip)}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-xs hover:shadow-sm active:scale-95 transition-all cursor-pointer"
-                      >
-                        <span>Réserver cet espace</span>
-                        <ChevronRight size={14} />
-                      </button>
-                    </div>
-                  </div>
+                    trip={trip}
+                    onSelect={() => _onTrip?.(trip)}
+                    ctaLabel="Réserver cet espace"
+                  />
                 ))}
               </div>
             )}
@@ -1119,7 +1098,7 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         </div>
 
         {/* Block 5: Rémunération Proposée & Séquestre Stripe */}
-        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200/90 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-5 rounded-2xl bg-[#FFFFFF] dark:bg-slate-850 border border-[#E2E8F0] dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 tabular-nums">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="font-extrabold text-sm text-slate-900 dark:text-white">
@@ -1129,8 +1108,8 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
                 (Hors options logistiques)
               </span>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-300">
-              Total à payer sous séquestre : <strong>{totalShipperCost} €</strong> ({priceNum} € transport + {pickupFee} € collecte + {deliveryFee} € livraison)
+            <p className="text-xs text-slate-600 dark:text-slate-300 tabular-nums">
+              Total à payer sous séquestre : <strong className="tabular-nums">{totalShipperCost} €</strong> ({priceNum} € transport + {pickupFee} € collecte + {deliveryFee} € livraison)
             </p>
           </div>
 
@@ -1142,20 +1121,20 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
                 min="10"
                 value={proposedPrice}
                 onChange={(e) => setProposedPrice(e.target.value)}
-                className="w-full pl-7 pr-2 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 font-black text-sm text-slate-900 dark:text-white outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 text-center"
+                className="w-full pl-7 pr-2 py-2 rounded-xl border border-[#E2E8F0] dark:border-slate-600 bg-[#FFFFFF] dark:bg-slate-800 font-black text-sm text-slate-900 dark:text-white outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-blue-600/20 text-center tabular-nums"
               />
             </div>
 
-            <div className="px-4 py-2.5 rounded-full bg-emerald-600 text-white font-extrabold text-xs sm:text-sm shadow-xs whitespace-nowrap">
+            <div className="px-4 py-2.5 rounded-2xl bg-[#059669] text-white font-extrabold text-xs sm:text-sm whitespace-nowrap tabular-nums">
               Gain voyageur net : ~{travelerNetReward} €
             </div>
           </div>
         </div>
 
-        {/* 3. Oceanic Blue Pill CTA Button */}
+        {/* 3. Primary CTA Button (#2563EB) */}
         <button
           type="submit"
-          className="w-full py-4 px-6 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-xs hover:shadow-md transition-all active:scale-[0.99] cursor-pointer"
+          className="w-full py-4 px-6 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 transition-all active:scale-[0.99] cursor-pointer tabular-nums"
         >
           <Send size={18} strokeWidth={2.4} />
           <span>Publier ma demande de colis ({billableWeightKg} kg facturés)</span>
@@ -1190,70 +1169,12 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         {parcelRequests.length > 0 ? (
           <div className="grid grid-cols-1 gap-3.5">
             {parcelRequests.map((req) => (
-              <div
+              <UnifiedListingCard
                 key={req.id}
-                onClick={() => onRequest?.(req)}
-                className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-700 transition-all shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 cursor-pointer"
-              >
-                <div className="flex items-center gap-3.5">
-                  <div className="relative shrink-0">
-                    {req.image ? (
-                      <img
-                        src={req.image}
-                        alt={req.title}
-                        className="w-14 h-14 min-w-14 min-h-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 shadow-sm shrink-0"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                        <Package size={24} />
-                      </div>
-                    )}
-                    {req.buyerAvatar && (
-                      <img
-                        src={req.buyerAvatar}
-                        alt={req.buyer}
-                        className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full object-cover border-2 border-white dark:border-slate-900 shadow-xs"
-                      />
-                    )}
-                  </div>
-
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-xs font-extrabold text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/40">
-                        {req.title}
-                      </span>
-                      <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
-                        • {req.flexibility === 'urgent' ? 'Urgent' : 'Normal'}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 mt-1">
-                      <span>{req.origin}</span>
-                      <span className="text-slate-400">→</span>
-                      <span>{req.destination}</span>
-                      <span className="text-slate-400">•</span>
-                      <span className="text-blue-600 dark:text-blue-400 font-bold">{req.budget} €</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                      <User size={12} className="text-slate-400" />
-                      <span>{req.buyer}</span>
-                      <span>•</span>
-                      <Star size={12} className="text-amber-500 fill-amber-500" />
-                      <span>4.9 (87 avis)</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                  <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60">
-                    <Clock size={13} />
-                    <span>En attente transporteur</span>
-                  </span>
-                  <ChevronRight size={18} className="text-slate-400" />
-                </div>
-              </div>
+                request={req}
+                onSelect={() => onRequest?.(req)}
+                ctaLabel="Voir ma demande"
+              />
             ))}
           </div>
         ) : (

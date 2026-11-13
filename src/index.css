@@ -155,14 +155,39 @@ p, body, input, select, textarea {
   --theme-bg: #f8fafc;
   --theme-bg-subtle: #f1f5f9;
   --theme-card-bg: #ffffff;
-  --theme-glass-bg: rgba(255, 255, 255, 0.82);
-  --theme-border: rgba(0, 0, 0, 0.06);
-  --theme-border-subtle: rgba(0, 0, 0, 0.04);
+  --theme-glass-bg: rgba(255, 255, 255, 0.85);
+  --theme-border: #e2e8f0;
+  --theme-border-subtle: #e2e8f0;
   --theme-text-primary: #0f172a;
   --theme-text-secondary: #475569;
   --theme-text-muted: #64748b;
   --theme-input-bg: #ffffff;
   --theme-shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.03);
+  --ds-bg: #F8FAFC;
+  --ds-card-bg: #FFFFFF;
+  --ds-border: #E2E8F0;
+  --ds-radius-card: 1rem; /* rounded-2xl (16px) */
+  --ds-cta-primary: #2563EB;
+  --ds-gain-valid: #059669;
+  --ds-dark-surface: #0F172A;
+}
+
+.tabular-nums,
+[data-tabular],
+output,
+input[type="number"],
+.price-amount,
+.weight-amount,
+.bv-ribbon-value,
+.corridor-price-row strong,
+.savings-number strong,
+.comparison-row strong,
+.landing-metrics strong,
+.travel-reward-val,
+.parcel-specimen-meta strong,
+.gauge-header strong,
+.bv-hero-pill {
+  font-variant-numeric: tabular-nums;
 }
 
 html[data-theme="dark"],

@@ -2,11 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowUpRight,
-  Bell,
   ChevronDown,
   CirclePlus,
-  Compass,
-  FileText,
   HelpCircle,
   LogOut,
   MessageCircle,
@@ -15,16 +12,13 @@ import {
   Radio,
   RefreshCw,
   Scan,
-  Share2,
   ShieldCheck,
-  ShoppingCart,
-  Smartphone,
+  ShoppingBag,
   Ticket,
   UserRound,
   Wallet,
   Wifi,
   WifiOff,
-  X,
 } from "lucide-react";
 import { BrandMark } from "./BrandMark";
 import { CurrencyRatePill } from "./CurrencyConverter/CurrencyConverterModal";
@@ -33,7 +27,6 @@ import { ThemeToggle } from "./common/ThemeToggle";
 import { useAuth } from "../context/AuthContext";
 import { ActivePlatform } from "../types/auth";
 import { subscribeToSyncReport, getSyncReport, type SyncReport } from "../services/apiSync";
-
 
 interface Props {
   route: string;
@@ -76,8 +69,6 @@ export function MarketplaceHeader(props: Props) {
     return subscribeToSyncReport((report) => setSyncReport(report));
   }, []);
 
-  // Close menu when clicking outside or pressing Escape
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -110,13 +101,13 @@ export function MarketplaceHeader(props: Props) {
   };
 
   return (
-    <header className="site-header unified-header relative z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-3">
+    <header className="site-header unified-header relative z-40 bg-[#FFFFFF]/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-[#E2E8F0] dark:border-slate-800 transition-colors">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
         {/* Left: Brand Logo & Back Button */}
         <div className="flex items-center gap-2 shrink-0">
           {route !== "explore" && !route.startsWith("publish/") && (
             <button
-              className="p-2 -ml-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 -ml-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-[#F8FAFC] dark:hover:bg-slate-800 transition-colors"
               aria-label="Retour à Explorer"
               onClick={() => navigate("explore")}
             >
@@ -133,9 +124,9 @@ export function MarketplaceHeader(props: Props) {
           </button>
         </div>
 
-        {/* Center: The 3 Core Universes Switcher (Desktop & Tablet) */}
+        {/* Center: Clean Segmented Control (Colis | Trajets | Shopping) */}
         <div
-          className="hidden md:flex items-center p-1 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 shadow-xs"
+          className="hidden md:inline-flex items-center p-1 rounded-2xl bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700"
           role="radiogroup"
           aria-label="Choisir la plateforme"
         >
@@ -144,24 +135,17 @@ export function MarketplaceHeader(props: Props) {
             role="radio"
             aria-checked={activePlatform === "bagandgo"}
             onClick={() => handleSelectPlatform("bagandgo")}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 cursor-pointer ${
+            className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
               activePlatform === "bagandgo"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs scale-[1.01]"
+                ? "bg-[#FFFFFF] dark:bg-slate-900 text-slate-900 dark:text-white border border-[#E2E8F0] dark:border-slate-700 shadow-2xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             <Package
-              size={15}
-              className={
-                activePlatform === "bagandgo"
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-slate-400"
-              }
+              size={14}
+              className={activePlatform === "bagandgo" ? "text-[#2563EB]" : "text-slate-400"}
             />
-            <div className="flex flex-col text-left leading-none">
-              <span className="font-bold">Bag&amp;Go</span>
-              <span className="text-[9px] opacity-70 font-semibold">Expédier</span>
-            </div>
+            <span>Colis</span>
           </button>
 
           <button
@@ -169,24 +153,17 @@ export function MarketplaceHeader(props: Props) {
             role="radio"
             aria-checked={activePlatform === "voyageur"}
             onClick={() => handleSelectPlatform("voyageur")}
-            className={`flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 cursor-pointer ${
+            className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
               activePlatform === "voyageur"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs scale-[1.01]"
+                ? "bg-[#FFFFFF] dark:bg-slate-900 text-slate-900 dark:text-white border border-[#E2E8F0] dark:border-slate-700 shadow-2xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
-            <UserRound
-              size={15}
-              className={
-                activePlatform === "voyageur"
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-slate-400"
-              }
+            <Plane
+              size={14}
+              className={activePlatform === "voyageur" ? "text-[#2563EB]" : "text-slate-400"}
             />
-            <div className="flex flex-col text-left leading-none">
-              <span className="font-bold">Voyageur</span>
-              <span className="text-[9px] opacity-70 font-semibold">Rentabiliser</span>
-            </div>
+            <span>Trajets</span>
           </button>
 
           <button
@@ -194,34 +171,27 @@ export function MarketplaceHeader(props: Props) {
             role="radio"
             aria-checked={activePlatform === "shopandgo"}
             onClick={() => handleSelectPlatform("shopandgo")}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 cursor-pointer ${
+            className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
               activePlatform === "shopandgo"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs scale-[1.01]"
+                ? "bg-[#FFFFFF] dark:bg-slate-900 text-slate-900 dark:text-white border border-[#E2E8F0] dark:border-slate-700 shadow-2xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
-            <ShoppingCart
-              size={15}
-              className={
-                activePlatform === "shopandgo"
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-slate-400"
-              }
+            <ShoppingBag
+              size={14}
+              className={activePlatform === "shopandgo" ? "text-[#2563EB]" : "text-slate-400"}
             />
-            <div className="flex flex-col text-left leading-none">
-              <span className="font-bold">Shop&amp;Go</span>
-              <span className="text-[9px] opacity-70 font-semibold">Commander</span>
-            </div>
+            <span>Shopping</span>
           </button>
         </div>
 
-        {/* Right: Primary High-Value Action Items */}
+        {/* Right: Primary Action Items */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* 1. Primary Call-To-Action "+ Publier" */}
+          {/* 1. Primary Call-To-Action "+ Publier" (#2563EB strictly reserved for primary CTA) */}
           <button
             type="button"
             onClick={props.onPublish}
-            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold text-xs sm:text-sm shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all active:scale-95 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
             aria-label="Publier une annonce"
           >
             <CirclePlus size={16} strokeWidth={2.4} />
@@ -232,8 +202,10 @@ export function MarketplaceHeader(props: Props) {
           <button
             type="button"
             onClick={() => navigate("messages")}
-            className={`relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer ${
-              route === "messages" ? "bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400" : ""
+            className={`relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-[#F8FAFC] dark:hover:bg-slate-800 transition-colors cursor-pointer ${
+              route === "messages"
+                ? "bg-[#F8FAFC] dark:bg-slate-800 text-[#2563EB]"
+                : ""
             }`}
             aria-label="Messagerie sécurisée"
             title="Messagerie sécurisée"
@@ -248,52 +220,55 @@ export function MarketplaceHeader(props: Props) {
           {(!isOnline || syncReport.status === "offline") && (
             <span
               className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-bold"
-              title="Vos données sont enregistrées en local dans IndexedDB v2"
+              title="Vos données sont enregistrées en local"
             >
               <WifiOff size={13} className="text-amber-500 shrink-0" />
-              <span>Hors-ligne (Local v2)</span>
+              <span>Hors-ligne</span>
             </span>
           )}
 
           {syncReport.status === "syncing" && (
             <span
-              className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs font-bold"
-              title="Synchronisation des mutations avec le serveur distant"
+              className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-[#2563EB] text-xs font-bold"
+              title="Synchronisation en cours"
             >
-              <RefreshCw size={12} className="text-blue-500 animate-spin shrink-0" />
+              <RefreshCw size={12} className="text-[#2563EB] animate-spin shrink-0" />
               <span>Synchronisation…</span>
             </span>
           )}
 
-          {/* 3. Wallet Pill (Portefeuille avec solde) */}
+          {/* 3. Wallet Pill (Portefeuille avec solde en tabular-nums) */}
           <button
             type="button"
             onClick={() => navigate("wallet")}
-            className={`hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border font-extrabold text-xs transition-all cursor-pointer ${
+            className={`hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl border font-bold text-xs tabular-nums transition-all cursor-pointer ${
               route === "wallet"
-                ? "bg-slate-950 dark:bg-white text-white dark:text-slate-900 border-transparent shadow-xs"
-                : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-xs"
+                ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-transparent"
+                : "border-[#E2E8F0] dark:border-slate-700 bg-[#FFFFFF] dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:border-slate-300"
             }`}
             aria-label={`Mon portefeuille, solde disponible ${props.balance}`}
             title="Mon Portefeuille"
           >
-            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <Wallet size={14} className="text-blue-600 dark:text-blue-400" />
-            <span>{props.balance}</span>
+            <div className="w-2 h-2 rounded-full bg-[#059669]" />
+            <Wallet size={14} className="text-slate-600 dark:text-slate-300" />
+            <span className="tabular-nums">{props.balance}</span>
           </button>
 
-
-          {/* 4. Dropdown Menu Trigger (Profil, Outils & Préférences) */}
+          {/* 4. Dropdown Menu Trigger */}
           <div className="relative" ref={menuRef}>
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex items-center gap-1.5 p-1 sm:pl-2 sm:pr-2.5 sm:py-1.5 rounded-full border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all shadow-2xs cursor-pointer"
+              className="flex items-center gap-1.5 p-1 sm:pl-2 sm:pr-2.5 sm:py-1.5 rounded-2xl border border-[#E2E8F0] dark:border-slate-700 hover:border-slate-300 bg-[#FFFFFF] dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all cursor-pointer"
               aria-label="Menu du compte et outils"
               aria-expanded={menuOpen}
             >
-              <div className="w-7 h-7 rounded-full bg-slate-900 dark:bg-slate-800 text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                {props.userName ? props.userName.slice(0, 2).toUpperCase() : <UserRound size={14} />}
+              <div className="w-7 h-7 rounded-full bg-slate-900 dark:bg-slate-700 text-white flex items-center justify-center font-bold text-xs">
+                {props.userName ? (
+                  props.userName.slice(0, 2).toUpperCase()
+                ) : (
+                  <UserRound size={14} />
+                )}
               </div>
               <ChevronDown
                 size={14}
@@ -303,14 +278,13 @@ export function MarketplaceHeader(props: Props) {
               />
             </button>
 
-            {/* Elite Dropdown Panel */}
             {menuOpen && (
-              <div className="absolute right-0 mt-2 w-72 sm:w-80 max-h-[calc(100dvh-90px)] overflow-y-auto rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-2 z-50 text-slate-800 dark:text-slate-200 animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute right-0 mt-2 w-72 sm:w-80 max-h-[calc(100dvh-90px)] overflow-y-auto rounded-2xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-xl p-5 z-50 text-slate-800 dark:text-slate-200">
                 {/* User Info Header */}
-                <div className="p-3 border-b border-slate-100 dark:border-slate-800">
-                  <div className="flex items-center justify-between">
+                <div className="pb-3 border-b border-[#E2E8F0] dark:border-slate-800">
+                  <div className="flex items-center justify-between gap-2">
                     <div>
-                      <p className="font-extrabold text-sm text-slate-900 dark:text-white">
+                      <p className="font-bold text-sm text-slate-900 dark:text-white">
                         {props.userName || "Invité"}
                       </p>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400">
@@ -318,7 +292,7 @@ export function MarketplaceHeader(props: Props) {
                       </p>
                     </div>
                     {isKycVerified ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-[#059669] dark:text-emerald-400 border border-emerald-200/80 text-[10px] font-bold whitespace-nowrap">
                         <ShieldCheck size={11} />
                         Vérifié
                       </span>
@@ -329,25 +303,25 @@ export function MarketplaceHeader(props: Props) {
                           setMenuOpen(false);
                           openKycModal();
                         }}
-                        className="text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:underline cursor-pointer"
+                        className="text-[10px] font-bold text-[#059669] hover:underline cursor-pointer whitespace-nowrap"
                       >
-                        Vérifier KYC
+                        Vérifier mon profil
                       </button>
                     )}
                   </div>
                 </div>
 
                 {/* Section 1: Navigation Rapide */}
-                <div className="py-1.5 border-b border-slate-100 dark:border-slate-800 text-xs">
+                <div className="py-2 border-b border-[#E2E8F0] dark:border-slate-800 text-xs space-y-1">
                   <button
                     type="button"
                     onClick={() => {
                       setMenuOpen(false);
                       navigate("tracking");
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-[#F8FAFC] dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                   >
-                    <Package size={15} className="text-blue-600 dark:text-blue-400" />
+                    <Package size={15} className="text-slate-500" />
                     <span>Mes expéditions &amp; commandes</span>
                   </button>
 
@@ -357,18 +331,20 @@ export function MarketplaceHeader(props: Props) {
                       setMenuOpen(false);
                       navigate("wallet");
                     }}
-                    className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left hover:bg-[#F8FAFC] dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5">
-                      <Wallet size={15} className="text-blue-600 dark:text-blue-400" />
+                      <Wallet size={15} className="text-slate-500" />
                       <span>Mon Portefeuille</span>
                     </div>
-                    <span className="font-bold text-blue-600 dark:text-blue-400">{props.balance}</span>
+                    <span className="font-bold text-[#059669] tabular-nums">
+                      {props.balance}
+                    </span>
                   </button>
                 </div>
 
-                {/* Section 2: Outils Professionnels */}
-                <div className="py-1.5 border-b border-slate-100 dark:border-slate-800 text-xs">
+                {/* Section 2: Outils Logistiques */}
+                <div className="py-2 border-b border-[#E2E8F0] dark:border-slate-800 text-xs space-y-1">
                   <span className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
                     Outils Logistiques
                   </span>
@@ -380,10 +356,10 @@ export function MarketplaceHeader(props: Props) {
                         setMenuOpen(false);
                         props.onScanBoardingPass?.();
                       }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-[#F8FAFC] dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                     >
-                      <Scan size={15} className="text-blue-500" />
-                      <span>Scanner billet IATA</span>
+                      <Scan size={15} className="text-slate-500" />
+                      <span>Scanner mon billet</span>
                     </button>
                   )}
 
@@ -394,9 +370,9 @@ export function MarketplaceHeader(props: Props) {
                         setMenuOpen(false);
                         props.onCargoPass?.();
                       }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-[#F8FAFC] dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                     >
-                      <Ticket size={15} className="text-blue-500" />
+                      <Ticket size={15} className="text-slate-500" />
                       <span>Passe fret numérique</span>
                     </button>
                   )}
@@ -407,9 +383,9 @@ export function MarketplaceHeader(props: Props) {
                       setMenuOpen(false);
                       props.onRadar();
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-[#F8FAFC] dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                   >
-                    <Radio size={15} className="text-blue-500" />
+                    <Radio size={15} className="text-slate-500" />
                     <span>Radar mondial vols &amp; ferries</span>
                   </button>
 
@@ -419,27 +395,37 @@ export function MarketplaceHeader(props: Props) {
                       setMenuOpen(false);
                       navigate("arbitrage");
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-[#F8FAFC] dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                   >
-                    <Plane size={15} className="text-blue-500" />
+                    <Plane size={15} className="text-slate-500" />
                     <span>Arbitrage de vols &amp; rentabilité</span>
                   </button>
 
                   <div className="px-3 py-1 flex items-center justify-between">
                     <span className="text-slate-500 text-[11px]">Convertisseur</span>
-                    <CurrencyRatePill compact onClick={() => { setMenuOpen(false); props.onCurrency(); }} />
+                    <CurrencyRatePill
+                      compact
+                      onClick={() => {
+                        setMenuOpen(false);
+                        props.onCurrency();
+                      }}
+                    />
                   </div>
                 </div>
 
                 {/* Section 3: Préférences & Assistance */}
-                <div className="py-1.5 border-b border-slate-100 dark:border-slate-800 text-xs">
+                <div className="py-2 border-b border-[#E2E8F0] dark:border-slate-800 text-xs space-y-1">
                   <div className="flex items-center justify-between px-3 py-1.5">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">Apparence</span>
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                      Apparence
+                    </span>
                     <ThemeToggle showLabel />
                   </div>
 
                   <div className="flex items-center justify-between px-3 py-1.5">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">Langue</span>
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                      Langue
+                    </span>
                     <LanguageSelector location="header" />
                   </div>
 
@@ -449,23 +435,28 @@ export function MarketplaceHeader(props: Props) {
                       setMenuOpen(false);
                       window.dispatchEvent(new CustomEvent("bv:open-how-it-works"));
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-[#F8FAFC] dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                   >
                     <HelpCircle size={15} className="text-slate-400" />
                     <span>Comment ça marche</span>
                   </button>
 
-                  {/* Mode Hors-ligne / Aéroport */}
                   <button
                     type="button"
                     onClick={() => {
                       setMenuOpen(false);
                       props.onOfflineHandover?.();
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-[#F8FAFC] dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                   >
-                    {isOnline ? <Wifi size={15} className="text-emerald-500" /> : <WifiOff size={15} className="text-amber-500" />}
-                    <span>{isOnline ? "Connexion active" : "Remise hors-ligne (Aéroport)"}</span>
+                    {isOnline ? (
+                      <Wifi size={15} className="text-[#059669]" />
+                    ) : (
+                      <WifiOff size={15} className="text-amber-500" />
+                    )}
+                    <span>
+                      {isOnline ? "Connexion active" : "Remise hors-ligne (Aéroport)"}
+                    </span>
                   </button>
 
                   {props.showAdmin && (
@@ -475,16 +466,16 @@ export function MarketplaceHeader(props: Props) {
                         setMenuOpen(false);
                         navigate("admin");
                       }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 font-semibold transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-slate-700 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 font-semibold transition-colors cursor-pointer"
                     >
-                      <ShieldCheck size={15} />
+                      <ShieldCheck size={15} className="text-[#059669]" />
                       <span>Console Super Admin</span>
                     </button>
                   )}
                 </div>
 
                 {/* Section 4: Auth CTA */}
-                <div className="pt-1.5">
+                <div className="pt-2">
                   {props.userName ? (
                     <button
                       type="button"
@@ -504,7 +495,7 @@ export function MarketplaceHeader(props: Props) {
                         setMenuOpen(false);
                         props.onLogin();
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold transition-all text-xs shadow-xs cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold transition-all text-xs cursor-pointer"
                     >
                       <span>Se connecter / Créer un compte</span>
                       <ArrowUpRight size={14} />
@@ -516,79 +507,6 @@ export function MarketplaceHeader(props: Props) {
           </div>
         </div>
       </div>
-
-      {/* Mobile Platform Switcher Strip (Always Visible on Mobile) */}
-      <div className="md:hidden flex items-center justify-center px-3 py-2 bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800">
-        <div
-          className="flex items-center w-full max-w-sm p-1 rounded-2xl bg-slate-200/80 dark:bg-slate-800/90 border border-slate-300/80 dark:border-slate-700 shadow-xs"
-          role="radiogroup"
-          aria-label="Choisir la plateforme mobile"
-        >
-          <button
-            type="button"
-            role="radio"
-            aria-checked={activePlatform === "bagandgo"}
-            onClick={() => handleSelectPlatform("bagandgo")}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all min-h-[44px] cursor-pointer ${
-              activePlatform === "bagandgo"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-            }`}
-          >
-            <Package
-              size={15}
-              className={activePlatform === "bagandgo" ? "text-blue-600 dark:text-blue-400" : "text-slate-400"}
-            />
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[11px] font-bold">Bag&amp;Go</span>
-              <span className="text-[7.5px] opacity-80 font-medium">Expédier</span>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            role="radio"
-            aria-checked={activePlatform === "voyageur"}
-            onClick={() => handleSelectPlatform("voyageur")}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all min-h-[44px] cursor-pointer ${
-              activePlatform === "voyageur"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-            }`}
-          >
-            <UserRound
-              size={15}
-              className={activePlatform === "voyageur" ? "text-blue-600 dark:text-blue-400" : "text-slate-400"}
-            />
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[11px] font-bold">Voyageur</span>
-              <span className="text-[7.5px] opacity-80 font-medium">Rentabiliser</span>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            role="radio"
-            aria-checked={activePlatform === "shopandgo"}
-            onClick={() => handleSelectPlatform("shopandgo")}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all min-h-[44px] cursor-pointer ${
-              activePlatform === "shopandgo"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-            }`}
-          >
-            <ShoppingCart
-              size={15}
-              className={activePlatform === "shopandgo" ? "text-blue-600 dark:text-blue-400" : "text-slate-400"}
-            />
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[11px] font-bold">Shop&amp;Go</span>
-              <span className="text-[7.5px] opacity-80 font-medium">Commander</span>
-            </div>
-          </button>
-        </div>
-      </div>
     </header>
   );
 }
-

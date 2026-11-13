@@ -8,16 +8,17 @@ import {
   FileText,
   KeyRound,
   Landmark,
-  Luggage,
   MapPin,
   Package,
   Plane,
+  QrCode,
   Radio,
   Search,
   ShieldCheck,
   Ship,
   Sparkles,
   Truck,
+  X,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import type { ConversationData } from "./Conversation";
@@ -250,14 +251,11 @@ export function TrackingPage({
   const { user } = useAuth();
   const [filter, setFilter] = useState<"active" | "delivered" | "all">("active");
   const [query, setQuery] = useState("");
-  const [document, setDocument] = useState<{
-    kind: "waybill" | "customs";
+  const [activeSheet, setActiveSheet] = useState<{
+    tab: "cargopass" | "waybill" | "customs";
     context: TransportContext;
-  }>();
+  } | null>(null);
   const [radarRef, setRadarRef] = useState<string | null>(null);
-  const [cargoPassContext, setCargoPassContext] = useState<TransportContext | null>(
-    null,
-  );
   const [pinModalContext, setPinModalContext] = useState<{
     conversation: ConversationData;
     amount: number;
@@ -339,11 +337,11 @@ export function TrackingPage({
   const selected = allAvailable.find((c) => c.id === detail);
 
   return (
-    <div className="bv-expansion bv-tracking-page">
-      <header className="bv-page-heading">
+    <div className="bv-expansion bv-tracking-page bg-[#F8FAFC] tabular-nums">
+      <header className="bv-page-heading rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-6">
         <div>
-          <span className="bv-eyebrow">
-            <Package size={14} /> VOTRE ESPACE LOGISTIQUE & SUIVI SATELLITE
+          <span className="bv-eyebrow text-[#059669]">
+            <Package size={14} /> VOTRE ESPACE LOGISTIQUE &amp; SUIVI SATELLITE
           </span>
           <h1>
             Chaque colis.
@@ -357,7 +355,7 @@ export function TrackingPage({
         </div>
         <button
           type="button"
-          className="bv-secondary cursor-pointer"
+          className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm shadow-xs transition-all cursor-pointer"
           onClick={() => setRadarRef("AH1021")}
         >
           <Radio size={17} />
@@ -368,9 +366,13 @@ export function TrackingPage({
 
       {/* Interactive Demonstration Banner when showing mock data */}
       {isDemonstrationMode && (
-        <div className="bv-demo-banner" role="region" aria-label="Mode démonstration">
+        <div
+          className="bv-demo-banner rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5"
+          role="region"
+          aria-label="Mode démonstration"
+        >
           <div className="flex items-start gap-3">
-            <span className="bv-demo-badge">
+            <span className="bv-demo-badge !bg-[#ECFDF5] !text-[#059669] !border-[#059669]/20">
               <Sparkles size={12} /> DÉMONSTRATION ACTIVE
             </span>
             <div className="bv-demo-info">
@@ -378,7 +380,7 @@ export function TrackingPage({
               <p>
                 {hasUserShipments
                   ? "Les missions témoin ci-dessous simulent le protocole de transport aérien et maritime BagVoyage en direct."
-                  : "Voici 3 missions en direct simulant le transport aérien et maritime avec télémétrie, scellé STEB et protocole PIN."}
+                  : "Voici 3 missions en direct simulant le transport aérien et maritime avec télémétrie et protocole PIN."}
               </p>
             </div>
           </div>
@@ -386,7 +388,7 @@ export function TrackingPage({
             {hasUserShipments && (
               <button
                 type="button"
-                className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 cursor-pointer"
+                className="text-xs font-semibold px-3 py-1.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-slate-700 hover:bg-slate-100 cursor-pointer"
                 onClick={() => setShowDemo(!showDemo)}
               >
                 {showDemo ? "Masquer la démo" : "Afficher la démo"}
@@ -394,7 +396,7 @@ export function TrackingPage({
             )}
             {!user && (
               <a
-                className="bv-primary text-xs !py-2 !px-4"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs"
                 href="#login"
               >
                 Me connecter pour mes colis
@@ -419,23 +421,26 @@ export function TrackingPage({
             Icon: Check,
           },
           {
-            label: "Documents sécurisés",
-            value: "LTA / Douane / Pass Fret",
+            label: "Tiroir Documents & Douane",
+            value: "Passe Fret · Lettre · Douane",
             Icon: FileText,
           },
         ].map(({ label, value, Icon }) => (
-          <section key={label}>
+          <section
+            key={label}
+            className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5"
+          >
             <div>
               <span>{label}</span>
-              <Icon size={18} />
+              <Icon size={18} className="text-[#059669]" />
             </div>
-            <strong>{value}</strong>
+            <strong className="tabular-nums">{value}</strong>
           </section>
         ))}
       </div>
 
       {/* Filtering Toolbar */}
-      <div className="bv-tracking-toolbar">
+      <div className="bv-tracking-toolbar rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-4">
         <div
           className="bv-segmented"
           role="group"
@@ -456,6 +461,7 @@ export function TrackingPage({
               key={f.id}
               aria-pressed={filter === f.id}
               onClick={() => setFilter(f.id)}
+              className="tabular-nums"
             >
               {f.label}
               <span>{f.count}</span>
@@ -478,7 +484,7 @@ export function TrackingPage({
           Chargement des expéditions en cours…
         </p>
       ) : !visible.length ? (
-        <div className="bv-empty bv-tracking-empty">
+        <div className="bv-empty bv-tracking-empty rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-8">
           <Package size={42} />
           <h2>
             {query
@@ -498,7 +504,7 @@ export function TrackingPage({
               Effacer la recherche
             </button>
           ) : (
-            <a className="bv-primary" href="#explore">
+            <a className="bv-primary !bg-[#2563EB]" href="#explore">
               Trouver un voyageur
               <ArrowRight size={18} />
             </a>
@@ -525,7 +531,10 @@ export function TrackingPage({
                   : 0;
 
             return (
-              <article className="bv-shipment" key={c.id}>
+              <article
+                className="bv-shipment rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 sm:p-6"
+                key={c.id}
+              >
                 {/* Header with High-Resolution Parcel Thumbnail and Verified Carrier Badge */}
                 <header>
                   <div className="bv-shipment-photo-wrap">
@@ -543,8 +552,8 @@ export function TrackingPage({
                         title={`Voyageur certifié : ${c.name}`}
                       />
                       <span
-                        className="bv-verified-dot"
-                        title="Identité vérifiée eIDAS"
+                        className="bv-verified-dot !bg-[#059669]"
+                        title="Identité vérifiée"
                       >
                         <ShieldCheck size={9} />
                       </span>
@@ -553,28 +562,28 @@ export function TrackingPage({
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="bv-eyebrow">RÉF. {c.id}</span>
+                      <span className="bv-eyebrow tabular-nums">RÉF. {c.id}</span>
                       {demo && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#059669]/20">
                           Mission Témoin
                         </span>
                       )}
                     </div>
                     <h2>{c.subject}</h2>
-                    <p className="flex items-center gap-1.5">
+                    <p className="flex items-center gap-1.5 tabular-nums">
                       <span>Transporté par</span>
                       <strong className="text-slate-900 dark:text-white font-semibold">
                         {c.name}
                       </strong>
                       {demo && (
-                        <span className="text-amber-500 font-medium">
+                        <span className="text-[#059669] font-bold">
                           ({demo.carrierRating}★ · {demo.carrierTrips} trajets)
                         </span>
                       )}
                     </p>
                   </div>
 
-                  <span className="bv-status-pill">
+                  <span className="bv-status-pill !bg-[#ECFDF5] !text-[#059669] !border-[#059669]/20">
                     {c.resolution
                       ? "Clôturé par le support"
                       : stageLabels[c.stage]}
@@ -583,19 +592,19 @@ export function TrackingPage({
 
                 {/* Route Information */}
                 {(context.origin || context.destination) && (
-                  <div className="bv-shipment-route">
+                  <div className="bv-shipment-route tabular-nums">
                     <span className="flex items-center gap-1">
                       {telemetry?.carrierType === "sea" ? (
-                        <Ship size={14} className="text-blue-500 shrink-0" />
+                        <Ship size={14} className="text-[#059669] shrink-0" />
                       ) : (
-                        <Plane size={14} className="text-blue-500 shrink-0" />
+                        <Plane size={14} className="text-[#059669] shrink-0" />
                       )}
                       {context.origin || "Départ à préciser"}
                     </span>
                     <ArrowRight size={15} className="text-slate-400" />
                     <span>{context.destination || "Arrivée à préciser"}</span>
                     {context.reference && (
-                      <strong className="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-[11px]">
+                      <strong className="font-mono bg-[#F8FAFC] border border-[#E2E8F0] px-2 py-0.5 rounded text-[11px]">
                         {context.reference}
                       </strong>
                     )}
@@ -604,7 +613,11 @@ export function TrackingPage({
 
                 {/* Live Telemetry & Security Strip */}
                 {telemetry && (
-                  <div className="bv-telemetry-strip" role="region" aria-label="Télémétrie en direct">
+                  <div
+                    className="bv-telemetry-strip tabular-nums"
+                    role="region"
+                    aria-label="Télémétrie en direct"
+                  >
                     {telemetry.altitudeM > 0 && (
                       <span className="bv-telemetry-pill live">
                         <Compass size={12} />
@@ -617,21 +630,21 @@ export function TrackingPage({
                       </span>
                     )}
                     <span className="bv-telemetry-pill">
-                      <MapPin size={12} className="text-blue-600 dark:text-blue-400" />
+                      <MapPin size={12} className="text-slate-600" />
                       {telemetry.coordinates}
                     </span>
-                    <span className="bv-telemetry-pill verified">
+                    <span className="bv-telemetry-pill verified !text-[#059669]">
                       <ShieldCheck size={12} />
-                      Scellé STEB Inviolable
+                      Colis scellé vérifié
                     </span>
-                    <span className="bv-telemetry-pill verified">
-                      Séquestre Stripe ACPR : {context.value} €
+                    <span className="bv-telemetry-pill verified !text-[#059669] font-bold">
+                      Séquestre Stripe : {context.value} €
                     </span>
                   </div>
                 )}
 
                 {/* 4-Step Interactive Timeline */}
-                <ol className="bv-shipment-timeline">
+                <ol className="bv-shipment-timeline tabular-nums">
                   {[
                     "Accord confirmé",
                     "Prise en charge",
@@ -701,39 +714,58 @@ export function TrackingPage({
 
                 {/* Logistics Preparation Tools Sub-Actions */}
                 <LogisticsActions
-                  onSelect={(tool) => setLogistics({ tool, context })}
+                  onSelect={(tool) => {
+                    setActiveSheet(null);
+                    setLogistics({ tool, context });
+                  }}
                 />
 
-                {/* Card Action Footer */}
+                {/* Card Action Footer : Tiroirs coulissants (Sheet) regroupés */}
                 <footer>
-                  <div>
+                  <div className="flex flex-wrap items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => setDocument({ kind: "waybill", context })}
+                      onClick={() => {
+                        setLogistics(undefined);
+                        setDetail(undefined);
+                        setActiveSheet({ tab: "cargopass", context });
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs cursor-pointer"
                     >
-                      <FileText size={16} />
-                      Bordereau LTA
+                      <QrCode size={15} />
+                      Passe Fret QR
                     </button>
                     <button
                       type="button"
-                      onClick={() => setDocument({ kind: "customs", context })}
+                      onClick={() => {
+                        setLogistics(undefined);
+                        setDetail(undefined);
+                        setActiveSheet({ tab: "waybill", context });
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 text-slate-800 font-bold text-xs cursor-pointer"
                     >
-                      <Landmark size={16} />
-                      Déclaration Douane
+                      <FileText size={15} />
+                      Lettre de Voiture
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setLogistics(undefined);
+                        setDetail(undefined);
+                        setActiveSheet({ tab: "customs", context });
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 text-slate-800 font-bold text-xs cursor-pointer"
+                    >
+                      <Landmark size={15} />
+                      Calculateur Douanier
                     </button>
                     <button
                       type="button"
                       onClick={() => setRadarRef(context.reference || "AH1021")}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 text-slate-700 font-semibold text-xs cursor-pointer"
                     >
-                      <Radio size={16} />
+                      <Radio size={15} />
                       Radar Méditerranée
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setCargoPassContext(context)}
-                    >
-                      <FileCheck2 size={16} />
-                      Passe Fret IATA
                     </button>
                     {c.stage !== "discussion" && (
                       <button
@@ -744,9 +776,9 @@ export function TrackingPage({
                             amount: context.value || 85,
                           })
                         }
-                        className="!text-emerald-600 dark:!text-emerald-400 font-semibold"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#059669]/30 bg-[#ECFDF5] !text-[#059669] font-bold text-xs cursor-pointer"
                       >
-                        <KeyRound size={16} />
+                        <KeyRound size={15} />
                         Code PIN
                       </button>
                     )}
@@ -754,7 +786,10 @@ export function TrackingPage({
                   <button
                     type="button"
                     className="bv-text-button cursor-pointer"
-                    onClick={() => setDetail(c.id)}
+                    onClick={() => {
+                      setActiveSheet(null);
+                      setDetail(c.id);
+                    }}
                   >
                     Preuves et détails
                     <ArrowRight size={16} />
@@ -767,24 +802,145 @@ export function TrackingPage({
       )}
 
       <p className="bv-fine-print">
-        Les documents LTA et douane sont des modèles officiels conformes à la
-        réglementation IATA et à l'article 106 de la LF 2021. Les fonds restent sous
+        Les documents de transport et douane sont des modèles officiels conformes à la
+        réglementation internationale et à l'article 106 de la LF 2021. Les fonds restent sous
         séquestre Stripe Connect jusqu'à la validation du code PIN par le destinataire.
       </p>
 
-      {/* Official Waybill / Customs Modals */}
-      {document && (
-        document.kind === "waybill" ? (
-          <WaybillModal
-            context={document.context}
-            onClose={() => setDocument(undefined)}
-          />
-        ) : (
-          <CustomsModal
-            context={document.context}
-            onClose={() => setDocument(undefined)}
-          />
-        )
+      {/* Tiroir coulissant latéral / inférieur (Sheet) regroupant Passe Fret QR, Lettre de Voiture et Calculateur Douanier */}
+      {activeSheet && (
+        <div
+          className="fixed inset-0 z-50 bg-slate-950/55 backdrop-blur-xs flex justify-end items-end md:items-stretch"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Tiroir Documents Logistiques & Douane"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setActiveSheet(null);
+          }}
+        >
+          <aside className="w-full md:max-w-xl max-h-[90dvh] md:max-h-none md:h-full bg-[#FFFFFF] border-t md:border-t-0 md:border-l border-[#E2E8F0] rounded-t-2xl md:rounded-t-none md:rounded-l-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom md:slide-in-from-right duration-200">
+            {/* Poignée mobile Apple HIG */}
+            <div className="pt-2.5 pb-1 flex justify-center md:hidden" aria-hidden="true">
+              <div className="w-10 h-1.5 rounded-full bg-slate-300" />
+            </div>
+
+            {/* En-tête du Sheet avec Segmented Control unifié */}
+            <header className="p-5 bg-[#FFFFFF] border-b border-[#E2E8F0] space-y-4 shrink-0">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#059669]/20">
+                    DOSSIER LOGISTIQUE · {activeSheet.context.id}
+                  </span>
+                  <h2 className="text-base sm:text-lg font-extrabold text-slate-900 mt-1">
+                    {activeSheet.context.subject}
+                  </h2>
+                  <p className="text-xs text-slate-500 tabular-nums">
+                    {activeSheet.context.origin} → {activeSheet.context.destination} · Valeur :{" "}
+                    <strong className="text-[#059669]">
+                      {activeSheet.context.value} {activeSheet.context.currency}
+                    </strong>
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveSheet(null)}
+                  aria-label="Fermer le tiroir logistique"
+                  className="w-9 h-9 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 text-slate-600 flex items-center justify-center cursor-pointer shrink-0"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Segmented Control (Passe Fret QR | Lettre de Voiture | Calculateur Douanier) */}
+              <div
+                role="tablist"
+                aria-label="Outils documentaires et douaniers"
+                className="grid grid-cols-3 gap-1.5 p-1.5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0]"
+              >
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeSheet.tab === "cargopass"}
+                  onClick={() =>
+                    setActiveSheet({ ...activeSheet, tab: "cargopass" })
+                  }
+                  className={`py-2 px-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    activeSheet.tab === "cargopass"
+                      ? "bg-[#2563EB] text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <QrCode size={14} />
+                  <span className="truncate">Passe Fret QR</span>
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeSheet.tab === "waybill"}
+                  onClick={() =>
+                    setActiveSheet({ ...activeSheet, tab: "waybill" })
+                  }
+                  className={`py-2 px-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    activeSheet.tab === "waybill"
+                      ? "bg-[#2563EB] text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <FileCheck2 size={14} />
+                  <span className="truncate">Lettre de Voiture</span>
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeSheet.tab === "customs"}
+                  onClick={() =>
+                    setActiveSheet({ ...activeSheet, tab: "customs" })
+                  }
+                  className={`py-2 px-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    activeSheet.tab === "customs"
+                      ? "bg-[#2563EB] text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <Landmark size={14} />
+                  <span className="truncate">Douane</span>
+                </button>
+              </div>
+            </header>
+
+            {/* Contenu scrollable du Sheet */}
+            <div className="flex-1 overflow-y-auto p-5 bg-[#F8FAFC]">
+              {activeSheet.tab === "cargopass" && (
+                <DigitalCargoPassModal
+                  isOpen={true}
+                  inline={true}
+                  orderReference={activeSheet.context.id}
+                  flightNumber={activeSheet.context.reference}
+                  origin={activeSheet.context.origin}
+                  destination={activeSheet.context.destination}
+                  travelerName={activeSheet.context.carrier}
+                  senderName={activeSheet.context.sender}
+                  declaredValue={`${activeSheet.context.value} ${activeSheet.context.currency}`}
+                  onClose={() => setActiveSheet(null)}
+                />
+              )}
+              {activeSheet.tab === "waybill" && (
+                <WaybillModal
+                  inline={true}
+                  context={activeSheet.context}
+                  onClose={() => setActiveSheet(null)}
+                />
+              )}
+              {activeSheet.tab === "customs" && (
+                <CustomsModal
+                  inline={true}
+                  context={activeSheet.context}
+                  onClose={() => setActiveSheet(null)}
+                />
+              )}
+            </div>
+          </aside>
+        </div>
       )}
 
       {/* Live Mediterranean Radar Modal */}
@@ -792,21 +948,6 @@ export function TrackingPage({
         <LiveRadarModal
           reference={radarRef}
           onClose={() => setRadarRef(null)}
-        />
-      )}
-
-      {/* Digital Cargo Pass Modal */}
-      {cargoPassContext && (
-        <DigitalCargoPassModal
-          isOpen={true}
-          orderReference={cargoPassContext.id}
-          flightNumber={cargoPassContext.reference}
-          origin={cargoPassContext.origin}
-          destination={cargoPassContext.destination}
-          travelerName={cargoPassContext.carrier}
-          senderName={cargoPassContext.sender}
-          declaredValue={`${cargoPassContext.value} ${cargoPassContext.currency}`}
-          onClose={() => setCargoPassContext(null)}
         />
       )}
 

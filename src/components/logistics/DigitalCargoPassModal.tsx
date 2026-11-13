@@ -35,6 +35,7 @@ interface Props {
   travelerName?: string;
   senderName?: string;
   declaredValue?: string;
+  inline?: boolean;
 }
 
 export function DigitalCargoPassModal({
@@ -47,6 +48,7 @@ export function DigitalCargoPassModal({
   travelerName = "Karim Bouzid",
   senderName = "Lina Martin",
   declaredValue = "81 EUR",
+  inline = false,
 }: Props) {
   const containerRef = useModalFocus(isOpen, onClose);
   const [downloaded, setDownloaded] = useState(false);
@@ -82,6 +84,116 @@ Document conforme aux specifications IATA Res. 792 & OACI STEB.`;
     URL.revokeObjectURL(url);
     setDownloaded(true);
   };
+
+  const passBody = (
+    <div className="space-y-4 tabular-nums">
+      <div className="bv-tool-content">
+        {/* Apple Wallet Style Card */}
+        <div className="wallet-pass-card rounded-2xl border border-[#E2E8F0] overflow-hidden" role="region" aria-label="Carte d'embarquement fret numérique">
+          <div className="wallet-pass-top">
+            <div className="pass-brand-row">
+              <div className="pass-brand-badge">
+                <Package size={16} />
+                <span>BAGVOYAGE CARGO</span>
+              </div>
+              <span className="pass-type-indicator">PASSE FRET QR</span>
+            </div>
+
+            <div className="pass-flight-row">
+              <div className="pass-station">
+                <span className="station-code">{originStation.code}</span>
+                <span className="station-city">{originStation.city}</span>
+              </div>
+              <div className="pass-flight-vector">
+                <Plane size={20} className="pass-plane-icon" />
+                <span className="pass-flight-number">{flightNumber}</span>
+              </div>
+              <div className="pass-station end">
+                <span className="station-code">{destStation.code}</span>
+                <span className="station-city">{destStation.city}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Perforated Separator */}
+          <div className="wallet-pass-notch-row" aria-hidden="true">
+            <div className="notch left" />
+            <div className="notch-line" />
+            <div className="notch right" />
+          </div>
+
+          <div className="wallet-pass-bottom">
+            <div className="pass-metadata-grid">
+              <div className="pass-meta-cell">
+                <span className="meta-label">Voyageur</span>
+                <span className="meta-value">{travelerName}</span>
+              </div>
+              <div className="pass-meta-cell">
+                <span className="meta-label">Expéditeur</span>
+                <span className="meta-value">{senderName}</span>
+              </div>
+              <div className="pass-meta-cell">
+                <span className="meta-label">Scellé</span>
+                <span className="meta-value font-mono">BV-447B</span>
+              </div>
+              <div className="pass-meta-cell">
+                <span className="meta-label">Séquestre</span>
+                <span className="meta-value text-[#059669] font-extrabold">{declaredValue}</span>
+              </div>
+            </div>
+
+            <div className="pass-barcode-section">
+              <div className="pass-qr-frame">
+                <QrImage value={`https://bagvoyage.com/verify?ref=${encodeURIComponent(orderReference)}&flight=${encodeURIComponent(flightNumber)}`} />
+              </div>
+              <span className="pass-barcode-number font-mono">{orderReference}</span>
+            </div>
+
+            <div className="pass-guarantee-footer">
+              <ShieldCheck size={14} className="text-[#059669]" />
+              <span>Passe horodaté certifié · Mode hors-ligne actif</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Feedback states */}
+        {walletAdded && (
+          <div className="iata-success-banner" role="status">
+            <CheckCircle2 size={16} />
+            <span>Passe synchronisé avec votre portefeuille sécurisé BagVoyage !</span>
+          </div>
+        )}
+
+        {downloaded && (
+          <div className="iata-success-banner" role="status">
+            <CheckCircle2 size={16} />
+            <span>Récépissé officiel du pass de fret téléchargé sur votre appareil.</span>
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+        <button
+          type="button"
+          className="py-3 px-4 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] hover:bg-[#F8FAFC] text-slate-800 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer"
+          onClick={() => setWalletAdded(true)}
+        >
+          <Smartphone size={16} />
+          {walletAdded ? "Ajouté aux Cartes" : "Ajouter à Apple / Google Wallet"}
+        </button>
+        <button
+          type="button"
+          className="py-3 px-4 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer"
+          onClick={handleDownload}
+        >
+          <Download size={16} />
+          {downloaded ? "Pass téléchargé" : "Télécharger le pass hors-ligne"}
+        </button>
+      </div>
+    </div>
+  );
+
+  if (inline) return passBody;
 
   return (
     <div
@@ -119,110 +231,7 @@ Document conforme aux specifications IATA Res. 792 & OACI STEB.`;
             <X size={18} />
           </button>
         </div>
-
-        <div className="bv-tool-content">
-          {/* Apple Wallet Style Card */}
-          <div className="wallet-pass-card" role="region" aria-label="Carte d'embarquement fret numérique">
-            <div className="wallet-pass-top">
-              <div className="pass-brand-row">
-                <div className="pass-brand-badge">
-                  <Package size={16} />
-                  <span>BAGVOYAGE CARGO</span>
-                </div>
-                <span className="pass-type-indicator">PRIORITY AIRFREIGHT</span>
-              </div>
-
-              <div className="pass-flight-row">
-                <div className="pass-station">
-                  <span className="station-code">{originStation.code}</span>
-                  <span className="station-city">{originStation.city}</span>
-                </div>
-                <div className="pass-flight-vector">
-                  <Plane size={20} className="pass-plane-icon" />
-                  <span className="pass-flight-number">{flightNumber}</span>
-                </div>
-                <div className="pass-station end">
-                  <span className="station-code">{destStation.code}</span>
-                  <span className="station-city">{destStation.city}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Perforated Separator */}
-            <div className="wallet-pass-notch-row" aria-hidden="true">
-              <div className="notch left" />
-              <div className="notch-line" />
-              <div className="notch right" />
-            </div>
-
-            <div className="wallet-pass-bottom">
-              <div className="pass-metadata-grid">
-                <div className="pass-meta-cell">
-                  <span className="meta-label">Voyageur</span>
-                  <span className="meta-value">{travelerName}</span>
-                </div>
-                <div className="pass-meta-cell">
-                  <span className="meta-label">Expéditeur</span>
-                  <span className="meta-value">{senderName}</span>
-                </div>
-                <div className="pass-meta-cell">
-                  <span className="meta-label">Scellé STEB</span>
-                  <span className="meta-value font-mono">STEB-447B</span>
-                </div>
-                <div className="pass-meta-cell">
-                  <span className="meta-label">Séquestre</span>
-                  <span className="meta-value highlight-green">{declaredValue}</span>
-                </div>
-              </div>
-
-              <div className="pass-barcode-section">
-                <div className="pass-qr-frame">
-                  <QrImage value={`https://bagvoyage.com/verify?ref=${encodeURIComponent(orderReference)}&flight=${encodeURIComponent(flightNumber)}`} />
-                </div>
-                <span className="pass-barcode-number font-mono">{orderReference}</span>
-              </div>
-
-              <div className="pass-guarantee-footer">
-                <ShieldCheck size={14} />
-                <span>Passe horodaté certifié par signature asymétrique Ed25519 · Mode hors-ligne actif</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Feedback states */}
-          {walletAdded && (
-            <div className="iata-success-banner" role="status">
-              <CheckCircle2 size={16} />
-              <span>Passe synchronisé avec votre portefeuille sécurisé BagVoyage !</span>
-            </div>
-          )}
-
-          {downloaded && (
-            <div className="iata-success-banner" role="status">
-              <CheckCircle2 size={16} />
-              <span>Récépissé officiel du pass de fret téléchargé sur votre appareil.</span>
-            </div>
-          )}
-        </div>
-
-        <div className="bv-tool-footer">
-          <button
-            type="button"
-            className="outline-button flex items-center justify-center gap-2"
-            onClick={() => setWalletAdded(true)}
-          >
-            <Smartphone size={16} />
-            {walletAdded ? "Ajouté aux Cartes" : "Ajouter à Apple / Google Wallet"}
-          </button>
-          <button
-            type="button"
-            className="primary-button flex items-center justify-center gap-2"
-            onClick={handleDownload}
-          >
-            <Download size={16} />
-            {downloaded ? "Pass téléchargé" : "Télécharger le pass hors-ligne"}
-          </button>
-        </div>
+        {passBody}
       </div>
     </div>
   );

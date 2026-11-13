@@ -260,7 +260,7 @@ function AnimatedMetricNumber({
       : Math.round(valueToDisplay).toLocaleString("fr-FR");
 
   return (
-    <strong>
+    <strong className="tabular-nums">
       {prefix}
       {formatted}
       {suffix}
@@ -448,23 +448,16 @@ export function AwwwardsLanding({
             <a href="/#voyageur">{text("Voyageur", "Traveler")}</a>
             <a href="/#bagandgo">Bag & Go</a>
             <a href="/#shopandgo">Shop & Go</a>
-            <a href="/#how-it-works">{text("Comment ça marche", "How it works")}</a>
-            <a href="/#pricing">{text("Tarifs", "Pricing")}</a>
+            <a href="#simulator">{text("Tarifs", "Pricing")}</a>
             <a href="/#trust">{text("Sécurité", "Security")}</a>
-            <a href="/#faq">FAQ</a>
-            <a href="#simulator">{text("Simulateur", "Simulator")}</a>
           </nav>
           <div className="landing-account-actions">
-            <a href="/#login">{text("Connexion", "Log in")}</a>
-            <a href="/#register" className="landing-register">
-              {text("Inscription", "Sign up")}
-            </a>
             <a
               href="/#explore"
               className="landing-nav-launch"
               aria-label={c.cta}
             >
-              <span className="nav-launch-full">{c.cta}</span>
+              <span className="nav-launch-full">{text("Lancer l’app", "Open app")}</span>
               <span className="nav-launch-short">
                 {text("Lancer l’app", "Open app")}
               </span>
@@ -529,45 +522,51 @@ export function AwwwardsLanding({
             )}
           </p>
 
-          <div className="bv-hero-console-card">
+          <div className="bv-hero-console-card rounded-2xl">
             <div className="bv-hero-mode-tabs" role="tablist">
               <button
                 type="button"
                 role="tab"
                 aria-selected={heroMode === "voyageur"}
-                className={`bv-hero-tab-btn ${heroMode === "voyageur" ? "active" : ""}`}
+                className={`bv-hero-tab-btn p-6 md:px-8 ${heroMode === "voyageur" ? "active" : ""}`}
                 onClick={() => {
                   triggerHaptic(8);
                   setHeroMode("voyageur");
                 }}
               >
-                <Plane size={18} />
+                <span className="bv-hero-tab-icon" aria-hidden="true">
+                  <Plane size={18} />
+                </span>
                 <span>{text("Voyageur (Convoyeur)", "Traveler (Carrier)")}</span>
               </button>
               <button
                 type="button"
                 role="tab"
                 aria-selected={heroMode === "bagandgo"}
-                className={`bv-hero-tab-btn ${heroMode === "bagandgo" ? "active" : ""}`}
+                className={`bv-hero-tab-btn p-6 md:px-8 ${heroMode === "bagandgo" ? "active" : ""}`}
                 onClick={() => {
                   triggerHaptic(8);
                   setHeroMode("bagandgo");
                 }}
               >
-                <Package size={18} />
+                <span className="bv-hero-tab-icon" aria-hidden="true">
+                  <Package size={18} />
+                </span>
                 <span>{text("Bag & Go (Expéditeur)", "Bag & Go (Shipper)")}</span>
               </button>
               <button
                 type="button"
                 role="tab"
                 aria-selected={heroMode === "shopandgo"}
-                className={`bv-hero-tab-btn ${heroMode === "shopandgo" ? "active" : ""}`}
+                className={`bv-hero-tab-btn p-6 md:px-8 ${heroMode === "shopandgo" ? "active" : ""}`}
                 onClick={() => {
                   triggerHaptic(8);
                   setHeroMode("shopandgo");
                 }}
               >
-                <ShoppingBag size={18} />
+                <span className="bv-hero-tab-icon" aria-hidden="true">
+                  <ShoppingBag size={18} />
+                </span>
                 <span>{text("Shop & Go (Acheteur)", "Shop & Go (Buyer)")}</span>
               </button>
             </div>
@@ -672,13 +671,13 @@ export function AwwwardsLanding({
                         <button
                           key={kg}
                           type="button"
-                          className={`bv-hero-pill ${heroCapacityKg === kg ? "active" : ""}`}
+                          className={`bv-hero-pill tabular-nums ${heroCapacityKg === kg ? "active" : ""}`}
                           onClick={() => {
                             triggerHaptic(8);
                             setHeroCapacityKg(kg);
                           }}
                         >
-                          <span>{kg} kg</span>
+                          <span className="tabular-nums">{kg} kg</span>
                         </button>
                       ))}
                     </div>
@@ -702,13 +701,13 @@ export function AwwwardsLanding({
                         <button
                           key={id}
                           type="button"
-                          className={`bv-hero-pill ${heroParcelPreset === id ? "active" : ""}`}
+                          className={`bv-hero-pill tabular-nums ${heroParcelPreset === id ? "active" : ""}`}
                           onClick={() => {
                             triggerHaptic(8);
                             setHeroParcelPreset(id);
                           }}
                         >
-                          <span>{label}</span>
+                          <span className="tabular-nums">{label}</span>
                         </button>
                       ))}
                     </div>
@@ -726,14 +725,14 @@ export function AwwwardsLanding({
                         <button
                           key={id}
                           type="button"
-                          className={`bv-hero-pill ${heroUrgency === id ? "active" : ""}`}
+                          className={`bv-hero-pill tabular-nums ${heroUrgency === id ? "active" : ""}`}
                           onClick={() => {
                             triggerHaptic(8);
                             setHeroUrgency(id);
                           }}
                         >
                           <Icon size={14} />
-                          <span>{label}</span>
+                          <span className="tabular-nums">{label}</span>
                         </button>
                       ))}
                     </div>
@@ -788,10 +787,10 @@ export function AwwwardsLanding({
                   {heroMode === "voyageur" && (
                     <>
                       <span className="bv-ribbon-label">{text("Gain net estimé :", "Estimated net gain:")}</span>
-                      <span className="bv-ribbon-value" style={{ color: "#059669" }}>
+                      <span className="bv-ribbon-value tabular-nums" style={{ color: "#059669" }}>
                         +{heroEarning} €
                       </span>
-                      <span className="bv-ribbon-comparison">
+                      <span className="bv-ribbon-comparison tabular-nums">
                         · {text("Billet d’avion 100 % rentabilisé", "100% flight ticket covered")}
                       </span>
                     </>
@@ -799,10 +798,10 @@ export function AwwwardsLanding({
                   {heroMode === "bagandgo" && (
                     <>
                       <span className="bv-ribbon-label">{text("Tarif BagVoyage :", "BagVoyage rate:")}</span>
-                      <span className="bv-ribbon-value" style={{ color: "#2563eb" }}>
+                      <span className="bv-ribbon-value tabular-nums" style={{ color: "#0F172A" }}>
                         {heroParcelPrice} €
                       </span>
-                      <span className="bv-ribbon-comparison">
+                      <span className="bv-ribbon-comparison tabular-nums" style={{ color: "#059669", fontWeight: 600 }}>
                         · {text(`-${heroSavingsPercent} % vs DHL / FedEx (${heroCompetitorPrice} €)`, `-${heroSavingsPercent}% vs DHL / FedEx (€${heroCompetitorPrice})`)}
                       </span>
                     </>
@@ -810,7 +809,7 @@ export function AwwwardsLanding({
                   {heroMode === "shopandgo" && (
                     <>
                       <span className="bv-ribbon-label">{text("Frais de douane :", "Customs fees:")}</span>
-                      <span className="bv-ribbon-value" style={{ color: "#059669" }}>
+                      <span className="bv-ribbon-value tabular-nums" style={{ color: "#059669" }}>
                         0 €
                       </span>
                       <span className="bv-ribbon-comparison">
@@ -872,8 +871,8 @@ export function AwwwardsLanding({
 
           {/* Trust Bar 4 Pillars */}
           <div className="bv-hero-trust-bar">
-            <div className="bv-trust-bar-item">
-              <div className="bv-trust-icon-box" style={{ background: "#eff6ff", color: "#2563eb" }}>
+            <div className="bv-trust-bar-item rounded-2xl">
+              <div className="bv-trust-icon-box" style={{ background: "#f1f5f9", color: "#0f172a" }}>
                 <ShieldCheck size={20} />
               </div>
               <div>
@@ -882,7 +881,7 @@ export function AwwwardsLanding({
               </div>
             </div>
 
-            <div className="bv-trust-bar-item">
+            <div className="bv-trust-bar-item rounded-2xl">
               <div className="bv-trust-icon-box" style={{ background: "#ecfdf5", color: "#059669" }}>
                 <ScanLine size={20} />
               </div>
@@ -892,8 +891,8 @@ export function AwwwardsLanding({
               </div>
             </div>
 
-            <div className="bv-trust-bar-item">
-              <div className="bv-trust-icon-box" style={{ background: "#f8fafc", color: "#0284c7" }}>
+            <div className="bv-trust-bar-item rounded-2xl">
+              <div className="bv-trust-icon-box" style={{ background: "#f1f5f9", color: "#0f172a" }}>
                 <Plane size={20} />
               </div>
               <div>
@@ -902,8 +901,8 @@ export function AwwwardsLanding({
               </div>
             </div>
 
-            <div className="bv-trust-bar-item">
-              <div className="bv-trust-icon-box" style={{ background: "#fef3c7", color: "#d97706" }}>
+            <div className="bv-trust-bar-item rounded-2xl">
+              <div className="bv-trust-icon-box" style={{ background: "#ecfdf5", color: "#059669" }}>
                 <Coins size={20} />
               </div>
               <div>
@@ -1088,15 +1087,15 @@ export function AwwwardsLanding({
               saving: text("Économie ~70 % vs Express", "~70% savings vs Courier"),
             },
           ].map((item, i) => (
-            <div key={i} className="corridor-rate-card">
+            <div key={i} className="corridor-rate-card rounded-2xl">
               <div className="corridor-card-top">
-                <span className="corridor-badge">{item.badge}</span>
-                <span className="corridor-transit">{item.transit}</span>
+                <span className="corridor-badge whitespace-nowrap">{item.badge}</span>
+                <span className="corridor-transit whitespace-nowrap tabular-nums">{item.transit}</span>
               </div>
               <h3 className="corridor-name">{item.corridor}</h3>
               <div className="corridor-price-row">
-                <strong>{item.rate}</strong>
-                <span className="corridor-savings-tag">{item.saving}</span>
+                <strong className="whitespace-nowrap tabular-nums">{item.rate}</strong>
+                <span className="corridor-savings-tag whitespace-nowrap tabular-nums">{item.saving}</span>
               </div>
             </div>
           ))}
@@ -1113,11 +1112,11 @@ export function AwwwardsLanding({
             <h2>{c.compare}</h2>
             <p>{c.compareText}</p>
             <div className="savings-number" aria-live="polite">
-              <strong>{percent}%</strong>
+              <strong className="tabular-nums">{percent}%</strong>
               <span>{c.saving}</span>
             </div>
           </div>
-          <div className="comparison-panel">
+          <div className="comparison-panel rounded-2xl">
             <div>
               <span className="comparison-label block text-xs font-semibold mb-2">
                 {c.competitor}
@@ -1136,7 +1135,7 @@ export function AwwwardsLanding({
                       onClick={() => setCompetitor(name)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                         isSelected
-                          ? "bg-blue-600 text-white shadow-xs"
+                          ? "bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-xs"
                           : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700"
                       }`}
                     >
@@ -1150,6 +1149,7 @@ export function AwwwardsLanding({
               {c.quote}
               <input
                 type="number"
+                className="tabular-nums"
                 min="0"
                 max="100000"
                 step="0.01"
@@ -1162,12 +1162,13 @@ export function AwwwardsLanding({
             </label>
             <div className="comparison-row">
               <span>
-                BagVoyage<strong>{gross} €</strong>
+                BagVoyage<strong className="tabular-nums" style={{ color: "#059669" }}>{gross} €</strong>
               </span>
               <div>
                 <i
                   style={{
                     width: `${Math.min(100, (gross / Math.max(1, quote, gross)) * 100)}%`,
+                    background: "#059669",
                   }}
                 />
               </div>
@@ -1181,7 +1182,7 @@ export function AwwwardsLanding({
             <div className="comparison-row competitor">
               <span>
                 {competitor}
-                <strong>{quote} €</strong>
+                <strong className="tabular-nums">{quote} €</strong>
               </span>
               <div>
                 <i
@@ -1315,7 +1316,7 @@ export function AwwwardsLanding({
               platformRoute: "shopandgo",
             },
           ].map(({ Icon, number, title, copy: description, action, kind, platformRoute }) => (
-            <article key={number} className={`universe universe-${number}`}>
+            <article key={number} className={`universe universe-${number} rounded-2xl`}>
               <header>
                 <span>
                   {number} ·{" "}
@@ -1331,7 +1332,7 @@ export function AwwwardsLanding({
               <p>{description}</p>
               <div className={`universe-specimen specimen-${kind}`}>
                 {kind === "parcel" ? (
-                  <div className="parcel-label">
+                  <div className="parcel-label rounded-2xl">
                     <div className="parcel-specimen-header">
                       <div className="parcel-specimen-brand">
                         <Package size={18} />
@@ -1350,7 +1351,7 @@ export function AwwwardsLanding({
                       </div>
                       <div className="parcel-flight-arrow">
                         <Plane size={16} />
-                        <span>Vol 2h20</span>
+                        <span className="tabular-nums">Vol 2h20</span>
                       </div>
                       <div className="parcel-airport">
                         <strong>ALG</strong>
@@ -1365,11 +1366,11 @@ export function AwwwardsLanding({
                       </div>
                       <div>
                         <span>{text("Poids déclaré", "Weight")}</span>
-                        <strong>4.0 kg</strong>
+                        <strong className="tabular-nums">4.0 kg</strong>
                       </div>
                       <div>
                         <span>{text("Délai garanti", "Delivery")}</span>
-                        <strong>24h–48h</strong>
+                        <strong className="tabular-nums">24h–48h</strong>
                       </div>
                     </div>
 
@@ -1395,7 +1396,7 @@ export function AwwwardsLanding({
                       )}
                     </div>
 
-                    <div className="shop-specimen-body">
+                    <div className="shop-specimen-body rounded-2xl">
                       <div className="shop-specimen-header">
                         <div className="shop-specimen-badge">
                           <ShoppingBag size={16} />
@@ -1418,13 +1419,13 @@ export function AwwwardsLanding({
                         <LockKeyhole size={14} />
                         <div>
                           <strong>{text("Séquestre 100 % sécurisé", "100% Escrow Protection")}</strong>
-                          <small>{text("0 € d'avance demandée au voyageur · Déblocage à réception conforme", "No cash advance required from traveler · Payout upon compliant delivery")}</small>
+                          <small className="tabular-nums">{text("0 € d'avance demandée au voyageur · Déblocage à réception conforme", "No cash advance required from traveler · Payout upon compliant delivery")}</small>
                         </div>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <div className="traveller-receipt">
+                  <div className="traveller-receipt rounded-2xl">
                     <div className="travel-boarding-header">
                       <div className="travel-airline-tag">
                         <Plane size={16} />
@@ -1447,22 +1448,22 @@ export function AwwwardsLanding({
                     <div className="travel-route-display">
                       <div className="travel-leg">
                         <strong>CDG</strong>
-                        <span>09:40 Paris</span>
+                        <span className="tabular-nums">09:40 Paris</span>
                       </div>
                       <div className="travel-leg-duration">
-                        <span>2h 20m</span>
+                        <span className="tabular-nums">2h 20m</span>
                         <div className="travel-leg-line" />
                       </div>
                       <div className="travel-leg">
                         <strong>ALG</strong>
-                        <span>12:05 Alger</span>
+                        <span className="tabular-nums">12:05 Alger</span>
                       </div>
                     </div>
 
                     <div className="travel-luggage-gauge">
                       <div className="gauge-header">
                         <span>{text("Capacité partagée", "Shared Capacity")}</span>
-                        <strong>15 kg / 23 kg (65 %)</strong>
+                        <strong className="tabular-nums">15 kg / 23 kg (65 %)</strong>
                       </div>
                       <div className="gauge-bar">
                         <div className="gauge-fill" style={{ width: "65%" }} />
@@ -1472,11 +1473,11 @@ export function AwwwardsLanding({
                     <div className="travel-reward-row">
                       <div>
                         <span>{text("Gain net garanti", "Guaranteed Net Earning")}</span>
-                        <strong className="travel-reward-val">+160 €</strong>
+                        <strong className="travel-reward-val tabular-nums">+160 €</strong>
                       </div>
                       <div className="travel-escrow-badge">
                         <ShieldCheck size={14} />
-                        <span>{text("Payé sous 24h", "Paid in 24h")}</span>
+                        <span className="tabular-nums">{text("Payé sous 24h", "Paid in 24h")}</span>
                       </div>
                     </div>
                   </div>
@@ -1538,15 +1539,15 @@ export function AwwwardsLanding({
           ].map(([Icon, title, description]) => {
             const Symbol = Icon as typeof ShieldCheck;
             return (
-              <article key={String(title)}>
-                <Symbol size={25} strokeWidth={1.5} />
+              <article key={String(title)} className="rounded-2xl">
+                <Symbol size={24} strokeWidth={1.5} />
                 <h3>{String(title)}</h3>
                 <p>{String(description)}</p>
               </article>
             );
           })}
         </div>
-        <div className="trust-comparison">
+        <div className="trust-comparison rounded-2xl">
           <div className="trust-comparison-intro">
             <LockKeyhole size={24} />
             <h3>
@@ -1562,7 +1563,7 @@ export function AwwwardsLanding({
               )}
             </p>
           </div>
-          <div className="trust-informal">
+          <div className="trust-informal rounded-2xl">
             <span>{text("Groupes Facebook", "Facebook groups")}</span>
             {[
               text("Risque d’arnaque", "Risk of scams"),
@@ -1576,7 +1577,7 @@ export function AwwwardsLanding({
               </p>
             ))}
           </div>
-          <div className="trust-bagvoyage">
+          <div className="trust-bagvoyage rounded-2xl">
             <span>
               BagVoyage
               <small>{text("Protocole de sécurité", "Security protocol")}</small>

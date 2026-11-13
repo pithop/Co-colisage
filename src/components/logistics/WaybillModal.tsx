@@ -20,7 +20,15 @@ function WaybillPaper({ doc }: { doc: TransportDocument<WaybillFields> }) {
     <footer className="bv-paper-legal"><strong>Conditions de transport</strong><p>Ce bordereau consigne les déclarations des parties et accompagne leur accord. Il ne constitue ni une lettre de transport aérien (LTA) émise par une compagnie, ni un titre douanier, ni un certificat d’assurance. La Convention de Montréal de 1999 ou le régime de Varsovie peut régir la responsabilité du transporteur aérien selon le trajet et les États concernés. Les bagages accompagnés restent soumis aux conditions de la compagnie et aux formalités douanières. Le transport maritime relève de son propre régime.</p><p>Les signatures des parties et les preuves de remise complètent ce document. L’empreinte identifie son contenu ; elle ne certifie pas l’identité des déclarants.</p><a href="https://www.iata.org/en/programs/passenger/mc99/">Référence : transport aérien international — Convention de Montréal</a></footer>
   </article>;
 }
-export function WaybillModal({ context, onClose }: { context: TransportContext; onClose: () => void }) {
+export function WaybillModal({
+  context,
+  onClose,
+  inline = false,
+}: {
+  context: TransportContext;
+  onClose: () => void;
+  inline?: boolean;
+}) {
   const { t } = useLanguage();
   const [fields, setFields] = useState<WaybillFields>({ sender: context.sender ?? 'Expéditeur BagVoyage', senderAddress: context.senderAddress ?? 'Marseille (MRS) · Prise en charge', carrier: context.carrier ?? 'Transporteur Vérifié', recipient: context.recipient ?? 'Destinataire Confirmé', recipientAddress: context.recipientAddress ?? 'Alger (ALG) · Livraison convenante', origin: context.origin ?? 'Marseille', destination: context.destination ?? 'Alger', reference: context.reference ?? 'AH1021', date: context.date ?? new Date().toISOString().split('T')[0], description: context.subject, weight: context.weight ?? 5, value: context.value ?? 100, currency: context.currency ?? 'EUR' });
   const [doc, setDoc] = useState<TransportDocument<WaybillFields>>();
@@ -37,21 +45,32 @@ export function WaybillModal({ context, onClose }: { context: TransportContext; 
     return () => { alive = false; };
   }, [context.id]);
   const change = <K extends keyof WaybillFields>(key: K, value: WaybillFields[K]) => setFields(current => ({ ...current, [key]: value }));
-  return <Dialog title={t('Bordereau de transport')} onClose={onClose} wide>
-    <div className="bv-document-intro"><span className="bv-status"><FileCheck2 size={15} /> BAGVOYAGE / DOCUMENTS</span><p>Les informations du colis, les parties et les références du voyage réunies dans un document imprimable.</p></div>
-    {error && <p role="alert" className="bv-error">{error}</p>}
-    {loading ? <p role="status">{t('Chargement…')}</p> : doc ? <><WaybillPaper doc={doc} /><div className="bv-document-actions"><button className="outline-button" onClick={() => { setDoc(undefined); setCertified(false); }}>Créer une nouvelle révision</button><button className="primary-button" onClick={() => window.print()}><Printer size={17} />{t('Télécharger le Bordereau PDF / Imprimer')}</button></div>{createPortal(<div className="bv-print-root"><WaybillPaper doc={doc} /></div>, document.body)}</> : <form className="bv-form" onSubmit={async e => {
-      e.preventDefault(); if (!certified || busy) return;
-      if (!Number.isFinite(fields.weight) || fields.weight <= 0 || !Number.isFinite(fields.value) || fields.value < 0) { setError('Vérifiez le poids et la valeur déclarée.'); return; }
-      setBusy(true); setError('');
-      try { setDoc(await issueDocument(context.id, 'waybill', fields)); } catch { setError('Le bordereau n’a pas été enregistré. Réessayez.'); } finally { setBusy(false); }
-    }}>
-      <fieldset disabled={busy}><legend>01 / Parties et itinéraire</legend><div className="bv-field-grid">{([
-        ['sender','Expéditeur'], ['senderAddress','Adresse de départ'], ['carrier','Transporteur'], ['recipient','Destinataire'], ['recipientAddress','Adresse de remise'], ['origin','Départ'], ['destination','Destination'], ['reference','Référence vol / bateau / trajet'], ['date','Date de départ'],
-      ] as const).map(([key,label]) => <label key={key}>{t(label)}<input required maxLength={180} type={key === 'date' ? 'date' : 'text'} value={fields[key]} onChange={e => change(key, e.target.value)} /></label>)}</div></fieldset>
-      <fieldset disabled={busy}><legend>02 / Marchandises</legend><label>{t('Contenu détaillé')}<textarea required maxLength={1500} value={fields.description} onChange={e => change('description', e.target.value)} /></label><div className="bv-field-grid"><label>{t('Poids déclaré (kg)')}<input required type="number" min="0.01" max="10000" step="0.01" value={fields.weight || ''} onChange={e => change('weight', e.target.valueAsNumber)} /></label><label>{t('Valeur déclarée')}<input required type="number" min="0" max="10000000" step="0.01" value={Number.isNaN(fields.value) ? '' : fields.value} onChange={e => change('value', e.target.valueAsNumber)} /></label><div><span className="block text-xs font-semibold mb-1">{t('Devise')}</span><div className="grid grid-cols-2 gap-1">{(['EUR', 'DZD'] as const).map(curr => <button key={curr} type="button" onClick={() => change('currency', curr)} className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${fields.currency === curr ? 'bg-blue-600 text-white border-blue-600 shadow-xs' : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'}`}>{curr}</button>)}</div></div></div></fieldset>
-      <label className="bv-check"><input required type="checkbox" checked={certified} onChange={e => setCertified(e.target.checked)} /><span>Je confirme l’exactitude des informations déclarées. Le poids sera contrôlé lors de la prise en charge.</span></label>
-      <button className="primary-button" disabled={busy || !certified || Boolean(error && loading)}><ShieldCheck size={18} />{t(busy ? 'Enregistrement…' : 'Enregistrer le bordereau')}</button>
-    </form>}
-  </Dialog>;
+  const content = (
+    <div className="space-y-4 tabular-nums">
+      <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5">
+        <span className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-[#059669]">
+          <FileCheck2 size={15} /> Lettre de Voiture &amp; Bordereau
+        </span>
+        <p className="text-xs text-slate-600 mt-1">
+          Les informations du colis, les parties et les références du voyage réunies dans un document imprimable.
+        </p>
+      </div>
+      {error && <p role="alert" className="bv-error">{error}</p>}
+      {loading ? <p role="status">{t('Chargement…')}</p> : doc ? <><WaybillPaper doc={doc} /><div className="bv-document-actions"><button className="outline-button" onClick={() => { setDoc(undefined); setCertified(false); }}>Créer une nouvelle révision</button><button className="primary-button !bg-[#2563EB]" onClick={() => window.print()}><Printer size={17} />{t('Télécharger le Bordereau PDF / Imprimer')}</button></div>{createPortal(<div className="bv-print-root"><WaybillPaper doc={doc} /></div>, document.body)}</> : <form className="bv-form rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 space-y-4" onSubmit={async e => {
+        e.preventDefault(); if (!certified || busy) return;
+        if (!Number.isFinite(fields.weight) || fields.weight <= 0 || !Number.isFinite(fields.value) || fields.value < 0) { setError('Vérifiez le poids et la valeur déclarée.'); return; }
+        setBusy(true); setError('');
+        try { setDoc(await issueDocument(context.id, 'waybill', fields)); } catch { setError('Le bordereau n’a pas été enregistré. Réessayez.'); } finally { setBusy(false); }
+      }}>
+        <fieldset disabled={busy}><legend>01 / Parties et itinéraire</legend><div className="bv-field-grid">{([
+          ['sender','Expéditeur'], ['senderAddress','Adresse de départ'], ['carrier','Transporteur'], ['recipient','Destinataire'], ['recipientAddress','Adresse de remise'], ['origin','Départ'], ['destination','Destination'], ['reference','Référence vol / bateau / trajet'], ['date','Date de départ'],
+        ] as const).map(([key,label]) => <label key={key}>{t(label)}<input required maxLength={180} type={key === 'date' ? 'date' : 'text'} value={fields[key]} onChange={e => change(key, e.target.value)} /></label>)}</div></fieldset>
+        <fieldset disabled={busy}><legend>02 / Marchandises</legend><label>{t('Contenu détaillé')}<textarea required maxLength={1500} value={fields.description} onChange={e => change('description', e.target.value)} /></label><div className="bv-field-grid"><label>{t('Poids déclaré (kg)')}<input required type="number" min="0.01" max="10000" step="0.01" className="tabular-nums" value={fields.weight || ''} onChange={e => change('weight', e.target.valueAsNumber)} /></label><label>{t('Valeur déclarée')}<input required type="number" min="0" max="10000000" step="0.01" className="tabular-nums" value={Number.isNaN(fields.value) ? '' : fields.value} onChange={e => change('value', e.target.valueAsNumber)} /></label><div><span className="block text-xs font-semibold mb-1">{t('Devise')}</span><div className="grid grid-cols-2 gap-1">{(['EUR', 'DZD'] as const).map(curr => <button key={curr} type="button" onClick={() => change('currency', curr)} className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${fields.currency === curr ? 'bg-[#2563EB] text-white border-[#2563EB] shadow-xs' : 'bg-[#F8FAFC] text-slate-700 border-[#E2E8F0]'}`}>{curr}</button>)}</div></div></div></fieldset>
+        <label className="bv-check"><input required type="checkbox" checked={certified} onChange={e => setCertified(e.target.checked)} /><span>Je confirme l’exactitude des informations déclarées. Le poids sera contrôlé lors de la prise en charge.</span></label>
+        <button className="w-full py-3.5 px-5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer" disabled={busy || !certified || Boolean(error && loading)}><ShieldCheck size={18} />{t(busy ? 'Enregistrement…' : 'Enregistrer le bordereau')}</button>
+      </form>}
+    </div>
+  );
+  if (inline) return content;
+  return <Dialog title={t('Bordereau de transport')} onClose={onClose} wide>{content}</Dialog>;
 }

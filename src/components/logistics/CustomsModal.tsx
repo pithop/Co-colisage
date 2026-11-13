@@ -102,9 +102,11 @@ function CustomsPaper({ doc }: { doc: TransportDocument<CustomsFields> }) {
 export function CustomsModal({
   context,
   onClose,
+  inline = false,
 }: {
   context: TransportContext;
   onClose: () => void;
+  inline?: boolean;
 }) {
   const { t } = useLanguage();
   const [fields, setFields] = useState<CustomsFields>({
@@ -147,13 +149,13 @@ export function CustomsModal({
 
   const estimate = customsEstimate(fields);
 
-  return (
-    <Dialog title={t('Douane & assurance')} onClose={onClose} wide>
-      <div className="bv-document-intro">
-        <span className="bv-status">
-          <Scale size={15} /> CONFORMITÉ DOUANIÈRE TRANSFRONTALIÈRE
+  const content = (
+    <div className="space-y-4 tabular-nums">
+      <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5">
+        <span className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-[#059669]">
+          <Scale size={15} /> Calculateur Douanier &amp; Assurance
         </span>
-        <p>
+        <p className="text-xs text-slate-600 mt-1">
           Déclaration officielle de conformité douanière (Article 106 LF 2021) et attestation d'assurance séquestre BagVoyage.
         </p>
       </div>
@@ -178,7 +180,7 @@ export function CustomsModal({
             >
               Modifier la déclaration
             </button>
-            <button className="primary-button" onClick={() => window.print()}>
+            <button className="primary-button !bg-[#2563EB]" onClick={() => window.print()}>
               <Printer size={17} />
               {t('Imprimer la déclaration')}
             </button>
@@ -192,7 +194,7 @@ export function CustomsModal({
         </>
       ) : (
         <form
-          className="bv-form"
+          className="bv-form rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 space-y-4"
           onSubmit={async (e) => {
             e.preventDefault();
             if (!fields.certified || busy) return;
@@ -243,8 +245,8 @@ export function CustomsModal({
                         }
                         className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
                           isSelected
-                            ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                            : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                            ? 'bg-[#2563EB] text-white border-[#2563EB] shadow-xs'
+                            : 'bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:border-slate-300'
                         }`}
                       >
                         {p.label} ({p.code})
@@ -278,6 +280,7 @@ export function CustomsModal({
                   min="1"
                   max="50000"
                   step="0.01"
+                  className="tabular-nums"
                   value={fields.value || ''}
                   onChange={(e) =>
                     setFields((cur) => ({
@@ -304,8 +307,8 @@ export function CustomsModal({
                         }
                         className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
                           isSelected
-                            ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                            : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                            ? 'bg-[#2563EB] text-white border-[#2563EB] shadow-xs'
+                            : 'bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:border-slate-300'
                         }`}
                       >
                         {curr}
@@ -322,6 +325,7 @@ export function CustomsModal({
                   min="1"
                   max="500"
                   step="0.1"
+                  className="tabular-nums"
                   value={fields.rate}
                   onChange={(e) =>
                     setFields((cur) => ({
@@ -333,15 +337,17 @@ export function CustomsModal({
               </label>
             </div>
 
-            <div className="customs-summary-box">
+            <div className="rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] p-4 space-y-1.5 text-xs tabular-nums">
               <p>
                 <strong>Équivalent estimé : </strong>
-                {estimate.dzd !== null
-                  ? `${estimate.dzd.toLocaleString('fr-FR')} DZD`
-                  : '—'}
+                <strong className="text-[#059669]">
+                  {estimate.dzd !== null
+                    ? `${estimate.dzd.toLocaleString('fr-FR')} DZD`
+                    : '—'}
+                </strong>
               </p>
               {estimate.excess !== null && (
-                <p className={estimate.excess > 0 ? 'text-amber-600' : 'text-emerald-600'}>
+                <p className={estimate.excess > 0 ? 'text-amber-600 font-semibold' : 'text-[#059669] font-semibold'}>
                   {estimate.excess === 0
                     ? 'Franchise Article 106 LF 2021 respectée (aucune taxe douanière).'
                     : `Attention : dépassement de franchise de ${estimate.excess.toLocaleString('fr-FR')} DZD (taxation forfaitaire possible).`}
@@ -376,7 +382,7 @@ export function CustomsModal({
           </label>
 
           <button
-            className="primary-button"
+            className="w-full py-3.5 px-5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer"
             disabled={busy || !fields.certified}
           >
             <ShieldCheck size={18} />
@@ -384,6 +390,14 @@ export function CustomsModal({
           </button>
         </form>
       )}
+    </div>
+  );
+
+  if (inline) return content;
+
+  return (
+    <Dialog title={t('Douane & assurance')} onClose={onClose} wide>
+      {content}
     </Dialog>
   );
 }
