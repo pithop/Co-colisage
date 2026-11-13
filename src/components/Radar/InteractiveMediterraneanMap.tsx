@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { Anchor, Minus, Plane, Plus, RotateCcw, Ship } from "lucide-react";
+import { Anchor, Minus, Navigation, Plane, Plus, RotateCcw, Ship } from "lucide-react";
 import {
   radarNodes,
   routePosition,
@@ -154,10 +154,11 @@ export function InteractiveMediterraneanMap({
             return (
               <g
                 key={m.id}
-                transform={`translate(${p.x} ${p.y}) scale(0.5)`}
+                transform={`translate(${p.x} ${p.y}) scale(0.65)`}
                 className={`bv-map-vehicle ${m.kind}`}
                 role="button"
                 tabIndex={0}
+                style={{ cursor: "pointer" }}
                 aria-label={`${m.reference}, ${m.origin.code} vers ${m.destination.code}`}
                 aria-pressed={selectedId === m.id}
                 onMouseEnter={() => setHovered(m.id)}
@@ -172,11 +173,14 @@ export function InteractiveMediterraneanMap({
                   }
                 }}
               >
+                {/* 44px+ hit area for touch compliance */}
+                <circle r="26" fill="transparent" pointerEvents="all" />
                 <circle
                   r="18"
                   fill={selectedId === m.id ? "#152e45" : "white"}
                   stroke={m.kind === "flight" ? "#336195" : "#087c77"}
-                  strokeWidth="0.5"
+                  strokeWidth="1.5"
+                  filter="drop-shadow(0 1px 3px rgba(0,0,0,0.15))"
                 />
                 <g
                   transform={`rotate(${m.heading - (m.kind === "flight" ? 45 : 0)})`}
@@ -190,9 +194,9 @@ export function InteractiveMediterraneanMap({
                   }}
                 >
                   {m.kind === "flight" ? (
-                    <Plane x={-10} y={-10} size={20} />
+                    <Plane x={-9} y={-9} size={18} />
                   ) : (
-                    <Ship x={-10} y={-10} size={20} />
+                    <Navigation x={-8} y={-8} size={16} fill="currentColor" />
                   )}
                 </g>
               </g>

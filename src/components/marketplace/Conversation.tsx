@@ -156,10 +156,11 @@ export function Conversation({
       setDraft("");
     }
   };
-  const hasOffPlatformRisk =
-    /whatsapp|06\d|paypal|liquide|payer en direct|hors appli|virement perso|iban/i.test(
-      draft,
-    );
+  const fraudRegex =
+    /whatsapp|06[\s.-]?\d{2}|07[\s.-]?\d{2}|\+33|\+213|\+212|\+216|paypal|liquide|payer en direct|hors appli|virement perso|iban|telegram|signal/i;
+  const lastIncomingMsg = c ? [...c.messages].reverse().find(m => !m.mine)?.text || "" : "";
+  const hasOffPlatformRisk = fraudRegex.test(draft) || fraudRegex.test(lastIncomingMsg);
+
   const secureAgreement = () => {
     if (!c || c.resolution || c.id.startsWith("support-")) return;
     if (c.stage !== "discussion") {
@@ -173,12 +174,12 @@ export function Conversation({
       messages: [
         ...c.messages,
         createMessage(
-          "Accord enregistré. La remise peut maintenant être organisée.",
+          "Accord enregistré sous séquestre Stripe Connect. La remise peut maintenant être organisée.",
           false,
         ),
       ],
     });
-    onNotice("Accord enregistré. Vous pouvez maintenant organiser la remise.");
+    onNotice("Accord enregistré sous séquestre Stripe Connect.");
     void confetti({
       particleCount: 90,
       spread: 65,
@@ -187,6 +188,26 @@ export function Conversation({
       disableForReducedMotion: true,
     });
   };
+
+  const handleAdjustOffer = () => {
+    if (!c || c.stage !== "discussion") return;
+    const input = window.prompt("Proposer un nouveau montant pour cette mission (€) :", String(c.amount));
+    if (!input) return;
+    const newAmount = Number(input.replace(",", "."));
+    if (Number.isFinite(newAmount) && newAmount > 0) {
+      onUpdate({
+        ...c,
+        amount: newAmount,
+        serviceAmount: newAmount,
+        messages: [
+          ...c.messages,
+          createMessage(`Nouvelle proposition de rémunération convenant aux deux parties : ${euro(newAmount)}.`, true),
+        ],
+      });
+      onNotice(`Montant de l'offre ajusté à ${euro(newAmount)}.`);
+    }
+  };
+
   const stageText = c?.resolution
     ? c.resolution.outcome === "refund"
       ? "Expéditeur remboursé"
@@ -252,6 +273,24 @@ export function Conversation({
               )}
             </div>
           </header>
+          {/* 4-Stage Visual Deal Progress Stepper */}
+          <div className="flex items-center justify-between px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-semibold">
+            <span className={c.stage === "discussion" ? "text-blue-600 dark:text-blue-400 font-bold flex items-center gap-1" : "text-emerald-600 flex items-center gap-1"}>
+              {c.stage !== "discussion" ? <Check size={12} strokeWidth={3} /> : "1."} Échange
+            </span>
+            <span className="text-slate-300 dark:text-slate-700">➔</span>
+            <span className={c.stage === "secured" ? "text-blue-600 dark:text-blue-400 font-bold flex items-center gap-1" : c.stage === "collected" || c.stage === "delivered" ? "text-emerald-600 flex items-center gap-1" : "text-slate-400"}>
+              {c.stage === "collected" || c.stage === "delivered" ? <Check size={12} strokeWidth={3} /> : "2."} Séquestre
+            </span>
+            <span className="text-slate-300 dark:text-slate-700">➔</span>
+            <span className={c.stage === "collected" ? "text-blue-600 dark:text-blue-400 font-bold flex items-center gap-1" : c.stage === "delivered" ? "text-emerald-600 flex items-center gap-1" : "text-slate-400"}>
+              {c.stage === "delivered" ? <Check size={12} strokeWidth={3} /> : "3."} Prise en charge
+            </span>
+            <span className="text-slate-300 dark:text-slate-700">➔</span>
+            <span className={c.stage === "delivered" ? "text-emerald-600 font-bold flex items-center gap-1" : "text-slate-400"}>
+              {c.stage === "delivered" ? <Check size={12} strokeWidth={3} /> : "4."} Livré
+            </span>
+          </div>
           <div className="escrow-strip">
             <LockKeyhole size={17} />
             <div>
@@ -262,14 +301,24 @@ export function Conversation({
             </div>
             {c.resolution || c.id.startsWith("support-") ? null : c.stage ===
               "discussion" ? (
-              <button
-                className="agreement-button"
-                onClick={() => {
-                  secureAgreement();
-                }}
-              >
-                Enregistrer l’accord
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  className="px-2.5 py-1.5 text-xs rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  onClick={handleAdjustOffer}
+                  title="Ajuster la rémunération ou faire une contre-proposition"
+                >
+                  Ajuster l'offre
+                </button>
+                <button
+                  className="agreement-button"
+                  onClick={() => {
+                    secureAgreement();
+                  }}
+                >
+                  Enregistrer l’accord
+                </button>
+              </div>
             ) : (
               <button
                 onClick={() => {
@@ -278,9 +327,11 @@ export function Conversation({
                   setDelivery(true);
                 }}
               >
-                {c.stage === "delivered"
-                  ? "Voir la remise"
-                  : "Valider la remise"}
+                {c.stage === "secured"
+                  ? "Confirmer la prise en charge"
+                  : c.stage === "collected"
+                    ? "Valider la remise finale"
+                    : "Voir la remise"}
               </button>
             )}
           </div>
@@ -299,131 +350,130 @@ export function Conversation({
             aria-live="polite"
           >
             <p className="chat-date">Votre échange à propos de cette annonce</p>
-            {c.messages.map((m) => (
-              <div key={m.id} className={`message ${m.mine ? "mine" : ""}`}>
-                <div>
-                  {m.audio && (
-                    <AudioMessagePlayer
-                      url={m.audio.url}
-                      duration={m.audio.duration}
-                      mine={m.mine}
-                      transcription={
-                        m.audio.transcription ??
-                        (m.audio.duration === 14
-                          ? bundledVoiceTranscriptions[m.audio.url ?? ""]
-                          : undefined)
-                      }
-                      transcriptionStatus={m.audio.transcriptionStatus}
-                    />
-                  )}
-                  {m.qr ? (
-                    <div className="handover-pass-card">
-                      <div className="handover-pass-header">
-                        <ShieldCheck size={16} className="text-emerald-500" />
-                        <span>Pass de Remise Certifié BagVoyage</span>
-                      </div>
-                      <div className="handover-qr-container">
-                        <QrImage value={m.qr} />
-                      </div>
-                      {m.text.includes(":") ? (
-                        <div className="handover-pin-display">
-                          <span className="handover-pin-label">
-                            Code de validation à usage unique :
-                          </span>
-                          <div className="flex items-center justify-center gap-2 mt-1">
-                            <code className="handover-pin-code">
-                              {m.text.split(":").pop()?.trim()}
-                            </code>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const pin = m.text.split(":").pop()?.trim() || "";
-                                if (navigator.clipboard) {
-                                  navigator.clipboard.writeText(pin).then(() => {
-                                    setCopiedPin(pin);
-                                    setTimeout(() => setCopiedPin(null), 2000);
-                                  });
-                                }
-                              }}
-                              className="p-1.5 rounded-lg border border-blue-200 dark:border-blue-800/80 bg-blue-50/80 dark:bg-blue-950/60 hover:bg-blue-100 text-blue-600 dark:text-blue-400 text-xs font-semibold cursor-pointer transition-colors"
-                              title="Copier le code PIN"
-                              aria-label="Copier le code PIN"
-                            >
-                              {copiedPin === m.text.split(":").pop()?.trim() ? (
-                                <Check size={14} className="text-emerald-500" />
-                              ) : (
-                                <Copy size={14} />
-                              )}
-                            </button>
-                          </div>
-                          {copiedPin === m.text.split(":").pop()?.trim() && (
-                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold block mt-1">
-                              Code copié dans le presse-papier !
-                            </span>
-                          )}
+            {c.messages.map((m, i) => (
+                <div key={m.id} className={`message ${m.mine ? "mine" : ""}`}>
+                  <div>
+                    {m.audio && (
+                      <AudioMessagePlayer
+                        url={m.audio.url}
+                        duration={m.audio.duration}
+                        mine={m.mine}
+                        transcription={
+                          m.audio.transcription ??
+                          (m.audio.duration === 14
+                            ? bundledVoiceTranscriptions[m.audio.url ?? ""]
+                            : undefined)
+                        }
+                        transcriptionStatus={m.audio.transcriptionStatus}
+                      />
+                    )}
+                    {m.qr ? (
+                      <div className="handover-pass-card">
+                        <div className="handover-pass-header">
+                          <ShieldCheck size={16} className="text-emerald-500" />
+                          <span>Pass de Remise Certifié BagVoyage</span>
                         </div>
-                      ) : (
-                        <p className="handover-note">{m.text}</p>
-                      )}
+                        <div className="handover-qr-container">
+                          <QrImage value={m.qr} />
+                        </div>
+                        {m.text.includes(":") ? (
+                          <div className="handover-pin-display">
+                            <span className="handover-pin-label">
+                              Code de validation à usage unique :
+                            </span>
+                            <div className="flex items-center justify-center gap-2 mt-1">
+                              <code className="handover-pin-code">
+                                {m.text.split(":").pop()?.trim()}
+                              </code>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const pin = m.text.split(":").pop()?.trim() || "";
+                                  if (navigator.clipboard) {
+                                    navigator.clipboard.writeText(pin).then(() => {
+                                      setCopiedPin(pin);
+                                      setTimeout(() => setCopiedPin(null), 2000);
+                                    });
+                                  }
+                                }}
+                                className="p-1.5 rounded-lg border border-blue-200 dark:border-blue-800/80 bg-blue-50/80 dark:bg-blue-950/60 hover:bg-blue-100 text-blue-600 dark:text-blue-400 text-xs font-semibold cursor-pointer transition-colors"
+                                title="Copier le code PIN"
+                                aria-label="Copier le code PIN"
+                              >
+                                {copiedPin === m.text.split(":").pop()?.trim() ? (
+                                  <Check size={14} className="text-emerald-500" />
+                                ) : (
+                                  <Copy size={14} />
+                                )}
+                              </button>
+                            </div>
+                            {copiedPin === m.text.split(":").pop()?.trim() && (
+                              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold block mt-1">
+                                Code copié dans le presse-papier !
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <p className="handover-note">{m.text}</p>
+                        )}
 
-                    </div>
-                  ) : (
-                    <p>
-                      {m.official && (
-                        <strong className="official-badge">
-                          Support Officiel BagVoyage
-                        </strong>
-                      )}
-                      {m.text}
-                    </p>
-                  )}
+                      </div>
+                    ) : (
+                      <p>
+                        {m.official && (
+                          <strong className="official-badge">
+                            Support Officiel BagVoyage
+                          </strong>
+                        )}
+                        {m.text}
+                      </p>
+                    )}
+                  </div>
+                  <small>
+                    {m.time}
+                    {m.mine && (
+                      i === c.messages.length - 1 && !pendingReplies.includes(c.id) ? (
+                        <span title="Transmis" className="inline-flex"><Check size={12} /></span>
+                      ) : (
+                        <span title="Reçu et lu" className="inline-flex"><CheckCheck size={13} /></span>
+                      )
+                    )}
+                  </small>
                 </div>
-                <small>
-                  {m.time}
-                  {m.mine && <CheckCheck size={13} />}
-                </small>
-              </div>
-            ))}
-          </div>
-          <footer>
-            {pendingReplies.includes(c.id) && (
-              <p className="typing-indicator" role="status">
-                {c.name} écrit…
-              </p>
-            )}
-            <div className="chat-tools">
-              <button onClick={() => setTracking(true)}>
-                Voir le suivi de la commande
-              </button>
-              <button
-                disabled={
-                  !!c.resolution ||
-                  c.id.startsWith("support-") ||
-                  c.stage === "delivered"
-                }
-                onClick={() => setDelay(true)}
-              >
-                Signaler un retard de vol
-              </button>
-              <button
-                disabled={
-                  !!c.resolution ||
-                  c.stage === "discussion" ||
-                  c.stage === "delivered"
-                }
-                onClick={() => {
-                  const pickup = c.stage === "secured";
-                  const code = pickup ? c.pickupCode : c.deliveryCode;
-                  send(
-                    `Code PIN ${pickup ? "de prise en charge" : "de livraison"} : ${code}`,
-                    `entre-particuliers:${c.id}:${pickup ? "pickup" : "delivery"}:${code}`,
-                  );
-                }}
-              >
-                <QrCode size={16} />
-                Envoyer le PIN / QR code
-              </button>
+              ))}
             </div>
+            <footer>
+              {pendingReplies.includes(c.id) && (
+                <p className="typing-indicator" role="status">
+                  {c.name} écrit…
+                </p>
+              )}
+              <div className="chat-tools">
+                <button onClick={() => setTracking(true)}>
+                  Voir le suivi de la commande
+                </button>
+                <button
+                  disabled={
+                    !!c.resolution ||
+                    c.id.startsWith("support-") ||
+                    c.stage === "delivered"
+                  }
+                  onClick={() => setDelay(true)}
+                >
+                  Signaler un retard de vol
+                </button>
+                <button
+                  disabled={
+                    !!c.resolution ||
+                    c.stage === "discussion" ||
+                    c.stage === "delivered"
+                  }
+                  onClick={() => setDelivery(true)}
+                >
+                  <QrCode size={16} />
+                  Ouvrir le scanner / code de remise
+                </button>
+              </div>
             <div
               className="quick-replies"
               role="group"

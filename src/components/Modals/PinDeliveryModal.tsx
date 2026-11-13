@@ -38,6 +38,7 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
 
   // Dynamic PIN derived from real conversation or fallback
   const correctPin =
+    (conversation?.stage === "secured" ? conversation?.pickupCode : conversation?.deliveryCode) ||
     conversation?.deliveryCode ||
     conversation?.pickupCode ||
     '4821';

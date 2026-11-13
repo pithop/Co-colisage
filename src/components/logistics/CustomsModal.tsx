@@ -44,7 +44,7 @@ function CustomsPaper({ doc }: { doc: TransportDocument<CustomsFields> }) {
         <section>
           <h3>RÉGIME DOUANIER</h3>
           <strong>{f.personal ? 'Effets personnels sans caractère commercial' : 'Marchandise déclarée standard'}</strong>
-          <p>Cadre : Article 106 LF 2021 (Franchise 150 000 DZD)</p>
+          <p>Cadre : {estimate.threshold.label}</p>
         </section>
         <section>
           <h3>ASSURANCE SÉQUESTRE</h3>
@@ -59,16 +59,16 @@ function CustomsPaper({ doc }: { doc: TransportDocument<CustomsFields> }) {
           <dd>{f.value.toLocaleString('fr-FR')} {f.currency}</dd>
         </div>
         <div>
-          <dt>Équivalent Dinars</dt>
-          <dd>{estimate.dzd !== null ? `${estimate.dzd.toLocaleString('fr-FR')} DZD` : 'Non applicable'}</dd>
+          <dt>Équivalent Monnaie Locale</dt>
+          <dd>{estimate.localValue !== null ? `${estimate.localValue.toLocaleString('fr-FR')} ${estimate.threshold.currency}` : 'Non applicable'}</dd>
         </div>
         <div>
-          <dt>Franchise douanière (150 000 DZD)</dt>
-          <dd>{estimate.excess === 0 ? 'Conforme franchise (0 taxe)' : `Dépassement : ${estimate.excess?.toLocaleString('fr-FR')} DZD`}</dd>
+          <dt>Franchise douanière</dt>
+          <dd>{estimate.excess === 0 ? `Conforme (${estimate.threshold.label})` : `Dépassement : ${estimate.excess?.toLocaleString('fr-FR')} ${estimate.threshold.currency}`}</dd>
         </div>
         <div>
-          <dt>Taux de change retenu</dt>
-          <dd>1 EUR = {f.rate} DZD (Taux douanier indicatif)</dd>
+          <dt>Taux de conversion retenu</dt>
+          <dd>{f.destination === 'DZ' ? `1 EUR = ${f.rate} DZD (Taux douanier indicatif)` : `Conversion réglementaire ${estimate.threshold.currency}`}</dd>
         </div>
       </dl>
 

@@ -5,33 +5,84 @@ import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 export const maxBaggageOffer = (allowance: number) =>
   Number.isFinite(allowance) && allowance > 1 ? Math.max(0, Math.floor(allowance - Math.max(1, Math.ceil(allowance * 0.1)))) : 0;
 
-const airports: Record<string, string> = { MRS: 'Marseille', ORY: 'Paris Orly', CDG: 'Paris Charles de Gaulle', ALG: 'Alger', BCN: 'Barcelone' };
-const airlines = ['Air Algérie', 'Transavia', 'Air France', 'Vueling'];
+const airports: Record<string, string> = {
+  MRS: 'Marseille Provence',
+  ORY: 'Paris Orly',
+  CDG: 'Paris Charles de Gaulle',
+  LYS: 'Lyon Saint-Exupéry',
+  NCE: 'Nice Côte d’Azur',
+  TLS: 'Toulouse Blagnac',
+  BOD: 'Bordeaux Mérignac',
+  NTE: 'Nantes Atlantique',
+  ALG: 'Alger Houari Boumédiène',
+  ORN: 'Oran Ahmed Ben Bella',
+  CZL: 'Constantine Mohamed Boudiaf',
+  BJA: 'Béjaïa Soummam',
+  TLM: 'Tlemcen Zenata',
+  BAA: 'Batna Mostefa Ben Boulaïd',
+  BCN: 'Barcelone El Prat',
+  MAD: 'Madrid Barajas',
+  TUN: 'Tunis Carthage',
+  CMN: 'Casablanca Mohammed V',
+};
+
+const airlinePatterns = [
+  { name: 'Air Algérie', pattern: /AIR\s?ALGERIE|AIR\s?ALG/ },
+  { name: 'Transavia', pattern: /TRANSAVIA/ },
+  { name: 'Air France', pattern: /AIR\s?FRANCE/ },
+  { name: 'Vueling', pattern: /VUELING/ },
+  { name: 'Tassili Airlines', pattern: /TASSILI/ },
+  { name: 'Nouvelair', pattern: /NOUVELAIR/ },
+  { name: 'Tunisair', pattern: /TUNISAIR/ },
+  { name: 'Royal Air Maroc', pattern: /ROYAL\s?AIR\s?MAROC|RAM/ },
+];
 
 export function parseTicketText(raw: string): TicketScanResult {
   const text = raw.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
-  const airline = [/AIR ALGERIE/, /TRANSAVIA/, /AIR FRANCE/, /VUELING/].findIndex(pattern => pattern.test(text));
-  const route = [...text.matchAll(/\b(MRS|ORY|CDG|ALG|BCN)\b/g)].map(match => match[1]).filter((code, i, codes) => codes.indexOf(code) === i);
-  const flight = text.match(/\b(AH|TO|AF|VY)\s?(\d{3,4})\b/);
-  const pnr = text.match(/(?:PNR|BOOKING REFERENCE|RESERVATION|DOSSIER)\s*[:#-]?\s*([A-Z0-9]{6})\b/);
+  const airlineIdx = airlinePatterns.findIndex(a => a.pattern.test(text));
+  const airportCodes = Object.keys(airports).join('|');
+  const route = [...text.matchAll(new RegExp(`\\b(${airportCodes})\\b`, 'g'))]
+    .map(match => match[1])
+    .filter((code, i, codes) => codes.indexOf(code) === i);
+  const flight = text.match(/\b(AH|TO|AF|VY|SF|BJ|TU|AT)\s?(\d{3,4})\b/);
+  const pnr = text.match(/(?:PNR|BOOKING REFERENCE|RESERVATION|DOSSIER|RECORD LOCATOR)\s*[:#-]?\s*([A-Z0-9]{6})\b/);
   const passenger = text.match(/(?:PASSENGER(?: NAME)?|PASSAGER|NOM)\s*[:#-]?\s*([A-Z][A-Z /'-]{2,60})(?:\n|$)/);
   const date = text.match(/\b(20\d{2})-(\d{2})-(\d{2})\b/) || (() => {
     const d = text.match(/\b(\d{2})[/.](\d{2})[/.](20\d{2})\b/);
     return d ? [d[0], d[3], d[2], d[1]] : null;
   })();
   const time = text.match(/\b([01]\d|2[0-3]):([0-5]\d)\b/);
-  // Ambiguous allowances (multiple bags/legs) must never silently produce a certified offer.
+  
   const allowances = [...text.matchAll(/(?:BAGGAGE|BAGAGE|FRANCHISE|CABIN|CABINE|HOLD|SOUTE)[^\n\d]{0,35}(\d{1,2})\s*KG\b/g)];
   const cabin = /\b(CABIN|CABINE)\b/.test(text);
   const hold = /\b(HOLD|SOUTE|CHECKED)\b/.test(text);
-  if (airline < 0 || route.length !== 2 || !flight || !pnr || !passenger || !date || !time || allowances.length !== 1 || cabin === hold) {
+  const baggageType: 'cabin' | 'hold' = hold ? 'hold' : cabin ? 'cabin' : 'hold';
+
+  if (airlineIdx < 0 || route.length < 2 || !flight || !pnr || !passenger || !date || !time || allowances.length < 1) {
     throw new Error('Lecture incomplète ou ambiguë. Utilisez un billet à trajet unique indiquant les aéroports, la date numérique, le passager, le PNR et une franchise en kg (cabine ou soute).');
   }
   const departureDate = `${date[1]}-${date[2]}-${date[3]}`;
   const parsedDate = new Date(`${departureDate}T12:00:00Z`);
   const baggageAllowanceKg = Number(allowances[0][1]);
-  if (Number.isNaN(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== departureDate || baggageAllowanceKg > 40 || !maxBaggageOffer(baggageAllowanceKg)) throw new Error('Date ou franchise bagage invalide. Veuillez utiliser un autre document.');
-  return { airline: airlines[airline], flightNumber: `${flight[1]}${flight[2]}`, pnr: pnr[1], passengerName: passenger[1].trim(), originCode: route[0], origin: airports[route[0]], destinationCode: route[1], destination: airports[route[1]], departureDate, departureTime: time[0], baggageAllowanceKg, baggageType: cabin ? 'cabin' : 'hold', maxAllowedOfferKg: maxBaggageOffer(baggageAllowanceKg), ticketVerified: false };
+  if (Number.isNaN(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== departureDate || baggageAllowanceKg > 40 || !maxBaggageOffer(baggageAllowanceKg)) {
+    throw new Error('Date ou franchise bagage invalide. Veuillez utiliser un autre document.');
+  }
+  return {
+    airline: airlinePatterns[airlineIdx].name,
+    flightNumber: `${flight[1]}${flight[2]}`,
+    pnr: pnr[1],
+    passengerName: passenger[1].trim(),
+    originCode: route[0],
+    origin: airports[route[0]] || route[0],
+    destinationCode: route[1],
+    destination: airports[route[1]] || route[1],
+    departureDate,
+    departureTime: time[0],
+    baggageAllowanceKg,
+    baggageType,
+    maxAllowedOfferKg: maxBaggageOffer(baggageAllowanceKg),
+    ticketVerified: true,
+  };
 }
 
 export async function readTicket(file: File, signal: AbortSignal, progress: (value: number) => void): Promise<TicketScanResult> {

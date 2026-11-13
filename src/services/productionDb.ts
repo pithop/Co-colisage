@@ -44,8 +44,10 @@ export interface KycRecord {
   id: string;
   userId: string;
   status: User["kycStatus"];
+  documentType?: string;
   documents?: import("./uploads").Attachment[];
   reason?: string;
+  createdAt?: string;
   updatedAt: string;
 }
 export interface DatabaseSchema {
@@ -388,15 +390,68 @@ export async function exportDatabaseAsSql(): Promise<string> {
     `  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`,
     `);`,
     ``,
+    `CREATE TABLE IF NOT EXISTS conversations (`,
+    `  id VARCHAR(64) PRIMARY KEY,`,
+    `  name VARCHAR(120),`,
+    `  subject VARCHAR(200),`,
+    `  amount NUMERIC(10,2),`,
+    `  service_amount NUMERIC(10,2),`,
+    `  stage VARCHAR(32) NOT NULL DEFAULT 'discussion',`,
+    `  pickup_code VARCHAR(10),`,
+    `  delivery_code VARCHAR(10),`,
+    `  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`,
+    `);`,
+    ``,
+    `CREATE TABLE IF NOT EXISTS admin_messages (`,
+    `  id VARCHAR(64) PRIMARY KEY,`,
+    `  sender_id VARCHAR(64),`,
+    `  content TEXT NOT NULL,`,
+    `  severity VARCHAR(32) DEFAULT 'info',`,
+    `  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`,
+    `);`,
+    ``,
+    `CREATE TABLE IF NOT EXISTS kyc_records (`,
+    `  id VARCHAR(64) PRIMARY KEY,`,
+    `  user_id VARCHAR(64) NOT NULL,`,
+    `  status VARCHAR(32) NOT NULL DEFAULT 'pending',`,
+    `  document_type VARCHAR(64),`,
+    `  documents_json JSONB,`,
+    `  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`,
+    `);`,
+    ``,
+    `CREATE TABLE IF NOT EXISTS pro_applications (`,
+    `  id VARCHAR(64) PRIMARY KEY,`,
+    `  user_id VARCHAR(64) NOT NULL,`,
+    `  company_name VARCHAR(120),`,
+    `  siret VARCHAR(32),`,
+    `  status VARCHAR(32) DEFAULT 'pending',`,
+    `  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`,
+    `);`,
+    ``,
   ];
+
+  const sqlEscape = (val: unknown): string => {
+    if (val === null || val === undefined) return "NULL";
+    if (typeof val === "boolean") return val ? "TRUE" : "FALSE";
+    if (typeof val === "number") return Number.isFinite(val) ? String(val) : "NULL";
+    if (typeof val === "object") {
+      return `'${JSON.stringify(val).replace(/'/g, "''")}'`;
+    }
+    return `'${String(val).replace(/'/g, "''")}'`;
+  };
 
   for (const [storeName, rows] of Object.entries(data)) {
     if (!rows.length) continue;
-    sqlLines.push(`-- Table: ${storeName} (${rows.length} enregistrements)`);
-    for (const row of rows) {
-      const sanitized = JSON.stringify(row).replace(/'/g, "''");
+    sqlLines.push(`-- ==========================================================`);
+    sqlLines.push(`-- Table: ${storeName} (${rows.length} lignes)`);
+    sqlLines.push(`-- ==========================================================`);
+    for (const rawRow of rows) {
+      const row = rawRow as Record<string, unknown>;
+      const keys = Object.keys(row).filter((k) => row[k] !== undefined);
+      if (!keys.length) continue;
+      const values = keys.map((k) => sqlEscape(row[k]));
       sqlLines.push(
-        `-- RECORD: ${storeName} -> id: ${(row as { id?: string }).id || 'N/A'}`
+        `INSERT INTO ${storeName} (${keys.join(", ")}) VALUES (${values.join(", ")});`
       );
     }
     sqlLines.push(``);

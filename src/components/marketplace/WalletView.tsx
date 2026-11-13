@@ -15,6 +15,7 @@ import { Dialog } from "./Dialog";
 import {
   downloadReceipt,
   money,
+  validBankDetails,
   validIban,
   walletBalances,
   type WalletTransaction,
@@ -24,9 +25,11 @@ import {
 export function WalletView({
   transactions,
   onTransfer,
+  userIban,
 }: {
   transactions: WalletTransaction[];
   onTransfer: (transaction: WalletTransaction) => void;
+  userIban?: string;
 }) {
   const { available, escrow } = walletBalances(transactions);
   const [transferOpen, setTransferOpen] = useState(false);
@@ -215,6 +218,7 @@ export function WalletView({
       {transferOpen && (
         <TransferDialog
           available={available}
+          userIban={userIban}
           onClose={() => setTransferOpen(false)}
           onTransfer={onTransfer}
         />
@@ -225,14 +229,16 @@ export function WalletView({
 
 function TransferDialog({
   available,
+  userIban,
   onClose,
   onTransfer,
 }: {
   available: number;
+  userIban?: string;
   onClose: () => void;
   onTransfer: (transaction: WalletTransaction) => void;
 }) {
-  const [iban, setIban] = useState("");
+  const [iban, setIban] = useState(userIban || "");
   const [bic, setBic] = useState("");
   const [amount, setAmount] = useState((available / 100).toFixed(2));
   const [error, setError] = useState("");
@@ -240,11 +246,14 @@ function TransferDialog({
   const [receipt, setReceipt] = useState<WalletTransaction | null>(null);
   const submitted = useRef(false);
   const cents = Math.round(Number(amount.replace(",", ".")) * 100);
-  const masked = `•••• ${iban.replace(/\s/g, "").slice(-4).toUpperCase()}`;
+  const cleanAccount = iban.replace(/[\s-]/g, "").toUpperCase();
+  const masked = cleanAccount ? `•••• ${cleanAccount.slice(-4)}` : "•••• ----";
+  const isAccountValid = validBankDetails(iban);
+
   const validate = () => {
-    if (!validIban(iban)) {
+    if (!isAccountValid) {
       setError(
-        "Saisissez un IBAN valide d’un pays pris en charge pour un virement SEPA.",
+        "Saisissez un IBAN valide ou un RIB bancaire à 20 chiffres (Algérie, France, UE & Maghreb).",
       );
       return false;
     }
@@ -267,7 +276,7 @@ function TransferDialog({
     return true;
   };
   return (
-    <Dialog title="Virement SEPA instantané" onClose={onClose}>
+    <Dialog title="Virement Bancaire Immédiat (SEPA / Maghreb)" onClose={onClose}>
       {receipt ? (
         <div className="transfer-success" role="status">
           <span className="finance-icon released">
@@ -306,8 +315,8 @@ function TransferDialog({
             submitted.current = true;
             const transaction: WalletTransaction = {
               id: crypto.randomUUID(),
-              title: "Virement SEPA instantané",
-              detail: `Compte bancaire ${masked} · demande enregistrée`,
+              title: "Virement bancaire",
+              detail: `Compte ${masked} · demande enregistrée`,
               at: new Date().toISOString(),
               cents: -cents,
               status: "Virement",
@@ -354,20 +363,20 @@ function TransferDialog({
               </g>
             </svg>
             <div className="metallic-iban" aria-label="Coordonnées saisies">
-              {(
-                iban
-                  .replace(/\s/g, "")
-                  .toUpperCase()
-                  .match(/.{1,4}/g) || ["----", "----", "----", "----"]
-              ).map((block, index) => (
-                <span key={index}>{block}</span>
-              ))}
+              {(() => {
+                const chunks = cleanAccount.match(/.{1,4}/g) || [];
+                const blocks = [...chunks];
+                while (blocks.length < 4) blocks.push("----");
+                return blocks.slice(0, 7).map((block, index) => (
+                  <span key={index}>{block}</span>
+                ));
+              })()}
             </div>
             <div className="metallic-card-footer">
-              <span>VIREMENT SEPA</span>
+              <span>{cleanAccount.length === 20 && !cleanAccount.startsWith("DZ") ? "RIB ALGÉRIE (20D)" : "VIREMENT SEPA"}</span>
               <span>
                 <ShieldCheck size={14} />
-                {validIban(iban) ? "Format IBAN vérifié" : "IBAN à renseigner"}
+                {isAccountValid ? "Format compte vérifié" : "Coordonnées à renseigner"}
               </span>
             </div>
           </div>

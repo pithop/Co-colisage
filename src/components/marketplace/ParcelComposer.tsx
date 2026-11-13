@@ -35,6 +35,7 @@ export function ParcelComposer({
   const [transport, setTransport] = useState(
     initialRoute?.kind === "ferry" ? "sea" : "air",
   );
+  const [reward, setReward] = useState<number>(35);
   const [value, setValue] = useState(0);
   const [personal, setPersonal] = useState(false);
   const [error, setError] = useState("");
@@ -363,6 +364,8 @@ export function ParcelComposer({
           min="1"
           max="10000"
           step="0.01"
+          value={reward || ""}
+          onChange={(e) => setReward(Number(e.target.value))}
           required
         />
       </label>
@@ -376,10 +379,18 @@ export function ParcelComposer({
           {error}
         </p>
       )}
-      <button type="submit" className="primary-button">
-        Publier mon colis
-        <ArrowRight size={18} />
-      </button>
+      <div className="publish-sticky-dock">
+        <div className="dock-summary">
+          <span className="dock-summary-label">Rémunération voyageur</span>
+          <strong className="dock-summary-value">
+            {reward > 0 ? `${reward.toFixed(2)} €` : "0.00 €"}
+          </strong>
+        </div>
+        <button type="submit" className="primary-button publish-submit-btn">
+          Publier mon colis
+          <ArrowRight size={18} />
+        </button>
+      </div>
     </form>
   );
 }

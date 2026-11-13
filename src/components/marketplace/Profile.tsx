@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDatabaseQuery } from "../../hooks/useDatabaseQuery";
 import { useAuth } from "../../context/AuthContext";
+import { validBankDetails } from "../../data/wallet";
 import {
   Check,
   Wallet,
@@ -83,6 +84,7 @@ export function Profile({
   const [editingProfile, setEditingProfile] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveBusy, setSaveBusy] = useState(false);
+  const [ibanError, setIbanError] = useState("");
   const [profileForm, setProfileForm] = useState({
     name: user?.name || userName || "Amine Belkacem",
     phone: user?.phone || "+33 6 12 34 56 78",
@@ -92,9 +94,29 @@ export function Profile({
     iban: user?.iban || "FR7630001007941234567890185",
   });
 
+  useEffect(() => {
+    if (user) {
+      setProfileForm({
+        name: user.name || "",
+        phone: user.phone || "",
+        city: user.city || "Paris",
+        homeAirport: user.homeAirport || "CDG",
+        bio: user.bio || "",
+        iban: user.iban || "",
+      });
+    }
+  }, [user]);
+
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+    setIbanError("");
+
+    if (profileForm.iban.trim() && !validBankDetails(profileForm.iban)) {
+      setIbanError("IBAN ou RIB invalide. Saisissez un format SEPA valide ou un RIB à 20 chiffres.");
+      return;
+    }
+
     setSaveBusy(true);
     try {
       const updatedUser = {
@@ -469,9 +491,20 @@ export function Profile({
               <input
                 type="text"
                 value={profileForm.iban}
-                onChange={(e) => setProfileForm({ ...profileForm, iban: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Ex. FR76... ou RIB à 20 chiffres"
+                onChange={(e) => {
+                  setProfileForm({ ...profileForm, iban: e.target.value });
+                  if (ibanError) setIbanError("");
+                }}
+                className={`w-full px-3 py-2 rounded-xl border ${
+                  ibanError
+                    ? "border-red-500 ring-1 ring-red-500"
+                    : "border-slate-200 dark:border-slate-700"
+                } bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-blue-500`}
               />
+              {ibanError && (
+                <p className="text-[11px] text-red-500 mt-1 font-medium">{ibanError}</p>
+              )}
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
@@ -500,11 +533,21 @@ export function Profile({
             </div>
 
             <div className="p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 sm:col-span-2 lg:col-span-1">
-              <span className="text-[11px] text-slate-500 dark:text-slate-400 block mb-0.5">Virement Bancaire SEPA</span>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 block mb-0.5">Virement Bancaire (SEPA / Algérie)</span>
               <strong className="text-xs font-mono text-slate-900 dark:text-white block">
                 {profileForm.iban ? `${profileForm.iban.slice(0, 4)} •••• •••• •••• ${profileForm.iban.slice(-4)}` : "Non renseigné"}
               </strong>
-              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">Stripe Connect Actif</span>
+              {profileForm.iban && validBankDetails(profileForm.iban) ? (
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium inline-flex items-center gap-1">
+                  <ShieldCheck size={12} />
+                  Stripe Connect Actif · Prêt pour virement
+                </span>
+              ) : (
+                <span className="text-[10px] text-amber-600 dark:text-amber-400 font-medium inline-flex items-center gap-1">
+                  <AlertCircle size={12} />
+                  {profileForm.iban ? "Coordonnées à corriger" : "IBAN / RIB manquant"}
+                </span>
+              )}
             </div>
           </div>
         )}

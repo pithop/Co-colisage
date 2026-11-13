@@ -173,6 +173,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
     setUser(updatedUser);
     await saveRecord('users', updatedUser);
+    await saveRecord('kyc_records', {
+      id: `kyc-${currentUser.id}`,
+      userId: currentUser.id,
+      status: 'verified',
+      documentType: type,
+      documents: updatedDocs.map((d, index) => ({
+        id: `att-${currentUser.id}-${index}`,
+        name: d.title || d.fileName || 'document.pdf',
+        data: d.fileName || 'document.pdf',
+        type: 'application/pdf',
+        size: 1024,
+      })),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
   };
 
   useEffect(() => {

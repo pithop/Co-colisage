@@ -103,6 +103,16 @@ export function AudioMessagePlayer({
     }
   };
 
+  const handleSeek = (e: React.MouseEvent<SVGSVGElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const newTime = ratio * total;
+    updatePosition(newTime);
+    if (audio.current && Number.isFinite(audio.current.duration)) {
+      audio.current.currentTime = newTime;
+    }
+  };
+
   return (
     <div className={`voice-player ${mine ? "voice-player-mine" : ""}`}>
       <audio
@@ -140,7 +150,18 @@ export function AudioMessagePlayer({
         )}
       </button>
       <div className="voice-track">
-        <svg viewBox="0 0 144 40" className="voice-wave" aria-hidden="true">
+        <svg
+          viewBox="0 0 144 40"
+          className="voice-wave"
+          role="slider"
+          aria-label="Position dans la note vocale"
+          aria-valuemin={0}
+          aria-valuemax={total}
+          aria-valuenow={Math.round(elapsed)}
+          tabIndex={0}
+          style={{ cursor: "pointer" }}
+          onClick={handleSeek}
+        >
           {voiceWave.map((height, index) => (
             <rect
               key={index}

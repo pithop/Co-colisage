@@ -734,7 +734,7 @@ export function Publish({
                   type="number"
                   min="0.1"
                   max="1000"
-                  step="0.1"
+                  step="0.5"
                   placeholder="Ex. 2"
                 />
                 <small>
@@ -787,6 +787,7 @@ export function Publish({
                     type="number"
                     min="1"
                     max="1000"
+                    step="0.5"
                     required
                   />
                 </label>
@@ -1044,7 +1045,11 @@ export function Publish({
               <strong className="dock-summary-value">
                 {kind === "trips"
                   ? `${currency(price)} € / kg`
-                  : `${currency(totalPurchase + (Number(draft.reward) || 0))} €`}
+                  : `${currency(
+                      totalPurchase +
+                        Math.round(((Number(draft.reward) || 0) * 100) / 0.85) /
+                          100,
+                    )} €`}
               </strong>
             </div>
             <button className="primary-button publish-submit-btn" type="submit">

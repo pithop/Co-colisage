@@ -75,8 +75,41 @@ export async function issueDocument<T extends WaybillFields | CustomsFields>(ord
   });
   return doc;
 }
+export function customsThreshold(destination: string) {
+  switch (destination) {
+    case 'MA': return { currency: 'MAD', limit: 4000, label: '4 000 MAD (Art. 190 Code des Douanes)' };
+    case 'TN': return { currency: 'TND', limit: 500, label: '500 TND (Franchise Voyageur)' };
+    case 'EU': return { currency: 'EUR', limit: 430, label: '430 EUR (Seuil voyageur aérien UE)' };
+    case 'DZ':
+    default:
+      return { currency: 'DZD', limit: 150000, label: '150 000 DZD (Article 106 LF 2021)' };
+  }
+}
+
 export function customsEstimate(fields: CustomsFields) {
   const valid = Number.isFinite(fields.value) && fields.value >= 0 && Number.isFinite(fields.rate) && fields.rate > 0;
-  const dzd = valid ? Math.round(fields.value * (fields.currency === 'EUR' ? fields.rate : 1) * 100) / 100 : null;
-  return { dzd, excess: dzd === null ? null : Math.max(0, dzd - 150000), eligible: fields.destination === 'DZ' && fields.personal };
+  const destination = fields.destination || 'DZ';
+  const threshold = customsThreshold(destination);
+
+  let localValue = 0;
+  if (destination === 'DZ') {
+    localValue = fields.currency === 'EUR' ? fields.value * fields.rate : fields.value;
+  } else if (destination === 'MA') {
+    localValue = fields.currency === 'EUR' ? fields.value * 11 : fields.value;
+  } else if (destination === 'TN') {
+    localValue = fields.currency === 'EUR' ? fields.value * 3.4 : fields.value;
+  } else {
+    localValue = fields.value;
+  }
+
+  const rounded = valid ? Math.round(localValue * 100) / 100 : null;
+  const excess = rounded === null ? null : Math.max(0, rounded - threshold.limit);
+
+  return {
+    localValue: rounded,
+    dzd: destination === 'DZ' ? rounded : null,
+    excess,
+    eligible: fields.personal && (excess === 0),
+    threshold,
+  };
 }

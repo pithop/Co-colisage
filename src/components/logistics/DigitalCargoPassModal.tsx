@@ -11,6 +11,19 @@ import {
   X,
 } from "lucide-react";
 import { useModalFocus } from "../../hooks/useModalFocus";
+import { QrImage } from "../marketplace/QrImage";
+
+function parseAirport(str: string, fallbackCode: string, fallbackCity: string) {
+  const match = str.match(/(.*?)\s*\(([A-Z]{3})\)/);
+  if (match) {
+    return { city: match[1].trim() || fallbackCity, code: match[2] };
+  }
+  const iataMatch = str.match(/\b([A-Z]{3})\b/);
+  if (iataMatch) {
+    return { city: str.replace(iataMatch[0], "").replace(/[()]/g, "").trim() || fallbackCity, code: iataMatch[1] };
+  }
+  return { city: str || fallbackCity, code: fallbackCode };
+}
 
 interface Props {
   isOpen: boolean;
@@ -38,6 +51,9 @@ export function DigitalCargoPassModal({
   const containerRef = useModalFocus(isOpen, onClose);
   const [downloaded, setDownloaded] = useState(false);
   const [walletAdded, setWalletAdded] = useState(false);
+
+  const originStation = parseAirport(origin, "PAR", "Paris");
+  const destStation = parseAirport(destination, "ALG", "Alger");
 
   if (!isOpen) return null;
 
@@ -118,16 +134,16 @@ Document conforme aux specifications IATA Res. 792 & OACI STEB.`;
 
               <div className="pass-flight-row">
                 <div className="pass-station">
-                  <span className="station-code">CDG</span>
-                  <span className="station-city">Paris</span>
+                  <span className="station-code">{originStation.code}</span>
+                  <span className="station-city">{originStation.city}</span>
                 </div>
                 <div className="pass-flight-vector">
                   <Plane size={20} className="pass-plane-icon" />
                   <span className="pass-flight-number">{flightNumber}</span>
                 </div>
                 <div className="pass-station end">
-                  <span className="station-code">ALG</span>
-                  <span className="station-city">Alger</span>
+                  <span className="station-code">{destStation.code}</span>
+                  <span className="station-city">{destStation.city}</span>
                 </div>
               </div>
             </div>
@@ -161,8 +177,7 @@ Document conforme aux specifications IATA Res. 792 & OACI STEB.`;
 
               <div className="pass-barcode-section">
                 <div className="pass-qr-frame">
-                  {/* High Density Barcode SVG representation */}
-                  <div className="pass-barcode-bars" aria-label="Code-barres 2D de contrôle" />
+                  <QrImage value={`https://bagvoyage.com/verify?ref=${encodeURIComponent(orderReference)}&flight=${encodeURIComponent(flightNumber)}`} />
                 </div>
                 <span className="pass-barcode-number font-mono">{orderReference}</span>
               </div>
@@ -193,13 +208,17 @@ Document conforme aux specifications IATA Res. 792 & OACI STEB.`;
         <div className="bv-tool-footer">
           <button
             type="button"
-            className="btn-secondary"
+            className="outline-button flex items-center justify-center gap-2"
             onClick={() => setWalletAdded(true)}
           >
             <Smartphone size={16} />
             {walletAdded ? "Ajouté aux Cartes" : "Ajouter à Apple / Google Wallet"}
           </button>
-          <button type="button" className="btn-primary" onClick={handleDownload}>
+          <button
+            type="button"
+            className="primary-button flex items-center justify-center gap-2"
+            onClick={handleDownload}
+          >
             <Download size={16} />
             {downloaded ? "Pass téléchargé" : "Télécharger le pass hors-ligne"}
           </button>

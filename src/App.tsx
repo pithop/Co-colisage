@@ -276,7 +276,7 @@ function Marketplace() {
     requestsError || tripsError || conversationsError || walletError;
   useEffect(() => {
     if (!storageReady) return;
-    const derived = walletTransactions(conversations, []);
+    const derived = walletTransactions(conversations, [], user?.role);
     setLedger((current) => {
       const changed = derived.some(
         (tx) =>
@@ -834,6 +834,7 @@ function Marketplace() {
         {wallet && (
           <WalletView
             transactions={transactions}
+            userIban={user?.iban}
             onTransfer={(transaction) =>
               setTransfers((current) =>
                 current.some((t) => t.id === transaction.id)

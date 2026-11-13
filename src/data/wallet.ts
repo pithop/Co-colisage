@@ -26,44 +26,79 @@ const history: WalletTransaction[] = [];
 export function walletTransactions(
   conversations: ConversationData[],
   transfers: WalletTransaction[],
+  userRole?: string,
 ) {
+  const isSenderRole = userRole === "expediteur";
   const deposits: WalletTransaction[] = conversations
     .filter((c) => c.stage !== "discussion")
-    .map((c) => ({
-      id: `deposit-${c.id}`,
-      title: `Caution · ${c.subject}`,
-      detail: c.resolution
-        ? `Décision du support : ${c.resolution.reason}`
-        : c.stage === "delivered"
-          ? "Caution restituée après validation de la livraison"
-          : "Caution · en attente de remise validée",
-      at:
-        c.resolution?.at ||
-        c.handovers?.find((h) => h.stage === "delivery")?.at ||
-        c.securedAt ||
-        "2026-10-19T08:30:00Z",
-      cents: Math.round(c.amount * 100),
-      status:
-        c.resolution?.outcome === "refund"
-          ? "Remboursé"
-          : c.resolution?.outcome === "release" || c.stage === "delivered"
-            ? "Débloqué"
-            : "Séquestré",
-    }));
+    .map((c) => {
+      const isDelivered = c.stage === "delivered";
+      const isRefunded = c.resolution?.outcome === "refund";
+      const isReleased = c.resolution?.outcome === "release" || isDelivered;
+      // Remuneration earned by carrier vs payment escrowed by sender
+      const earnings = Math.round((c.serviceAmount || c.amount) * 100);
+      const totalEscrow = Math.round(c.amount * 100);
+
+      const status: TransactionStatus = isRefunded
+        ? "Remboursé"
+        : isReleased
+          ? "Débloqué"
+          : "Séquestré";
+
+      let detail = "Caution · en attente de remise validée";
+      if (c.resolution) {
+        detail = `Décision du support : ${c.resolution.reason}`;
+      } else if (isDelivered) {
+        detail = isSenderRole
+          ? "Livraison confirmée · Fonds libérés au voyageur"
+          : "Rémunération fret créditée suite à validation de livraison";
+      }
+
+      return {
+        id: `deposit-${c.id}`,
+        title: `${isSenderRole ? "Paiement mission" : "Rémunération fret"} · ${c.subject}`,
+        detail,
+        at:
+          c.resolution?.at ||
+          c.handovers?.find((h) => h.stage === "delivery")?.at ||
+          c.securedAt ||
+          "2026-10-19T08:30:00Z",
+        cents: status === "Séquestré" ? totalEscrow : isSenderRole ? 0 : earnings,
+        status,
+      };
+    });
   return [...transfers, ...deposits, ...history].sort((a, b) =>
     b.at.localeCompare(a.at),
   );
 }
 
 export function walletBalances(transactions: WalletTransaction[]) {
-  return transactions.reduce(
+  const result = transactions.reduce(
     (balance, t) => {
-      if (t.status === "Séquestré") balance.escrow += t.cents;
-      else if (t.status !== "Remboursé") balance.available += t.cents;
+      if (t.status === "Séquestré") {
+        balance.escrow += Math.max(0, t.cents);
+      } else if (t.status === "Débloqué") {
+        balance.available += Math.max(0, t.cents);
+      } else if (t.status === "Virement") {
+        balance.available += t.cents; // Virement has negative cents
+      }
       return balance;
     },
     { available: 0, escrow: 0 },
   );
+  result.available = Math.max(0, result.available);
+  return result;
+}
+
+export function validAlgerianRib(value: string) {
+  const rib = value.replace(/[\s-]/g, "");
+  return /^\d{20}$/.test(rib);
+}
+
+export function validBankDetails(value: string) {
+  const clean = value.replace(/[\s-]/g, "").toUpperCase();
+  if (/^\d{20}$/.test(clean)) return true;
+  return validIban(clean);
 }
 
 export function validIban(value: string) {
@@ -104,6 +139,9 @@ export function validIban(value: string) {
     IS: 26,
     SM: 27,
     AD: 24,
+    MA: 28,
+    TN: 24,
+    DZ: 26,
   };
   if (
     !/^[A-Z]{2}\d{2}[A-Z0-9]+$/.test(iban) ||

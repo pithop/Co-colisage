@@ -126,12 +126,12 @@ html[data-theme="dark"] .unified-header.site-header,
   .radar-corridor { flex-wrap: wrap; }
 }
 
-/* Keep the catalogue first in the mobile reading and keyboard order. */
+/* Keep the catalogue first in both desktop and mobile reading and keyboard order (WCAG 2.4.3). */
 .explorer-page { display: flex; flex-direction: column; min-width: 0; }
 .explorer-page > .explore-heading { order: 0; }
-.explorer-page > .express-arbitrage { order: 1; }
-.explorer-page > .discovery-bento { order: 2; }
-.explorer-page > .explore-layout { order: 3; }
+.explorer-page > .explore-layout { order: 1; }
+.explorer-page > .express-arbitrage { order: 2; }
+.explorer-page > .discovery-bento { order: 3; }
 .publish-label-mobile { display: none; }
 
 @media (max-width: 760px) {

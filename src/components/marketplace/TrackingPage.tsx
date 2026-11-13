@@ -38,6 +38,8 @@ import {
   LogisticsToolModal,
   type LogisticsTool,
 } from "../logistics/LogisticsTools";
+import { releaseEscrowToCarrier } from "../../services/stripeConnectService";
+import { saveRecord } from "../../services/productionDb";
 
 const stageLabels: Record<ConversationData["stage"], string> = {
   discussion: "En discussion",
@@ -813,7 +815,21 @@ export function TrackingPage({
         <PinDeliveryModal
           conversation={pinModalContext.conversation}
           onClose={() => setPinModalContext(null)}
-          onSuccessFinished={() => setPinModalContext(null)}
+          onSuccessFinished={async () => {
+            const cid = pinModalContext.conversation.id;
+            try {
+              await releaseEscrowToCarrier(cid);
+              await saveRecord("orders", {
+                id: `ord-${cid}`,
+                conversationId: cid,
+                status: "delivered",
+                updatedAt: new Date().toISOString(),
+              });
+            } catch (err) {
+              console.warn("Failed to update order state after PIN release:", err);
+            }
+            setPinModalContext(null);
+          }}
         />
       )}
 

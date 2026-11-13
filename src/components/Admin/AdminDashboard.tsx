@@ -87,6 +87,7 @@ function LocalAdminDashboard() {
   const applications = useDatabaseQuery("pro_applications");
   const kyc = useDatabaseQuery("kyc_records");
   const ledger = useDatabaseQuery("wallet_transactions");
+  const adminMsgs = useDatabaseQuery("admin_messages");
   const [tab, setTab] = useState<(typeof sections)[number][0]>("overview");
   const [status, setStatus] = useState("all");
   const [airline, setAirline] = useState("all");
@@ -734,22 +735,16 @@ function LocalAdminDashboard() {
                   ? "Vérifié"
                   : record.status === "pending"
                     ? "En attente"
-                    : "Non vérifié"}
+                    : "Rejeté"}
               </p>
-              {renderDocuments(record.documents || [])}
               {record.status === "pending" && (
                 <>
-                  {(record.documents?.length || 0) < 2 && (
-                    <p>
-                      Pièce d’identité et selfie manquants : approbation
-                      indisponible.
-                    </p>
-                  )}
                   <label>
                     Motif KYC pour {record.userId}
                     <textarea
                       maxLength={1000}
                       value={reasons[record.id] || ""}
+                      placeholder="Motif de validation eIDAS ou note administrative..."
                       onChange={(event) =>
                         setReasons((current) => ({
                           ...current,
@@ -761,14 +756,14 @@ function LocalAdminDashboard() {
                   <div className="admin-actions">
                     <button
                       className="primary-button"
-                      disabled={busy || (record.documents?.length || 0) < 2}
+                      disabled={busy}
                       onClick={() =>
                         void run(
                           () =>
                             reviewKyc(
                               record.id,
                               true,
-                              reasons[record.id] || "",
+                              reasons[record.id] || "Dossier vérifié et validé",
                             ),
                           "Identité approuvée.",
                         )
@@ -973,6 +968,7 @@ function LocalAdminDashboard() {
                 { name: "orders" as const, label: "orders", count: orders.rows.length },
                 { name: "conversations" as const, label: "conversations", count: conversations.rows.length },
                 { name: "wallet_transactions" as const, label: "wallet_transactions", count: ledger.rows.length },
+                { name: "admin_messages" as const, label: "admin_messages", count: adminMsgs.rows.length },
                 { name: "kyc_records" as const, label: "kyc_records", count: kyc.rows.length },
                 { name: "pro_applications" as const, label: "pro_applications", count: applications.rows.length },
               ].map((tbl) => (
@@ -1015,6 +1011,7 @@ function LocalAdminDashboard() {
             else if (selectedTable === "orders") currentRows = orders.rows as unknown as Record<string, unknown>[];
             else if (selectedTable === "conversations") currentRows = conversations.rows as unknown as Record<string, unknown>[];
             else if (selectedTable === "wallet_transactions") currentRows = ledger.rows as unknown as Record<string, unknown>[];
+            else if (selectedTable === "admin_messages") currentRows = adminMsgs.rows as unknown as Record<string, unknown>[];
             else if (selectedTable === "kyc_records") currentRows = kyc.rows as unknown as Record<string, unknown>[];
             else if (selectedTable === "pro_applications") currentRows = applications.rows as unknown as Record<string, unknown>[];
 

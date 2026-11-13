@@ -101,7 +101,7 @@ export function Explorer({
         `${t.travelerName} ${t.origin} ${t.destination} ${t.transportLabel}`,
       ) &&
       (!destination || normalize(t.destination).includes(normalize(destination))) &&
-      (!date || t.departureDate === date) &&
+      (!date || t.departureDate >= date) &&
       (!vehicle || vehicleLabel(t) === vehicle) &&
       (capacity === null || t.availableKg >= capacity) &&
       (!size ||
@@ -113,12 +113,12 @@ export function Explorer({
   const filters = isRequests
     ? [
         { label: "Destination", value: destination },
-        { label: "Date", value: date },
-        { label: "Budget", value: budget },
+        { label: "Avant le", value: date },
+        { label: "Budget max", value: budget ? `${budget} €` : "" },
       ]
     : [
         { label: "Destination", value: destination },
-        { label: "Date", value: date },
+        { label: "À partir du", value: date },
         { label: "Véhicule", value: vehicle },
         { label: "Dimensions", value: size },
       ];
@@ -154,7 +154,6 @@ export function Explorer({
               aria-pressed={isRequests}
               onClick={() => {
                 onMode("requests");
-                reset();
               }}
             >
               Demandes d’achat
@@ -163,7 +162,6 @@ export function Explorer({
               aria-pressed={!isRequests}
               onClick={() => {
                 onMode("trips");
-                reset();
               }}
             >
               Transports
@@ -319,7 +317,7 @@ export function Explorer({
                   >
                     Tous
                   </button>
-                  {["Voiture", "Camionnette", "Bagage", "Avion", "Bateau"].map((v) => (
+                  {["Voiture", "Camionnette", "Bagage", "Avion", "Bateau", "Train & TGV"].map((v) => (
                     <button
                       key={v}
                       type="button"
@@ -437,21 +435,13 @@ export function Explorer({
                         </span>
                       </div>
                       <button
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          onRequest(r);
-                        }}
-                      >
-                        Voir la demande <ArrowRight size={17} />
-                      </button>
-                      <button
-                        className="go-button"
+                        className="go-button font-bold flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs"
                         onClick={(e) => {
                           e.stopPropagation();
                           onRequest(r);
                         }}
                       >
-                        Go ! <ArrowRight size={15} />
+                        Voir la demande <ArrowRight size={15} />
                       </button>
                     </div>
                   </article>
@@ -536,6 +526,7 @@ export function Explorer({
                             <p>
                               À partir de{" "}
                               <strong>{euro(t.startingPrice)}</strong>
+                              <span className="text-[11px] opacity-75 font-normal"> / kg</span>
                             </p>
                           )}
                         </div>
