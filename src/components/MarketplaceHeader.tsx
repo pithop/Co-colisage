@@ -124,66 +124,54 @@ export function MarketplaceHeader(props: Props) {
           </button>
         </div>
 
-        {/* Center: Clean Segmented Control (Colis | Trajets | Shopping) */}
-        <div
-          className="hidden md:inline-flex items-center p-1 rounded-2xl bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700"
-          role="radiogroup"
-          aria-label="Choisir la plateforme"
+        {/* Center: Clean Global App Navigation (Explorer | Radar | Suivi) */}
+        <nav
+          className="hidden md:inline-flex items-center p-1 rounded-2xl bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 gap-1"
+          aria-label="Navigation principale"
         >
-          <button
-            type="button"
-            role="radio"
-            aria-checked={activePlatform === "bagandgo"}
-            onClick={() => handleSelectPlatform("bagandgo")}
-            className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-              activePlatform === "bagandgo"
-                ? "bg-[#FFFFFF] dark:bg-slate-900 text-slate-900 dark:text-white border border-[#E2E8F0] dark:border-slate-700 shadow-2xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-            }`}
-          >
-            <Package
-              size={14}
-              className={activePlatform === "bagandgo" ? "text-[#2563EB]" : "text-slate-400"}
-            />
-            <span>Colis</span>
-          </button>
-
-          <button
-            type="button"
-            role="radio"
-            aria-checked={activePlatform === "voyageur"}
-            onClick={() => handleSelectPlatform("voyageur")}
-            className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-              activePlatform === "voyageur"
-                ? "bg-[#FFFFFF] dark:bg-slate-900 text-slate-900 dark:text-white border border-[#E2E8F0] dark:border-slate-700 shadow-2xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-            }`}
-          >
-            <Plane
-              size={14}
-              className={activePlatform === "voyageur" ? "text-[#2563EB]" : "text-slate-400"}
-            />
-            <span>Trajets</span>
-          </button>
-
-          <button
-            type="button"
-            role="radio"
-            aria-checked={activePlatform === "shopandgo"}
-            onClick={() => handleSelectPlatform("shopandgo")}
-            className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-              activePlatform === "shopandgo"
-                ? "bg-[#FFFFFF] dark:bg-slate-900 text-slate-900 dark:text-white border border-[#E2E8F0] dark:border-slate-700 shadow-2xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-            }`}
-          >
-            <ShoppingBag
-              size={14}
-              className={activePlatform === "shopandgo" ? "text-[#2563EB]" : "text-slate-400"}
-            />
-            <span>Shopping</span>
-          </button>
-        </div>
+          {[
+            {
+              id: "explore",
+              label: "Explorer",
+              Icon: Plane,
+              active:
+                route === "explore" ||
+                route === "voyageur" ||
+                route === "bagandgo" ||
+                route === "shopandgo",
+            },
+            {
+              id: "radar",
+              label: "Radar & Arbitrage",
+              Icon: Radio,
+              active: route === "radar" || route.startsWith("radar/"),
+            },
+            {
+              id: "tracking",
+              label: "Suivi & Docs",
+              Icon: Ticket,
+              active: route === "tracking",
+            },
+          ].map(({ id, label, Icon, active }) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => navigate(id)}
+              aria-current={active ? "page" : undefined}
+              className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                active
+                  ? "bg-[#FFFFFF] dark:bg-slate-900 text-slate-900 dark:text-white border border-[#E2E8F0] dark:border-slate-700 shadow-2xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-transparent"
+              }`}
+            >
+              <Icon
+                size={14}
+                className={active ? "text-[#2563EB]" : "text-slate-400"}
+              />
+              <span>{label}</span>
+            </button>
+          ))}
+        </nav>
 
         {/* Right: Primary Action Items */}
         <div className="flex items-center gap-2 sm:gap-3">

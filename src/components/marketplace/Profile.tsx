@@ -109,7 +109,6 @@ export function Profile({
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
     setIbanError("");
 
     if (profileForm.iban.trim() && !validBankDetails(profileForm.iban)) {
@@ -119,36 +118,38 @@ export function Profile({
 
     setSaveBusy(true);
     try {
-      const updatedUser = {
-        ...user,
-        name: profileForm.name,
-        phone: profileForm.phone,
-        city: profileForm.city,
-        homeAirport: profileForm.homeAirport,
-        bio: profileForm.bio,
-        iban: profileForm.iban,
-      };
-      await saveRecord("users", updatedUser);
-      await saveProfile({
-        id: user.id,
-        userId: user.id,
-        firstName: profileForm.name.split(" ")[0] || profileForm.name,
-        lastName: profileForm.name.split(" ").slice(1).join(" ") || "",
-        email: user.email,
-        phone: profileForm.phone,
-        city: profileForm.city,
-        country: user.country || "France",
-        bio: profileForm.bio,
-        homeAirport: profileForm.homeAirport,
-        preferredCorridors: [`${profileForm.city} → Alger ALG`],
-        iban: profileForm.iban,
-        phoneVerified: true,
-        emailVerified: true,
-        trustScore: user.trustScore || 98,
-        avatarUrl: user.avatar,
-        createdAt: user.createdAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      });
+      if (user) {
+        const updatedUser = {
+          ...user,
+          name: profileForm.name,
+          phone: profileForm.phone,
+          city: profileForm.city,
+          homeAirport: profileForm.homeAirport,
+          bio: profileForm.bio,
+          iban: profileForm.iban,
+        };
+        await saveRecord("users", updatedUser);
+        await saveProfile({
+          id: user.id,
+          userId: user.id,
+          firstName: profileForm.name.split(" ")[0] || profileForm.name,
+          lastName: profileForm.name.split(" ").slice(1).join(" ") || "",
+          email: user.email,
+          phone: profileForm.phone,
+          city: profileForm.city,
+          country: user.country || "France",
+          bio: profileForm.bio,
+          homeAirport: profileForm.homeAirport,
+          preferredCorridors: [`${profileForm.city} → Alger ALG`],
+          iban: profileForm.iban,
+          phoneVerified: true,
+          emailVerified: true,
+          trustScore: user.trustScore || 98,
+          avatarUrl: user.avatar,
+          createdAt: user.createdAt || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+      }
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
       setEditingProfile(false);
@@ -297,7 +298,7 @@ export function Profile({
               Choix de vos profils applicatifs
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Sélectionnez si vous souhaitez utiliser l'application comme Voyageur (Shop &amp; Go), Expéditeur (Bag &amp; Go), ou les deux.
+              Sélectionnez si vous souhaitez utiliser l'application comme Voyageur (Trajets &amp; Shopping), Expéditeur (Colis &amp; Achats), ou les deux.
             </p>
           </div>
           {isKycVerified ? (
@@ -321,20 +322,20 @@ export function Profile({
           {[
             {
               id: "voyageur" as const,
-              title: "Voyageur (Shop & Go)",
-              desc: "Rentabiliser mes kilos et faire des achats",
+              title: "Voyageur",
+              desc: "Rentabiliser mes kilos et réaliser des achats",
               reqKyc: true,
             },
             {
               id: "expediteur" as const,
-              title: "Expéditeur (Bag & Go)",
-              desc: "Trouver un voyageur et expédier mes colis",
+              title: "Expéditeur",
+              desc: "Envoyer des colis et commander en boutique",
               reqKyc: false,
             },
             {
               id: "both" as const,
               title: "Les 2 Profils",
-              desc: "Accès complet aux deux plateformes",
+              desc: "Accès complet Colis, Trajets & Shopping",
               reqKyc: true,
             },
           ].map((item) => {
@@ -360,10 +361,10 @@ export function Profile({
                     <Check size={11} strokeWidth={3} />
                   </div>
                 )}
-                <div className="font-semibold text-xs mb-1 flex items-center gap-1.5">
+                <div className="font-semibold text-xs mb-1 flex items-center flex-wrap gap-1.5 pr-5">
                   <span>{item.title}</span>
                   {item.reqKyc && !isKycVerified && (
-                    <span className="text-[9px] px-1 py-0.2 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-normal">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-semibold whitespace-nowrap">
                       KYC requis
                     </span>
                   )}

@@ -267,52 +267,38 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         }}
       />
 
-      {/* 1. Hero Photographic Banner */}
-      <section className="relative overflow-hidden rounded-[28px] bg-slate-950 text-white shadow-lg border border-slate-800/80">
-        <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105 opacity-40"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80')" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/50 sm:to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-black/20" />
-
-        <div className="relative p-5 sm:p-7 md:p-8 flex flex-col md:flex-row items-center justify-between gap-5">
-          <div className="space-y-3 max-w-xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-slate-200 text-xs font-semibold">
-              <Package size={13} className="text-blue-400" />
-              <span>Bag &amp; Go · Expédition de Colis Précise &amp; Multi-Modal</span>
+      {/* 1. Compact Action Hero Header */}
+      <section className="relative overflow-hidden rounded-2xl bg-[#0F172A] dark:bg-[#0B0F19] text-white shadow-xs border border-slate-800 p-5 sm:p-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div className="space-y-2.5 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-slate-200 text-[11px] font-semibold">
+                <Package size={12} className="text-[#2563EB]" />
+                <span>Bag &amp; Go · Expédition Multi-Modale</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
+                <ShieldCheck size={13} className="text-[#059669]" />
+                <span>Séquestre Stripe · Validation PIN &amp; QR · Poids IATA</span>
+              </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight drop-shadow-sm">
+            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
               Expédiez vos colis au millimètre près en toute confiance
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium max-w-lg">
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal max-w-xl">
               Renseignez les dimensions précises, le poids exact et vos exigences de sécurité. Séquestre bancaire Stripe et validation par code PIN unique.
             </p>
-
-            <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-slate-300">
-              <span className="inline-flex items-center gap-1.5 font-semibold">
-                <ShieldCheck size={14} className="text-emerald-400" />
-                <span>Séquestre Stripe sécurisé</span>
-              </span>
-              <span className="inline-flex items-center gap-1.5 font-semibold">
-                <Sparkles size={14} className="text-blue-400" />
-                <span>Validation PIN &amp; QR</span>
-              </span>
-              <span className="inline-flex items-center gap-1.5 font-semibold">
-                <Check size={14} className="text-blue-400" />
-                <span>Poids volumétrique IATA</span>
-              </span>
-            </div>
           </div>
 
-          <div className="hidden md:flex flex-col items-center justify-center p-5 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-slate-800 text-center shadow-xl min-w-[200px]">
-            <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-2.5">
-              <Package size={28} className="text-blue-400" />
+          <div className="hidden lg:flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/10 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#2563EB]/20 border border-[#2563EB]/30 flex items-center justify-center">
+              <Package size={20} className="text-[#2563EB]" />
             </div>
-            <span className="text-xs font-bold text-white tracking-wide uppercase">Colisage Garanti</span>
-            <span className="text-[11px] text-slate-400 mt-0.5">Avion · Voiture · Train · Bateau</span>
+            <div>
+              <div className="text-xs font-bold text-white uppercase tracking-wide">Colisage Garanti</div>
+              <div className="text-[11px] text-slate-400">Avion · Voiture · Train · Bateau</div>
+            </div>
           </div>
         </div>
       </section>
@@ -326,11 +312,11 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
       )}
 
       {/* 2-Segment Control: Expédier un colis vs Trouver un transporteur */}
-      <div className="flex items-center justify-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 max-w-md mx-auto border border-slate-200 dark:border-slate-700 shadow-xs">
+      <div className="flex items-center justify-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 max-w-lg mx-auto border border-slate-200 dark:border-slate-700 shadow-xs">
         <button
           type="button"
           onClick={() => setActiveView('send')}
-          className={`flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+          className={`flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-extrabold transition-all duration-200 flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer ${
             activeView === 'send'
               ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -343,14 +329,14 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         <button
           type="button"
           onClick={() => setActiveView('browse')}
-          className={`flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+          className={`flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-extrabold transition-all duration-200 flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer ${
             activeView === 'browse'
               ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
           <Truck size={16} className={activeView === 'browse' ? 'text-blue-600 dark:text-blue-400' : ''} />
-          <span>Transporteurs disponibles ({_trips.length})</span>
+          <span>Transporteurs ({_trips.length})</span>
         </button>
       </div>
 

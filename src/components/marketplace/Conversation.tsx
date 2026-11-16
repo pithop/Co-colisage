@@ -105,6 +105,8 @@ export function Conversation({
   const [delay, setDelay] = useState(false);
   const [copiedPin, setCopiedPin] = useState<string | null>(null);
   const [offerProposed, setOfferProposed] = useState(false);
+  const [editingOffer, setEditingOffer] = useState(false);
+  const [offerInput, setOfferInput] = useState("");
   const c = conversations.find((c) => c.id === activeId);
 
   const feed = useRef<HTMLDivElement>(null);
@@ -116,6 +118,8 @@ export function Conversation({
     setTracking(false);
     setDelay(false);
     setOfferProposed(false);
+    setEditingOffer(false);
+    setOfferInput("");
   }, [activeId]);
   useEffect(() => {
     feed.current?.scrollTo({ top: feed.current.scrollHeight });
@@ -193,30 +197,35 @@ export function Conversation({
     });
   };
 
-  const handleAdjustOffer = () => {
+  const openOfferEditor = () => {
     if (!c || c.stage !== "discussion") return;
-    const input = window.prompt(
-      "Proposer un montant pour cette mission (€) :",
-      String(c.amount),
-    );
-    if (input === null) return;
-    const newAmount = Number(input.replace(",", ".").trim() || c.amount);
-    if (Number.isFinite(newAmount) && newAmount > 0) {
-      setOfferProposed(true);
-      onUpdate({
-        ...c,
-        amount: newAmount,
-        serviceAmount: newAmount,
-        messages: [
-          ...c.messages,
-          createMessage(
-            `Nouvelle proposition de rémunération convenant aux deux parties : ${euro(newAmount)}.`,
-            true,
-          ),
-        ],
-      });
-      onNotice(`Montant de l'offre fixé à ${euro(newAmount)}. Vous pouvez maintenant séquestrer les fonds.`);
+    setOfferInput(String(c.amount || 25));
+    setEditingOffer(true);
+  };
+
+  const confirmOffer = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!c || c.stage !== "discussion") return;
+    const newAmount = Math.round(Number(offerInput.replace(",", ".").trim()) * 100) / 100;
+    if (!Number.isFinite(newAmount) || newAmount < 5) {
+      onNotice("Saisissez un montant valide d'au moins 5 €.");
+      return;
     }
+    setEditingOffer(false);
+    setOfferProposed(true);
+    onUpdate({
+      ...c,
+      amount: newAmount,
+      serviceAmount: newAmount,
+      messages: [
+        ...c.messages,
+        createMessage(
+          `Nouvelle proposition de rémunération convenant aux deux parties : ${euro(newAmount)}.`,
+          true,
+        ),
+      ],
+    });
+    onNotice(`Montant de l'offre fixé à ${euro(newAmount)}. Vous pouvez maintenant séquestrer les fonds.`);
   };
 
   return (
@@ -336,11 +345,41 @@ export function Conversation({
 
               {!c.resolution && (
                 <div className="w-full sm:w-auto flex flex-wrap items-center justify-end gap-2 shrink-0">
-                  {c.stage === "discussion" && !offerProposed && (
+                  {c.stage === "discussion" && editingOffer ? (
+                    <form onSubmit={confirmOffer} className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                      <label className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-[#2563EB] bg-[#F8FAFC] text-slate-900">
+                        <input
+                          type="number"
+                          min={5}
+                          step={1}
+                          autoFocus
+                          aria-label="Montant de l'offre en euros"
+                          value={offerInput}
+                          onChange={(e) => setOfferInput(e.target.value)}
+                          className="w-20 bg-transparent text-xs font-extrabold outline-none tabular-nums"
+                        />
+                        <span className="text-xs font-bold text-slate-500">€</span>
+                      </label>
+                      <button
+                        type="submit"
+                        className="inline-flex items-center gap-1 px-3.5 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold cursor-pointer whitespace-nowrap"
+                      >
+                        <Check size={14} />
+                        Valider
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingOffer(false)}
+                        className="px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] hover:bg-slate-50 text-slate-600 text-xs font-semibold cursor-pointer"
+                      >
+                        Annuler
+                      </button>
+                    </form>
+                  ) : c.stage === "discussion" && !offerProposed ? (
                     <>
                       <button
                         type="button"
-                        onClick={handleAdjustOffer}
+                        onClick={openOfferEditor}
                         className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-xs transition-all cursor-pointer whitespace-nowrap"
                       >
                         <span>Faire une offre</span>
@@ -355,13 +394,13 @@ export function Conversation({
                         <span>Séquestrer les fonds</span>
                       </button>
                     </>
-                  )}
+                  ) : null}
 
-                  {c.stage === "discussion" && offerProposed && (
+                  {c.stage === "discussion" && offerProposed && !editingOffer && (
                     <>
                       <button
                         type="button"
-                        onClick={handleAdjustOffer}
+                        onClick={openOfferEditor}
                         className="px-3 py-2 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 text-slate-600 text-xs font-semibold transition-all cursor-pointer whitespace-nowrap"
                       >
                         Modifier l’offre

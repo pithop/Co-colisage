@@ -242,11 +242,13 @@ export function TrackingPage({
   requests = [],
   trips = [],
   loading = false,
+  onUpdateConversation,
 }: {
   conversations: ConversationData[];
   requests?: PurchaseRequest[];
   trips?: Trip[];
   loading?: boolean;
+  onUpdateConversation?: (c: ConversationData) => void;
 }) {
   const { user } = useAuth();
   const [filter, setFilter] = useState<"active" | "delivered" | "all">("active");
@@ -266,6 +268,7 @@ export function TrackingPage({
     context: TransportContext;
   }>();
   const [showDemo, setShowDemo] = useState(true);
+  const [releasedDemoIds, setReleasedDemoIds] = useState<string[]>([]);
 
   // Real user shipments
   const userShipments = conversations.filter(
@@ -312,7 +315,11 @@ export function TrackingPage({
   const hasUserShipments = userShipments.length > 0;
   const isDemonstrationMode = !hasUserShipments || showDemo;
 
-  const demoItems = DEMO_SHIPMENTS.map((d) => d.conversation);
+  const demoItems = DEMO_SHIPMENTS.map((d) =>
+    releasedDemoIds.includes(d.conversation.id)
+      ? { ...d.conversation, stage: "delivered" as const }
+      : d.conversation,
+  );
   const allAvailable = hasUserShipments
     ? showDemo
       ? [...userShipments, ...demoItems]
@@ -343,10 +350,8 @@ export function TrackingPage({
           <span className="bv-eyebrow text-[#059669]">
             <Package size={14} /> VOTRE ESPACE LOGISTIQUE &amp; SUIVI SATELLITE
           </span>
-          <h1>
-            Chaque colis.
-            <br />
-            <em>Une histoire à suivre en direct.</em>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mt-1">
+            Chaque colis, suivi en direct.
           </h1>
           <p>
             De la pesée au départ jusqu'à la remise avec code PIN, suivez vos
@@ -413,28 +418,35 @@ export function TrackingPage({
           {
             label: "Expéditions en cours",
             value: active.length,
+            isText: false,
             Icon: Truck,
           },
           {
             label: "Livraisons confirmées",
             value: complete.length,
+            isText: false,
             Icon: Check,
           },
           {
             label: "Tiroir Documents & Douane",
             value: "Passe Fret · Lettre · Douane",
+            isText: true,
             Icon: FileText,
           },
-        ].map(({ label, value, Icon }) => (
+        ].map(({ label, value, isText, Icon }) => (
           <section
             key={label}
-            className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5"
+            className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 flex flex-col justify-between"
           >
-            <div>
+            <div className="flex items-center justify-between gap-2">
               <span>{label}</span>
-              <Icon size={18} className="text-[#059669]" />
+              <Icon size={18} className="text-[#059669] shrink-0" />
             </div>
-            <strong className="tabular-nums">{value}</strong>
+            {isText ? (
+              <p className="text-sm font-bold text-slate-800 mt-2 mb-0">{value}</p>
+            ) : (
+              <strong className="tabular-nums">{value}</strong>
+            )}
           </section>
         ))}
       </div>
@@ -957,17 +969,49 @@ export function TrackingPage({
           conversation={pinModalContext.conversation}
           onClose={() => setPinModalContext(null)}
           onSuccessFinished={async () => {
-            const cid = pinModalContext.conversation.id;
+            const targetConv = pinModalContext.conversation;
+            const cid = targetConv.id;
+            const now = new Date().toISOString();
             try {
               await releaseEscrowToCarrier(cid);
               await saveRecord("orders", {
                 id: `ord-${cid}`,
                 conversationId: cid,
                 status: "delivered",
-                updatedAt: new Date().toISOString(),
+                updatedAt: now,
               });
             } catch (err) {
               console.warn("Failed to update order state after PIN release:", err);
+            }
+            if (DEMO_SHIPMENTS.some((d) => d.conversation.id === cid)) {
+              setReleasedDemoIds((curr) => (curr.includes(cid) ? curr : [...curr, cid]));
+            }
+            if (conversations.some((c) => c.id === cid) && onUpdateConversation) {
+              onUpdateConversation({
+                ...targetConv,
+                stage: "delivered",
+                handovers: [
+                  ...(targetConv.handovers || []),
+                  {
+                    stage: "delivery",
+                    at: now,
+                    place: "Validation PIN destinataire",
+                    method: "pin",
+                  },
+                ],
+                messages: [
+                  ...targetConv.messages,
+                  {
+                    id: crypto.randomUUID(),
+                    text: "Code PIN à 4 chiffres validé dans le suivi logistique : livraison confirmée et séquestre libéré.",
+                    mine: true,
+                    time: new Date().toLocaleTimeString("fr-FR", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }),
+                  },
+                ],
+              });
             }
             setPinModalContext(null);
           }}

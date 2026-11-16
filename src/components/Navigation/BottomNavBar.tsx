@@ -4,11 +4,18 @@ import { useAuth } from "../../context/AuthContext";
 interface Props {
   route: string;
   unreadMessagesCount?: number;
+  unreadNotificationsCount?: number;
   navigate: (route: string) => void;
   onNotifications?: () => void;
 }
 
-export function BottomNavBar({ route, unreadMessagesCount = 0, navigate, onNotifications }: Props) {
+export function BottomNavBar({
+  route,
+  unreadMessagesCount = 0,
+  unreadNotificationsCount = 0,
+  navigate,
+  onNotifications,
+}: Props) {
   const { activePlatform } = useAuth();
 
   const isCurrent = (key: string) => {
@@ -65,7 +72,7 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate, onNotif
           {isCurrent("home") && <span className="nav-tab-active-pill" aria-hidden="true" />}
         </button>
 
-        {/* Tab 2: Mes commandes (Shop&Go) ou Mes missions (Bag&Go / Voyageur) */}
+        {/* Tab 2: Mes achats (Shop&Go) ou Mes missions (Bag&Go / Voyageur) */}
         <button
           type="button"
           className={`mobile-nav-tab ${isCurrent("missions") ? "active active-blue" : ""}`}
@@ -83,7 +90,7 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate, onNotif
               <Luggage size={20} className="nav-tab-icon" aria-hidden="true" />
             )}
           </span>
-          <span className="nav-tab-label">{isShop ? "Mes commandes" : "Mes missions"}</span>
+          <span className="nav-tab-label">{isShop ? "Mes achats" : "Mes missions"}</span>
           {isCurrent("missions") && <span className="nav-tab-active-pill" aria-hidden="true" />}
         </button>
 
@@ -124,9 +131,14 @@ export function BottomNavBar({ route, unreadMessagesCount = 0, navigate, onNotif
         >
           <span className="nav-tab-icon-wrap">
             <Bell size={20} className="nav-tab-icon" aria-hidden="true" />
-            <span className="nav-tab-badge" aria-label="2 notifications non lues">
-              2
-            </span>
+            {unreadNotificationsCount > 0 && (
+              <span
+                className="nav-tab-badge"
+                aria-label={`${unreadNotificationsCount} notifications non lues`}
+              >
+                {unreadNotificationsCount > 9 ? "9+" : unreadNotificationsCount}
+              </span>
+            )}
           </span>
           <span className="nav-tab-label">Notifications</span>
           {isCurrent("notifications") && <span className="nav-tab-active-pill" aria-hidden="true" />}

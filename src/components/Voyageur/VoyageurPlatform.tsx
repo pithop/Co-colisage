@@ -17,7 +17,7 @@ import {
   Train,
   Truck,
 } from "lucide-react";
-import { PurchaseRequest, Trip } from "../../data/marketplace";
+import { PurchaseRequest, Trip, normalize } from "../../data/marketplace";
 import { useAuth } from "../../context/AuthContext";
 import { LuggageVisualizer, VisualizerTransportMode } from "../marketplace/LuggageVisualizer";
 import { CityAutocomplete } from "../common/CityAutocomplete";
@@ -168,7 +168,7 @@ function makeSampleTrip(base: Partial<Trip> & Pick<Trip, "id" | "title" | "origi
 }
 
 // Rich multi-modal mock trips so each mode has realistic listings
-const MULTI_MODAL_SAMPLE_TRIPS: Record<TransportMode, Trip[]> = {
+export const MULTI_MODAL_SAMPLE_TRIPS: Record<TransportMode, Trip[]> = {
   avion: [
     makeSampleTrip({
       id: "trip-air-1",
@@ -351,14 +351,14 @@ export function VoyageurPlatform({
   const currentConfig = MODE_CONFIGS[selectedMode];
   const ModeIcon = currentConfig.icon;
 
-  // Search states initialized per mode
-  const [departureLocation, setDepartureLocation] = useState(currentConfig.departurePresets[0]);
-  const [arrivalLocation, setArrivalLocation] = useState(currentConfig.arrivalPresets[0]);
-  const [travelDate, setTravelDate] = useState("2026-12-08");
-  const [referenceNumber, setReferenceNumber] = useState(selectedMode === "avion" ? "AF1432" : "");
+  // Search states initialized cleanly without fake defaults
+  const [departureLocation, setDepartureLocation] = useState("");
+  const [arrivalLocation, setArrivalLocation] = useState("");
+  const [travelDate, setTravelDate] = useState("");
+  const [referenceNumber, setReferenceNumber] = useState("");
 
   // Dual action intention: 'send_parcel' | 'find_luggage'
-  const [selectedIntent, setSelectedIntent] = useState<"send_parcel" | "find_luggage">("send_parcel");
+  const [selectedIntent, setSelectedIntent] = useState<"send_parcel" | "find_luggage">("find_luggage");
 
   // Filter state
   const [hasSearched, setHasSearched] = useState(false);
@@ -367,41 +367,46 @@ export function VoyageurPlatform({
   // Switch transport mode handler
   const handleModeChange = (mode: TransportMode) => {
     setSelectedMode(mode);
-    const cfg = MODE_CONFIGS[mode];
-    setDepartureLocation(cfg.departurePresets[0]);
-    setArrivalLocation(cfg.arrivalPresets[0]);
-    setReferenceNumber(mode === "avion" ? "AF1432" : "");
-    setHasSearched(false);
   };
 
-  // Combine real trips matching transportType with sample trips for the selected mode
-  const modeTrips = [
-    ...trips.filter((t) => t.transportType === selectedMode),
-    ...(MULTI_MODAL_SAMPLE_TRIPS[selectedMode] || []),
-  ];
+  // Combine real trips matching transportType with sample trips for the selected mode (deduplicated)
+  const userModeTrips = trips.filter((t) => t.transportType === selectedMode);
+  const sampleModeTrips = (MULTI_MODAL_SAMPLE_TRIPS[selectedMode] || []).filter(
+    (sample) => !userModeTrips.some((real) => real.id === sample.id),
+  );
+  const modeTrips = [...userModeTrips, ...sampleModeTrips];
 
-  // Filter available trips based on search query
+  const isFiltered = Boolean(
+    hasSearched || departureLocation.trim() || arrivalLocation.trim() || travelDate || referenceNumber.trim(),
+  );
+
+  const matchCityOrCode = (targetText: string, code: string | undefined, query: string) => {
+    const cleanQuery = normalize(query.split("(")[0].trim());
+    if (!cleanQuery) return true;
+    const haystack = normalize(`${targetText} ${code || ""}`);
+    return haystack.includes(cleanQuery) || normalize(query.trim()).split(/\s+/).some((w) => w.length >= 2 && haystack.includes(w));
+  };
+
+  // Filter available trips based on search query (city/IATA, date >= travelDate, flight/vehicle reference)
   const filteredTrips = modeTrips.filter((t) => {
-    if (!hasSearched) return true;
-    const matchOrigin =
-      !departureLocation ||
-      t.origin.toLowerCase().includes(departureLocation.toLowerCase().split("(")[0].trim());
-    const matchDest =
-      !arrivalLocation ||
-      t.destination.toLowerCase().includes(arrivalLocation.toLowerCase().split("(")[0].trim());
-    return matchOrigin && matchDest;
+    if (!isFiltered) return true;
+    const matchOrigin = matchCityOrCode(t.origin, t.originCode, departureLocation);
+    const matchDest = matchCityOrCode(t.destination, t.destinationCode, arrivalLocation);
+    const matchDate = !travelDate || !t.departureDate || t.departureDate >= travelDate;
+    const refQuery = normalize(referenceNumber.trim());
+    const matchRef =
+      !refQuery ||
+      normalize(`${t.flightNumber || ""} ${t.transportLabel || ""} ${t.title || ""}`).includes(refQuery);
+    return matchOrigin && matchDest && matchDate && matchRef;
   });
 
   // Filter available requests (parcels & shopping) based on search query
   const filteredRequests = requests.filter((r) => {
-    if (!hasSearched) return true;
-    const matchOrigin =
-      !departureLocation ||
-      r.origin.toLowerCase().includes(departureLocation.toLowerCase().split("(")[0].trim());
-    const matchDest =
-      !arrivalLocation ||
-      r.destination.toLowerCase().includes(arrivalLocation.toLowerCase().split("(")[0].trim());
-    return matchOrigin && matchDest;
+    if (!isFiltered) return true;
+    const matchOrigin = matchCityOrCode(r.origin, r.originCode, departureLocation);
+    const matchDest = matchCityOrCode(r.destination, r.destinationCode, arrivalLocation);
+    const matchDate = !travelDate || !r.date || r.date >= travelDate;
+    return matchOrigin && matchDest && matchDate;
   });
 
   return (
@@ -457,30 +462,38 @@ export function VoyageurPlatform({
         </div>
       </nav>
 
-      {/* 2. Hero Photographic Banner */}
-      <section className="relative overflow-hidden rounded-2xl bg-[#0F172A] dark:bg-[#0B0F19] text-white shadow-xs border border-slate-800 p-6 sm:p-8 md:p-10">
-        <div className="relative z-10 space-y-3.5 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-slate-200 text-xs font-semibold">
-            <Sparkles size={14} className="text-[#059669] shrink-0" />
-            <span>Espace Voyageur Multi-Modal · {currentConfig.label}</span>
+      {/* 2. Compact Action Hero Header */}
+      <section className="relative overflow-hidden rounded-2xl bg-[#0F172A] dark:bg-[#0B0F19] text-white shadow-xs border border-slate-800 p-5 sm:p-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div className="space-y-2.5 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-slate-200 text-[11px] font-semibold">
+                <Sparkles size={12} className="text-[#059669] shrink-0" />
+                <span>Espace Voyageur · {currentConfig.label}</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
+                <ShieldCheck size={13} className="text-[#059669]" />
+                <span>Séquestre Stripe · Identité &amp; Billets vérifiés · PIN livraison</span>
+              </span>
+            </div>
+
+            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
+              {currentConfig.heroHeadline}
+            </h1>
+
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal max-w-xl">
+              {currentConfig.heroSubtitle}
+            </p>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
-            {currentConfig.heroHeadline}
-          </h1>
-
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-            {currentConfig.heroSubtitle}
-          </p>
-
-          <div className="flex flex-wrap items-center gap-3 pt-2">
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             {onPublishTrip && (
               <button
                 type="button"
                 onClick={onPublishTrip}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm shadow-xs transition-all active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm shadow-xs transition-all active:scale-95 cursor-pointer"
               >
-                <Plus size={16} strokeWidth={2.5} />
+                <Plus size={15} strokeWidth={2.5} />
                 <span>Proposer un trajet {currentConfig.shortLabel}</span>
               </button>
             )}
@@ -488,28 +501,12 @@ export function VoyageurPlatform({
               <button
                 type="button"
                 onClick={onScanBoardingPass}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white/10 hover:bg-white/15 text-white backdrop-blur-md border border-white/15 font-semibold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-white border border-white/15 font-semibold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
               >
-                <Scan size={16} className="text-slate-300" />
+                <Scan size={15} className="text-slate-300" />
                 <span>Scanner billet IATA</span>
               </button>
             )}
-          </div>
-
-          {/* Trust Guarantees */}
-          <div className="flex flex-wrap items-center gap-4 pt-3 text-[11px] text-slate-400 font-medium border-t border-slate-800/80">
-            <span className="flex items-center gap-1.5">
-              <ShieldCheck size={14} className="text-[#059669]" />
-              <span>Séquestre Stripe garanti</span>
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Check size={14} className="text-[#059669]" />
-              <span>Identité &amp; Billets vérifiés</span>
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Sparkles size={14} className="text-[#059669]" />
-              <span>Code PIN secret de livraison</span>
-            </span>
           </div>
         </div>
       </section>
@@ -612,7 +609,10 @@ export function VoyageurPlatform({
               <input
                 type="text"
                 value={referenceNumber}
-                onChange={(e) => setReferenceNumber(e.target.value)}
+                onChange={(e) => {
+                  setReferenceNumber(e.target.value);
+                  setHasSearched(true);
+                }}
                 placeholder={currentConfig.identifierPlaceholder}
                 className="w-full bg-transparent font-semibold text-xs sm:text-sm text-slate-900 dark:text-white outline-none"
               />
@@ -654,12 +654,15 @@ export function VoyageurPlatform({
               {corridor.from} → {corridor.to}
             </button>
           ))}
-          {(departureLocation || arrivalLocation) && (
+          {(departureLocation || arrivalLocation || travelDate || referenceNumber || selectedCorridor) && (
             <button
               type="button"
               onClick={() => {
+                setSelectedCorridor("");
                 setDepartureLocation("");
                 setArrivalLocation("");
+                setTravelDate("");
+                setReferenceNumber("");
                 setHasSearched(false);
               }}
               className="text-[11px] font-semibold text-slate-500 hover:underline ml-auto cursor-pointer"
@@ -780,11 +783,18 @@ export function VoyageurPlatform({
             </span>
           </h2>
 
-          {hasSearched && (
+          {isFiltered && (
             <button
               type="button"
-              onClick={() => setHasSearched(false)}
-              className="text-xs font-semibold text-slate-600 dark:text-slate-400 hover:underline flex items-center gap-1 cursor-pointer"
+              onClick={() => {
+                setSelectedCorridor("");
+                setDepartureLocation("");
+                setArrivalLocation("");
+                setTravelDate("");
+                setReferenceNumber("");
+                setHasSearched(false);
+              }}
+              className="text-xs font-semibold text-[#2563EB] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>Voir tout</span>
               <ChevronRight size={14} />

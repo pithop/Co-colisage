@@ -50,6 +50,17 @@ export function useProductionStore<K extends StoreName>(
         if (failed.current) return;
         const rows = await getAll(store);
         if (!active || version !== revision.current) return;
+        if (!rows.length && initial.length > 0) {
+          previous.current = new Map(
+            initial.map((row) => [row.id, JSON.stringify(row)]),
+          );
+          await saveRecords(store, initial);
+          if (!active) return;
+          setItems(initial);
+          setReady(true);
+          setError("");
+          return;
+        }
         previous.current = new Map(
           rows.map((row) => [row.id, JSON.stringify(row)]),
         );

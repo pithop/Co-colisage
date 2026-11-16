@@ -284,7 +284,7 @@ export function WalletView({
                 type="button"
                 onClick={() => setTransferOpen(true)}
                 disabled={available <= 0}
-                className="px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white text-xs font-bold transition-colors cursor-pointer disabled:cursor-not-allowed shrink-0"
+                className="px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-blue-700 disabled:bg-slate-100 disabled:text-slate-500 disabled:border disabled:border-[#E2E8F0] text-white text-xs font-bold transition-colors cursor-pointer disabled:cursor-not-allowed shrink-0"
               >
                 Virer
               </button>

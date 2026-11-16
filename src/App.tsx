@@ -14,6 +14,7 @@ import {
   requests as initialRequests,
   trips as initialTrips,
   euro,
+  type PurchaseRequest,
 } from "./data/marketplace";
 import { FreightItem } from "./types";
 import { useProductionStore } from "./hooks/useProductionStore";
@@ -34,7 +35,7 @@ import {
 import { Explorer } from "./components/marketplace/Explorer";
 import { ShopAndGoPlatform } from "./components/ShopAndGo/ShopAndGoPlatform";
 import { BagAndGoPlatform } from "./components/BagAndGo/BagAndGoPlatform";
-import { VoyageurPlatform } from "./components/Voyageur/VoyageurPlatform";
+import { MULTI_MODAL_SAMPLE_TRIPS, VoyageurPlatform } from "./components/Voyageur/VoyageurPlatform";
 import { RequestDetails, TripDetails } from "./components/marketplace/Details";
 import { Profile, Intention } from "./components/marketplace/Profile";
 import { Publish } from "./components/marketplace/Publish";
@@ -158,10 +159,19 @@ function routeFromLocation() {
     return hash;
   }
   const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
-  if (pathname === "/app") return "explore";
+  if (pathname === "/app" || pathname === "/explore") return "explore";
   if (pathname === "/voyageur") return "voyageur";
   if (pathname === "/shopandgo" || pathname === "/shop-and-go") return "shopandgo";
   if (pathname === "/bagandgo" || pathname === "/bag-and-go") return "bagandgo";
+  if (pathname === "/messages") return "messages";
+  if (pathname === "/tracking") return "tracking";
+  if (pathname === "/wallet") return "wallet";
+  if (pathname === "/radar" || pathname.startsWith("/radar/")) return pathname.slice(1);
+  if (pathname === "/profile") return "profile";
+  if (pathname === "/login") return "login";
+  if (pathname === "/register") return "register";
+  if (pathname === "/arbitrage" || pathname.startsWith("/arbitrage/")) return pathname.slice(1);
+  if (pathname === "/admin") return "admin";
   if (pathname === "/download") return "download";
   if (pathname.includes("/comment-ca-marche") || pathname.includes("/how-it-works")) return "how-it-works";
   if (pathname.includes("/tarifs") || pathname.includes("/pricing")) return "pricing";
@@ -395,11 +405,42 @@ function Marketplace() {
   const [dealError, setDealError] = useState("");
   const [dealPending, setDealPending] = useState(false);
   const [notice, setNotice] = useState("");
+  const sampleTripsFlat = useMemo(
+    () => Object.values(MULTI_MODAL_SAMPLE_TRIPS).flat(),
+    [],
+  );
+  const sampleRequestsFlat = useMemo<PurchaseRequest[]>(
+    () =>
+      products.map((p) => ({
+        id: p.id,
+        title: p.name,
+        origin: p.originCity || "Paris (CDG)",
+        destination: p.destination || "Alger (ALG)",
+        date: p.deliveryPeriod || new Date().toISOString().slice(0, 10),
+        budget: Math.round(p.price + (p.gain || 25) + 10),
+        reward: p.gain || 25,
+        serviceGross: p.price,
+        platformFee: 10,
+        image: p.image,
+        buyer: "Client Boutique Vérifié",
+        buyerAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+        specifications: `Articles: 1x ${p.name} · Boutique: ${p.originStore} · Franchise Duty-Free appliquée · Reçu fiscal garanti`,
+        location: `${p.originCity || "Paris"} → ${p.destination || "Alger"}`,
+        kind: "shopping",
+        status: "available",
+        flexibility: "deadline",
+        declaredValue: p.price,
+        declaredCurrency: "EUR",
+      })),
+    [],
+  );
   const selectedRequest = route.startsWith("request/")
-    ? requests.find((r) => r.id === route.slice(8))
+    ? requests.find((r) => r.id === route.slice(8)) ||
+      sampleRequestsFlat.find((r) => r.id === route.slice(8))
     : undefined;
   const selectedTrip = route.startsWith("trip/")
-    ? trips.find((t) => t.id === route.slice(5))
+    ? trips.find((t) => t.id === route.slice(5)) ||
+      sampleTripsFlat.find((t) => t.id === route.slice(5))
     : undefined;
   const radar = route === "radar" || route.startsWith("radar/");
   const loginPage = route === "login";
@@ -690,6 +731,7 @@ function Marketplace() {
                 requests={requests}
                 trips={trips}
                 loading={!storageReady}
+                onUpdateConversation={updateConversation}
               />
             )}
           </Suspense>
@@ -1149,7 +1191,12 @@ function Marketplace() {
       {!landing && !isSeoPage && (
         <BottomNavBar
           route={route}
-          unreadMessagesCount={unreadCount}
+          unreadMessagesCount={
+            conversations.filter(
+              (c) => c.messages.length > 0 && !c.messages[c.messages.length - 1]?.mine,
+            ).length
+          }
+          unreadNotificationsCount={unreadCount}
           navigate={navigate}
           onNotifications={() => setNotificationsOpen(true)}
         />

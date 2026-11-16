@@ -1,38 +1,33 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
+  ArrowLeftRight,
   ArrowRight,
   ArrowUpRight,
-  Plane,
-  Package,
-  ShoppingBag,
-  ShieldCheck,
-  ScanLine,
-  Video,
-  Globe2,
-  ArrowLeftRight,
-  Bell,
-  Smartphone,
-  Ticket,
-  WifiOff,
-  LockKeyhole,
-  Check,
-  Fingerprint,
-  Signal,
   BatteryFull,
-  ChevronLeft,
-  ChevronRight,
-  ReceiptText,
-  CircleCheck,
-  CircleMinus,
-  Menu,
-  MapPin,
+  Bell,
   Calendar,
   Car,
-  Ship,
-  Coins,
-  Clock,
-  Receipt,
+  Check,
   CheckCircle2,
+  CircleCheck,
+  CircleMinus,
+  Coins,
+  Globe2,
+  LockKeyhole,
+  MapPin,
+  Menu,
+  Package,
+  Plane,
+  Receipt,
+  ScanLine,
+  ShieldCheck,
+  Ship,
+  ShoppingBag,
+  Signal,
+  Smartphone,
+  Ticket,
+  Video,
+  WifiOff,
 } from "lucide-react";
 import { AppStoreBadges } from "./AppStoreBadges";
 import {
@@ -42,23 +37,10 @@ import {
 import { ThemeToggle } from "../common/ThemeToggle";
 import { CityAutocomplete } from "../common/CityAutocomplete";
 import { LandingMobileMenu } from "../Navigation/LandingMobileMenu";
+
 const copy = {
   fr: {
-    eyebrow: "LES DISTANCES CHANGENT. LES LIENS RESTENT.",
-    title: "Le monde est grand.",
-    accent: "Rapprochons-le.",
-    intro:
-      "Un colis pour vos proches. Une trouvaille introuvable. Une place dans votre valise. Chaque voyage ouvre une possibilité.",
     cta: "Lancer l’application",
-    simulate: "Et si votre prochain voyage rapportait ?",
-    from: "Départ",
-    to: "Destination",
-    need: "Votre besoin",
-    parcel: "Colis",
-    shop: "Shop & Go",
-    weight: "Poids à transporter",
-    gain: "Gain net estimé du voyageur",
-    cost: "Budget transport estimé",
     compare: "Moins de frais. Plus de proximité.",
     compareText:
       "Faites le calcul avec votre propre devis. Le bon choix commence par des chiffres clairs.",
@@ -67,36 +49,11 @@ const copy = {
     saving: "Économie estimée",
     universes: "Trois façons de faire le lien.",
     trust: "La confiance se construit, à chaque étape.",
-    faq: "Avant de faire vos valises.",
+    faq: "Questions fréquentes.",
     end: "Votre prochaine destination\na déjà quelqu’un qui vous attend.",
-    demo: "Réseau certifié · Chiffres consolidés de la plateforme BagVoyage",
-    estimated:
-      "Simulation indicative, sans engagement. Hors douane et taxes. Prix final convenu avec le voyageur.",
-    source:
-      "Le comparatif utilise le devis que vous renseignez, sans tarification opérateur connectée.",
-    metricLabels: [
-      "GMV sécurisée sous séquestre",
-      "Kilogrammes acheminés",
-      "Transit moyen",
-      "Taux de réussite",
-    ],
   },
   en: {
-    eyebrow: "DISTANCE CHANGES. CONNECTIONS STAY.",
-    title: "It’s a big world.",
-    accent: "Bring it closer.",
-    intro:
-      "A parcel for someone you love. A hard-to-find purchase. A little room in your suitcase. Every journey opens a possibility.",
     cta: "Open the app",
-    simulate: "What could your next journey earn?",
-    from: "Departure",
-    to: "Destination",
-    need: "Your need",
-    parcel: "Parcel",
-    shop: "Shop & Go",
-    weight: "Weight to carry",
-    gain: "Estimated net traveller earnings",
-    cost: "Estimated transport budget",
     compare: "Lower costs. Closer connections.",
     compareText:
       "Compare with your own quote. Clear numbers make better decisions.",
@@ -105,21 +62,11 @@ const copy = {
     saving: "Estimated savings",
     universes: "Three ways to connect.",
     trust: "Trust, built at every step.",
-    faq: "Before you pack.",
+    faq: "Frequently asked questions.",
     end: "Someone is waiting\nat your next destination.",
-    demo: "Certified network · Consolidated BagVoyage platform figures",
-    estimated:
-      "Illustrative estimate. Excludes customs duties and taxes. Final price agreed with the traveller.",
-    source:
-      "Comparison uses the quote you enter, with no live carrier pricing connection.",
-    metricLabels: [
-      "GMV held in escrow",
-      "Kilograms delivered",
-      "Average transit",
-      "Success rate",
-    ],
   },
 };
+
 const faqs = {
   fr: [
     [
@@ -174,8 +121,7 @@ const faqs = {
     ],
   ],
 };
-// Decorative specimen: this preview is not a scannable boarding credential.
-// A single SVG path keeps both pass previews lightweight during slider updates.
+
 const barcodePath = Array.from({ length: 12 }, (_, row) =>
   Array.from({ length: 80 }, (_, column) =>
     column < 3 ||
@@ -189,7 +135,7 @@ const barcodePath = Array.from({ length: 12 }, (_, row) =>
 function PassBarcode() {
   return (
     <svg
-      className="pass-barcode"
+      className="w-full h-10 text-slate-900"
       viewBox="0 0 240 48"
       fill="currentColor"
       aria-hidden="true"
@@ -197,74 +143,6 @@ function PassBarcode() {
     >
       <path d={barcodePath} />
     </svg>
-  );
-}
-
-const airportCodes: Record<string, string> = {
-  Paris: "CDG",
-  Alger: "ALG",
-  Marseille: "MRS",
-  Oran: "ORN",
-  Montréal: "YUL",
-  Lyon: "LYS",
-  Constantine: "CZL",
-};
-
-function AnimatedMetricNumber({
-  target,
-  prefix = "",
-  suffix = "",
-  decimals = 0,
-  liveIncrement = 0,
-  isVisible,
-}: {
-  target: number;
-  prefix?: string;
-  suffix?: string;
-  decimals?: number;
-  liveIncrement?: number;
-  isVisible: boolean;
-}) {
-  const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    if (!isVisible) return;
-    let startTime: number | null = null;
-    const duration = 1600;
-    let frameId: number;
-
-    const animate = (time: number) => {
-      if (startTime === null) startTime = time;
-      const elapsed = time - startTime;
-      const progress = Math.min(1, elapsed / duration);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      setCurrent(ease * target);
-
-      if (progress < 1) {
-        frameId = requestAnimationFrame(animate);
-      } else {
-        setCurrent(target);
-      }
-    };
-
-    frameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frameId);
-  }, [isVisible, target]);
-
-  const valueToDisplay =
-    current >= target && liveIncrement > 0 ? target + liveIncrement : current;
-
-  const formatted =
-    decimals > 0
-      ? valueToDisplay.toFixed(decimals)
-      : Math.round(valueToDisplay).toLocaleString("fr-FR");
-
-  return (
-    <strong className="tabular-nums">
-      {prefix}
-      {formatted}
-      {suffix}
-    </strong>
   );
 }
 
@@ -281,21 +159,17 @@ export function AwwwardsLanding({
 }) {
   const [language, setLanguage] = useState<"fr" | "en">(initialLanguage);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Comparateur & Corridors
   const [origin, setOrigin] = useState("Paris");
   const [destination, setDestination] = useState("Alger");
-  const [need, setNeed] = useState("parcel");
+  const [need, setNeed] = useState<"parcel" | "shop">("parcel");
   const [weight, setWeight] = useState(5);
   const [competitor, setCompetitor] = useState("DHL");
   const [customQuote, setCustomQuote] = useState<number | null>(null);
   const [hasCustomQuote, setHasCustomQuote] = useState(false);
-  const activityRef = useRef<HTMLDivElement>(null);
-  const metricsRef = useRef<HTMLElement>(null);
-  const [metricsVisible, setMetricsVisible] = useState(false);
-  const [liveMetricsOffset, setLiveMetricsOffset] = useState({ volume: 0, weight: 0 });
-  const [hasNewTick, setHasNewTick] = useState(false);
-  const [routeTurns, setRouteTurns] = useState(0);
 
-  // Elite Tri-Modal Hero Console State
+  // Tri-Modal Hero Console State
   const [heroMode, setHeroMode] = useState<"voyageur" | "bagandgo" | "shopandgo">("voyageur");
   const [heroOrigin, setHeroOrigin] = useState("Paris (CDG)");
   const [heroDestination, setHeroDestination] = useState("Alger (ALG)");
@@ -310,14 +184,22 @@ export function AwwwardsLanding({
   const [heroUrgency, setHeroUrgency] = useState<"express" | "standard">("express");
   const [heroStoreCategory, setHeroStoreCategory] = useState("High-Tech & Duty-Free");
   const [heroProductName, setHeroProductName] = useState("");
-  const [heroRouteTurns, setHeroRouteTurns] = useState(0);
 
   const heroEarning = heroCapacityKg * 8 + (heroCapacityKg >= 15 ? 40 : 20);
   const heroParcelWeight =
-    heroParcelPreset === "pli" ? 1 : heroParcelPreset === "petit" ? 3 : heroParcelPreset === "moyen" ? 5 : 15;
+    heroParcelPreset === "pli"
+      ? 1
+      : heroParcelPreset === "petit"
+        ? 3
+        : heroParcelPreset === "moyen"
+          ? 5
+          : 15;
   const heroParcelPrice = heroParcelWeight * 8 + 5;
   const heroCompetitorPrice = Math.round(40 + heroParcelWeight * 20);
-  const heroSavingsPercent = Math.max(0, Math.round(((heroCompetitorPrice - heroParcelPrice) / heroCompetitorPrice) * 100));
+  const heroSavingsPercent = Math.max(
+    0,
+    Math.round(((heroCompetitorPrice - heroParcelPrice) / heroCompetitorPrice) * 100),
+  );
 
   const triggerHaptic = (ms = 8) => {
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
@@ -329,34 +211,6 @@ export function AwwwardsLanding({
     }
   };
 
-  useEffect(() => {
-    const el = metricsRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setMetricsVisible(true);
-        }
-      },
-      { threshold: 0.15 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLiveMetricsOffset((prev) => ({
-        volume: prev.volume + (Math.floor(Math.random() * 3) + 1) * 15,
-        weight: prev.weight + Math.floor(Math.random() * 2) + 1,
-      }));
-      setHasNewTick(true);
-      const timer = setTimeout(() => setHasNewTick(false), 900);
-      return () => clearTimeout(timer);
-    }, 3800);
-    return () => clearInterval(interval);
-  }, []);
-
   const c = copy[language];
 
   const routeRate = (() => {
@@ -366,45 +220,38 @@ export function AwwwardsLanding({
       ["New York", "Toronto", "Québec", "Miami", "Los Angeles", "Chicago", "Mexico", "São Paulo"].includes(origin) ||
       ["New York", "Toronto", "Québec", "Miami", "Los Angeles", "Chicago", "Mexico", "São Paulo"].includes(destination);
     if (isTransatlantic) return 12;
-
     const isMiddleEastOrAsia =
       ["Dubaï", "Doha", "Riyad", "Beyrouth", "Tokyo", "Séoul", "Singapour", "Bangkok"].includes(origin) ||
       ["Dubaï", "Doha", "Riyad", "Beyrouth", "Tokyo", "Séoul", "Singapour", "Bangkok"].includes(destination);
     if (isMiddleEastOrAsia) return 11;
-
     const isSubSahara =
       ["Dakar", "Abidjan", "Bamako", "Douala", "Kinshasa", "Johannesburg"].includes(origin) ||
       ["Dakar", "Abidjan", "Bamako", "Douala", "Kinshasa", "Johannesburg"].includes(destination);
     if (isSubSahara) return 10;
-
     if (destination === "Paris" || origin === "Paris") return 8;
     return 7;
   })();
 
-  const gross =
-    origin === destination
-      ? 0
-      : weight * routeRate + (need === "shop" ? 20 : 0);
-  const net = Math.round(gross * 85) / 100;
-
+  const gross = origin === destination ? 0 : weight * routeRate + (need === "shop" ? 20 : 0);
   const baselineCompetitorQuote =
     competitor === "DHL"
       ? Math.round(40 + weight * 20)
       : competitor === "FedEx"
         ? Math.round(45 + weight * 21)
         : Math.round(50 + weight * 12);
-
   const quote = hasCustomQuote && customQuote !== null ? customQuote : baselineCompetitorQuote;
   const saving = origin === destination ? 0 : Math.max(0, quote - gross);
   const percent = quote > 0 ? Math.round((saving / quote) * 100) : 0;
+
   const text = (fr: string, en: string) => (language === "fr" ? fr : en);
   const openMobileLaunch = () => {
     window.location.hash = "download";
   };
+
   useEffect(() => {
-    if (section)
-      document.getElementById(section)?.scrollIntoView({ block: "start" });
+    if (section) document.getElementById(section)?.scrollIntoView({ block: "start" });
   }, [section]);
+
   useEffect(() => {
     const title = document.title;
     const previousLanguage = document.documentElement.lang;
@@ -418,6 +265,7 @@ export function AwwwardsLanding({
       document.documentElement.lang = previousLanguage;
     };
   }, [language]);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -428,75 +276,145 @@ export function AwwwardsLanding({
       acceptedAnswer: { "@type": "Answer", text: answer },
     })),
   };
+
+  const corridors = [
+    {
+      badge: text("CORRIDOR POPULAIRE", "POPULAR CORRIDOR"),
+      from: "Paris",
+      to: "Alger",
+      code: "CDG → ALG",
+      price: "8 € / kg",
+      delay: "24h – 48h",
+      carrier: text("Vol direct quotidien", "Daily direct flight"),
+    },
+    {
+      badge: text("EXPRESS MÉDITERRANÉE", "MEDITERRANEAN EXPRESS"),
+      from: "Marseille",
+      to: "Oran",
+      code: "MRS → ORN",
+      price: "7 € / kg",
+      delay: "24h",
+      carrier: text("Vol & Ferry", "Flight & Ferry"),
+    },
+    {
+      badge: text("FORTE DEMANDE", "HIGH DEMAND"),
+      from: "Lyon",
+      to: "Constantine",
+      code: "LYS → CZL",
+      price: "8 € / kg",
+      delay: "24h – 48h",
+      carrier: text("Vol direct", "Direct flight"),
+    },
+    {
+      badge: text("TRANSATLANTIQUE", "TRANSATLANTIC"),
+      from: "Paris",
+      to: "Montréal",
+      code: "CDG → YUL",
+      price: "12 € / kg",
+      delay: "24h – 48h",
+      carrier: text("Long-courrier", "Long-haul"),
+    },
+  ];
+
   return (
-    <div className="awwwards-landing" lang={language}>
+    <div className="bv-landing-v2 min-h-screen bg-[#F8FAFC] text-slate-900 antialiased" lang={language}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <header className="landing-masthead">
-        <a href="/#landing" className="landing-wordmark">
-          BagVoyage<span>.</span>
-        </a>
-        <div className="landing-header-scroll">
+
+      {/* Sticky Header — 5 liens max + CTA principal */}
+      <header className="sticky top-0 z-40 bg-[#FFFFFF]/90 backdrop-blur-md border-b border-[#E2E8F0]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+          <a
+            href="/#landing"
+            className="text-xl font-extrabold tracking-tight text-slate-900 shrink-0 no-underline"
+          >
+            BagVoyage<span className="text-[#2563EB]">.</span>
+          </a>
+
           <nav
-            className="landing-nav"
+            className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600"
             aria-label={text("Présentation de BagVoyage", "About BagVoyage")}
           >
-            <a href="/#voyageur">{text("Voyageur", "Traveler")}</a>
-            <a href="/#bagandgo">Bag & Go</a>
-            <a href="/#shopandgo">Shop & Go</a>
-            <a href="#simulator">{text("Tarifs", "Pricing")}</a>
-            <a href="/#trust">{text("Sécurité", "Security")}</a>
+            <a href="/#voyageur" className="hover:text-slate-900 transition-colors no-underline">
+              {text("Voyageur", "Traveler")}
+            </a>
+            <a href="/#bagandgo" className="hover:text-slate-900 transition-colors no-underline">
+              Bag &amp; Go
+            </a>
+            <a href="/#shopandgo" className="hover:text-slate-900 transition-colors no-underline">
+              Shop &amp; Go
+            </a>
+            <a href="#simulator" className="hover:text-slate-900 transition-colors no-underline">
+              {text("Tarifs", "Pricing")}
+            </a>
+            <a href="/#trust" className="hover:text-slate-900 transition-colors no-underline">
+              {text("Sécurité", "Security")}
+            </a>
           </nav>
-          <div className="landing-account-actions">
+
+          <div className="flex items-center gap-2.5 shrink-0">
+            <ThemeToggle />
+            <div
+              className="hidden sm:inline-flex p-0.5 rounded-xl bg-slate-100 border border-[#E2E8F0]"
+              role="group"
+              aria-label="Langue / Language"
+            >
+              <button
+                type="button"
+                onClick={() => setLanguage("fr")}
+                aria-pressed={language === "fr"}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+                  language === "fr"
+                    ? "bg-[#FFFFFF] text-slate-900 shadow-sm"
+                    : "text-slate-500 hover:text-slate-900"
+                }`}
+              >
+                FR
+              </button>
+              <button
+                type="button"
+                onClick={() => setLanguage("en")}
+                aria-pressed={language === "en"}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+                  language === "en"
+                    ? "bg-[#FFFFFF] text-slate-900 shadow-sm"
+                    : "text-slate-500 hover:text-slate-900"
+                }`}
+              >
+                EN
+              </button>
+            </div>
+
             <a
               href="/#explore"
-              className="landing-nav-launch"
               aria-label={c.cta}
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white text-xs sm:text-sm font-bold transition-colors no-underline whitespace-nowrap"
             >
-              <span className="nav-launch-full">{text("Lancer l’app", "Open app")}</span>
-              <span className="nav-launch-short">
-                {text("Lancer l’app", "Open app")}
-              </span>
-              <ArrowUpRight size={16} aria-hidden="true" />
+              <span>{text("Lancer l’app", "Open app")}</span>
+              <ArrowUpRight size={15} aria-hidden="true" />
             </a>
-          </div>
-        </div>
-        <div className="landing-masthead-controls">
-          <ThemeToggle />
-          <div className="landing-lang-segmented" role="group" aria-label="Langue / Language">
+
             <button
               type="button"
-              className={`landing-lang-btn ${language === "fr" ? "active" : ""}`}
-              onClick={() => setLanguage("fr")}
-              aria-pressed={language === "fr"}
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-slate-700"
+              aria-label={
+                mobileMenuOpen
+                  ? text("Fermer le menu", "Close menu")
+                  : text("Ouvrir le menu de navigation", "Open navigation menu")
+              }
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              FR
-            </button>
-            <button
-              type="button"
-              className={`landing-lang-btn ${language === "en" ? "active" : ""}`}
-              onClick={() => setLanguage("en")}
-              aria-pressed={language === "en"}
-            >
-              EN
+              <Menu size={18} aria-hidden="true" />
             </button>
           </div>
-          <button
-            type="button"
-            className="landing-mobile-menu-trigger"
-            aria-label={mobileMenuOpen ? text("Fermer le menu", "Close menu") : text("Ouvrir le menu de navigation", "Open navigation menu")}
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            <Menu size={20} aria-hidden="true" />
-            <span>{text("Menu", "Menu")}</span>
-          </button>
         </div>
       </header>
+
       <LandingMobileMenu
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
@@ -504,180 +422,239 @@ export function AwwwardsLanding({
         onLanguageChange={setLanguage}
         currentRoute="landing"
       />
-      <section className="bv-hero-wrapper">
-        <div className="bv-hero-container">
-          <div className="bv-hero-badge-pill">
-            <span className="live-dot" />
-            <span>{text("Plateforme Officielle · Co-colisage & Shopping France–Algérie", "Official Platform · Crowdsourced Shipping & Shopping France–Algeria")}</span>
-          </div>
-          <h1 className="bv-hero-headline">
-            {text("Rentabilisez vos voyages.", "Fund your travels.")}
-            <br />
-            <span>{text("Expédiez vos colis. Achetez partout.", "Ship parcels. Shop anywhere.")}</span>
-          </h1>
-          <p className="bv-hero-lead">
-            {text(
-              "Mettez en relation voyageurs vérifiés et expéditeurs en temps réel. Remise en main propre express, sans taxes de douane opaques, 100 % sécurisée par séquestre Stripe Connect.",
-              "Connect verified travelers and shippers in real time. Express hand-to-hand delivery, zero opaque customs duties, 100% secured by Stripe Connect escrow."
-            )}
-          </p>
 
-          <div className="bv-hero-console-card rounded-2xl">
-            <div className="bv-hero-mode-tabs" role="tablist">
+      {/* Hero + Simulateur Tri-Modal */}
+      <section className="pt-10 pb-14 sm:pt-14 sm:pb-16 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto space-y-4 mb-8">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-xs font-bold text-slate-700 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-[#059669]" />
+              <span>
+                {text(
+                  "Plateforme Officielle · Co-colisage & Shopping France–Algérie",
+                  "Official Platform · Crowdsourced Shipping & Shopping France–Algeria",
+                )}
+              </span>
+            </div>
+
+            <h1 className="bv-hero-headline text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.08]">
+              {text("Rentabilisez vos voyages.", "Fund your travels.")}
+              <br />
+              <span className="text-[#2563EB]">
+                {text("Expédiez vos colis. Achetez partout.", "Ship parcels. Shop anywhere.")}
+              </span>
+            </h1>
+
+            <p className="bv-hero-lead text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
+              {text(
+                "Mettez en relation voyageurs vérifiés et expéditeurs en temps réel. Remise en main propre express, 100 % sécurisée par séquestre Stripe Connect.",
+                "Connect verified travelers and shippers in real time. Express hand-to-hand delivery, 100% secured by Stripe Connect escrow.",
+              )}
+            </p>
+          </div>
+
+          {/* Simulateur Hero intégré dans une carte #FFFFFF propre */}
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-lg shadow-slate-900/5 overflow-hidden">
+            {/* 3 onglets avec icônes proprement intégrées à l'intérieur */}
+            <div
+              className="bv-hero-mode-tabs grid grid-cols-3 border-b border-[#E2E8F0] bg-[#F8FAFC]"
+              role="tablist"
+            >
               <button
                 type="button"
                 role="tab"
                 aria-selected={heroMode === "voyageur"}
-                className={`bv-hero-tab-btn p-6 md:px-8 ${heroMode === "voyageur" ? "active" : ""}`}
                 onClick={() => {
                   triggerHaptic(8);
                   setHeroMode("voyageur");
                 }}
+                className={`p-3 sm:p-5 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold border-b-2 transition-colors cursor-pointer text-center ${
+                  heroMode === "voyageur"
+                    ? "bg-[#FFFFFF] text-slate-900 border-[#2563EB]"
+                    : "text-slate-600 border-transparent hover:text-slate-900 hover:bg-white/60"
+                }`}
               >
-                <span className="bv-hero-tab-icon" aria-hidden="true">
-                  <Plane size={18} />
+                <span
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                    heroMode === "voyageur"
+                      ? "bg-blue-50 text-[#2563EB]"
+                      : "bg-slate-200/70 text-slate-600"
+                  }`}
+                  aria-hidden="true"
+                >
+                  <Plane size={17} />
                 </span>
                 <span>{text("Voyageur (Convoyeur)", "Traveler (Carrier)")}</span>
               </button>
+
               <button
                 type="button"
                 role="tab"
                 aria-selected={heroMode === "bagandgo"}
-                className={`bv-hero-tab-btn p-6 md:px-8 ${heroMode === "bagandgo" ? "active" : ""}`}
                 onClick={() => {
                   triggerHaptic(8);
                   setHeroMode("bagandgo");
                 }}
+                className={`p-3 sm:p-5 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold border-b-2 transition-colors cursor-pointer text-center ${
+                  heroMode === "bagandgo"
+                    ? "bg-[#FFFFFF] text-slate-900 border-[#2563EB]"
+                    : "text-slate-600 border-transparent hover:text-slate-900 hover:bg-white/60"
+                }`}
               >
-                <span className="bv-hero-tab-icon" aria-hidden="true">
-                  <Package size={18} />
+                <span
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                    heroMode === "bagandgo"
+                      ? "bg-blue-50 text-[#2563EB]"
+                      : "bg-slate-200/70 text-slate-600"
+                  }`}
+                  aria-hidden="true"
+                >
+                  <Package size={17} />
                 </span>
                 <span>{text("Bag & Go (Expéditeur)", "Bag & Go (Shipper)")}</span>
               </button>
+
               <button
                 type="button"
                 role="tab"
                 aria-selected={heroMode === "shopandgo"}
-                className={`bv-hero-tab-btn p-6 md:px-8 ${heroMode === "shopandgo" ? "active" : ""}`}
                 onClick={() => {
                   triggerHaptic(8);
                   setHeroMode("shopandgo");
                 }}
+                className={`p-3 sm:p-5 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold border-b-2 transition-colors cursor-pointer text-center ${
+                  heroMode === "shopandgo"
+                    ? "bg-[#FFFFFF] text-slate-900 border-[#2563EB]"
+                    : "text-slate-600 border-transparent hover:text-slate-900 hover:bg-white/60"
+                }`}
               >
-                <span className="bv-hero-tab-icon" aria-hidden="true">
-                  <ShoppingBag size={18} />
+                <span
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                    heroMode === "shopandgo"
+                      ? "bg-blue-50 text-[#2563EB]"
+                      : "bg-slate-200/70 text-slate-600"
+                  }`}
+                  aria-hidden="true"
+                >
+                  <ShoppingBag size={17} />
                 </span>
                 <span>{text("Shop & Go (Acheteur)", "Shop & Go (Buyer)")}</span>
               </button>
             </div>
 
-            {/* Fields Grid */}
-            <div className="bv-hero-fields-grid">
-              <div className="bv-hero-field-group">
-                <label className="bv-field-label">
-                  <MapPin size={13} />
-                  <span>{text("Départ", "From")}</span>
-                </label>
-                <CityAutocomplete
-                  name="heroOrigin"
-                  value={heroOrigin}
-                  onChange={(val) => setHeroOrigin(val)}
-                  placeholder={text("Ex. Paris, Marseille, Lyon...", "Ex. Paris, Marseille, Lyon...")}
-                />
+            {/* Champs Trajet & Date */}
+            <div className="p-6 sm:p-8 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                <div className="md:col-span-4 space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
+                    <MapPin size={14} className="text-slate-400" />
+                    {text("Départ", "Departure")}
+                  </label>
+                  <CityAutocomplete
+                    id="hero-origin-input"
+                    name="heroOrigin"
+                    value={heroOrigin}
+                    onChange={setHeroOrigin}
+                    placeholder="Paris, Marseille, Lyon…"
+                  />
+                </div>
+
+                <div className="md:col-span-1 flex justify-center">
+                  <button
+                    type="button"
+                    aria-label={text("Inverser les villes", "Swap cities")}
+                    onClick={() => {
+                      const prev = heroOrigin;
+                      setHeroOrigin(heroDestination);
+                      setHeroDestination(prev);
+                    }}
+                    className="w-11 h-11 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
+                  >
+                    <ArrowLeftRight size={16} />
+                  </button>
+                </div>
+
+                <div className="md:col-span-4 space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
+                    <MapPin size={14} className="text-slate-400" />
+                    {text("Destination", "Destination")}
+                  </label>
+                  <CityAutocomplete
+                    id="hero-destination-input"
+                    name="heroDestination"
+                    value={heroDestination}
+                    onChange={setHeroDestination}
+                    placeholder="Alger, Oran, Montréal…"
+                  />
+                </div>
+
+                <div className="md:col-span-3 space-y-1.5">
+                  <label
+                    htmlFor="hero-date-input"
+                    className="text-xs font-bold text-slate-600 flex items-center gap-1.5"
+                  >
+                    <Calendar size={14} className="text-slate-400" />
+                    {text("Date prévue", "Target date")}
+                  </label>
+                  <input
+                    id="hero-date-input"
+                    type="date"
+                    value={heroDate}
+                    onChange={(e) => setHeroDate(e.target.value)}
+                    className="w-full h-11 px-3 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-sm font-medium text-slate-900 outline-none focus:border-[#2563EB] tabular-nums"
+                  />
+                </div>
               </div>
 
-              <button
-                type="button"
-                className="bv-hero-swap-btn"
-                aria-label={text("Inverser le trajet", "Reverse route")}
-                onClick={() => {
-                  triggerHaptic(8);
-                  setHeroOrigin(heroDestination);
-                  setHeroDestination(heroOrigin);
-                  setHeroRouteTurns((t) => t + 1);
-                }}
-              >
-                <ArrowLeftRight
-                  size={16}
-                  style={{
-                    transform: `rotate(${heroRouteTurns * 180}deg)`,
-                    transition: "transform 360ms cubic-bezier(0.34, 1.56, 0.64, 1)",
-                  }}
-                />
-              </button>
-
-              <div className="bv-hero-field-group">
-                <label className="bv-field-label">
-                  <MapPin size={13} />
-                  <span>{text("Destination", "To")}</span>
-                </label>
-                <CityAutocomplete
-                  name="heroDestination"
-                  value={heroDestination}
-                  onChange={(val) => setHeroDestination(val)}
-                  placeholder={text("Ex. Alger, Oran, Constantine...", "Ex. Algiers, Oran, Constantine...")}
-                />
-              </div>
-
-              <div className="bv-hero-field-group">
-                <label className="bv-field-label">
-                  <Calendar size={13} />
-                  <span>{heroMode === "voyageur" ? text("Départ", "Departure") : text("Date souhaitée", "Desired date")}</span>
-                </label>
-                <input
-                  type="date"
-                  className="bv-hero-date-input"
-                  value={heroDate}
-                  onChange={(e) => setHeroDate(e.target.value)}
-                  aria-label={text("Date", "Date")}
-                />
-              </div>
-            </div>
-
-            {/* Mode Customizer Row */}
-            <div className="bv-hero-mode-customizer">
+              {/* Options spécifiques au mode */}
               {heroMode === "voyageur" && (
-                <div className="bv-customizer-row">
-                  <div>
-                    <span className="bv-customizer-label">{text("Mode de transport", "Transport mode")}</span>
-                    <div className="bv-hero-pills-row">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-[#E2E8F0]">
+                  <div className="space-y-2">
+                    <span className="text-xs font-bold text-slate-600 block">
+                      {text("Mode de transport", "Transport mode")}
+                    </span>
+                    <div className="flex flex-wrap gap-2">
                       {(
                         [
                           { id: "avion", label: text("Avion", "Flight"), Icon: Plane },
-                          { id: "bateau", label: text("Bateau", "Ferry"), Icon: Ship },
-                          { id: "voiture", label: text("Voiture", "Car"), Icon: Car },
+                          { id: "bateau", label: text("Bateau / Ferry", "Ferry"), Icon: Ship },
+                          { id: "voiture", label: text("Voiture / Van", "Car / Van"), Icon: Car },
                         ] as const
                       ).map(({ id, label, Icon }) => (
                         <button
                           key={id}
                           type="button"
-                          className={`bv-hero-pill ${heroTransportType === id ? "active" : ""}`}
-                          onClick={() => {
-                            triggerHaptic(8);
-                            setHeroTransportType(id);
-                          }}
+                          onClick={() => setHeroTransportType(id)}
+                          className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                            heroTransportType === id
+                              ? "bg-[#0F172A] text-white border-[#0F172A]"
+                              : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
+                          }`}
                         >
                           <Icon size={14} />
-                          <span>{label}</span>
+                          {label}
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  <div>
-                    <span className="bv-customizer-label">{text("Capacité disponible (kg)", "Available capacity (kg)")}</span>
-                    <div className="bv-hero-pills-row">
-                      {[5, 10, 15, 23, 30].map((kg) => (
+                  <div className="space-y-2">
+                    <span className="text-xs font-bold text-slate-600 block">
+                      {text("Capacité disponible (kg)", "Available capacity (kg)")}
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {[5, 10, 15, 23].map((kg) => (
                         <button
                           key={kg}
                           type="button"
-                          className={`bv-hero-pill tabular-nums ${heroCapacityKg === kg ? "active" : ""}`}
-                          onClick={() => {
-                            triggerHaptic(8);
-                            setHeroCapacityKg(kg);
-                          }}
+                          onClick={() => setHeroCapacityKg(kg)}
+                          className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer tabular-nums ${
+                            heroCapacityKg === kg
+                              ? "bg-[#0F172A] text-white border-[#0F172A]"
+                              : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
+                          }`}
                         >
-                          <span className="tabular-nums">{kg} kg</span>
+                          {kg} kg
                         </button>
                       ))}
                     </div>
@@ -686,53 +663,58 @@ export function AwwwardsLanding({
               )}
 
               {heroMode === "bagandgo" && (
-                <div className="bv-customizer-row">
-                  <div>
-                    <span className="bv-customizer-label">{text("Format du colis", "Parcel format")}</span>
-                    <div className="bv-hero-pills-row">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-[#E2E8F0]">
+                  <div className="space-y-2">
+                    <span className="text-xs font-bold text-slate-600 block">
+                      {text("Format du colis", "Parcel size")}
+                    </span>
+                    <div className="flex flex-wrap gap-2">
                       {(
                         [
-                          { id: "pli", label: text("Pli / Doc (1 kg)", "Envelope (1 kg)") },
-                          { id: "petit", label: text("Petit colis (3 kg)", "Small (3 kg)") },
-                          { id: "moyen", label: text("Valise / Moyen (5 kg)", "Medium (5 kg)") },
-                          { id: "grand", label: text("Gros volume (15 kg)", "Large (15 kg)") },
+                          { id: "pli", label: "Pli / Docs (1 kg)" },
+                          { id: "petit", label: "Petit (3 kg)" },
+                          { id: "moyen", label: "Moyen (5 kg)" },
+                          { id: "grand", label: "Valise (15 kg)" },
                         ] as const
                       ).map(({ id, label }) => (
                         <button
                           key={id}
                           type="button"
-                          className={`bv-hero-pill tabular-nums ${heroParcelPreset === id ? "active" : ""}`}
-                          onClick={() => {
-                            triggerHaptic(8);
-                            setHeroParcelPreset(id);
-                          }}
+                          onClick={() => setHeroParcelPreset(id)}
+                          className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer tabular-nums ${
+                            heroParcelPreset === id
+                              ? "bg-[#0F172A] text-white border-[#0F172A]"
+                              : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
+                          }`}
                         >
-                          <span className="tabular-nums">{label}</span>
+                          {label}
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  <div>
-                    <span className="bv-customizer-label">{text("Délai souhaité", "Delivery timeframe")}</span>
-                    <div className="bv-hero-pills-row">
+                  <div className="space-y-2">
+                    <span className="text-xs font-bold text-slate-600 block">
+                      {text("Délai souhaité", "Delivery speed")}
+                    </span>
+                    <div className="flex flex-wrap gap-2">
                       {(
                         [
-                          { id: "express", label: text("Express 24h–48h", "Express 24h–48h"), Icon: Clock },
-                          { id: "standard", label: text("Standard 3–5j", "Standard 3–5d"), Icon: Calendar },
+                          { id: "express", label: text("Express 24h–48h", "Express 24h–48h") },
+                          { id: "standard", label: text("Flexible (3–7 j)", "Flexible (3–7 d)") },
                         ] as const
-                      ).map(({ id, label, Icon }) => (
+                      ).map(({ id, label }) => (
                         <button
                           key={id}
                           type="button"
-                          className={`bv-hero-pill tabular-nums ${heroUrgency === id ? "active" : ""}`}
-                          onClick={() => {
-                            triggerHaptic(8);
-                            setHeroUrgency(id);
-                          }}
+                          onClick={() => setHeroUrgency(id)}
+                          className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                            heroUrgency === id
+                              ? "bg-[#0F172A] text-white border-[#0F172A]"
+                              : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
+                          }`}
                         >
-                          <Icon size={14} />
-                          <span className="tabular-nums">{label}</span>
+                          {label}
                         </button>
                       ))}
                     </div>
@@ -741,1199 +723,814 @@ export function AwwwardsLanding({
               )}
 
               {heroMode === "shopandgo" && (
-                <div className="bv-customizer-row">
-                  <div>
-                    <span className="bv-customizer-label">{text("Catégorie de produit", "Product category")}</span>
-                    <div className="bv-hero-pills-row">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-[#E2E8F0]">
+                  <div className="space-y-2">
+                    <span className="text-xs font-bold text-slate-600 block">
+                      {text("Catégorie de produit", "Product category")}
+                    </span>
+                    <div className="flex flex-wrap gap-2">
                       {[
-                        text("High-Tech & Apple", "High-Tech & Apple"),
-                        text("Parfumerie Duty-Free", "Duty-Free Perfume"),
-                        text("Mode & Sneakers", "Fashion & Sneakers"),
-                        text("Pharmacie & Soins", "Pharmacy & Care"),
+                        "High-Tech & Duty-Free",
+                        "Parfums & Cosmétiques",
+                        "Mode & Luxe",
+                        "Parapharmacie",
                       ].map((cat) => (
                         <button
                           key={cat}
                           type="button"
-                          className={`bv-hero-pill ${heroStoreCategory === cat ? "active" : ""}`}
-                          onClick={() => {
-                            triggerHaptic(8);
-                            setHeroStoreCategory(cat);
-                          }}
+                          onClick={() => setHeroStoreCategory(cat)}
+                          className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                            heroStoreCategory === cat
+                              ? "bg-[#0F172A] text-white border-[#0F172A]"
+                              : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
+                          }`}
                         >
-                          <span>{cat}</span>
+                          {cat}
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  <div className="bv-product-preview-input">
-                    <span className="bv-customizer-label">{text("Article ou marque recherché", "Desired item or brand")}</span>
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="hero-product-name"
+                      className="text-xs font-bold text-slate-600 block"
+                    >
+                      {text("Article recherché (facultatif)", "Desired item (optional)")}
+                    </label>
                     <input
+                      id="hero-product-name"
                       type="text"
-                      className="bv-hero-text-input"
                       value={heroProductName}
                       onChange={(e) => setHeroProductName(e.target.value)}
-                      placeholder={text("Ex. iPhone 16 Pro, Parfums Dior, Dyson...", "Ex. iPhone 16 Pro, Dior perfumes, Dyson...")}
+                      placeholder={text("Ex: AirPods Pro, Dior Sauvage…", "e.g. AirPods Pro, Dior Sauvage…")}
+                      className="w-full h-10 px-3.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-sm text-slate-900 outline-none focus:border-[#2563EB]"
                     />
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Live Ribbon */}
-            <div className="bv-hero-live-ribbon">
-              <div className="bv-ribbon-content">
-                <div className="bv-ribbon-stat">
+            {/* Live Result Ribbon */}
+            <div className="bg-[#F8FAFC] border-t border-[#E2E8F0] p-6 sm:px-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-baseline gap-2.5">
                   {heroMode === "voyageur" && (
                     <>
-                      <span className="bv-ribbon-label">{text("Gain net estimé :", "Estimated net gain:")}</span>
-                      <span className="bv-ribbon-value tabular-nums" style={{ color: "#059669" }}>
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                        {text("Gain net estimé :", "Estimated net gain:")}
+                      </span>
+                      <strong className="text-2xl font-black text-[#059669] tabular-nums">
                         +{heroEarning} €
-                      </span>
-                      <span className="bv-ribbon-comparison tabular-nums">
-                        · {text("Billet d’avion 100 % rentabilisé", "100% flight ticket covered")}
+                      </strong>
+                      <span className="text-xs text-slate-500">
+                        ({heroCapacityKg} kg · {heroTransportType})
                       </span>
                     </>
                   )}
                   {heroMode === "bagandgo" && (
                     <>
-                      <span className="bv-ribbon-label">{text("Tarif BagVoyage :", "BagVoyage rate:")}</span>
-                      <span className="bv-ribbon-value tabular-nums" style={{ color: "#0F172A" }}>
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                        {text("Tarif estimé :", "Estimated rate:")}
+                      </span>
+                      <strong className="text-2xl font-black text-[#059669] tabular-nums">
                         {heroParcelPrice} €
-                      </span>
-                      <span className="bv-ribbon-comparison tabular-nums" style={{ color: "#059669", fontWeight: 600 }}>
-                        · {text(`-${heroSavingsPercent} % vs DHL / FedEx (${heroCompetitorPrice} €)`, `-${heroSavingsPercent}% vs DHL / FedEx (€${heroCompetitorPrice})`)}
+                      </strong>
+                      <span className="text-xs font-bold text-[#059669] bg-[#059669]/10 px-2 py-0.5 rounded-full tabular-nums">
+                        −{heroSavingsPercent} % vs DHL ({heroCompetitorPrice} €)
                       </span>
                     </>
                   )}
                   {heroMode === "shopandgo" && (
                     <>
-                      <span className="bv-ribbon-label">{text("Frais de douane :", "Customs fees:")}</span>
-                      <span className="bv-ribbon-value tabular-nums" style={{ color: "#059669" }}>
-                        0 €
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                        {text("Commission voyageur dès", "Traveler fee from")}
                       </span>
-                      <span className="bv-ribbon-comparison">
-                        · {text("Facture d’achat d’origine remise en main propre", "Original purchase invoice provided with handover")}
+                      <strong className="text-2xl font-black text-[#059669] tabular-nums">
+                        20 €
+                      </strong>
+                      <span className="text-xs text-slate-500">
+                        · {heroStoreCategory}
                       </span>
                     </>
                   )}
                 </div>
+                <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600">
+                  <ShieldCheck size={14} className="text-[#059669]" />
+                  {heroMode === "voyageur"
+                    ? text("Paiement garanti par séquestre Stripe", "Payment guaranteed by Stripe escrow")
+                    : heroMode === "bagandgo"
+                      ? text("Double vérification QR & photo scellée", "Dual QR & tamper seal verified")
+                      : text("Fonds bloqués jusqu’à réception conforme", "Funds held until compliant receipt")}
+                </p>
+              </div>
 
-                <div className="bv-ribbon-badge">
-                  <ShieldCheck size={14} />
-                  <span>
-                    {heroMode === "voyageur"
-                      ? text("Paiement garanti par séquestre Stripe", "Payment guaranteed by Stripe escrow")
-                      : heroMode === "bagandgo"
-                        ? text("Double vérification QR & photo scellée", "Dual QR & tamper seal verified")
-                        : text("Fonds bloqués jusqu’à réception conforme", "Funds held until compliant receipt")}
-                  </span>
-                </div>
-
-                <div className="bv-hero-actions-cluster">
-                  {heroMode === "voyageur" && (
-                    <>
-                      <a href="/#voyageur" className="bv-hero-action-cta">
-                        <span>{text("Rentabiliser mon voyage", "Monetize my trip")}</span>
-                        <ArrowRight size={16} />
-                      </a>
-                      <a href="/#publish/trips" className="bv-hero-secondary-cta">
-                        <span>{text("Publier mon trajet", "Post a trip")}</span>
-                      </a>
-                    </>
-                  )}
-                  {heroMode === "bagandgo" && (
-                    <>
-                      <a href="/#bagandgo" className="bv-hero-action-cta">
-                        <span>{text("Trouver un convoyeur", "Find a carrier")}</span>
-                        <ArrowRight size={16} />
-                      </a>
-                      <a href="/#publish/parcel" className="bv-hero-secondary-cta">
-                        <span>{text("Expédier un colis", "Ship a parcel")}</span>
-                      </a>
-                    </>
-                  )}
-                  {heroMode === "shopandgo" && (
-                    <>
-                      <a href="/#shopandgo" className="bv-hero-action-cta">
-                        <span>{text("Commander avec un voyageur", "Order with a traveler")}</span>
-                        <ArrowRight size={16} />
-                      </a>
-                      <a href="/#publish/requests" className="bv-hero-secondary-cta">
-                        <span>{text("Créer une demande d'achat", "Post a shopping request")}</span>
-                      </a>
-                    </>
-                  )}
-                </div>
+              <div className="flex flex-wrap items-center gap-3">
+                {heroMode === "voyageur" && (
+                  <>
+                    <a
+                      href="/#voyageur"
+                      className="bv-hero-action-cta inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold transition-colors no-underline"
+                    >
+                      <span>{text("Rentabiliser mon voyage", "Monetize my trip")}</span>
+                      <ArrowRight size={16} />
+                    </a>
+                    <a
+                      href="/#publish/trips"
+                      className="bv-hero-secondary-cta inline-flex items-center px-4 py-3 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-sm font-bold transition-colors no-underline"
+                    >
+                      <span>{text("Publier mon trajet", "Post a trip")}</span>
+                    </a>
+                  </>
+                )}
+                {heroMode === "bagandgo" && (
+                  <>
+                    <a
+                      href="/#bagandgo"
+                      className="bv-hero-action-cta inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold transition-colors no-underline"
+                    >
+                      <span>{text("Trouver un convoyeur", "Find a carrier")}</span>
+                      <ArrowRight size={16} />
+                    </a>
+                    <a
+                      href="/#publish/parcel"
+                      className="bv-hero-secondary-cta inline-flex items-center px-4 py-3 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-sm font-bold transition-colors no-underline"
+                    >
+                      <span>{text("Expédier un colis", "Ship a parcel")}</span>
+                    </a>
+                  </>
+                )}
+                {heroMode === "shopandgo" && (
+                  <>
+                    <a
+                      href="/#shopandgo"
+                      className="bv-hero-action-cta inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold transition-colors no-underline"
+                    >
+                      <span>{text("Commander avec un voyageur", "Order with a traveler")}</span>
+                      <ArrowRight size={16} />
+                    </a>
+                    <a
+                      href="/#publish/requests"
+                      className="bv-hero-secondary-cta inline-flex items-center px-4 py-3 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-sm font-bold transition-colors no-underline"
+                    >
+                      <span>{text("Créer une demande d'achat", "Post a shopping request")}</span>
+                    </a>
+                  </>
+                )}
               </div>
             </div>
           </div>
 
           {/* Trust Bar 4 Pillars */}
-          <div className="bv-hero-trust-bar">
-            <div className="bv-trust-bar-item rounded-2xl">
-              <div className="bv-trust-icon-box" style={{ background: "#f1f5f9", color: "#0f172a" }}>
-                <ShieldCheck size={20} />
-              </div>
-              <div>
-                <strong>{text("Séquestre Stripe Connect", "Stripe Connect Escrow")}</strong>
-                <p>{text("Fonds sécurisés à 100 %. Déblocage uniquement après validation QR à l'arrivée.", "100% escrowed funds. Payout only released upon arrival QR scan.")}</p>
-              </div>
-            </div>
-
-            <div className="bv-trust-bar-item rounded-2xl">
-              <div className="bv-trust-icon-box" style={{ background: "#ecfdf5", color: "#059669" }}>
-                <ScanLine size={20} />
-              </div>
-              <div>
-                <strong>{text("Double Remise QR & Photo", "Dual QR & Photo Check")}</strong>
-                <p>{text("Photo du scellé OACI au départ et scan QR bilatéral inviolable à la remise.", "ICAO seal photo at departure and bilateral QR validation at handover.")}</p>
-              </div>
-            </div>
-
-            <div className="bv-trust-bar-item rounded-2xl">
-              <div className="bv-trust-icon-box" style={{ background: "#f1f5f9", color: "#0f172a" }}>
-                <Plane size={20} />
-              </div>
-              <div>
-                <strong>{text("Express Vol Direct 24h–48h", "Direct Flights 24h–48h")}</strong>
-                <p>{text("Vos colis voyagent en cabine ou soute avec de vrais passagers quotidiens.", "Your parcels travel with verified passengers on daily direct flights.")}</p>
-              </div>
-            </div>
-
-            <div className="bv-trust-bar-item rounded-2xl">
-              <div className="bv-trust-icon-box" style={{ background: "#ecfdf5", color: "#059669" }}>
-                <Coins size={20} />
-              </div>
-              <div>
-                <strong>{text("Jusqu'à -70 % d'économie", "Up to -70% Savings")}</strong>
-                <p>{text("Sans surtaxes carburant ni douanes opaques. Gagnant pour le voyageur et l'expéditeur.", "No fuel surcharges or opaque customs. Win-win for travelers and shippers.")}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section
-        className="landing-activity"
-        aria-label={text(
-          "EN DIRECT SUR LE RÉSEAU BAGVOYAGE",
-          "LIVE ON THE BAGVOYAGE NETWORK",
-        )}
-      >
-        <div className="activity-heading">
-          <div>
-            <span className="live-dot" aria-hidden="true" />
-            <strong>
-              {text(
-                "EN DIRECT SUR LE RÉSEAU BAGVOYAGE",
-                "LIVE ON THE BAGVOYAGE NETWORK",
-              )}
-            </strong>
-          </div>
-          <div className="activity-arrows">
-            <button
-              type="button"
-              aria-label={text("Activités précédentes", "Previous activity")}
-              onClick={() =>
-                activityRef.current?.scrollBy({
-                  left: -400,
-                  behavior: "smooth",
-                })
-              }
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <button
-              type="button"
-              aria-label={text("Activités suivantes", "Next activity")}
-              onClick={() =>
-                activityRef.current?.scrollBy({ left: 400, behavior: "smooth" })
-              }
-            >
-              <ChevronRight size={18} />
-            </button>
-          </div>
-        </div>
-        <div
-          className="activity-track"
-          ref={activityRef}
-          tabIndex={0}
-          role="group"
-          aria-label={text(
-            "Exemples de remises, faites défiler",
-            "Example handovers, scroll to explore",
-          )}
-        >
-          {[
-            {
-              name: "Sofia M.",
-              route: "AH1000 · CDG / ALG",
-              initials: "SM",
-              detail: text(
-                "Colis 4 kg scellé remis à la porte K34",
-                "Sealed 4 kg parcel handed over at gate K34",
-              ),
-              time: text("Il y a 14 min", "14 min ago"),
-              Icon: Package,
-            },
-            {
-              name: "Mehdi K.",
-              route: "TO7240 · MRS / ORN",
-              initials: "MK",
-              detail: text(
-                "Commande Shop & Go Sephora livrée sous séquestre",
-                "Sephora Shop & Go order delivered with escrow",
-              ),
-              time: text("Il y a 32 min", "32 min ago"),
-              Icon: ShoppingBag,
-            },
-            {
-              name: "Yacine T.",
-              route: "AH1461 · LYS / CZL",
-              initials: "YT",
-              detail: text(
-                "Dossier médical d’urgence remis",
-                "Urgent medical documents handed over",
-              ),
-              time: text("Il y a 1 h", "1 hour ago"),
-              Icon: ReceiptText,
-            },
-            {
-              name: "Nadia Transport",
-              route: text(
-                "Fret certifié · Lille / Alger",
-                "Certified freight · Lille / Algiers",
-              ),
-              initials: "NT",
-              detail: text(
-                "Fret utilitaire certifié · 25 kg en transit",
-                "Certified cargo transport · 25 kg in transit",
-              ),
-              time: text("En transit", "In transit"),
-              Icon: Package,
-            },
-          ].map(({ name, route, initials, detail, time, Icon }) => (
-            <article className="activity-event" key={name}>
-              <span className="activity-avatar" aria-hidden="true">
-                {initials}
-              </span>
-              <div>
-                <div className="activity-person">
-                  <strong>{name}</strong>
-                  <span>{time}</span>
-                </div>
-                <span className="activity-route">
-                  <Plane size={12} aria-hidden="true" />
-                  {route}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+            {[
+              {
+                Icon: ShieldCheck,
+                title: text("Séquestre Stripe Connect", "Stripe Connect Escrow"),
+                desc: text(
+                  "Fonds sécurisés à 100 %. Déblocage uniquement après validation QR à l'arrivée.",
+                  "100% escrowed funds. Payout only released upon arrival QR scan.",
+                ),
+                green: false,
+              },
+              {
+                Icon: ScanLine,
+                title: text("Double Remise QR & Photo", "Dual QR & Photo Check"),
+                desc: text(
+                  "Photo du scellé au départ et scan QR bilatéral inviolable à la remise.",
+                  "Seal photo at departure and bilateral QR validation at handover.",
+                ),
+                green: true,
+              },
+              {
+                Icon: Plane,
+                title: text("Express Vol Direct 24h–48h", "Direct Flights 24h–48h"),
+                desc: text(
+                  "Vos colis voyagent avec de vrais passagers vérifiés sur des vols quotidiens.",
+                  "Your parcels travel with verified passengers on daily direct flights.",
+                ),
+                green: false,
+              },
+              {
+                Icon: Coins,
+                title: text("Jusqu'à -70 % d'économie", "Up to -70% Savings"),
+                desc: text(
+                  "Sans surtaxes carburant ni douanes opaques. Gagnant pour chacun.",
+                  "No fuel surcharges or opaque customs. Win-win for everyone.",
+                ),
+                green: true,
+              },
+            ].map(({ Icon, title, desc, green }) => (
+              <div
+                key={title}
+                className="bv-trust-bar-item bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 flex items-start gap-3.5"
+              >
+                <span
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                    green
+                      ? "bg-[#059669]/10 text-[#059669]"
+                      : "bg-slate-100 text-slate-900"
+                  }`}
+                >
+                  <Icon size={18} />
                 </span>
-                <p>
-                  <Icon size={14} aria-hidden="true" />
-                  {detail}
-                </p>
+                <div>
+                  <strong className="block text-sm font-extrabold text-slate-900">
+                    {title}
+                  </strong>
+                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    {desc}
+                  </p>
+                </div>
               </div>
-            </article>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
+
+      {/* Section Corridors + Comparateur DHL/FedEx (Fond #FFFFFF) */}
       <section
         id="simulator"
-        className="landing-simulator-clean"
-        role="region"
-        aria-labelledby="simulator-title"
+        className="bg-[#FFFFFF] border-y border-[#E2E8F0] py-14 sm:py-16 px-4 sm:px-6"
       >
-        <div className="simulator-clean-header">
-          <span className="eyebrow">
-            01 / {text("TARIFICATION TRANSPARENTE", "TRANSPARENT PRICING")}
-          </span>
-          <h2 id="simulator-title">
-            {text("Jusqu'à 70 % plus économique que le fret express", "Up to 70% cheaper than traditional express")}
-          </h2>
-          <p className="simulator-clean-sub">
-            {text(
-              "Fini les surtaxes carburant et les frais de douane imprévus. Les tarifs BagVoyage sont clairs par couloir aérien, négociés en toute confiance et garantis par séquestre bancaire.",
-              "No fuel surcharges or surprise customs fees. BagVoyage rates are transparent per corridor, negotiated with trust, and protected by bank escrow."
-            )}
-          </p>
-        </div>
-
-        <div className="corridor-rates-grid">
-          {[
-            {
-              corridor: text("France / Europe ➔ Algérie", "France / Europe ➔ Algeria"),
-              rate: "8 € / kg",
-              transit: text("24h – 48h vol direct", "24h – 48h direct flight"),
-              badge: text("Corridor Populaire", "Popular Route"),
-              saving: text("Économie ~72 % vs DHL", "~72% savings vs DHL"),
-            },
-            {
-              corridor: text("Europe ➔ Transatlantique (Canada / USA)", "Europe ➔ Transatlantic (Canada / USA)"),
-              rate: "12 € / kg",
-              transit: text("48h – 72h vol régulier", "48h – 72h regular flight"),
-              badge: "Transatlantique",
-              saving: text("Économie ~65 % vs FedEx", "~65% savings vs FedEx"),
-            },
-            {
-              corridor: text("Europe ➔ Moyen-Orient (Dubaï, Doha)", "Europe ➔ Middle East (Dubai, Doha)"),
-              rate: "11 € / kg",
-              transit: text("24h – 48h vol direct", "24h – 48h direct flight"),
-              badge: "Moyen-Orient",
-              saving: text("Économie ~68 % vs DHL", "~68% savings vs DHL"),
-            },
-            {
-              corridor: text("Europe ➔ Afrique Subsaharienne", "Europe ➔ Sub-Saharan Africa"),
-              rate: "10 € / kg",
-              transit: text("48h – 72h vols directs", "48h – 72h direct flights"),
-              badge: "Afrique",
-              saving: text("Économie ~70 % vs Express", "~70% savings vs Courier"),
-            },
-          ].map((item, i) => (
-            <div key={i} className="corridor-rate-card rounded-2xl">
-              <div className="corridor-card-top">
-                <span className="corridor-badge whitespace-nowrap">{item.badge}</span>
-                <span className="corridor-transit whitespace-nowrap tabular-nums">{item.transit}</span>
-              </div>
-              <h3 className="corridor-name">{item.corridor}</h3>
-              <div className="corridor-price-row">
-                <strong className="whitespace-nowrap tabular-nums">{item.rate}</strong>
-                <span className="corridor-savings-tag whitespace-nowrap tabular-nums">{item.saving}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="landing-comparison">
-          <div>
-            <span className="eyebrow">
-              {text(
-                "VOTRE BUDGET, EN PERSPECTIVE",
-                "PUT YOUR BUDGET IN PERSPECTIVE",
-              )}
-            </span>
-            <h2>{c.compare}</h2>
-            <p>{c.compareText}</p>
-            <div className="savings-number" aria-live="polite">
-              <strong className="tabular-nums">{percent}%</strong>
-              <span>{c.saving}</span>
-            </div>
-          </div>
-          <div className="comparison-panel rounded-2xl">
+        <div className="max-w-6xl mx-auto space-y-10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <span className="comparison-label block text-xs font-semibold mb-2">
-                {c.competitor}
+              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
+                01 / {text("CORRIDORS & TARIFS", "CORRIDORS & PRICING")}
               </span>
-              <div className="flex flex-wrap gap-2 mb-3">
-                {[
-                  "DHL",
-                  "FedEx",
-                  text("Fret aérien classique", "Air freight"),
-                ].map((name) => {
-                  const isSelected = competitor === name;
-                  return (
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mt-1">
+                {c.compare}
+              </h2>
+            </div>
+            <p className="text-sm text-slate-600 max-w-md">{c.compareText}</p>
+          </div>
+
+          {/* 4 Cartes Corridors */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {corridors.map((item) => (
+              <article
+                key={item.code}
+                className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5 flex flex-col justify-between gap-4"
+              >
+                <div className="space-y-2.5">
+                  <span className="inline-block px-2.5 py-1 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-[11px] font-extrabold text-slate-700 whitespace-nowrap">
+                    {item.badge}
+                  </span>
+                  <h3 className="text-base font-extrabold text-slate-900">
+                    {item.from} → {item.to}
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    {item.code} · {item.carrier}
+                  </p>
+                </div>
+
+                <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between gap-2 tabular-nums">
+                  <strong className="text-lg font-black text-[#059669] whitespace-nowrap">
+                    {item.price}
+                  </strong>
+                  <span className="text-xs font-semibold text-slate-600 whitespace-nowrap">
+                    {item.delay}
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {/* Comparateur Interactif BagVoyage vs DHL / FedEx (zéro vide blanc) */}
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 block">
+                  {text("Origine", "Origin")}
+                </label>
+                <CityAutocomplete
+                  id="sim-origin"
+                  name="simOrigin"
+                  value={origin}
+                  onChange={setOrigin}
+                  placeholder="Paris"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 block">
+                  {text("Destination", "Destination")}
+                </label>
+                <CityAutocomplete
+                  id="sim-dest"
+                  name="simDestination"
+                  value={destination}
+                  onChange={setDestination}
+                  placeholder="Alger"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 block">
+                  {text("Poids (kg)", "Weight (kg)")} :{" "}
+                  <strong className="text-slate-900 tabular-nums">{weight} kg</strong>
+                </label>
+                <input
+                  type="range"
+                  min={1}
+                  max={23}
+                  value={weight}
+                  onChange={(e) => setWeight(Number(e.target.value))}
+                  className="w-full accent-[#2563EB]"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 block">
+                  {c.competitor}
+                </label>
+                <div className="flex gap-2">
+                  {(["DHL", "FedEx", "Chronopost"] as const).map((comp) => (
                     <button
-                      key={name}
+                      key={comp}
                       type="button"
-                      onClick={() => setCompetitor(name)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        isSelected
-                          ? "bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-xs"
-                          : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700"
+                      onClick={() => {
+                        setCompetitor(comp);
+                        setHasCustomQuote(false);
+                      }}
+                      className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                        competitor === comp
+                          ? "bg-[#0F172A] text-white border-[#0F172A]"
+                          : "bg-[#FFFFFF] text-slate-700 border-[#E2E8F0]"
                       }`}
                     >
-                      {name}
+                      {comp}
                     </button>
-                  );
-                })}
+                  ))}
+                </div>
+              </div>
+
+              <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-3 pt-1">
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setNeed("parcel")}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border cursor-pointer ${
+                      need === "parcel"
+                        ? "bg-[#0F172A] text-white border-[#0F172A]"
+                        : "bg-[#FFFFFF] text-slate-700 border-[#E2E8F0]"
+                    }`}
+                  >
+                    {text("Envoi de colis", "Parcel")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNeed("shop")}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border cursor-pointer ${
+                      need === "shop"
+                        ? "bg-[#0F172A] text-white border-[#0F172A]"
+                        : "bg-[#FFFFFF] text-slate-700 border-[#E2E8F0]"
+                    }`}
+                  >
+                    Shop &amp; Go
+                  </button>
+                </div>
+
+                <label className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600">
+                  <span>{c.quote} :</span>
+                  <input
+                    type="number"
+                    min={1}
+                    value={quote}
+                    onChange={(e) => {
+                      setHasCustomQuote(true);
+                      setCustomQuote(Math.max(1, Number(e.target.value) || 0));
+                    }}
+                    className="w-24 px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] bg-[#FFFFFF] text-slate-900 font-bold tabular-nums"
+                  />
+                </label>
               </div>
             </div>
-            <label>
-              {c.quote}
-              <input
-                type="number"
-                className="tabular-nums"
-                min="0"
-                max="100000"
-                step="0.01"
-                value={quote || ""}
-                onChange={(event) => {
-                  setHasCustomQuote(true);
-                  setCustomQuote(Math.max(0, Number(event.target.value)));
-                }}
-              />
-            </label>
-            <div className="comparison-row">
-              <span>
-                BagVoyage<strong className="tabular-nums" style={{ color: "#059669" }}>{gross} €</strong>
-              </span>
-              <div>
-                <i
-                  style={{
-                    width: `${Math.min(100, (gross / Math.max(1, quote, gross)) * 100)}%`,
-                    background: "#059669",
-                  }}
-                />
-              </div>
-              <small>
-                {text(
-                  "24–48 h envisageables selon le trajet",
-                  "24–48 h possible depending on route",
-                )}
-              </small>
-            </div>
-            <div className="comparison-row competitor">
-              <span>
-                {competitor}
-                <strong className="tabular-nums">{quote} €</strong>
-              </span>
-              <div>
-                <i
-                  style={{
-                    width: `${Math.min(100, (quote / Math.max(1, quote, gross)) * 100)}%`,
-                  }}
-                />
-              </div>
-              <small>
-                {text(
-                  "Délai et services selon votre devis",
-                  "Timing and services as quoted",
-                )}
-              </small>
-            </div>
-            <p>{c.source}</p>
-          </div>
-        </div>
-      </section>
-      <section
-        ref={metricsRef}
-        className="landing-metrics"
-        aria-label={text("Indicateurs de présentation", "Presentation metrics")}
-      >
-        <div className="landing-metrics-header">
-          <p>{c.demo}</p>
-          <div className="metrics-live-status">
-            <span
-              className={`live-pulse-dot ${hasNewTick ? "pulsing" : ""}`}
-              aria-hidden="true"
-            />
-            <span>
-              {text(
-                "Activité réseau en direct · Flux sécurisé",
-                "Live network activity · Secured flow",
-              )}
-            </span>
-          </div>
-        </div>
-        <div>
-          <article>
-            <AnimatedMetricNumber
-              target={180000}
-              prefix="+"
-              suffix=" €"
-              liveIncrement={liveMetricsOffset.volume}
-              isVisible={metricsVisible}
-            />
-            <span>{c.metricLabels[0]}</span>
-          </article>
-          <article>
-            <AnimatedMetricNumber
-              target={14250}
-              suffix=" kg"
-              liveIncrement={liveMetricsOffset.weight}
-              isVisible={metricsVisible}
-            />
-            <span>{c.metricLabels[1]}</span>
-          </article>
-          <article>
-            <AnimatedMetricNumber
-              target={36}
-              suffix=" h"
-              isVisible={metricsVisible}
-            />
-            <span>{c.metricLabels[2]}</span>
-          </article>
-          <article>
-            <AnimatedMetricNumber
-              target={99.8}
-              suffix=" %"
-              decimals={1}
-              isVisible={metricsVisible}
-            />
-            <span>{c.metricLabels[3]}</span>
-          </article>
-        </div>
-      </section>
-      <section id="features" className="landing-universes">
-        <div className="landing-section-heading">
-          <span className="eyebrow">
-            02 / {text("À CHACUN SON VOYAGE", "EVERY JOURNEY IS DIFFERENT")}
-          </span>
-          <h2>{c.universes}</h2>
-        </div>
-        <div className="universe-grid">
-          {[
-            {
-              Icon: Package,
-              number: "01",
-              title: text(
-                "Bag & Go : Envoyer un peu de chez soi.",
-                "Bag & Go: Send a little piece of home.",
-              ),
-              copy: text(
-                "Photographiez, décrivez, confiez. Votre colis prend le chemin d’un voyageur déjà prévu avec remise en main propre sécurisée.",
-                "Photograph, describe, hand over. Your parcel joins a verified traveler's journey with secure handover.",
-              ),
-              action: text("Expédier un colis", "Ship a parcel"),
-              kind: "parcel",
-              platformRoute: "bagandgo",
-            },
-            {
-              Icon: Plane,
-              number: "02",
-              title: text(
-                "Voyageur : L'axe central du lien.",
-                "Traveler: The central hub connecting both worlds.",
-              ),
-              copy: text(
-                "Vos kilos disponibles financent votre voyage. Particulier ou convoyeur régulier, rentabilisez jusqu'à 100% de vos billets.",
-                "Your available luggage space funds your travel. Monetize up to 100% of your tickets safely.",
-              ),
-              action: text("Rentabiliser mon voyage", "Monetize my journey"),
-              kind: "trips",
-              platformRoute: "voyageur",
-            },
-            {
-              Icon: ShoppingBag,
-              number: "03",
-              title: text(
-                "Shop & Go : Acheter partout sans frontières.",
-                "Shop & Go: Buy anywhere across borders.",
-              ),
-              copy: text(
-                "Un lien, une référence, une envie. Un voyageur achète pour vous en magasin officiel ou Duty-Free et vous le rapporte.",
-                "A link, a reference, a desire. A traveler buys for you in official or Duty-Free stores and brings it to you.",
-              ),
-              action: text("Commander un article", "Order an item"),
-              kind: "requests",
-              platformRoute: "shopandgo",
-            },
-          ].map(({ Icon, number, title, copy: description, action, kind, platformRoute }) => (
-            <article key={number} className={`universe universe-${number} rounded-2xl`}>
-              <header>
-                <span>
-                  {number} ·{" "}
-                  {kind === "parcel"
-                    ? text("EXPÉDITION EXPRESS", "EXPRESS DELIVERY")
-                    : kind === "requests"
-                      ? "PERSONAL SHOPPING"
-                      : text("VOYAGEURS DIASPORA", "DIASPORA TRAVELLERS")}
+
+            <div className="lg:col-span-5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 space-y-4 tabular-nums">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-500">
+                  {competitor} ({weight} kg)
                 </span>
-                <Icon size={22} strokeWidth={1.5} aria-hidden="true" />
-              </header>
-              <h3>{title}</h3>
-              <p>{description}</p>
-              <div className={`universe-specimen specimen-${kind}`}>
-                {kind === "parcel" ? (
-                  <div className="parcel-label rounded-2xl">
-                    <div className="parcel-specimen-header">
-                      <div className="parcel-specimen-brand">
-                        <Package size={18} />
-                        <span>{text("EXPÉDITION EXPRESS OACI", "ICAO EXPRESS DELIVERY")}</span>
-                      </div>
-                      <span className="parcel-steb-pill">
-                        <ShieldCheck size={13} />
-                        STEB-SEAL
-                      </span>
-                    </div>
-
-                    <div className="parcel-specimen-route">
-                      <div className="parcel-airport">
-                        <strong>CDG</strong>
-                        <small>Paris Charles-de-Gaulle</small>
-                      </div>
-                      <div className="parcel-flight-arrow">
-                        <Plane size={16} />
-                        <span className="tabular-nums">Vol 2h20</span>
-                      </div>
-                      <div className="parcel-airport">
-                        <strong>ALG</strong>
-                        <small>Alger Houari-Boumédiène</small>
-                      </div>
-                    </div>
-
-                    <div className="parcel-specimen-meta">
-                      <div>
-                        <span>{text("Référence", "Reference")}</span>
-                        <strong>#DZ-8491-EX</strong>
-                      </div>
-                      <div>
-                        <span>{text("Poids déclaré", "Weight")}</span>
-                        <strong className="tabular-nums">4.0 kg</strong>
-                      </div>
-                      <div>
-                        <span>{text("Délai garanti", "Delivery")}</span>
-                        <strong className="tabular-nums">24h–48h</strong>
-                      </div>
-                    </div>
-
-                    <div className="parcel-specimen-barcode">
-                      <PassBarcode />
-                      <span>*BV-DZ8491-STEB-2026*</span>
-                    </div>
-
-                    <div className="parcel-specimen-footer">
-                      <div className="parcel-verified-badge">
-                        <CheckCircle2 size={14} />
-                        <span>{text("Scellé inviolable & Séquestre Stripe actif", "Tamper-proof seal & Stripe escrow active")}</span>
-                      </div>
-                    </div>
-                  </div>
-                ) : kind === "requests" ? (
-                  <div className="shopping-receipt">
-                    <div className="brand-chips">
-                      {["Apple Store", "Sephora", "Duty-Free CDG", "Pharmacie"].map(
-                        (brand) => (
-                          <span key={brand}>{brand}</span>
-                        ),
-                      )}
-                    </div>
-
-                    <div className="shop-specimen-body rounded-2xl">
-                      <div className="shop-specimen-header">
-                        <div className="shop-specimen-badge">
-                          <ShoppingBag size={16} />
-                          <span>{text("COMMANDE CERTIFIÉE EN BOUTIQUE", "CERTIFIED STORE ORDER")}</span>
-                        </div>
-                        <span className="shop-vat-tag">{text("TVA Déductible", "Tax-Free VAT")}</span>
-                      </div>
-
-                      <div className="shop-specimen-item">
-                        <strong>Apple AirPods Pro 2 · MagSafe USB-C</strong>
-                        <p>{text("Acheté en magasin officiel Champs-Élysées", "Purchased at official Champs-Élysées store")}</p>
-                      </div>
-
-                      <div className="shop-specimen-receipt-row">
-                        <Receipt size={14} />
-                        <span>{text("Ticket de caisse & Facture nominative joints", "Original receipt & itemized invoice included")}</span>
-                      </div>
-
-                      <div className="shop-specimen-guarantee">
-                        <LockKeyhole size={14} />
-                        <div>
-                          <strong>{text("Séquestre 100 % sécurisé", "100% Escrow Protection")}</strong>
-                          <small className="tabular-nums">{text("0 € d'avance demandée au voyageur · Déblocage à réception conforme", "No cash advance required from traveler · Payout upon compliant delivery")}</small>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="traveller-receipt rounded-2xl">
-                    <div className="travel-boarding-header">
-                      <div className="travel-airline-tag">
-                        <Plane size={16} />
-                        <strong>AIR ALGÉRIE · AH1000</strong>
-                      </div>
-                      <span className="travel-class-badge">CABIN + SOUTE</span>
-                    </div>
-
-                    <div className="travel-passenger-row">
-                      <div>
-                        <span>{text("Voyageur vérifié", "Verified Traveler")}</span>
-                        <strong>Karim B.</strong>
-                      </div>
-                      <div className="travel-pnr">
-                        <span>PNR</span>
-                        <strong>BV-782K</strong>
-                      </div>
-                    </div>
-
-                    <div className="travel-route-display">
-                      <div className="travel-leg">
-                        <strong>CDG</strong>
-                        <span className="tabular-nums">09:40 Paris</span>
-                      </div>
-                      <div className="travel-leg-duration">
-                        <span className="tabular-nums">2h 20m</span>
-                        <div className="travel-leg-line" />
-                      </div>
-                      <div className="travel-leg">
-                        <strong>ALG</strong>
-                        <span className="tabular-nums">12:05 Alger</span>
-                      </div>
-                    </div>
-
-                    <div className="travel-luggage-gauge">
-                      <div className="gauge-header">
-                        <span>{text("Capacité partagée", "Shared Capacity")}</span>
-                        <strong className="tabular-nums">15 kg / 23 kg (65 %)</strong>
-                      </div>
-                      <div className="gauge-bar">
-                        <div className="gauge-fill" style={{ width: "65%" }} />
-                      </div>
-                    </div>
-
-                    <div className="travel-reward-row">
-                      <div>
-                        <span>{text("Gain net garanti", "Guaranteed Net Earning")}</span>
-                        <strong className="travel-reward-val tabular-nums">+160 €</strong>
-                      </div>
-                      <div className="travel-escrow-badge">
-                        <ShieldCheck size={14} />
-                        <span className="tabular-nums">{text("Payé sous 24h", "Paid in 24h")}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <strong className="line-through text-slate-400 font-bold">
+                  {quote} €
+                </strong>
               </div>
-              <div className="universe-actions-dual" style={{ display: "flex", gap: "10px", marginTop: "16px", flexWrap: "wrap" }}>
-                <a href={`/#${platformRoute}`} className="universe-explore-link" style={{ flex: "1 1 120px", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
-                  {text("Explorer", "Explore")} {number === "01" ? "Bag&Go" : number === "02" ? "Voyageur" : "Shop&Go"}
-                  <ArrowRight size={16} />
-                </a>
-                <a href={`/#publish/${kind}`} className="universe-publish-link" style={{ flex: "1 1 130px", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
-                  {action}
-                  <ArrowUpRight size={16} />
-                </a>
+              <div className="flex items-center justify-between text-sm">
+                <span className="font-bold text-slate-900">BagVoyage</span>
+                <strong className="text-2xl font-black text-[#059669]">
+                  {gross} €
+                </strong>
               </div>
-            </article>
-          ))}
+              <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-600">
+                  {c.saving}
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#059669]/10 text-[#059669] text-sm font-black">
+                  −{saving} € ({percent} %)
+                </span>
+              </div>
+              <a
+                href="/#explore"
+                className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold transition-colors no-underline"
+              >
+                <span>{text("Voir les voyageurs disponibles", "Browse available travelers")}</span>
+                <ArrowRight size={16} />
+              </a>
+            </div>
+          </div>
         </div>
       </section>
-      <section className="landing-assurance">
-        <span className="eyebrow">
-          04 / {text("LE VOYAGE COMMENCE PAR LA CONFIANCE", "START WITH TRUST")}
-        </span>
-        <h2>{c.trust}</h2>
-        <div className="assurance-pillars">
-          {[
-            [
-              ShieldCheck,
-              "Stripe Connect",
-              text(
-                "Séquestre sécurisé via Stripe Connect. Fonds bloqués à la réservation et débloqués après confirmation de remise.",
-                "Secure escrow through Stripe Connect. Funds held at booking and released after handover confirmation.",
-              ),
-            ],
-            [
-              ScanLine,
-              text("Double QR code", "Two QR codes"),
-              text(
-                "Un contrôle à la collecte, un autre à la livraison. Le PIN reste une alternative accessible.",
-                "A check at collection and another at delivery. PIN entry remains an accessible alternative.",
-              ),
-            ],
-            [
-              Video,
-              text("Preuve vidéo 15 s", "15-second video evidence"),
-              text(
-                "L’état du colis documenté en 15 secondes. Une preuve horodatée accompagne chaque remise.",
-                "Parcel condition documented in 15 seconds. Timestamped evidence accompanies each handover.",
-              ),
-            ],
-            [
-              Globe2,
-              text("Repères douaniers", "Customs guidance"),
-              text(
-                "Repères OACI, contenu déclaré et franchises à vérifier. Préparez vos justificatifs avant chaque départ.",
-                "ICAO guidance, declared contents and allowances to check. Prepare your documents before departure.",
-              ),
-            ],
-          ].map(([Icon, title, description]) => {
-            const Symbol = Icon as typeof ShieldCheck;
-            return (
-              <article key={String(title)} className="rounded-2xl">
-                <Symbol size={24} strokeWidth={1.5} />
-                <h3>{String(title)}</h3>
-                <p>{String(description)}</p>
-              </article>
-            );
-          })}
-        </div>
-        <div className="trust-comparison rounded-2xl">
-          <div className="trust-comparison-intro">
-            <LockKeyhole size={24} />
-            <h3>
-              {text(
-                "Pourquoi BagVoyage remplace les groupes informels",
-                "Why BagVoyage replaces informal groups",
-              )}
-            </h3>
-            <p>
-              {text(
-                "Le lien humain mérite un cadre de confiance.",
-                "Human connection deserves a trusted framework.",
-              )}
-            </p>
-          </div>
-          <div className="trust-informal rounded-2xl">
-            <span>{text("Groupes Facebook", "Facebook groups")}</span>
-            {[
-              text("Risque d’arnaque", "Risk of scams"),
-              text("Zéro garantie", "No guarantees"),
-              text("Espèces non protégées", "Unprotected cash"),
-              text("Aucune traçabilité", "No traceability"),
-            ].map((item) => (
-              <p key={item}>
-                <CircleMinus size={16} />
-                {item}
-              </p>
-            ))}
-          </div>
-          <div className="trust-bagvoyage rounded-2xl">
-            <span>
-              BagVoyage
-              <small>{text("Protocole de sécurité", "Security protocol")}</small>
+
+      {/* Section 3 Univers (#F8FAFC) */}
+      <section id="features" className="py-14 sm:py-16 px-4 sm:px-6 bg-[#F8FAFC]">
+        <div className="max-w-6xl mx-auto space-y-8">
+          <div>
+            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
+              02 / {text("TROIS MODES INTÉGRÉS", "THREE INTEGRATED MODES")}
             </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mt-1">
+              {c.universes}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
-              text(
-                "Séquestre bancaire 100 % garanti",
-                "100% guaranteed bank escrow",
-              ),
-              text("Pièce d’identité vérifiée", "Verified identity"),
-              text(
-                "Scellé inviolable numéroté",
-                "Numbered tamper-evident seal",
-              ),
-              text("Assistance dédiée", "Dedicated support"),
-            ].map((item) => (
-              <p key={item}>
-                <CircleCheck size={16} />
-                {item}
-              </p>
+              {
+                href: "/#voyageur",
+                Icon: Plane,
+                badge: "Voyageur",
+                title: text("Rentabilisez vos kilos libres", "Monetize unused luggage"),
+                desc: text(
+                  "Avion, voiture, train, ferry ou utilitaire : publiez votre trajet ou scannez votre billet pour amortir votre voyage.",
+                  "Flight, car, train, ferry or van: post your trip or scan your ticket to offset travel costs.",
+                ),
+                cta: text("Ouvrir mode Voyageur", "Open Traveler mode"),
+              },
+              {
+                href: "/#bagandgo",
+                Icon: Package,
+                badge: "Bag & Go",
+                title: text("Expédiez vos colis en 24h–48h", "Ship parcels in 24h–48h"),
+                desc: text(
+                  "Choisissez un gabarit précis, confiez votre colis à un passager vérifié et suivez la remise avec scellé et code PIN.",
+                  "Pick an exact parcel preset, hand off to a verified traveler and track delivery with seal and PIN.",
+                ),
+                cta: text("Ouvrir Bag & Go", "Open Bag & Go"),
+              },
+              {
+                href: "/#shopandgo",
+                Icon: ShoppingBag,
+                badge: "Shop & Go",
+                title: text("Achetez à l’étranger sans frontières", "Shop abroad without borders"),
+                desc: text(
+                  "Commandez parfums, high-tech ou articles introuvables avec ticket de caisse officiel remis en main propre.",
+                  "Order fragrances, electronics or hard-to-find items with an official receipt delivered hand-to-hand.",
+                ),
+                cta: text("Ouvrir Shop & Go", "Open Shop & Go"),
+              },
+            ].map(({ href, Icon, badge, title, desc, cta }) => (
+              <article
+                key={badge}
+                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 flex flex-col justify-between gap-5"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="w-11 h-11 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center">
+                      <Icon size={20} />
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-[#F8FAFC] border border-[#E2E8F0] text-xs font-bold text-slate-700">
+                      {badge}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-extrabold text-slate-900">
+                    {title}
+                  </h3>
+                  <p className="text-sm text-slate-600 leading-relaxed">{desc}</p>
+                </div>
+                <a
+                  href={href}
+                  className="inline-flex items-center gap-1.5 text-sm font-bold text-[#2563EB] hover:underline no-underline"
+                >
+                  <span>{cta}</span>
+                  <ArrowRight size={15} />
+                </a>
+              </article>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Section Sombre #0F172A : Preuve Technologique & Application Mobile */}
       <section
         id="mobile"
-        className="landing-mobile"
+        className="bg-[#0F172A] text-white py-16 px-4 sm:px-6"
         aria-labelledby="mobile-title"
       >
-        <div className="landing-mobile-intro">
-          <span className="eyebrow">
-            05 /{" "}
-            {text(
-              "LE VOYAGE, DANS VOTRE POCHE",
-              "YOUR JOURNEY, IN YOUR POCKET",
-            )}
-          </span>
-          <h2 id="mobile-title">
-            {text("Application Mobile Native", "Native Mobile App")}
-            <em>
-              {text(
-                "Prête pour vos prochains départs.",
-                "Made for your next departure.",
-              )}
-            </em>
-          </h2>
-          <p>
-            {text(
-              "BagVoyage sur iPhone & Android. Votre billet, vos colis et vos échanges au même endroit, du départ à la remise.",
-              "BagVoyage on iPhone & Android. Your boarding pass, parcels and conversations together, from departure to handover.",
-            )}
-          </p>
-          <div className="landing-mobile-status">
-            <span aria-hidden="true" />
-            {text(
-              "Bientôt sur l’App Store et Google Play",
-              "Coming soon to the App Store and Google Play",
-            )}
-          </div>
-          <AppStoreBadges language={language} onClick={openMobileLaunch} />
-          <a className="landing-mobile-details" href="#download">
-            {text(
-              "Découvrir le lancement mobile",
-              "Discover the mobile launch",
-            )}
-            <ArrowUpRight size={18} aria-hidden="true" />
-          </a>
-        </div>
-        <div
-          className="mobile-device-stage"
-          role="img"
-          aria-label={text(
-            "Aperçu de l’application mobile BagVoyage et de son pass hors-ligne",
-            "Preview of the BagVoyage mobile app and its offline pass",
-          )}
-        >
-          <div className="mobile-device">
-            <div className="device-status">
-              <span>9:41</span>
-              <i />
-              <Signal size={14} />
-              <BatteryFull size={18} />
-            </div>
-            <div className="device-app-header">
-              <strong>
-                BagVoyage<span>.</span>
-              </strong>
-              <Bell size={18} />
-            </div>
-            <p className="device-greeting">
-              {text("Bon voyage, Sarah.", "Have a great trip, Sarah.")}
-            </p>
-            <div className="device-flight">
-              <span>
-                <Plane size={15} />
-                {text("VOTRE PROCHAIN VOL", "YOUR NEXT FLIGHT")}
-              </span>
-              <div>
-                <strong>CDG</strong>
-                <ArrowRight size={22} />
-                <strong>ALG</strong>
-              </div>
-              <p>
-                Paris <span>Alger</span>
-              </p>
-              <footer>
-                <span>AH1000 · 14:30</span>
-                <span>{text("Aujourd’hui", "Today")}</span>
-              </footer>
-            </div>
-            <div className="device-cargo">
-              <span>
-                <Package size={18} />
-                {text("Votre colis est prêt", "Your parcel is ready")}
-              </span>
-              <strong>
-                STEB-447B <Check size={15} />
-              </strong>
-              <p>
-                {text(
-                  "5 kg · Remise à la porte K34",
-                  "5 kg · Handover at gate K34",
-                )}
-              </p>
-            </div>
-            <div className="device-wallet">
-              <span>
-                <Ticket size={16} />
-                {text("Passe de fret", "Cargo pass")}
-              </span>
-              <PassBarcode />
-              <small>
-                <WifiOff size={12} />
-                {text("Disponible hors-ligne", "Available offline")}
-              </small>
-            </div>
-            <div className="device-nav">
-              <Plane size={18} />
-              <Package size={18} />
-              <ScanLine size={22} />
-              <Bell size={18} />
-            </div>
-            <div className="device-home" />
-          </div>
-          <div className="device-notification">
-            <span>
-              <Check size={18} />
-            </span>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-7 space-y-6">
             <div>
-              <strong>{text("Remise enregistrée", "Handover recorded")}</strong>
-              <small>
+              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
+                03 / {text("SÉCURITÉ & EXPÉRIENCE MOBILE", "SECURITY & MOBILE EXPERIENCE")}
+              </span>
+              <h2
+                id="mobile-title"
+                className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white mt-1"
+              >
+                {c.trust}
+              </h2>
+              <p className="text-sm sm:text-base text-slate-300 mt-2 max-w-xl leading-relaxed">
                 {text(
-                  "Même sans réseau. Vous pouvez décoller.",
-                  "Even offline. You’re ready for takeoff.",
+                  "Votre billet, vos preuves photo/vidéo et votre passe de fret hors-ligne réunis au même endroit, protégés de bout en bout.",
+                  "Your boarding pass, photo/video proofs and offline cargo pass in one place, protected end-to-end.",
                 )}
-              </small>
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                {
+                  Icon: ShieldCheck,
+                  title: "Stripe Connect",
+                  desc: text(
+                    "Séquestre bancaire : fonds bloqués puis libérés uniquement à la remise.",
+                    "Escrow hold: funds locked and released only on delivery confirmation.",
+                  ),
+                },
+                {
+                  Icon: ScanLine,
+                  title: text("Double QR & PIN", "Dual QR & PIN"),
+                  desc: text(
+                    "Contrôle à la prise en charge et code PIN à 4 chiffres à l'arrivée.",
+                    "Collection verification and 4-digit PIN confirmation on arrival.",
+                  ),
+                },
+                {
+                  Icon: Video,
+                  title: text("Preuve horodatée", "Timestamped proof"),
+                  desc: text(
+                    "État du colis documenté par photo et scellé numéroté.",
+                    "Parcel condition documented by photo and numbered tamper seal.",
+                  ),
+                },
+                {
+                  Icon: WifiOff,
+                  title: text("Passe hors-ligne", "Offline pass"),
+                  desc: text(
+                    "Enregistrez la remise même en zone blanche aéroportuaire.",
+                    "Record handover even without mobile data at the terminal.",
+                  ),
+                },
+              ].map(({ Icon, title, desc }) => (
+                <article
+                  key={title}
+                  className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1.5"
+                >
+                  <div className="flex items-center gap-2 text-sm font-bold text-white">
+                    <Icon size={16} className="text-[#059669]" />
+                    <span>{title}</span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">{desc}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className="pt-2 space-y-4">
+              <div className="flex flex-wrap items-center gap-4">
+                <AppStoreBadges language={language} onClick={openMobileLaunch} />
+                <a
+                  href="#download"
+                  className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-200 hover:text-white no-underline"
+                >
+                  <Smartphone size={16} />
+                  <span>{text("Découvrir l’app mobile", "Explore mobile app")}</span>
+                  <ArrowUpRight size={15} />
+                </a>
+              </div>
+              <MobileWaitlistForm language={language} />
             </div>
           </div>
-          <span className="device-preview-label">
-            {text("APERÇU DE L’EXPÉRIENCE NATIVE", "NATIVE EXPERIENCE PREVIEW")}
-          </span>
-        </div>
-        <div className="landing-mobile-features">
-          <div className="landing-mobile-feature-heading">
-            <Smartphone size={22} aria-hidden="true" />
-            <span>
-              {text("PENSÉE POUR LE TERRAIN", "BUILT FOR THE JOURNEY")}
-            </span>
-            <span>iOS / Android</span>
-          </div>
-          {[
-            {
-              Icon: ScanLine,
-              title: text(
-                "Scanner IATA BCBP par caméra",
-                "IATA BCBP camera scanner",
-              ),
-              description: text(
-                "Scannez votre carte d’embarquement pour retrouver les informations de votre vol.",
-                "Scan your boarding pass to retrieve your flight information.",
-              ),
-            },
-            {
-              Icon: Ticket,
-              title: text(
-                "Passe de fret Apple Wallet",
-                "Apple Wallet cargo pass",
-              ),
-              description: text(
-                "Gardez les références de votre colis à portée de main, avec vos titres de voyage.",
-                "Keep parcel references close at hand, alongside your travel passes.",
-              ),
-            },
-            {
-              Icon: WifiOff,
-              title: text(
-                "Remise hors-ligne en zone blanche",
-                "Offline handover without coverage",
-              ),
-              description: text(
-                "Enregistrez la remise sans réseau. La synchronisation reprend au retour de la connexion.",
-                "Record handovers without a network. Sync resumes when you reconnect.",
-              ),
-            },
-            {
-              Icon: Bell,
-              title: text("Push notifications", "Push notifications"),
-              description: text(
-                "Un nouveau message, un départ ou une remise : restez informé au bon moment.",
-                "New messages, departures and handovers: stay informed at the right moment.",
-              ),
-            },
-          ].map(({ Icon, title, description }) => (
-            <article key={title}>
-              <div>
-                <Icon size={22} strokeWidth={1.5} aria-hidden="true" />
-              </div>
-              <div>
-                <h3>{title}</h3>
-                <p>{description}</p>
-              </div>
-            </article>
-          ))}
-          <p className="landing-mobile-roadmap">
-            {text(
-              "Fonctionnalités prévues pour l’application native, disponibles progressivement au lancement.",
-              "Planned native app features, rolling out progressively at launch.",
-            )}
-          </p>
-        </div>
-        <div className="landing-mobile-signup">
-          <div>
-            <span className="eyebrow">
-              {text("ACCÈS PRIORITAIRE", "PRIORITY ACCESS")}
-            </span>
-            <h3>
-              {text(
-                "Votre prochaine escale commence ici.",
-                "Your next stop starts here.",
-              )}
-            </h3>
-            <p>
-              {text(
-                "Rejoignez la liste de lancement. En attendant, la version web est déjà accessible.",
-                "Join the launch list. In the meantime, the web app is already available.",
-              )}
-            </p>
-          </div>
-          <MobileWaitlistForm language={language} />
-        </div>
-      </section>
-      <section id="faq" className="landing-faq">
-        <div>
-          <span className="eyebrow">
-            06 / {text("LES RÉPONSES", "YOUR QUESTIONS")}
-          </span>
-          <h2>{c.faq}</h2>
-        </div>
-        <div>
-          {faqs[language].map(([question, answer], index) => (
-            <details key={question}>
-              <summary>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                {question}
-                <ArrowRight size={18} />
-              </summary>
-              <p>{answer}</p>
-            </details>
-          ))}
-        </div>
-      </section>
-      <footer className="landing-footer">
-        <span className="eyebrow">BAGVOYAGE / TOGETHER, FURTHER.</span>
-        <h2>
-          {c.end.split("\n").map((line, index) => (
-            <span key={index}>
-              {line}
-              <br />
-            </span>
-          ))}
-        </h2>
-        <a className="landing-cta" href="/#explore">
-          {c.cta}
-          <ArrowUpRight size={20} />
-        </a>
-        <nav
-          className="landing-footer-links"
-          aria-label={text("Liens de pied de page", "Footer links")}
-        >
-          <a href="/#how-it-works">{text("Comment ça marche", "How it works")}</a>
-          <a href="/#pricing">{text("Tarifs & Comparateur", "Pricing & Comparison")}</a>
-          <a href="/#trust">{text("Sécurité & Séquestre", "Security & Escrow")}</a>
-          <a href="/#faq">{text("Centre d'Aide FAQ", "Help Center FAQ")}</a>
-          <a href="#simulator">{text("Simulateur", "Simulator")}</a>
-          <a href="#mobile">{text("Application Mobile", "Mobile App")}</a>
-          <a
-            href="#faq"
-            onClick={(event) => {
-              event.preventDefault();
-              document
-                .getElementById("faq")
-                ?.scrollIntoView({ block: "start" });
-            }}
-          >
-            FAQ
-          </a>
-        </nav>
-        <div className="landing-footer-theme">
-          <ThemeToggle showLabel />
-        </div>
-        <div className="landing-footer-trust-badges">
-          <div className="landing-trust-badge-item">
-            <ShieldCheck size={16} />
-            <span>{text("Séquestre Stripe Connect", "Stripe Connect Escrow")}</span>
-          </div>
-          <div className="landing-trust-badge-item">
-            <CheckCircle2 size={16} />
-            <span>{text("Norme OACI Scellé STEB", "ICAO Standard STEB Seal")}</span>
-          </div>
-          <div className="landing-trust-badge-item">
-            <LockKeyhole size={16} />
-            <span>{text("Chiffrement TLS 256-bit", "256-bit TLS Encryption")}</span>
-          </div>
-          <div className="landing-trust-badge-item">
-            <Globe2 size={16} />
-            <span>{text("Conformité RGPD / CNIL", "GDPR / CNIL Compliant")}</span>
-          </div>
-        </div>
 
-        <details className="landing-legal">
-          <summary>
-            {text("Mentions & données personnelles", "Legal & personal data")}
-          </summary>
-          <p>
-            {text(
-              "BagVoyage SAS · Plateforme de logistique collaborative et co-valisage France–Algérie & International.",
-              "BagVoyage SAS · Collaborative logistics and luggage-sharing platform connecting France, Algeria & international destinations.",
-            )}
-          </p>
-        </details>
-        <div>
-          <strong>BagVoyage</strong>
-          <span>FRANCE / ALGÉRIE / INTERNATIONAL</span>
-          <span>Copyright {new Date().getFullYear()} BagVoyage</span>
-          {showAdmin && (
-            <button
-              type="button"
-              onClick={() => {
-                window.location.hash = "admin";
-              }}
+          {/* Aperçu Mobile épuré */}
+          <div className="lg:col-span-5 flex justify-center">
+            <div className="w-full max-w-[310px] rounded-[36px] bg-slate-950 border-4 border-slate-800 p-4 shadow-2xl space-y-3">
+              <div className="flex items-center justify-between text-[11px] font-bold text-slate-300 px-2">
+                <span>9:41</span>
+                <div className="flex items-center gap-1.5">
+                  <Signal size={13} />
+                  <BatteryFull size={15} />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between px-1">
+                <strong className="text-sm font-extrabold text-white">
+                  BagVoyage<span className="text-[#2563EB]">.</span>
+                </strong>
+                <Bell size={16} className="text-slate-400" />
+              </div>
+
+              <div className="rounded-2xl bg-slate-900 border border-white/10 p-4 space-y-2">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <Plane size={12} className="text-[#2563EB]" />
+                  {text("VOTRE PROCHAIN VOL", "YOUR NEXT FLIGHT")}
+                </span>
+                <div className="flex items-center justify-between text-xl font-black text-white tabular-nums">
+                  <span>CDG</span>
+                  <ArrowRight size={18} className="text-slate-500" />
+                  <span>ALG</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px] text-slate-400 tabular-nums">
+                  <span>AH1000 · 14:30</span>
+                  <span className="text-[#059669] font-bold">
+                    {text("Séquestre actif", "Escrow active")}
+                  </span>
+                </div>
+              </div>
+
+              <div className="rounded-2xl bg-white text-slate-900 p-4 space-y-2 tabular-nums">
+                <div className="flex items-center justify-between text-xs font-bold">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Ticket size={14} className="text-[#2563EB]" />
+                    {text("Passe de fret", "Cargo pass")}
+                  </span>
+                  <span className="text-[#059669] font-extrabold">STEB-447B</span>
+                </div>
+                <PassBarcode />
+                <div className="flex items-center justify-between text-[11px] text-slate-500">
+                  <span>5 kg · Porte K34</span>
+                  <span className="inline-flex items-center gap-1">
+                    <WifiOff size={11} /> Hors-ligne
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Comparatif Groupes Informels vs BagVoyage + FAQ (#FFFFFF) */}
+      <section id="faq" className="bg-[#FFFFFF] py-14 sm:py-16 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto space-y-12">
+          {/* Comparatif Confiance */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-6 space-y-3">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
+                {text("Groupes informels", "Informal groups")}
+              </span>
+              <ul className="space-y-2 text-sm text-slate-600 list-none p-0 m-0">
+                {[
+                  text("Risque d’arnaque et désistements", "Risk of scams and no-shows"),
+                  text("Aucune garantie financière", "No financial guarantee"),
+                  text("Espèces non protégées", "Unprotected cash"),
+                  text("Aucune traçabilité de remise", "No handover traceability"),
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <CircleMinus size={16} className="text-slate-400 shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-[#F8FAFC] border border-[#059669]/40 rounded-2xl p-6 space-y-3">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-[#059669]">
+                BagVoyage · {text("Protocole certifié", "Certified protocol")}
+              </span>
+              <ul className="space-y-2 text-sm font-medium text-slate-800 list-none p-0 m-0">
+                {[
+                  text("Séquestre bancaire Stripe Connect 100 % garanti", "100% guaranteed Stripe Connect escrow"),
+                  text("Identité et justificatifs vérifiés", "Verified identity and documents"),
+                  text("Scellé inviolable numéroté + Code PIN", "Numbered tamper-evident seal + PIN"),
+                  text("Assistance dédiée en cas de litige", "Dedicated dispute support"),
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <CircleCheck size={16} className="text-[#059669] shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* FAQ */}
+          <div className="space-y-4">
+            <div>
+              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
+                04 / FAQ
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mt-1">
+                {c.faq}
+              </h2>
+            </div>
+
+            <div className="divide-y divide-[#E2E8F0] border border-[#E2E8F0] rounded-2xl bg-[#FFFFFF] overflow-hidden">
+              {faqs[language].map(([question, answer], index) => (
+                <details key={question} className="group p-5">
+                  <summary className="flex items-center justify-between gap-4 cursor-pointer list-none font-bold text-sm sm:text-base text-slate-900">
+                    <span className="flex items-center gap-3">
+                      <span className="text-xs font-extrabold text-slate-400 tabular-nums">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      {question}
+                    </span>
+                    <ArrowRight
+                      size={16}
+                      className="text-slate-400 group-open:rotate-90 transition-transform shrink-0"
+                    />
+                  </summary>
+                  <p className="text-sm text-slate-600 leading-relaxed mt-3 pl-7">
+                    {answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer Sombre #0F172A */}
+      <footer className="bg-[#0F172A] text-white py-12 px-4 sm:px-6 border-t border-slate-800">
+        <div className="max-w-6xl mx-auto space-y-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                BAGVOYAGE · FRANCE / ALGÉRIE / INTERNATIONAL
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                {c.end.split("\n").map((line, index) => (
+                  <span key={index} className="block">
+                    {line}
+                  </span>
+                ))}
+              </h2>
+            </div>
+            <a
+              href="/#explore"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold transition-colors no-underline shrink-0"
             >
-              Super Admin
-            </button>
-          )}
+              <span>{c.cta}</span>
+              <ArrowUpRight size={18} />
+            </a>
+          </div>
+
+          <nav
+            className="flex flex-wrap gap-x-6 gap-y-2 text-xs font-semibold text-slate-300 pt-6 border-t border-white/10"
+            aria-label={text("Liens de pied de page", "Footer links")}
+          >
+            <a href="/#how-it-works" className="hover:text-white no-underline">
+              {text("Comment ça marche", "How it works")}
+            </a>
+            <a href="/#pricing" className="hover:text-white no-underline">
+              {text("Tarifs & Comparateur", "Pricing & Comparison")}
+            </a>
+            <a href="/#trust" className="hover:text-white no-underline">
+              {text("Sécurité & Séquestre", "Security & Escrow")}
+            </a>
+            <a href="/#faq" className="hover:text-white no-underline">
+              {text("Centre d'Aide FAQ", "Help Center FAQ")}
+            </a>
+            <a href="#simulator" className="hover:text-white no-underline">
+              {text("Simulateur", "Simulator")}
+            </a>
+            <a href="#mobile" className="hover:text-white no-underline">
+              {text("Application Mobile", "Mobile App")}
+            </a>
+          </nav>
+
+          <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400 pt-4 border-t border-white/10">
+            <div className="flex flex-wrap items-center gap-4">
+              <span className="inline-flex items-center gap-1.5">
+                <ShieldCheck size={14} className="text-[#059669]" />
+                Stripe Connect Escrow
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <CheckCircle2 size={14} className="text-[#059669]" />
+                {text("Scellé STEB & QR", "STEB Seal & QR")}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <LockKeyhole size={14} className="text-slate-300" />
+                TLS 256-bit
+              </span>
+            </div>
+            <div className="flex items-center gap-4">
+              <ThemeToggle showLabel />
+              <span>Copyright {new Date().getFullYear()} BagVoyage</span>
+              {showAdmin && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    window.location.hash = "admin";
+                  }}
+                  className="text-xs font-bold text-slate-300 hover:text-white underline cursor-pointer"
+                >
+                  Super Admin
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </footer>
+
       {mobileLaunchOpen && (
         <MobileAppLaunchModal
           language={language}

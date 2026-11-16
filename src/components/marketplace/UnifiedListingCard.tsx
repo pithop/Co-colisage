@@ -259,11 +259,11 @@ export const ExploreUnifiedNavigation: React.FC<ExploreUnifiedNavigationProps> =
   ];
 
   return (
-    <div className="explore-unified-nav bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-2xl p-5 space-y-4">
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+    <div className="explore-unified-nav bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-2xl p-4 sm:p-5">
+      <div className="flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3">
         {/* Segmented Control (Colis | Trajets | Shopping) */}
         <div
-          className="inline-flex items-center p-1 rounded-2xl bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700"
+          className="w-full sm:w-auto grid grid-cols-3 sm:inline-flex items-center p-1 rounded-2xl bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 shrink-0 sm:self-start"
           role="radiogroup"
           aria-label="Choisir le mode d'exploration"
         >
@@ -277,7 +277,7 @@ export const ExploreUnifiedNavigation: React.FC<ExploreUnifiedNavigationProps> =
                 role="radio"
                 aria-checked={isSelected}
                 onClick={() => onSelectSegment(seg.id)}
-                className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
+                className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
                   isSelected
                     ? "bg-[#2563EB] text-white shadow-2xs"
                     : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
@@ -292,11 +292,11 @@ export const ExploreUnifiedNavigation: React.FC<ExploreUnifiedNavigationProps> =
 
         {/* Quick Corridor Chips */}
         <div
-          className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none"
+          className="flex flex-wrap xl:flex-nowrap items-center gap-1.5 sm:gap-2"
           role="group"
           aria-label="Corridors rapides"
         >
-          <span className="text-[11px] font-semibold text-slate-400 whitespace-nowrap hidden lg:inline-flex items-center gap-1">
+          <span className="text-[11px] font-semibold text-slate-400 whitespace-nowrap hidden xl:inline-flex items-center gap-1 mr-0.5">
             <MapPin size={12} />
             Corridors :
           </span>
@@ -307,7 +307,7 @@ export const ExploreUnifiedNavigation: React.FC<ExploreUnifiedNavigationProps> =
                 key={corridor.label}
                 type="button"
                 onClick={() => onSelectCorridor(corridor)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all whitespace-nowrap cursor-pointer ${
+                className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold border transition-all whitespace-nowrap cursor-pointer ${
                   isActive
                     ? "bg-[#2563EB] text-white border-[#2563EB]"
                     : "bg-[#F8FAFC] dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-[#E2E8F0] dark:border-slate-700 hover:border-slate-300"

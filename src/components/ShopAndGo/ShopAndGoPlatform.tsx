@@ -263,52 +263,38 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
         }}
       />
 
-      {/* 1. Hero Photographic Banner */}
-      <section className="relative overflow-hidden rounded-2xl bg-[#0F172A] text-white shadow-lg border border-slate-800/80">
-        <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105 opacity-40"
-          style={{ backgroundImage: "url('/images/hero-luxury-shopper.jpg')" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/50 sm:to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-black/20" />
-
-        <div className="relative p-6 sm:p-7 md:p-8 flex flex-col md:flex-row items-center justify-between gap-5">
-          <div className="space-y-3 max-w-xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-slate-200 text-xs font-semibold">
-              <ShoppingCart size={13} className="text-[#059669]" />
-              <span>Shop &amp; Go · Panier Multi-Articles &amp; Achat en Boutique</span>
+      {/* 1. Compact Action Hero Header */}
+      <section className="relative overflow-hidden rounded-2xl bg-[#0F172A] dark:bg-[#0B0F19] text-white shadow-xs border border-slate-800 p-5 sm:p-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div className="space-y-2.5 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-slate-200 text-[11px] font-semibold">
+                <ShoppingCart size={12} className="text-[#059669]" />
+                <span>Shop &amp; Go · Achat en Boutique &amp; Duty-Free</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
+                <ShieldCheck size={13} className="text-[#059669]" />
+                <span>Ticket de caisse obligatoire · Séquestre Stripe · Remise main propre</span>
+              </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight drop-shadow-sm">
+            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
               Commandez en boutique &amp; Duty-Free dans le monde entier
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium max-w-lg">
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal max-w-xl">
               Ajoutez vos articles au panier (duty-free, high-tech, parfumerie, pharmacie). Les voyageurs certifiés achètent avec ticket de caisse obligatoire sous séquestre Stripe.
             </p>
-
-            <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-slate-300">
-              <span className="inline-flex items-center gap-1.5 font-semibold">
-                <Receipt size={14} className="text-[#059669]" />
-                <span>Ticket de caisse obligatoire</span>
-              </span>
-              <span className="inline-flex items-center gap-1.5 font-semibold">
-                <Lock size={14} className="text-[#059669]" />
-                <span>Séquestre bancaire Stripe</span>
-              </span>
-              <span className="inline-flex items-center gap-1.5 font-semibold">
-                <ShieldCheck size={14} className="text-[#059669]" />
-                <span>Remise en main propre</span>
-              </span>
-            </div>
           </div>
 
-          <div className="hidden md:flex flex-col items-center justify-center p-5 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-slate-800 text-center shadow-xl min-w-[200px]">
-            <div className="w-14 h-14 rounded-2xl bg-[#059669]/15 border border-[#059669]/30 flex items-center justify-center mb-2.5">
-              <ShoppingBag size={28} className="text-[#059669]" />
+          <div className="hidden lg:flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/10 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#059669]/20 border border-[#059669]/30 flex items-center justify-center">
+              <ShoppingBag size={20} className="text-[#059669]" />
             </div>
-            <span className="text-xs font-bold text-white tracking-wide uppercase">Boutiques &amp; Duty-Free</span>
-            <span className="text-[11px] text-slate-400 mt-0.5">Paris · Milan · Dubaï · Londres</span>
+            <div>
+              <div className="text-xs font-bold text-white uppercase tracking-wide">Boutiques &amp; Duty-Free</div>
+              <div className="text-[11px] text-slate-400">Paris · Milan · Dubaï · Londres</div>
+            </div>
           </div>
         </div>
       </section>
