@@ -3,8 +3,6 @@ import {
   ArrowLeftRight,
   ArrowRight,
   ArrowUpRight,
-  BatteryFull,
-  Bell,
   Calendar,
   Car,
   Check,
@@ -23,7 +21,6 @@ import {
   ShieldCheck,
   Ship,
   ShoppingBag,
-  Signal,
   Smartphone,
   Ticket,
   Video,
@@ -37,6 +34,7 @@ import {
 import { ThemeToggle } from "../common/ThemeToggle";
 import { CityAutocomplete } from "../common/CityAutocomplete";
 import { LandingMobileMenu } from "../Navigation/LandingMobileMenu";
+import { BagVoyageLiveShowcase } from "./BagVoyageLiveShowcase";
 
 const copy = {
   fr: {
@@ -423,38 +421,41 @@ export function AwwwardsLanding({
         currentRoute="landing"
       />
 
-      {/* Hero + Simulateur Tri-Modal */}
-      <section className="pt-10 pb-14 sm:pt-14 sm:pb-16 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center max-w-3xl mx-auto space-y-4 mb-8">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-xs font-bold text-slate-700 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-[#059669]" />
-              <span>
-                {text(
-                  "Plateforme Officielle · Co-colisage & Shopping France–Algérie",
-                  "Official Platform · Crowdsourced Shipping & Shopping France–Algeria",
-                )}
-              </span>
-            </div>
+      {/* Hero + Simulateur Tri-Modal + Animation Interactive Autonome */}
+      <section className="pt-8 pb-14 sm:pt-12 sm:pb-16 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+            {/* Left Column: Outcome Headline + Interactive Mode Simulator */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="text-center lg:text-left space-y-3.5">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-xs font-bold text-slate-700 shadow-sm">
+                  <span className="w-2 h-2 rounded-full bg-[#059669]" />
+                  <span>
+                    {text(
+                      "Plateforme Officielle · Co-colisage & Shopping France–Algérie",
+                      "Official Platform · Crowdsourced Shipping & Shopping France–Algeria",
+                    )}
+                  </span>
+                </div>
 
-            <h1 className="bv-hero-headline text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.08]">
-              {text("Rentabilisez vos voyages.", "Fund your travels.")}
-              <br />
-              <span className="text-[#2563EB]">
-                {text("Expédiez vos colis. Achetez partout.", "Ship parcels. Shop anywhere.")}
-              </span>
-            </h1>
+                <h1 className="bv-hero-headline text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.08]">
+                  {text("Rentabilisez vos voyages.", "Fund your travels.")}
+                  <br />
+                  <span className="text-[#2563EB]">
+                    {text("Expédiez vos colis. Achetez partout.", "Ship parcels. Shop anywhere.")}
+                  </span>
+                </h1>
 
-            <p className="bv-hero-lead text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
-              {text(
-                "Mettez en relation voyageurs vérifiés et expéditeurs en temps réel. Remise en main propre express, 100 % sécurisée par séquestre Stripe Connect.",
-                "Connect verified travelers and shippers in real time. Express hand-to-hand delivery, 100% secured by Stripe Connect escrow.",
-              )}
-            </p>
-          </div>
+                <p className="bv-hero-lead text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                  {text(
+                    "Mettez en relation voyageurs vérifiés et expéditeurs en temps réel. Remise en main propre express, 100 % sécurisée par séquestre Stripe Connect.",
+                    "Connect verified travelers and shippers in real time. Express hand-to-hand delivery, 100% secured by Stripe Connect escrow.",
+                  )}
+                </p>
+              </div>
 
-          {/* Simulateur Hero intégré dans une carte #FFFFFF propre */}
-          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-lg shadow-slate-900/5 overflow-hidden">
+              {/* Simulateur Hero intégré dans une carte #FFFFFF propre */}
+              <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-lg shadow-slate-900/5 overflow-hidden">
             {/* 3 onglets avec icônes proprement intégrées à l'intérieur */}
             <div
               className="bv-hero-mode-tabs grid grid-cols-3 border-b border-[#E2E8F0] bg-[#F8FAFC]"
@@ -880,9 +881,20 @@ export function AwwwardsLanding({
               </div>
             </div>
           </div>
+            </div>
+
+            {/* Right Column: Bespoke Autonomous Live Mobile Showcase */}
+            <div className="lg:col-span-5 flex flex-col items-center justify-center lg:pt-2">
+              <BagVoyageLiveShowcase
+                activeScenario={heroMode}
+                onScenarioChange={setHeroMode}
+                language={language}
+              />
+            </div>
+          </div>
 
           {/* Trust Bar 4 Pillars */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
             {[
               {
                 Icon: ShieldCheck,
@@ -1311,55 +1323,43 @@ export function AwwwardsLanding({
             </div>
           </div>
 
-          {/* Aperçu Mobile épuré */}
+          {/* Carte Tactile Passe Fret Hors-Ligne & Protocole PIN */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="w-full max-w-[310px] rounded-[36px] bg-slate-950 border-4 border-slate-800 p-4 shadow-2xl space-y-3">
-              <div className="flex items-center justify-between text-[11px] font-bold text-slate-300 px-2">
-                <span>9:41</span>
-                <div className="flex items-center gap-1.5">
-                  <Signal size={13} />
-                  <BatteryFull size={15} />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between px-1">
-                <strong className="text-sm font-extrabold text-white">
-                  BagVoyage<span className="text-[#2563EB]">.</span>
-                </strong>
-                <Bell size={16} className="text-slate-400" />
-              </div>
-
-              <div className="rounded-2xl bg-slate-900 border border-white/10 p-4 space-y-2">
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  <Plane size={12} className="text-[#2563EB]" />
-                  {text("VOTRE PROCHAIN VOL", "YOUR NEXT FLIGHT")}
-                </span>
-                <div className="flex items-center justify-between text-xl font-black text-white tabular-nums">
-                  <span>CDG</span>
-                  <ArrowRight size={18} className="text-slate-500" />
-                  <span>ALG</span>
-                </div>
-                <div className="flex items-center justify-between text-[11px] text-slate-400 tabular-nums">
-                  <span>AH1000 · 14:30</span>
-                  <span className="text-[#059669] font-bold">
+            <div className="w-full max-w-[360px] space-y-4">
+              <div className="rounded-3xl bg-slate-900 border border-white/15 p-5 space-y-3 shadow-2xl">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-300">
+                    <Plane size={13} className="text-[#2563EB]" />
+                    {text("TRAJET CERTIFIÉ", "CERTIFIED ROUTE")}
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#059669]/20 border border-[#059669]/40 text-emerald-300 text-[11px] font-bold">
                     {text("Séquestre actif", "Escrow active")}
                   </span>
                 </div>
+                <div className="flex items-center justify-between text-2xl font-black text-white tabular-nums">
+                  <span>CDG</span>
+                  <ArrowRight size={20} className="text-slate-500" />
+                  <span>ALG</span>
+                </div>
+                <div className="flex items-center justify-between text-xs text-slate-400 tabular-nums pt-1 border-t border-white/10">
+                  <span>Vol AH1021 · 14:30</span>
+                  <span className="text-white font-bold">15 kg · +140 €</span>
+                </div>
               </div>
 
-              <div className="rounded-2xl bg-white text-slate-900 p-4 space-y-2 tabular-nums">
+              <div className="rounded-3xl bg-[#FFFFFF] text-slate-900 p-5 space-y-3 shadow-2xl tabular-nums">
                 <div className="flex items-center justify-between text-xs font-bold">
                   <span className="inline-flex items-center gap-1.5">
-                    <Ticket size={14} className="text-[#2563EB]" />
-                    {text("Passe de fret", "Cargo pass")}
+                    <Ticket size={15} className="text-[#2563EB]" />
+                    {text("Passe de fret hors-ligne", "Offline cargo pass")}
                   </span>
                   <span className="text-[#059669] font-extrabold">STEB-447B</span>
                 </div>
                 <PassBarcode />
-                <div className="flex items-center justify-between text-[11px] text-slate-500">
+                <div className="flex items-center justify-between text-[11px] text-slate-600 font-semibold">
                   <span>5 kg · Porte K34</span>
-                  <span className="inline-flex items-center gap-1">
-                    <WifiOff size={11} /> Hors-ligne
+                  <span className="inline-flex items-center gap-1 text-slate-700">
+                    <WifiOff size={12} /> {text("Mode aéroport", "Offline ready")}
                   </span>
                 </div>
               </div>

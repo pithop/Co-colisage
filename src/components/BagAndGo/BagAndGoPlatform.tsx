@@ -1181,25 +1181,27 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         )}
       </section>
 
-      {/* 5. Mobile Sticky CTA Dock */}
-      <div className="fixed bottom-[calc(var(--nav-height,64px)+env(safe-area-inset-bottom,0px))] inset-x-0 z-30 p-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 sm:hidden shadow-lg">
-        <div className="min-w-0 flex-1">
-          <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-            {weightKg} kg · {category.split("&")[0].trim()}
-          </span>
-          <span className="text-sm font-extrabold text-slate-900 dark:text-white truncate block">
-            {departureCity} → {destination}
-          </span>
+      {/* 5. Mobile Sticky CTA Dock (active on parcel creation view) */}
+      {activeView === 'send' && (
+        <div className="fixed bottom-[calc(63px+env(safe-area-inset-bottom,0px))] inset-x-0 z-30 px-4 py-2.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 sm:hidden shadow-lg">
+          <div className="min-w-0 flex-1">
+            <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider tabular-nums">
+              {weightKg} kg · {category.split("&")[0].trim()}
+            </span>
+            <span className="text-sm font-extrabold text-slate-900 dark:text-white truncate block">
+              {departureCity} → {destination}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="min-h-[44px] px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all shrink-0 cursor-pointer whitespace-nowrap tabular-nums"
+          >
+            <Send size={14} />
+            <span>Publier ({proposedPrice} €)</span>
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={handleSubmit}
-          className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all shrink-0 cursor-pointer"
-        >
-          <Send size={14} />
-          <span>Publier ({proposedPrice} €)</span>
-        </button>
-      </div>
+      )}
     </div>
   );
 };

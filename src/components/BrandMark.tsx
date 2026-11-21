@@ -37,7 +37,7 @@ export function BrandMark({ platform = "voyageur" }: { platform?: ActivePlatform
   const Icon = details.icon;
 
   return (
-    <div className="bagvoyage-brand flex items-center gap-2.5 sm:gap-3 select-none">
+    <div className="bagvoyage-brand flex items-center gap-2 sm:gap-3 select-none min-w-0 max-w-full">
       {/* Luxury FinTech aeronautical insignia */}
       <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-slate-950 flex items-center justify-center shadow-md shadow-blue-900/20 border border-blue-400/20 shrink-0">
         <svg
@@ -67,18 +67,17 @@ export function BrandMark({ platform = "voyageur" }: { platform?: ActivePlatform
       </div>
 
       {/* High-end typography */}
-      <div className="flex flex-col text-left leading-none">
-        <div className="flex items-center gap-1.5">
-          <span className="font-extrabold tracking-tight text-base sm:text-lg text-slate-900 dark:text-white">
-            BagVoyage
+      <div className="flex flex-col text-left leading-none min-w-0">
+        <div className="flex items-center gap-1 min-w-0">
+          <span className="font-extrabold tracking-tight text-base sm:text-lg text-slate-900 dark:text-white truncate">
+            BagVoyage<span className="text-blue-600 dark:text-blue-400 font-black">.</span>
           </span>
-          <span className="text-blue-600 dark:text-blue-400 font-black text-lg leading-none">.</span>
-          <span className={`hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wider border ${details.badgeBg}`}>
+          <span className={`hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wider border shrink-0 ${details.badgeBg}`}>
             <Icon size={10} />
             {details.tag}
           </span>
         </div>
-        <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 dark:text-slate-400 tracking-tight mt-1">
+        <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 dark:text-slate-400 tracking-tight mt-1 truncate max-w-[138px] sm:max-w-none">
           {details.sub}
         </span>
       </div>

@@ -102,12 +102,12 @@ export function MarketplaceHeader(props: Props) {
 
   return (
     <header className="site-header unified-header relative z-40 bg-[#FFFFFF]/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-[#E2E8F0] dark:border-slate-800 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-3">
         {/* Left: Brand Logo & Back Button */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 min-w-0 flex-1 lg:flex-initial">
           {route !== "explore" && !route.startsWith("publish/") && (
             <button
-              className="p-2 -ml-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-[#F8FAFC] dark:hover:bg-slate-800 transition-colors"
+              className="w-10 h-10 sm:w-9 sm:h-9 inline-flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-[#F8FAFC] dark:hover:bg-slate-800 transition-colors shrink-0"
               aria-label="Retour à Explorer"
               onClick={() => navigate("explore")}
             >
@@ -116,7 +116,7 @@ export function MarketplaceHeader(props: Props) {
           )}
 
           <button
-            className="flex items-center gap-2 cursor-pointer transition-transform active:scale-95 text-left"
+            className="flex items-center gap-2 cursor-pointer transition-transform active:scale-95 text-left min-w-0"
             onClick={() => navigate("explore")}
             aria-label="BagVoyage, accueil"
           >
@@ -174,15 +174,15 @@ export function MarketplaceHeader(props: Props) {
         </nav>
 
         {/* Right: Primary Action Items */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           {/* 1. Primary Call-To-Action "+ Publier" (#2563EB strictly reserved for primary CTA) */}
           <button
             type="button"
             onClick={props.onPublish}
-            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
+            className="min-w-[44px] min-h-[44px] sm:min-h-[38px] inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-4 py-2 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
             aria-label="Publier une annonce"
           >
-            <CirclePlus size={16} strokeWidth={2.4} />
+            <CirclePlus size={17} strokeWidth={2.4} />
             <span className="hidden sm:inline">Publier</span>
           </button>
 
@@ -190,7 +190,7 @@ export function MarketplaceHeader(props: Props) {
           <button
             type="button"
             onClick={() => navigate("messages")}
-            className={`relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-[#F8FAFC] dark:hover:bg-slate-800 transition-colors cursor-pointer ${
+            className={`relative min-w-[44px] min-h-[44px] sm:min-w-[38px] sm:min-h-[38px] inline-flex items-center justify-center rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-[#F8FAFC] dark:hover:bg-slate-800 transition-colors cursor-pointer ${
               route === "messages"
                 ? "bg-[#F8FAFC] dark:bg-slate-800 text-[#2563EB]"
                 : ""
@@ -200,7 +200,7 @@ export function MarketplaceHeader(props: Props) {
           >
             <MessageCircle size={19} />
             {props.unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900" />
+              <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900" />
             )}
           </button>
 

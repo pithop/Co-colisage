@@ -314,9 +314,9 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
             <FileCheck2 size={20} />
           </div>
           <div className="space-y-1">
-            <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-2">
+            <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white flex flex-wrap items-center gap-2">
               <span>Garantie Transparence : Reçu &amp; Ticket de caisse officiel</span>
-              <span className="text-[10px] bg-[#ECFDF5] text-[#059669] border border-[#059669]/20 px-2 py-0.5 rounded-full font-bold">
+              <span className="text-[10px] bg-[#ECFDF5] text-[#059669] border border-[#059669]/20 px-2.5 py-0.5 rounded-full font-bold whitespace-nowrap shrink-0">
                 Contrôle Anti-Fraude
               </span>
             </h3>
@@ -918,26 +918,28 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
         )}
       </section>
 
-      {/* 5. Mobile Sticky Shopping Dock */}
-      <div className="fixed bottom-[calc(var(--nav-height,64px)+env(safe-area-inset-bottom,0px))] inset-x-0 z-30 p-3 bg-[#FFFFFF]/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between gap-3 sm:hidden shadow-lg tabular-nums">
-        <div className="min-w-0 flex-1">
-          <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-            {basket.length} article(s) · {itemsSubtotal} €
-          </span>
-          <span className="text-xs font-extrabold text-[#059669] truncate block">
-            Gain voyageur : +{commNum} €
-          </span>
+      {/* 5. Mobile Sticky Shopping Dock (active on order creation view) */}
+      {activeView === 'order' && (
+        <div className="fixed bottom-[calc(63px+env(safe-area-inset-bottom,0px))] inset-x-0 z-30 px-4 py-2.5 bg-[#FFFFFF]/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between gap-3 sm:hidden shadow-lg tabular-nums">
+          <div className="min-w-0 flex-1">
+            <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+              {basket.length} article(s) · {itemsSubtotal} €
+            </span>
+            <span className="text-xs font-extrabold text-[#059669] truncate block">
+              Gain voyageur : +{commNum} €
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={basket.length === 0}
+            className="min-h-[44px] px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all shrink-0 cursor-pointer whitespace-nowrap"
+          >
+            <ShoppingCart size={14} />
+            <span>Commander ({totalBudget} €)</span>
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={basket.length === 0}
-          className="px-5 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all shrink-0 cursor-pointer"
-        >
-          <ShoppingCart size={14} />
-          <span>Commander ({totalBudget} €)</span>
-        </button>
-      </div>
+      )}
     </div>
   );
 };

@@ -301,3 +301,57 @@ html[data-theme="dark"] body,
   background: var(--ds-card-bg, #ffffff);
 }
 
+/* ==========================================================================
+   MOBILE ERGONOMICS & BESPOKE AUTONOMOUS SHOWCASE MOTION
+   (GPU-composited transform/opacity only, safe-area & reduced-motion aware)
+   ========================================================================== */
+@media (max-width: 768px) {
+  html {
+    scroll-padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+h1, h2, h3 {
+  text-wrap: balance;
+}
+
+@media (pointer: coarse) {
+  :where(button, [role="button"], .mobile-nav-tab) {
+    min-block-size: 44px;
+  }
+}
+
+@keyframes bv-beat-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.bv-showcase-stage {
+  opacity: 1;
+  transform: none;
+}
+
+.bv-showcase-progress-bar,
+.bv-showcase-plane {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bv-showcase-stage {
+    animation: bv-beat-enter 380ms var(--ease-apple-spring) both;
+  }
+  .bv-showcase-progress-bar {
+    transition: transform 650ms var(--ease-apple-spring);
+  }
+  .bv-showcase-plane {
+    transition: transform 650ms var(--ease-apple-spring);
+  }
+}
+
+

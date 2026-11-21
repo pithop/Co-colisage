@@ -82,7 +82,7 @@ export function WalletView({
             type="button"
             onClick={() => setTransferOpen(true)}
             disabled={available <= 0}
-            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#2563EB] hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white text-sm font-bold transition-colors cursor-pointer disabled:cursor-not-allowed tabular-nums"
+            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#2563EB] hover:bg-blue-700 disabled:bg-slate-100 disabled:text-slate-500 disabled:border disabled:border-[#E2E8F0] text-white text-sm font-bold transition-colors cursor-pointer disabled:cursor-not-allowed tabular-nums"
           >
             <ArrowUpRight size={18} />
             {available > 0
@@ -112,8 +112,8 @@ export function WalletView({
                   </span>
                 </div>
               </div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#059669]/20 border border-[#059669]/40 text-[#059669] text-xs font-bold">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#059669]/20 border border-[#059669]/40 text-emerald-300 text-xs font-bold whitespace-nowrap shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
                 {isRib20
                   ? "RIB 20 chiffres"
                   : isIbanValid
@@ -203,12 +203,12 @@ export function WalletView({
                   Compte de versement
                 </span>
                 {isBankValid ? (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#059669]/10 text-[#059669] text-xs font-bold">
-                    <CheckCircle2 size={13} />
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#059669]/10 text-[#059669] text-xs font-bold whitespace-nowrap shrink-0">
+                    <CheckCircle2 size={13} className="shrink-0" />
                     {isRib20 ? "RIB 20 chiffres valide" : "IBAN valide"}
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold tabular-nums">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold tabular-nums whitespace-nowrap shrink-0">
                     {/^\d+$/.test(cleanBank)
                       ? `${digitsOnly.length} / 20 chiffres`
                       : `${cleanBank.length} caractères`}
