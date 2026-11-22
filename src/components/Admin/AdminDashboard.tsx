@@ -744,7 +744,7 @@ function LocalAdminDashboard() {
                     <textarea
                       maxLength={1000}
                       value={reasons[record.id] || ""}
-                      placeholder="Motif de validation eIDAS ou note administrative..."
+                      placeholder="Motif de validation KYC ou note administrative..."
                       onChange={(event) =>
                         setReasons((current) => ({
                           ...current,

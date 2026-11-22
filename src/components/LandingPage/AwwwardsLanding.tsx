@@ -10,6 +10,7 @@ import {
   CircleCheck,
   CircleMinus,
   Coins,
+  FileText,
   Globe2,
   LockKeyhole,
   MapPin,
@@ -25,6 +26,7 @@ import {
   Ticket,
   Video,
   WifiOff,
+  X,
 } from "lucide-react";
 import { AppStoreBadges } from "./AppStoreBadges";
 import {
@@ -157,6 +159,18 @@ export function AwwwardsLanding({
 }) {
   const [language, setLanguage] = useState<"fr" | "en">(initialLanguage);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [legalDoc, setLegalDoc] = useState<"cgu" | "privacy" | "mentions" | null>(null);
+
+  useEffect(() => {
+    if (!legalDoc) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setLegalDoc(null);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [legalDoc]);
 
   // Comparateur & Corridors
   const [origin, setOrigin] = useState("Paris");
@@ -1233,25 +1247,25 @@ export function AwwwardsLanding({
         </div>
       </section>
 
-      {/* Section Sombre #0F172A : Preuve Technologique & Application Mobile */}
+      {/* Section Claire #F8FAFC : Preuve Technologique & Application Mobile */}
       <section
         id="mobile"
-        className="bg-[#0F172A] text-white py-16 px-4 sm:px-6"
+        className="bg-[#F8FAFC] text-slate-900 py-16 px-4 sm:px-6 border-t border-[#E2E8F0]"
         aria-labelledby="mobile-title"
       >
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-7 space-y-6">
             <div>
-              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
                 03 / {text("SÉCURITÉ & EXPÉRIENCE MOBILE", "SECURITY & MOBILE EXPERIENCE")}
               </span>
               <h2
                 id="mobile-title"
-                className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white mt-1"
+                className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 mt-1"
               >
                 {c.trust}
               </h2>
-              <p className="text-sm sm:text-base text-slate-300 mt-2 max-w-xl leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-600 mt-2 max-w-xl leading-relaxed">
                 {text(
                   "Votre billet, vos preuves photo/vidéo et votre passe de fret hors-ligne réunis au même endroit, protégés de bout en bout.",
                   "Your boarding pass, photo/video proofs and offline cargo pass in one place, protected end-to-end.",
@@ -1296,13 +1310,13 @@ export function AwwwardsLanding({
               ].map(({ Icon, title, desc }) => (
                 <article
                   key={title}
-                  className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1.5"
+                  className="p-4 rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] shadow-xs space-y-1.5"
                 >
-                  <div className="flex items-center gap-2 text-sm font-bold text-white">
+                  <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
                     <Icon size={16} className="text-[#059669]" />
                     <span>{title}</span>
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">{desc}</p>
+                  <p className="text-xs text-slate-600 leading-relaxed">{desc}</p>
                 </article>
               ))}
             </div>
@@ -1312,7 +1326,7 @@ export function AwwwardsLanding({
                 <AppStoreBadges language={language} onClick={openMobileLaunch} />
                 <a
                   href="#download"
-                  className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-200 hover:text-white no-underline"
+                  className="inline-flex items-center gap-1.5 text-sm font-bold text-[#2563EB] hover:text-[#1D4ED8] no-underline"
                 >
                   <Smartphone size={16} />
                   <span>{text("Découvrir l’app mobile", "Explore mobile app")}</span>
@@ -1326,37 +1340,37 @@ export function AwwwardsLanding({
           {/* Carte Tactile Passe Fret Hors-Ligne & Protocole PIN */}
           <div className="lg:col-span-5 flex justify-center">
             <div className="w-full max-w-[360px] space-y-4">
-              <div className="rounded-3xl bg-slate-900 border border-white/15 p-5 space-y-3 shadow-2xl">
+              <div className="rounded-3xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 space-y-3 shadow-md text-slate-900">
                 <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-300">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-600">
                     <Plane size={13} className="text-[#2563EB]" />
                     {text("TRAJET CERTIFIÉ", "CERTIFIED ROUTE")}
                   </span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#059669]/20 border border-[#059669]/40 text-emerald-300 text-[11px] font-bold">
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#ECFDF5] border border-[#A7F3D0] text-[#059669] text-[11px] font-bold">
                     {text("Séquestre actif", "Escrow active")}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-2xl font-black text-white tabular-nums">
+                <div className="flex items-center justify-between text-2xl font-black text-slate-900 tabular-nums">
                   <span>CDG</span>
-                  <ArrowRight size={20} className="text-slate-500" />
+                  <ArrowRight size={20} className="text-[#2563EB]" />
                   <span>ALG</span>
                 </div>
-                <div className="flex items-center justify-between text-xs text-slate-400 tabular-nums pt-1 border-t border-white/10">
+                <div className="flex items-center justify-between text-xs text-slate-500 tabular-nums pt-2 border-t border-[#E2E8F0]">
                   <span>Vol AH1021 · 14:30</span>
-                  <span className="text-white font-bold">15 kg · +140 €</span>
+                  <span className="text-[#059669] font-extrabold">15 kg · +140 €</span>
                 </div>
               </div>
 
-              <div className="rounded-3xl bg-[#FFFFFF] text-slate-900 p-5 space-y-3 shadow-2xl tabular-nums">
+              <div className="rounded-3xl bg-[#FFFFFF] border border-[#E2E8F0] text-slate-900 p-5 space-y-3 shadow-md tabular-nums">
                 <div className="flex items-center justify-between text-xs font-bold">
                   <span className="inline-flex items-center gap-1.5">
                     <Ticket size={15} className="text-[#2563EB]" />
                     {text("Passe de fret hors-ligne", "Offline cargo pass")}
                   </span>
-                  <span className="text-[#059669] font-extrabold">STEB-447B</span>
+                  <span className="px-2 py-0.5 rounded-md bg-[#ECFDF5] text-[#059669] font-extrabold">STEB-447B</span>
                 </div>
                 <PassBarcode />
-                <div className="flex items-center justify-between text-[11px] text-slate-600 font-semibold">
+                <div className="flex items-center justify-between text-[11px] text-slate-600 font-semibold pt-1">
                   <span>5 kg · Porte K34</span>
                   <span className="inline-flex items-center gap-1 text-slate-700">
                     <WifiOff size={12} /> {text("Mode aéroport", "Offline ready")}
@@ -1448,15 +1462,15 @@ export function AwwwardsLanding({
         </div>
       </section>
 
-      {/* Footer Sombre #0F172A */}
-      <footer className="bg-[#0F172A] text-white py-12 px-4 sm:px-6 border-t border-slate-800">
+      {/* Footer Lumineux #FFFFFF */}
+      <footer className="bg-[#FFFFFF] text-slate-900 py-12 px-4 sm:px-6 border-t border-[#E2E8F0]">
         <div className="max-w-6xl mx-auto space-y-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
                 BAGVOYAGE · FRANCE / ALGÉRIE / INTERNATIONAL
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
                 {c.end.split("\n").map((line, index) => (
                   <span key={index} className="block">
                     {line}
@@ -1466,7 +1480,7 @@ export function AwwwardsLanding({
             </div>
             <a
               href="/#explore"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold transition-colors no-underline shrink-0"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-sm font-bold transition-colors no-underline shrink-0 shadow-xs"
             >
               <span>{c.cta}</span>
               <ArrowUpRight size={18} />
@@ -1474,41 +1488,62 @@ export function AwwwardsLanding({
           </div>
 
           <nav
-            className="flex flex-wrap gap-x-6 gap-y-2 text-xs font-semibold text-slate-300 pt-6 border-t border-white/10"
+            className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-semibold text-slate-600 pt-6 border-t border-[#E2E8F0]"
             aria-label={text("Liens de pied de page", "Footer links")}
           >
-            <a href="/#how-it-works" className="hover:text-white no-underline">
+            <a href="/#how-it-works" className="hover:text-slate-900 no-underline">
               {text("Comment ça marche", "How it works")}
             </a>
-            <a href="/#pricing" className="hover:text-white no-underline">
+            <a href="/#pricing" className="hover:text-slate-900 no-underline">
               {text("Tarifs & Comparateur", "Pricing & Comparison")}
             </a>
-            <a href="/#trust" className="hover:text-white no-underline">
+            <a href="/#trust" className="hover:text-slate-900 no-underline">
               {text("Sécurité & Séquestre", "Security & Escrow")}
             </a>
-            <a href="/#faq" className="hover:text-white no-underline">
+            <a href="/#faq" className="hover:text-slate-900 no-underline">
               {text("Centre d'Aide FAQ", "Help Center FAQ")}
             </a>
-            <a href="#simulator" className="hover:text-white no-underline">
+            <a href="#simulator" className="hover:text-slate-900 no-underline">
               {text("Simulateur", "Simulator")}
             </a>
-            <a href="#mobile" className="hover:text-white no-underline">
+            <a href="#mobile" className="hover:text-slate-900 no-underline">
               {text("Application Mobile", "Mobile App")}
             </a>
+            <button
+              type="button"
+              onClick={() => setLegalDoc("cgu")}
+              className="hover:text-slate-900 font-semibold cursor-pointer bg-transparent border-0 p-0 text-xs text-slate-600"
+            >
+              {text("CGU & CGV", "Terms & Conditions")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setLegalDoc("privacy")}
+              className="hover:text-slate-900 font-semibold cursor-pointer bg-transparent border-0 p-0 text-xs text-slate-600"
+            >
+              {text("Confidentialité RGPD", "Privacy & GDPR")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setLegalDoc("mentions")}
+              className="hover:text-slate-900 font-semibold cursor-pointer bg-transparent border-0 p-0 text-xs text-slate-600"
+            >
+              {text("Mentions légales", "Legal Notice")}
+            </button>
           </nav>
 
-          <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400 pt-4 border-t border-white/10">
+          <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500 pt-4 border-t border-[#E2E8F0]">
             <div className="flex flex-wrap items-center gap-4">
-              <span className="inline-flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-1.5 text-slate-700 font-medium">
                 <ShieldCheck size={14} className="text-[#059669]" />
                 Stripe Connect Escrow
               </span>
-              <span className="inline-flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-1.5 text-slate-700 font-medium">
                 <CheckCircle2 size={14} className="text-[#059669]" />
                 {text("Scellé STEB & QR", "STEB Seal & QR")}
               </span>
-              <span className="inline-flex items-center gap-1.5">
-                <LockKeyhole size={14} className="text-slate-300" />
+              <span className="inline-flex items-center gap-1.5 text-slate-700 font-medium">
+                <LockKeyhole size={14} className="text-slate-500" />
                 TLS 256-bit
               </span>
             </div>
@@ -1521,7 +1556,7 @@ export function AwwwardsLanding({
                   onClick={() => {
                     window.location.hash = "admin";
                   }}
-                  className="text-xs font-bold text-slate-300 hover:text-white underline cursor-pointer"
+                  className="text-xs font-bold text-slate-700 hover:text-slate-900 underline cursor-pointer"
                 >
                   Super Admin
                 </button>
@@ -1530,6 +1565,157 @@ export function AwwwardsLanding({
           </div>
         </div>
       </footer>
+
+      {legalDoc && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="legal-modal-title"
+          onClick={() => setLegalDoc(null)}
+        >
+          <div
+            className="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] shadow-2xl p-6 space-y-5 text-slate-900"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#E2E8F0]">
+              <div className="flex items-center gap-2.5">
+                <span className="w-9 h-9 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center text-[#2563EB]">
+                  <FileText size={18} />
+                </span>
+                <div>
+                  <h3 id="legal-modal-title" className="text-lg font-extrabold text-slate-900">
+                    {legalDoc === "cgu"
+                      ? text("Conditions Générales d'Utilisation & de Vente", "Terms of Service & Sale")
+                      : legalDoc === "privacy"
+                        ? text("Politique de Confidentialité (RGPD)", "Privacy Policy (GDPR)")
+                        : text("Mentions Légales", "Legal Notice")}
+                  </h3>
+                  <p className="text-xs text-slate-500">BagVoyage · {text("Mise à jour novembre 2026", "Updated November 2026")}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setLegalDoc(null)}
+                aria-label={text("Fermer", "Close")}
+                className="p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-[#F8FAFC] cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {legalDoc === "cgu" && (
+              <div className="space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-1">1. {text("Objet de la plateforme", "Platform Purpose")}</h4>
+                  <p>
+                    {text(
+                      "BagVoyage met en relation des voyageurs disposant de capacité bagage disponible avec des expéditeurs de colis et des acheteurs en boutique/Duty-Free (Voyageur, Bag & Go, Shop & Go).",
+                      "BagVoyage connects travelers with spare luggage allowance to parcel senders and retail/Duty-Free shoppers (Voyageur, Bag & Go, Shop & Go).",
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-1">2. {text("Séquestre Stripe Connect & Libération des fonds", "Stripe Connect Escrow & Payout Release")}</h4>
+                  <p>
+                    {text(
+                      "Les paiements sont cantonnés sous séquestre bancaire dès la validation de la réservation. Les fonds ne sont libérés au voyageur qu'après inspection du colis, remise en main propre et saisie du code PIN à 4 chiffres ou double validation QR.",
+                      "Payments are held in escrow upon booking confirmation. Funds are released to the traveler only after physical handover verification via the 4-digit PIN code or dual QR validation.",
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-1">3. {text("Articles interdits & Douanes", "Prohibited Items & Customs")}</h4>
+                  <p>
+                    {text(
+                      "Sont strictement interdits : produits stupéfiants, armes, contrefaçons, liquides inflammables, denrées périssables non déclarées et batteries lithium hors normes IATA. Chaque utilisateur s'engage à déclarer loyalement le contenu et à respecter la réglementation douanière du pays de destination.",
+                      "Strictly prohibited: narcotics, weapons, counterfeits, flammable liquids, undeclared perishables, and non-IATA compliant lithium batteries. Users commit to accurate content declarations and customs compliance.",
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-1">4. {text("Annulations & Litiges", "Cancellations & Disputes")}</h4>
+                  <p>
+                    {text(
+                      "En cas d'annulation avant prise en charge ou de non-remise avérée, l'intégralité du montant séquestré est remboursée. Tout litige doit être signalé sous 48h avec les preuves photo horodatées du scellé.",
+                      "Cancellations prior to collection or verified non-delivery trigger a full escrow refund. Any dispute must be reported within 48 hours with timestamped seal photo evidence.",
+                    )}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {legalDoc === "privacy" && (
+              <div className="space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-1">1. {text("Données collectées & Finalité", "Collected Data & Purpose")}</h4>
+                  <p>
+                    {text(
+                      "BagVoyage traite uniquement les données nécessaires à la mise en relation, à la vérification d'identité (KYC) et à la sécurisation des transactions : nom, e-mail, téléphone, détails de trajet, justificatifs de voyage et preuves de remise.",
+                      "BagVoyage processes only data required for matching, identity verification (KYC), and transaction security: name, email, phone, trip details, travel tickets, and handover proofs.",
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-1">2. {text("Conservation & Sécurité", "Retention & Security")}</h4>
+                  <p>
+                    {text(
+                      "Les données de paiement bancaire sont traitées directement par Stripe (certifié PCI-DSS niveau 1) et ne transitent pas en clair sur nos serveurs applicatifs. Les communications sont chiffrées en TLS 256-bit.",
+                      "Payment instrument details are handled directly by Stripe (PCI-DSS Level 1) and are never stored in plaintext on our application servers. All traffic is TLS 256-bit encrypted.",
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-1">3. {text("Vos droits RGPD", "Your GDPR Rights")}</h4>
+                  <p>
+                    {text(
+                      "Conformément au Règlement (UE) 2016/679, vous disposez d'un droit d'accès, de rectification, de portabilité et d'effacement de vos données en écrivant à dpo@bagvoyage.com.",
+                      "Under EU Regulation 2016/679 (GDPR), you have the right to access, rectify, port, and erase your personal data by contacting dpo@bagvoyage.com.",
+                    )}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {legalDoc === "mentions" && (
+              <div className="space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-1">{text("Éditeur de la plateforme", "Platform Publisher")}</h4>
+                  <p>
+                    {text(
+                      "BagVoyage SAS — Plateforme numérique d'intermédiation collaborative pour le transport de bagages et l'achat assisté international (corridors Europe / Afrique du Nord / Monde).",
+                      "BagVoyage SAS — Digital collaborative platform connecting international travelers, parcel senders, and personal shoppers.",
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-1">{text("Prestataire de services de paiement", "Payment Service Provider")}</h4>
+                  <p>
+                    {text(
+                      "Les services de paiement et le cantonnement des fonds sous séquestre sont opérés via Stripe Connect conformément aux directives européennes DSP2.",
+                      "Payment processing and escrow fund custody are operated through Stripe Connect in accordance with European PSD2 regulations.",
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-1">{text("Contact & Support", "Contact & Support")}</h4>
+                  <p>support@bagvoyage.com · dpo@bagvoyage.com</p>
+                </div>
+              </div>
+            )}
+
+            <div className="pt-3 border-t border-[#E2E8F0] flex justify-end">
+              <button
+                type="button"
+                onClick={() => setLegalDoc(null)}
+                className="px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold cursor-pointer"
+              >
+                {text("J'ai compris", "Got it")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {mobileLaunchOpen && (
         <MobileAppLaunchModal

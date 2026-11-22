@@ -1,6 +1,5 @@
 /**
  * BagVoyage Handover Geofencing & Location Validator
- * Standards $1B Unicorn / FinTech Anti-Fraud Security
  *
  * Verifies that the physical delivery/pickup location matches the declared
  * corridor/city/airport within a strict perimeter (max 25 km threshold).

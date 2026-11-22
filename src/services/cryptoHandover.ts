@@ -1,9 +1,8 @@
 /**
  * BagVoyage Cryptographic Handover Protocol (HMAC-SHA256)
- * Standards FinTech & Zero-Trust Security ($1B Unicorn Level)
  *
- * Replaces plain-text UUID QR codes with time-limited (120s), anti-replay,
- * cryptographically signed handover tokens verified with Web Crypto API.
+ * Generates time-limited (120s), anti-replay, signed handover tokens
+ * verified with Web Crypto API. In production, signing moves server-side.
  */
 
 export interface HandoverTokenPayload {
@@ -21,8 +20,10 @@ export interface SignedHandoverToken {
   signature: string;
 }
 
-// Master internal entropy key for client-side cryptographic attestation
-const APP_SECRET_KEY = "bv_sec_2026_ed25519_hmac_integrity_token_france_algerie";
+// Signing secret sourced from environment in deployed builds (server-side in full backend mode)
+const APP_SECRET_KEY =
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_HANDOVER_HMAC_SECRET) ||
+  "bv_handover_hmac_dev_key_2026";
 
 let cachedKey: CryptoKey | null = null;
 

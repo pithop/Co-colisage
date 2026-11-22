@@ -40,14 +40,14 @@ export const GpsTrackingModal: React.FC<GpsTrackingModalProps> = ({
             <div className="flex items-center gap-2 mb-1">
               <Radio className="w-4 h-4 text-blue-400 animate-pulse" />
               <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-400">
-                Télémétrie en Direct
+                Itinéraire &amp; Points de Passage
               </span>
             </div>
             <h3 id="gps-title" className="font-black text-lg text-white">
-              Suivi Satellite &amp; GPS en Temps Réel
+              Suivi d&apos;Acheminement &amp; Points de Remise
             </h3>
             <p className="text-xs text-slate-400 font-medium">
-              Position vérifiée par balise AIS maritime et réseau cellulaire
+              Points de contrôle aéroportuaires/portuaires et étapes de remise vérifiées
             </p>
           </div>
           <button 

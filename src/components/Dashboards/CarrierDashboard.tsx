@@ -51,7 +51,7 @@ export const CarrierDashboard: React.FC<CarrierDashboardProps> = ({
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                {user.siret ? `SIRET : ${user.siret} &middot; Licence Transport` : "Dossier transporteur certifié eIDAS"}
+                {user.siret ? `SIRET : ${user.siret} &middot; Licence Transport` : "Dossier transporteur vérifié (KYC Pro)"}
               </p>
             </div>
           </div>

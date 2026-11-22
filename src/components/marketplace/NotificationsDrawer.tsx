@@ -15,7 +15,7 @@ export type NotificationTarget = "arbitrage" | "sarah" | "karim" | "profile";
 export const platformNotifications = [
   {
     id: "arbitrage",
-    category: "Arbitrage IA",
+    category: "Opportunité Trajet",
     title:
       "Voyagez gratuit : Vol Marseille-Alger à 49 € pour 150 € de commandes (Gain net : +101 €)",
     detail:

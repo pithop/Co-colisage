@@ -58,8 +58,8 @@ export function TrustVerificationModal({
         <div className="grid grid-cols-3 gap-2 p-2 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
           {[
             { num: 1, title: 'Téléphone & PIN', subtitle: 'SMS de sécurisation' },
-            { num: 2, title: 'Pièce d’identité', subtitle: 'Passeport / CNI OACI' },
-            { num: 3, title: 'Certification', subtitle: 'Niveau 3 Garanti' },
+            { num: 2, title: 'Pièce d’identité', subtitle: 'Passeport / CNI' },
+            { num: 3, title: 'Certification', subtitle: 'Profil vérifié' },
           ].map((s) => {
             const active = currentStepNum === s.num;
             const completed = currentStepNum > s.num;
@@ -214,7 +214,7 @@ export function TrustVerificationModal({
                 2. Vérification officielle de la pièce d'identité
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
-                Contrôle optique conforme OACI Doc 9303 via Stripe Identity pour débloquer les montants supérieurs à 500 € et activer la garantie séquestre prioritaire.
+                Vérification documentaire via Stripe Identity pour débloquer les montants supérieurs à 500 € et activer la garantie séquestre prioritaire.
               </p>
             </div>
 
@@ -244,7 +244,7 @@ export function TrustVerificationModal({
               >
                 <p className="font-bold text-sm">Carte Nationale d'Identité</p>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Format européen ou biométrique avec bande MRZ
+                  Format européen ou biométrique en cours de validité
                 </p>
               </button>
             </div>
@@ -254,10 +254,10 @@ export function TrustVerificationModal({
                 <div className="py-4 space-y-3">
                   <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
                   <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                    Analyse optique des sécurités et filigranes en cours…
+                    Vérification du document d&apos;identité en cours…
                   </p>
                   <p className="text-[11px] text-slate-500 font-mono">
-                    Contrôle conformité OACI Doc 9303 &amp; eIDAS
+                    Contrôle documentaire KYC &amp; Stripe Identity
                   </p>
                 </div>
               ) : (

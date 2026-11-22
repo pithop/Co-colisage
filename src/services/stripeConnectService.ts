@@ -1,9 +1,8 @@
 /**
- * BagVoyage Stripe Connect & FinTech Escrow Service
- * Standards $1B FinTech / ACPR European Payment Regulations
+ * BagVoyage Stripe Connect Escrow Client Adapter
  *
- * Implements real 2-step escrow authorizations (PaymentIntent with manual capture),
- * idempotent transaction state machine, and Cash-on-Delivery (COD) guarantee holds.
+ * Manages 2-step escrow state transitions (manual capture hold, payout transfer,
+ * and Cash-on-Delivery commitment deposit). Uses local state until server API is connected.
  */
 
 export type EscrowStatus =

@@ -378,14 +378,14 @@ export function TrackingPage({
         >
           <div className="flex items-start gap-3">
             <span className="bv-demo-badge !bg-[#ECFDF5] !text-[#059669] !border-[#059669]/20">
-              <Sparkles size={12} /> DÉMONSTRATION ACTIVE
+              <Sparkles size={12} /> EXEMPLES DE MISSIONS
             </span>
             <div className="bv-demo-info">
-              <h3>Suivi Satellite en Temps Réel</h3>
+              <h3>Suivi d&apos;Acheminement &amp; Points de Passage</h3>
               <p>
                 {hasUserShipments
-                  ? "Les missions témoin ci-dessous simulent le protocole de transport aérien et maritime BagVoyage en direct."
-                  : "Voici 3 missions en direct simulant le transport aérien et maritime avec télémétrie et protocole PIN."}
+                  ? "Les missions témoin ci-dessous illustrent le suivi étape par étape et la validation par code PIN."
+                  : "Voici 3 exemples de missions illustrant le suivi étape par étape et la remise contre code PIN."}
               </p>
             </div>
           </div>

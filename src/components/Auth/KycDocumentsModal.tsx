@@ -41,7 +41,7 @@ const DOCUMENT_SLOTS: DocumentSlot[] = [
     type: 'passport',
     title: 'Passeport biométrique',
     subtitle: 'Page principale lisible avec photo nette et zone de lecture optique MRZ',
-    tag: 'OACI Doc 9303',
+    tag: 'Document officiel',
     required: true,
     icon: FileText,
     iconColor: 'text-blue-600 dark:text-blue-400',
@@ -59,9 +59,9 @@ const DOCUMENT_SLOTS: DocumentSlot[] = [
   },
   {
     type: 'selfie',
-    title: 'Selfie de conformité faciale',
-    subtitle: "Contrôle biométrique 3D temps réel tenant votre pièce d'identité",
-    tag: 'Anti-usurpation 3D',
+    title: 'Selfie de vérification',
+    subtitle: "Photo nette de votre visage tenant votre pièce d'identité",
+    tag: 'Vérification photo',
     required: true,
     icon: Camera,
     iconColor: 'text-purple-600 dark:text-purple-400',
@@ -133,7 +133,7 @@ export const KycDocumentsModal: React.FC = () => {
   const currentStep = hasPrimaryIdentity ? 3 : completedDocsCount > 0 ? 2 : 1;
 
   return (
-    <Dialog title="Certification d'Identité KYC & Séquestre eIDAS" onClose={closeKycModal} wide>
+    <Dialog title="Vérification d'Identité (KYC) & Séquestre Stripe" onClose={closeKycModal} wide>
       <div className="space-y-6 text-slate-800 dark:text-slate-100">
         {/* Stepper with connected sleek indicators */}
         <div className="p-3.5 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 backdrop-blur-md">
@@ -141,7 +141,7 @@ export const KycDocumentsModal: React.FC = () => {
             {[
               { num: 1, title: 'Profil actif', subtitle: 'Voyageur / Expéditeur' },
               { num: 2, title: 'Documents d’identité', subtitle: 'Passeport / CNI / Selfie' },
-              { num: 3, title: 'Séquestre eIDAS', subtitle: 'Plafond 2 500 € actif' },
+              { num: 3, title: 'Séquestre Stripe', subtitle: 'Plafond 2 500 € actif' },
             ].map((s) => {
               const active = currentStep === s.num;
               const completed = currentStep > s.num;
@@ -188,7 +188,7 @@ export const KycDocumentsModal: React.FC = () => {
                 Garantie de Sécurité Maximale &amp; Séquestre Bancaire
               </span>
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-                <Shield size={10} /> eIDAS v2.1
+                <Shield size={10} /> KYC Vérifié
               </span>
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-500/30">
                 <Lock size={10} /> AES-256
@@ -318,7 +318,7 @@ export const KycDocumentsModal: React.FC = () => {
               Pièces officielles à fournir
             </label>
             <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 font-semibold">
-              <Lock size={12} className="text-emerald-500" /> Chiffrement eIDAS / AES-256
+              <Lock size={12} className="text-emerald-500" /> Chiffrement TLS / AES-256
             </span>
           </div>
 
@@ -411,7 +411,7 @@ export const KycDocumentsModal: React.FC = () => {
             <strong className="text-slate-900 dark:text-white block mb-0.5 text-sm font-bold">
               Pourquoi ces documents sont-ils indispensables ?
             </strong>
-            La validation KYC active immédiatement le séquestre bancaire Stripe jusqu'à 2 500 € par trajet et attribue le badge officiel « Voyageur Certifié eIDAS », gage d'assurance indispensable pour être choisi par les expéditeurs.
+            La validation KYC active immédiatement le séquestre bancaire Stripe jusqu'à 2 500 € par trajet et attribue le badge officiel « Voyageur Vérifié KYC », gage de confiance indispensable pour être choisi par les expéditeurs.
           </div>
         </div>
 

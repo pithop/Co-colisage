@@ -267,37 +267,37 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         }}
       />
 
-      {/* 1. Compact Action Hero Header */}
-      <section className="relative overflow-hidden rounded-2xl bg-[#0F172A] dark:bg-[#0B0F19] text-white shadow-xs border border-slate-800 p-5 sm:p-6">
+      {/* 1. Light Premium Action Hero Header */}
+      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#FFFFFF] via-[#F8FAFC] to-[#EFF6FF] dark:from-slate-900 dark:via-slate-900 dark:to-slate-850 text-slate-900 dark:text-white shadow-xs border border-[#E2E8F0] dark:border-slate-800 p-5 sm:p-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           <div className="space-y-2.5 max-w-2xl">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-slate-200 text-[11px] font-semibold">
-                <Package size={12} className="text-[#2563EB]" />
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-[#2563EB] text-[11px] font-bold">
+                <Package size={12} />
                 <span>Bag &amp; Go · Expédition Multi-Modale</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                 <ShieldCheck size={13} className="text-[#059669]" />
                 <span>Séquestre Stripe · Validation PIN &amp; QR · Poids IATA</span>
               </span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
+            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-slate-900 dark:text-white leading-snug">
               Expédiez vos colis au millimètre près en toute confiance
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal max-w-xl">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal max-w-xl">
               Renseignez les dimensions précises, le poids exact et vos exigences de sécurité. Séquestre bancaire Stripe et validation par code PIN unique.
             </p>
           </div>
 
-          <div className="hidden lg:flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/10 shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-[#2563EB]/20 border border-[#2563EB]/30 flex items-center justify-center">
+          <div className="hidden lg:flex items-center gap-3 px-4 py-3 rounded-xl bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 shrink-0 shadow-2xs">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center">
               <Package size={20} className="text-[#2563EB]" />
             </div>
             <div>
-              <div className="text-xs font-bold text-white uppercase tracking-wide">Colisage Garanti</div>
-              <div className="text-[11px] text-slate-400">Avion · Voiture · Train · Bateau</div>
+              <div className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wide">Colisage Garanti</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400">Avion · Voiture · Train · Bateau</div>
             </div>
           </div>
         </div>
@@ -483,15 +483,15 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
       {/* 2. Detailed Granular Form with 5 Specialized Blocks */}
       <form onSubmit={handleSubmit} className={`space-y-4 ${activeView === 'browse' ? 'hidden' : ''}`}>
         {/* Block 1: Format & Dimensions Précises */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-xs">
-          <div className="px-5 py-3.5 bg-slate-900 dark:bg-slate-850 text-white flex items-center justify-between font-bold text-xs sm:text-sm uppercase tracking-wider shadow-xs">
+        <div className="rounded-2xl border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900/90 overflow-hidden shadow-xs">
+          <div className="px-5 py-3.5 bg-[#F8FAFC] dark:bg-slate-850 border-b border-[#E2E8F0] dark:border-slate-800 text-slate-900 dark:text-white flex flex-wrap items-center justify-between gap-2 font-bold text-xs sm:text-sm uppercase tracking-wider">
             <div className="flex items-center gap-2.5">
-              <span className="w-6 h-6 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
+              <span className="w-6 h-6 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-[#2563EB]">
                 <Box size={14} />
               </span>
               <span>1. Format &amp; Dimensions du Colis</span>
             </div>
-            <span className="text-[11px] normal-case bg-white/10 px-2.5 py-0.5 rounded-full font-semibold text-slate-200">
+            <span className="text-[11px] normal-case bg-[#FFFFFF] border border-[#E2E8F0] px-2.5 py-0.5 rounded-full font-semibold text-slate-700 tabular-nums">
               Volume : {volumeLitres} L · Poids volumétrique : {volumetricWeightKg} kg
             </span>
           </div>
@@ -679,9 +679,9 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         </div>
 
         {/* Block 2: Logistique de Prise en Charge & Remise */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-xs">
-          <div className="px-5 py-3.5 bg-slate-900 dark:bg-slate-850 text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-xs">
-            <span className="w-6 h-6 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
+        <div className="rounded-2xl border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900/90 overflow-hidden shadow-xs">
+          <div className="px-5 py-3.5 bg-[#F8FAFC] dark:bg-slate-850 border-b border-[#E2E8F0] dark:border-slate-800 text-slate-900 dark:text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider">
+            <span className="w-6 h-6 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-[#2563EB]">
               <Truck size={14} />
             </span>
             <span>2. Logistique de Prise en Charge &amp; Remise</span>
@@ -797,9 +797,9 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         </div>
 
         {/* Block 3: Sécurité, Normes & Exigences Spéciales */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-xs">
-          <div className="px-5 py-3.5 bg-slate-900 dark:bg-slate-850 text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider shadow-xs">
-            <span className="w-6 h-6 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
+        <div className="rounded-2xl border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900/90 overflow-hidden shadow-xs">
+          <div className="px-5 py-3.5 bg-[#F8FAFC] dark:bg-slate-850 border-b border-[#E2E8F0] dark:border-slate-800 text-slate-900 dark:text-white flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider">
+            <span className="w-6 h-6 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-[#2563EB]">
               <ShieldCheck size={14} />
             </span>
             <span>3. Sécurité, Normes &amp; Scellé de Garantie</span>
@@ -931,15 +931,15 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         </div>
 
         {/* Block 4: Trajet & Destinataire */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/90 overflow-hidden shadow-xs">
-          <div className="px-5 py-3.5 bg-slate-900 dark:bg-slate-850 text-white flex items-center justify-between font-bold text-xs sm:text-sm uppercase tracking-wider shadow-xs">
+        <div className="rounded-2xl border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900/90 overflow-hidden shadow-xs">
+          <div className="px-5 py-3.5 bg-[#F8FAFC] dark:bg-slate-850 border-b border-[#E2E8F0] dark:border-slate-800 text-slate-900 dark:text-white flex flex-wrap items-center justify-between gap-2 font-bold text-xs sm:text-sm uppercase tracking-wider">
             <div className="flex items-center gap-2.5">
-              <span className="w-6 h-6 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
+              <span className="w-6 h-6 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-[#2563EB]">
                 <MapPin size={14} />
               </span>
               <span>4. Trajet, Urgence &amp; Destinataire</span>
             </div>
-            <span className="text-[10px] font-semibold bg-white/10 px-2.5 py-0.5 rounded-full text-slate-200">
+            <span className="text-[10px] font-semibold bg-[#FFFFFF] border border-[#E2E8F0] px-2.5 py-0.5 rounded-full text-slate-600">
               Saisie libre monde entier
             </span>
           </div>

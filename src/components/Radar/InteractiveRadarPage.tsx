@@ -335,7 +335,7 @@ export function InteractiveRadarPage({
         <div className="flex flex-col sm:items-end gap-1.5 tabular-nums">
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#059669]/20 border border-[#059669]/40 text-xs font-bold text-[#059669] w-fit">
             <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse" />
-            Télémétrie active
+            Corridors actifs
           </span>
           <time
             dateTime={new Date(snapshot.updatedAt).toISOString()}
@@ -345,7 +345,7 @@ export function InteractiveRadarPage({
             <small className="text-xs font-semibold text-slate-400">UTC</small>
           </time>
           <span className="text-xs text-slate-400">
-            Actualisation chaque seconde
+            Simulation indicative des liaisons
           </span>
         </div>
       </header>

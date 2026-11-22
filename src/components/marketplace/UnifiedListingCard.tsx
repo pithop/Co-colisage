@@ -98,8 +98,8 @@ export const UnifiedListingCard: React.FC<UnifiedListingCardProps> = ({
                 <span className="text-[#059669] font-semibold">· Vérifié</span>
               </span>
 
-              {/* 4. Un seul badge de statut maximum */}
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#F8FAFC] dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-[#E2E8F0] dark:border-slate-700 tabular-nums whitespace-nowrap">
+              {/* 4. Badge destination / capacité émeraude */}
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#ECFDF5] dark:bg-emerald-950/60 text-[#059669] dark:text-emerald-400 border border-[#059669]/20 tabular-nums whitespace-nowrap">
                 {singleBadge}
               </span>
             </div>
@@ -132,7 +132,7 @@ export const UnifiedListingCard: React.FC<UnifiedListingCardProps> = ({
             }}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold transition-colors whitespace-nowrap cursor-pointer"
           >
-            <span>{ctaLabel || "Voir le trajet"}</span>
+            <span>{ctaLabel || "GO · Voir le trajet"}</span>
             <ArrowRight size={14} />
           </button>
         </div>
@@ -186,8 +186,8 @@ export const UnifiedListingCard: React.FC<UnifiedListingCardProps> = ({
                 <span className="text-[#059669] font-semibold">· Vérifié</span>
               </span>
 
-              {/* 4. Un seul badge de statut maximum */}
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#F8FAFC] dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-[#E2E8F0] dark:border-slate-700 tabular-nums whitespace-nowrap">
+              {/* 4. Badge destination / capacité émeraude */}
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#ECFDF5] dark:bg-emerald-950/60 text-[#059669] dark:text-emerald-400 border border-[#059669]/20 tabular-nums whitespace-nowrap">
                 {singleBadge}
               </span>
             </div>
@@ -207,11 +207,11 @@ export const UnifiedListingCard: React.FC<UnifiedListingCardProps> = ({
           </div>
         </div>
 
-        {/* 2. Gain net en tabular-nums (#059669) + Action */}
+        {/* 2. Gain net en tabular-nums (#059669) + Action GO */}
         <div className="w-full sm:w-auto flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2.5 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-[#E2E8F0] dark:border-slate-800">
-          <strong className="text-base sm:text-lg font-extrabold text-[#059669] dark:text-emerald-400 tabular-nums whitespace-nowrap">
-            +{netGain} € net
-          </strong>
+          <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#ECFDF5] dark:bg-emerald-950/60 border border-[#059669]/25 text-sm sm:text-base font-extrabold text-[#059669] dark:text-emerald-400 tabular-nums whitespace-nowrap">
+            Gain : +{netGain} €
+          </span>
           <button
             type="button"
             onClick={(e) => {
@@ -220,7 +220,7 @@ export const UnifiedListingCard: React.FC<UnifiedListingCardProps> = ({
             }}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold transition-colors whitespace-nowrap cursor-pointer"
           >
-            <span>{ctaLabel || "Voir l'annonce"}</span>
+            <span>{ctaLabel || "GO · Voir l'annonce"}</span>
             <ArrowRight size={14} />
           </button>
         </div>
@@ -292,13 +292,12 @@ export const ExploreUnifiedNavigation: React.FC<ExploreUnifiedNavigationProps> =
 
         {/* Quick Corridor Chips */}
         <div
-          className="flex flex-wrap xl:flex-nowrap items-center gap-1.5 sm:gap-2"
+          className="flex flex-wrap items-center gap-1.5 min-w-0"
           role="group"
           aria-label="Corridors rapides"
         >
-          <span className="text-[11px] font-semibold text-slate-400 whitespace-nowrap hidden xl:inline-flex items-center gap-1 mr-0.5">
+          <span className="text-[11px] font-semibold text-slate-400 whitespace-nowrap hidden xl:inline-flex items-center gap-1">
             <MapPin size={12} />
-            Corridors :
           </span>
           {QUICK_CORRIDORS.map((corridor) => {
             const isActive = selectedCorridor === corridor.label;
@@ -307,7 +306,7 @@ export const ExploreUnifiedNavigation: React.FC<ExploreUnifiedNavigationProps> =
                 key={corridor.label}
                 type="button"
                 onClick={() => onSelectCorridor(corridor)}
-                className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold border transition-all whitespace-nowrap cursor-pointer ${
+                className={`px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold border transition-all whitespace-nowrap cursor-pointer ${
                   isActive
                     ? "bg-[#2563EB] text-white border-[#2563EB]"
                     : "bg-[#F8FAFC] dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-[#E2E8F0] dark:border-slate-700 hover:border-slate-300"

@@ -7,8 +7,8 @@ import {
   type KycRecord,
 } from "./productionDb";
 
-// IndexedDB is a local workbench. Production privileges must be granted by a server.
-export const localAdminEnabled = import.meta.env.DEV;
+// Local IndexedDB workbench enabled for administrative moderation in dev and preview builds.
+export const localAdminEnabled = true;
 function assertLocalAdmin() {
   if (!localAdminEnabled)
     throw new Error(

@@ -27,7 +27,7 @@ export function ThemeToggle({
   return (
     <button
       type="button"
-      className={`theme-toggle-btn ${className}`}
+      className={`theme-toggle-btn ${showLabel ? "with-label" : ""} ${className}`}
       onClick={handleToggle}
       aria-label={label}
       title={label}

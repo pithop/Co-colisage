@@ -10815,7 +10815,7 @@ html[data-theme="dark"] .bv-trust-bar-item p,
 }
 
 /* ==========================================================================
-   Apple HIG BottomSheet System (Standards $1B Unicorn / iOS Native)
+   BottomSheet System (Mobile Touch Ergonomics)
    ========================================================================== */
 .bv-sheet-backdrop {
   position: fixed;

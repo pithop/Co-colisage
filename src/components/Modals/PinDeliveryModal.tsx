@@ -34,6 +34,12 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
   const [isSuccess, setIsSuccess] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [error, setError] = useState('');
+  const [criteriaRatings, setCriteriaRatings] = useState<Record<string, number>>({
+    reactivite: 5,
+    ponctualite: 5,
+    echange: 5,
+    integrite: 5,
+  });
   const verificationTimer = useRef<ReturnType<typeof setTimeout>>();
 
   // Dynamic PIN derived from real conversation or fallback
@@ -343,11 +349,62 @@ export const PinDeliveryModal: React.FC<PinDeliveryModalProps> = ({
                 </div>
               </div>
 
+              {/* 4-Criteria Verified Rating (Dossier Client) */}
+              <div className="p-4 rounded-2xl bg-[#F8FAFC] dark:bg-slate-800/70 border border-[#E2E8F0] dark:border-slate-700 text-left space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-slate-900 dark:text-white">
+                    Évaluation certifiée (4 critères)
+                  </span>
+                  <span className="text-[11px] font-bold text-[#059669] tabular-nums">
+                    {(
+                      Object.values(criteriaRatings).reduce((a, b) => a + b, 0) / 4
+                    ).toFixed(1)}{' '}
+                    / 5
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {[
+                    { id: 'reactivite', label: 'Réactivité' },
+                    { id: 'ponctualite', label: 'Ponctualité' },
+                    { id: 'echange', label: 'Échange clair' },
+                    { id: 'integrite', label: 'Marchandise intacte' },
+                  ].map((crit) => (
+                    <div
+                      key={crit.id}
+                      className="flex items-center justify-between px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-700"
+                    >
+                      <span className="text-[11px] font-semibold text-slate-700 dark:text-slate-200">
+                        {crit.label}
+                      </span>
+                      <div className="flex items-center gap-0.5">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() =>
+                              setCriteriaRatings((prev) => ({ ...prev, [crit.id]: star }))
+                            }
+                            aria-label={`${crit.label} ${star} sur 5`}
+                            className={`w-5 h-5 rounded text-xs font-black transition-colors cursor-pointer ${
+                              (criteriaRatings[crit.id] ?? 5) >= star
+                                ? 'text-amber-500'
+                                : 'text-slate-300 dark:text-slate-600'
+                            }`}
+                          >
+                            ★
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <button
                 onClick={() => onSuccessFinished ? onSuccessFinished(payoutNumber) : onClose()}
-                className="w-full py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-xs transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="w-full py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-xs transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>Terminer et retourner à l'accueil</span>
+                <span>Valider l&apos;évaluation et terminer</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>

@@ -362,7 +362,7 @@ export function VoyageurPlatform({
 
   // Filter state
   const [hasSearched, setHasSearched] = useState(false);
-  const [showLuggageSimulator, setShowLuggageSimulator] = useState(true);
+  const [showLuggageSimulator, setShowLuggageSimulator] = useState(false);
 
   // Switch transport mode handler
   const handleModeChange = (mode: TransportMode) => {
@@ -462,26 +462,26 @@ export function VoyageurPlatform({
         </div>
       </nav>
 
-      {/* 2. Compact Action Hero Header */}
-      <section className="relative overflow-hidden rounded-2xl bg-[#0F172A] dark:bg-[#0B0F19] text-white shadow-xs border border-slate-800 p-5 sm:p-6">
+      {/* 2. Light Premium Action Hero Header */}
+      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#FFFFFF] via-[#F8FAFC] to-[#EFF6FF] dark:from-slate-900 dark:via-slate-900 dark:to-slate-850 text-slate-900 dark:text-white shadow-xs border border-[#E2E8F0] dark:border-slate-800 p-5 sm:p-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           <div className="space-y-2.5 max-w-2xl">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-slate-200 text-[11px] font-semibold">
-                <Sparkles size={12} className="text-[#059669] shrink-0" />
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ECFDF5] border border-[#059669]/20 text-[#059669] text-[11px] font-bold">
+                <Sparkles size={12} className="shrink-0" />
                 <span>Espace Voyageur · {currentConfig.label}</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                 <ShieldCheck size={13} className="text-[#059669]" />
                 <span>Séquestre Stripe · Identité &amp; Billets vérifiés · PIN livraison</span>
               </span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
+            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-slate-900 dark:text-white leading-snug">
               {currentConfig.heroHeadline}
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal max-w-xl">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal max-w-xl">
               {currentConfig.heroSubtitle}
             </p>
           </div>
@@ -501,9 +501,9 @@ export function VoyageurPlatform({
               <button
                 type="button"
                 onClick={onScanBoardingPass}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-white border border-white/15 font-semibold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#FFFFFF] dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-[#E2E8F0] dark:border-slate-700 font-semibold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
               >
-                <Scan size={15} className="text-slate-300" />
+                <Scan size={15} className="text-[#2563EB]" />
                 <span>Scanner billet IATA</span>
               </button>
             )}
@@ -730,43 +730,7 @@ export function VoyageurPlatform({
         </div>
       </section>
 
-      {/* 4. Interactive Capacity & Earnings Simulator (Mode-Aware) */}
-      <section className="rounded-2xl border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900/60 overflow-hidden shadow-xs">
-        <div
-          className="flex items-center justify-between p-5 cursor-pointer bg-[#F8FAFC] dark:bg-slate-800/40 border-b border-[#E2E8F0] dark:border-slate-800"
-          onClick={() => setShowLuggageSimulator(!showLuggageSimulator)}
-        >
-          <div className="flex items-center gap-2.5">
-            <span className="w-8 h-8 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] text-slate-700 dark:bg-slate-800 dark:text-slate-300 flex items-center justify-center">
-              <ModeIcon size={18} />
-            </span>
-            <div>
-              <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <span>Simulateur dynamique de capacité &amp; gains ({currentConfig.shortLabel})</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] font-bold border border-[#059669]/20">
-                  Animation Interactive
-                </span>
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-normal">
-                Visualisez l'allocation de votre espace ({currentConfig.capacityUnit}) et l'estimation des gains nets
-              </p>
-            </div>
-          </div>
-
-          <ChevronRight
-            size={18}
-            className={`text-slate-400 transition-transform ${showLuggageSimulator ? "rotate-90" : ""}`}
-          />
-        </div>
-
-        {showLuggageSimulator && (
-          <div className="p-5 sm:p-6">
-            <LuggageVisualizer transportMode={selectedMode as VisualizerTransportMode} />
-          </div>
-        )}
-      </section>
-
-      {/* 5. Section "Voyageurs disponibles" ou "Colis à transporter" according to selectedIntent */}
+      {/* 4. Section "Voyageurs disponibles" ou "Colis à transporter" according to selectedIntent */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -810,7 +774,7 @@ export function VoyageurPlatform({
                 key={req.id}
                 request={req}
                 onSelect={() => (onRequest ? onRequest(req) : onSelectTrip?.(filteredTrips[0]))}
-                ctaLabel="Prendre en charge"
+                ctaLabel="GO · Prendre en charge"
               />
             ))}
           </div>
@@ -822,7 +786,7 @@ export function VoyageurPlatform({
                 trip={trip}
                 capacityUnit={currentConfig.capacityUnit}
                 onSelect={() => (onContactTraveler ? onContactTraveler(trip) : onSelectTrip?.(trip))}
-                ctaLabel="Contacter & Réserver"
+                ctaLabel="GO · Contacter & Réserver"
               />
             ))}
           </div>
@@ -854,6 +818,42 @@ export function VoyageurPlatform({
                 </button>
               )}
             </div>
+          </div>
+        )}
+      </section>
+
+      {/* 5. Interactive Capacity & Earnings Simulator (Collapsible, collapsed by default) */}
+      <section className="rounded-2xl border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-900/60 overflow-hidden shadow-xs">
+        <div
+          className="flex items-center justify-between p-5 cursor-pointer bg-[#F8FAFC] dark:bg-slate-800/40 border-b border-[#E2E8F0] dark:border-slate-800"
+          onClick={() => setShowLuggageSimulator(!showLuggageSimulator)}
+        >
+          <div className="flex items-center gap-2.5">
+            <span className="w-8 h-8 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] text-slate-700 dark:bg-slate-800 dark:text-slate-300 flex items-center justify-center">
+              <ModeIcon size={18} />
+            </span>
+            <div>
+              <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span>Simulateur de capacité &amp; gains ({currentConfig.shortLabel})</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] font-bold border border-[#059669]/20">
+                  Optionnel
+                </span>
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-normal">
+                Visualisez l'allocation de votre espace ({currentConfig.capacityUnit}) et l'estimation des gains nets
+              </p>
+            </div>
+          </div>
+
+          <ChevronRight
+            size={18}
+            className={`text-slate-400 transition-transform ${showLuggageSimulator ? "rotate-90" : ""}`}
+          />
+        </div>
+
+        {showLuggageSimulator && (
+          <div className="p-5 sm:p-6">
+            <LuggageVisualizer transportMode={selectedMode as VisualizerTransportMode} />
           </div>
         )}
       </section>

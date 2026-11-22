@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import type { RadarMovement } from "../../services/flightFerryRadarApi";
 import {
   ArrowRight,
@@ -29,7 +29,11 @@ import { PhotoGallery } from "./PhotoGallery";
 import { ParcelComposer } from "./ParcelComposer";
 import { localActorId } from "../../services/uploads";
 import { CityAutocomplete } from "../common/CityAutocomplete";
-import { TicketScannerModal } from "../Modals/TicketScannerModal";
+const TicketScannerModal = lazy(() =>
+  import("../Modals/TicketScannerModal").then((m) => ({
+    default: m.TicketScannerModal,
+  })),
+);
 const shoppingSuggestions = [
   {
     name: "Dior Sauvage 100ml",
@@ -999,15 +1003,19 @@ export function Publish({
         )}
       </div>
 
-      <TicketScannerModal
-        isOpen={scannerOpen}
-        onClose={() => setScannerOpen(false)}
-        onTripCreated={(trip) => {
-          onTrip(trip);
-          setScannerOpen(false);
-          onClose();
-        }}
-      />
+      {scannerOpen && (
+        <Suspense fallback={null}>
+          <TicketScannerModal
+            isOpen={scannerOpen}
+            onClose={() => setScannerOpen(false)}
+            onTripCreated={(trip) => {
+              onTrip(trip);
+              setScannerOpen(false);
+              onClose();
+            }}
+          />
+        </Suspense>
+      )}
     </Dialog>
   );
 }
