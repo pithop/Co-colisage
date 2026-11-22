@@ -3,10 +3,10 @@ import type { ShowcaseScenario } from "./BagVoyageLiveShowcase";
 export type TransportKind = "avion" | "bateau" | "voiture";
 
 /**
- * Architectural background motion layer rendering GPU-composited vector trajectories
- * for air (plane), maritime (ferry), and overland (car/van) corridors.
- * Responsive across 390px mobile and 1440px desktop via CSS container queries (cqw),
- * strictly decorative (aria-hidden), low-contrast, and gated under prefers-reduced-motion.
+ * Architectural atmospheric background motion layer rendering refined vector crafts
+ * (Airliner, Mediterranean Ferry, Express Van) on GPU-composited lanes.
+ * Calibrated for high visibility in open sky and horizon whitespace without
+ * colliding with editorial typography.
  */
 export function TransportBackdrop({
   activeMode = "voyageur",
@@ -26,10 +26,10 @@ export function TransportBackdrop({
       className="bv-transport-backdrop pointer-events-none absolute inset-0 overflow-hidden select-none z-0"
       aria-hidden="true"
     >
-      {/* Subtle daylight atmospheric radial mesh */}
+      {/* Daylight atmospheric radial lighting */}
       <div className="bv-hero-mesh absolute inset-0" />
 
-      {/* Architectural SVG Corridor Arcs (stretched proportionally to full container width) */}
+      {/* Subtle Curated Corridor Arcs (Air / Sea / Overland) */}
       <svg
         className="absolute inset-0 w-full h-full"
         viewBox="0 0 1000 720"
@@ -39,127 +39,124 @@ export function TransportBackdrop({
         <defs>
           <linearGradient id="bv-air-trail" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#2563EB" stopOpacity="0" />
-            <stop offset="50%" stopColor="#2563EB" stopOpacity="0.28" />
-            <stop offset="100%" stopColor="#0EA5E9" stopOpacity="0.52" />
+            <stop offset="45%" stopColor="#2563EB" stopOpacity="0.34" />
+            <stop offset="100%" stopColor="#0EA5E9" stopOpacity="0.62" />
           </linearGradient>
           <linearGradient id="bv-sea-trail" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#059669" stopOpacity="0" />
-            <stop offset="50%" stopColor="#0D9488" stopOpacity="0.24" />
-            <stop offset="100%" stopColor="#10B981" stopOpacity="0.48" />
+            <stop offset="50%" stopColor="#0D9488" stopOpacity="0.32" />
+            <stop offset="100%" stopColor="#10B981" stopOpacity="0.58" />
           </linearGradient>
           <linearGradient id="bv-road-trail" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#64748B" stopOpacity="0" />
-            <stop offset="55%" stopColor="#2563EB" stopOpacity="0.2" />
-            <stop offset="100%" stopColor="#0F172A" stopOpacity="0.32" />
+            <stop offset="0%" stopColor="#475569" stopOpacity="0" />
+            <stop offset="55%" stopColor="#2563EB" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="#0F172A" stopOpacity="0.4" />
           </linearGradient>
         </defs>
 
-        {/* Fine architectural latitude lines */}
-        <g stroke="#CBD5E1" strokeOpacity="0.3" strokeWidth="1" vectorEffect="non-scaling-stroke">
-          <line x1="0" y1="88" x2="1000" y2="88" strokeDasharray="3 10" />
-          <line x1="0" y1="538" x2="1000" y2="538" strokeDasharray="3 10" />
-          <line x1="0" y1="652" x2="1000" y2="652" strokeDasharray="3 10" />
-        </g>
-
-        {/* Air Arc (High-altitude sky lane cleanly above typography) */}
+        {/* High-Altitude Flight Trajectory */}
         <path
-          d="M -20 96 Q 500 22 1020 82"
+          d="M -20 46 Q 500 8 1020 42"
           stroke="url(#bv-air-trail)"
           strokeWidth={emphasizeAir ? "2" : "1.25"}
           strokeDasharray="6 8"
           vectorEffect="non-scaling-stroke"
-          style={{ opacity: emphasizeAir ? 0.92 : 0.48 }}
+          style={{ opacity: emphasizeAir ? 0.95 : 0.55 }}
         />
 
-        {/* Maritime Ferry Arc (Calm Mediterranean gap lane) */}
+        {/* Maritime Sea Horizon Curve */}
         <path
-          d="M -20 545 Q 320 515 580 552 T 1020 532"
+          d="M -20 612 Q 300 594 560 614 T 1020 600"
           stroke="url(#bv-sea-trail)"
-          strokeWidth={emphasizeSea ? "2" : "1.25"}
+          strokeWidth={emphasizeSea ? "2" : "1.35"}
           strokeDasharray="4 6"
           vectorEffect="non-scaling-stroke"
-          style={{ opacity: emphasizeSea ? 0.92 : 0.48 }}
+          style={{ opacity: emphasizeSea ? 0.95 : 0.6 }}
         />
 
-        {/* Express Overland Lane (Ground express highway corridor) */}
+        {/* Express Ground Highway Track */}
         <path
-          d="M -20 656 Q 500 634 1020 652"
+          d="M -20 676 Q 500 662 1020 674"
           stroke="url(#bv-road-trail)"
-          strokeWidth={emphasizeRoad ? "1.8" : "1.15"}
+          strokeWidth={emphasizeRoad ? "1.8" : "1.25"}
           vectorEffect="non-scaling-stroke"
-          style={{ opacity: emphasizeRoad ? 0.88 : 0.44 }}
+          style={{ opacity: emphasizeRoad ? 0.9 : 0.55 }}
         />
       </svg>
 
-      {/* GPU-Composited Kinetic Craft Stage */}
+      {/* Kinetic Craft Stage (GPU-composited container-width trajectories) */}
       <div className="absolute inset-0">
         {/* 1. Primary Airliner (Avion) */}
         <div
           className={`bv-craft bv-craft-air ${
-            emphasizeAir ? "opacity-80" : "opacity-55"
+            emphasizeAir ? "opacity-90" : "opacity-65"
           }`}
         >
           <span className="bv-craft-contrail" />
           <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
+            width="34"
+            height="34"
+            viewBox="0 0 32 32"
             fill="none"
-            className="text-[#2563EB]"
+            className="text-[#2563EB] drop-shadow-xs"
           >
             <path
-              d="M21 16v-2l-8-5V3.5A1.5 1.5 0 0 0 11.5 2 1.5 1.5 0 0 0 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5Z"
+              d="M27.5 16c0 1.2-2.2 2.2-5 2.4l-6.8.5-5.6 8.6h-2.5l2.7-8.7-4.8.2-2.2 3.1H1.5l1.3-4.6L1.5 13h1.8l2.2 3 4.8.2-2.7-8.7h2.5l5.6 8.6 6.8.5c2.8.2 5 1.2 5 2.4Z"
               fill="currentColor"
-              transform="rotate(90 12 12)"
+            />
+            <path
+              d="M24 15.3c1.6.1 2.7.4 2.7.7s-1.1.6-2.7.7v-1.4Z"
+              fill="#FFFFFF"
+              fillOpacity="0.9"
             />
           </svg>
         </div>
 
-        {/* 2. Secondary Counter-Corridor Jet */}
+        {/* 2. Secondary Counter-Corridor Jet (Desktop) */}
         <div
           className={`bv-craft bv-craft-air-return hidden sm:flex ${
-            emphasizeAir ? "opacity-55" : "opacity-35"
+            emphasizeAir ? "opacity-60" : "opacity-40"
           }`}
         >
           <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
+            width="22"
+            height="22"
+            viewBox="0 0 32 32"
             fill="none"
             className="text-[#0EA5E9]"
           >
             <path
-              d="M21 16v-2l-8-5V3.5A1.5 1.5 0 0 0 11.5 2 1.5 1.5 0 0 0 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5Z"
+              d="M27.5 16c0 1.2-2.2 2.2-5 2.4l-6.8.5-5.6 8.6h-2.5l2.7-8.7-4.8.2-2.2 3.1H1.5l1.3-4.6L1.5 13h1.8l2.2 3 4.8.2-2.7-8.7h2.5l5.6 8.6 6.8.5c2.8.2 5 1.2 5 2.4Z"
               fill="currentColor"
-              transform="rotate(-90 12 12)"
+              transform="rotate(180 16 16)"
             />
           </svg>
         </div>
 
-        {/* 3. Maritime Ferry (Bateau) */}
+        {/* 3. Mediterranean Maritime Ferry (Bateau) */}
         <div
           className={`bv-craft bv-craft-sea ${
-            emphasizeSea ? "opacity-85" : "opacity-55"
+            emphasizeSea ? "opacity-95" : "opacity-75"
           }`}
         >
           <span className="bv-craft-wake" />
           <svg
-            width="32"
-            height="22"
-            viewBox="0 0 36 22"
+            width="42"
+            height="26"
+            viewBox="0 0 44 26"
             fill="none"
             className="text-[#059669]"
           >
             <path
-              d="M3 14.5h25.5l4.2-4.5H19.5l-2.2-4.5H8.5L7 10H3.8L3 14.5Z"
+              d="M3 16.5h31.2l5.8-5.2H24.5L21.8 6H10.2L8.4 11.3H4.2L3 16.5Z"
               fill="currentColor"
-              fillOpacity="0.9"
             />
-            <rect x="10.5" y="7" width="6" height="3" rx="0.8" fill="#FFFFFF" fillOpacity="0.9" />
+            <rect x="11.5" y="7.5" width="8.5" height="3.2" rx="0.9" fill="#FFFFFF" fillOpacity="0.92" />
+            <rect x="21.5" y="8.2" width="4" height="2.5" rx="0.6" fill="#A7F3D0" />
             <path
-              d="M2 17.5c2.5 1.2 5 1.2 7.5 0s5-1.2 7.5 0 5 1.2 7.5 0 5-1.2 7.5 0"
+              d="M1 20.2c3 1.4 6 1.4 9 0s6-1.4 9 0 6 1.4 9 0 6-1.4 9 0"
               stroke="#0D9488"
-              strokeWidth="1.6"
+              strokeWidth="1.8"
               strokeLinecap="round"
             />
           </svg>
@@ -168,33 +165,34 @@ export function TransportBackdrop({
         {/* 4. Express Overland Van / Car (Voiture) */}
         <div
           className={`bv-craft bv-craft-road ${
-            emphasizeRoad ? "opacity-80" : "opacity-55"
+            emphasizeRoad ? "opacity-90" : "opacity-70"
           }`}
         >
           <span className="bv-craft-headlight" />
           <svg
-            width="28"
-            height="18"
-            viewBox="0 0 32 18"
+            width="36"
+            height="22"
+            viewBox="0 0 38 22"
             fill="none"
             className="text-[#0F172A]"
           >
             <path
-              d="M3 12.5V9.2c0-.9.6-1.7 1.4-2l3.4-1.2L10.8 3c.6-.6 1.4-1 2.3-1h8.1c1 0 1.9.5 2.4 1.3l2.1 3 2.5.8c1 .3 1.8 1.2 1.8 2.3v3.1h-2.2a2.6 2.6 0 0 1-5.2 0H9.6a2.6 2.6 0 0 1-5.2 0H3Z"
+              d="M3 15.2V11c0-1.1.7-2.1 1.7-2.4l4-1.3L12.2 3.8c.7-.7 1.7-1.1 2.7-1.1h9.6c1.2 0 2.3.6 2.9 1.6l2.4 3.4 3 .9c1.2.4 2.1 1.5 2.1 2.8v3.8H32a3.1 3.1 0 0 1-6.2 0H12.2a3.1 3.1 0 0 1-6.2 0H3Z"
               fill="currentColor"
-              fillOpacity="0.88"
+              fillOpacity="0.9"
             />
-            <circle cx="7" cy="13" r="2.2" fill="#2563EB" />
-            <circle cx="25.2" cy="13" r="2.2" fill="#2563EB" />
-            <rect x="11.5" y="3.8" width="5.5" height="2.8" rx="0.6" fill="#FFFFFF" fillOpacity="0.88" />
-            <rect x="18.2" y="3.8" width="4.8" height="2.8" rx="0.6" fill="#FFFFFF" fillOpacity="0.88" />
+            <circle cx="9.1" cy="15.5" r="2.6" fill="#2563EB" />
+            <circle cx="9.1" cy="15.5" r="1" fill="#FFFFFF" />
+            <circle cx="28.9" cy="15.5" r="2.6" fill="#2563EB" />
+            <circle cx="28.9" cy="15.5" r="1" fill="#FFFFFF" />
+            <rect x="13.5" y="4.5" width="6.2" height="3.2" rx="0.8" fill="#FFFFFF" fillOpacity="0.9" />
+            <rect x="21" y="4.5" width="5.5" height="3.2" rx="0.8" fill="#E0F2FE" />
           </svg>
         </div>
       </div>
 
-      {/* Seamless fade at top/bottom edges so sections stitch cleanly */}
-      <div className="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-[#F8FAFC] to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#F8FAFC] to-transparent" />
+      {/* Bottom edge blend into white surface */}
+      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#F8FAFC] to-transparent" />
     </div>
   );
 }

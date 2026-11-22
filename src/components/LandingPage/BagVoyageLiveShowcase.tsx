@@ -292,7 +292,7 @@ export function BagVoyageLiveShowcase({
       )}
     >
       {/* Scenario Switcher + Play/Pause Control (WCAG 2.2.2) */}
-      <div className="flex items-center justify-center gap-2 mb-4 w-full max-w-[368px]">
+      <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4 w-full sm:max-w-[368px]">
         <div
           className="inline-flex items-center p-1 rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] shadow-xs flex-1 min-w-0"
           role="group"
@@ -335,10 +335,10 @@ export function BagVoyageLiveShowcase({
         </button>
       </div>
 
-      {/* Tactile iPhone Device Shell */}
-      <div className="relative w-full max-w-[344px] rounded-[42px] bg-[#0F172A] border-[6px] border-slate-800 p-3.5 shadow-2xl shadow-slate-950/25 overflow-hidden">
-        {/* Status Bar + Dynamic Island */}
-        <div className="flex items-center justify-between text-[11px] font-bold text-slate-300 px-2 pb-2.5">
+      {/* Bezel-free Live App Card on Mobile (< sm), Tactile iPhone Shell on Desktop (sm+) */}
+      <div className="relative w-full sm:max-w-[344px] rounded-3xl sm:rounded-[42px] bg-[#FFFFFF] sm:bg-[#0F172A] border border-[#E2E8F0] sm:border-[6px] sm:border-slate-800 p-1.5 sm:p-3.5 shadow-xl sm:shadow-2xl shadow-slate-900/[0.08] sm:shadow-slate-950/25 overflow-hidden">
+        {/* Status Bar + Dynamic Island (Desktop iPhone frame only) */}
+        <div className="hidden sm:flex items-center justify-between text-[11px] font-bold text-slate-300 px-2 pb-2.5">
           <span className="tabular-nums">9:41</span>
 
           {/* Dynamic Island Live Activity Pill */}
@@ -363,7 +363,7 @@ export function BagVoyageLiveShowcase({
         </div>
 
         {/* Interactive Phone Screen Canvas */}
-        <div className="rounded-[28px] bg-[#F8FAFC] text-slate-900 p-3.5 space-y-3 border border-white/10 min-h-[348px] flex flex-col justify-between">
+        <div className="rounded-[20px] sm:rounded-[28px] bg-[#F8FAFC] text-slate-900 p-3 sm:p-3.5 space-y-2.5 sm:space-y-3 sm:border sm:border-white/10 sm:min-h-[348px] flex flex-col justify-between">
           {/* App Mini Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -572,8 +572,8 @@ export function BagVoyageLiveShowcase({
           </div>
         </div>
 
-        {/* iOS Home Indicator */}
-        <div className="pt-2.5 flex justify-center" aria-hidden="true">
+        {/* iOS Home Indicator (Desktop iPhone frame only) */}
+        <div className="hidden sm:flex pt-2.5 justify-center" aria-hidden="true">
           <div className="w-24 h-1 rounded-full bg-slate-700" />
         </div>
       </div>

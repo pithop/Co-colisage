@@ -156,6 +156,7 @@ export function AwwwardsLanding({
 }) {
   const [language, setLanguage] = useState<"fr" | "en">(initialLanguage);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showMobileRouteEditor, setShowMobileRouteEditor] = useState(false);
   const [legalDoc, setLegalDoc] = useState<"cgu" | "privacy" | "mentions" | null>(null);
 
   useEffect(() => {
@@ -430,44 +431,37 @@ export function AwwwardsLanding({
       />
 
       {/* Hero Éditorial 2027 + Trajectoires Avion / Bateau / Voiture en Arrière-Plan */}
-      <section className="relative overflow-hidden pt-6 pb-10 sm:pt-12 sm:pb-16 px-4 sm:px-6">
+      <section className="relative overflow-hidden pt-11 pb-12 sm:pt-14 sm:pb-16 px-4 sm:px-6">
         <TransportBackdrop
           activeMode={heroMode}
           activeTransport={heroTransportType}
         />
 
         <div className="relative z-10 max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 items-center">
-            {/* Left Column: Sculptural Typography + Streamlined Console */}
-            <div className="lg:col-span-7 space-y-5 sm:space-y-6">
-              <div className="text-center lg:text-left space-y-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF]/90 backdrop-blur-sm border border-[#E2E8F0] text-[11px] font-bold text-slate-700 shadow-2xs whitespace-nowrap">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
-                  <span>
-                    {text(
-                      "France · Méditerranée · Corridors Internationaux",
-                      "France · Mediterranean · Global Corridors",
-                    )}
-                  </span>
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-10 items-center pb-8 sm:pb-16">
+            {/* Left Column: Instant 3-Second Clarity + Streamlined Console */}
+            <div className="lg:col-span-7 space-y-3.5 sm:space-y-6">
+              <div className="text-center lg:text-left space-y-2.5 sm:space-y-3">
+                <p className="text-[10px] sm:text-[11px] font-bold tracking-[0.16em] uppercase text-slate-400">
+                  {text("France · Méditerranée · Monde", "France · Mediterranean · Global")}
+                </p>
 
-                <h1 className="bv-hero-headline text-[27px] sm:text-5xl xl:text-[52px] font-extrabold tracking-[-0.035em] text-slate-900 leading-[1.07]">
-                  {text("Rentabilisez vos voyages.", "Fund your travels.")}
-                  <br />
-                  <span className="text-[#2563EB]">
-                    {text("Expédiez vos colis. Achetez partout.", "Ship parcels. Shop anywhere.")}
+                <h1 className="bv-hero-headline text-[25px] sm:text-5xl xl:text-[52px] font-extrabold tracking-[-0.035em] text-slate-900 leading-[1.08]">
+                  {text("Rentabilisez vos voyages.", "Fund your travels.")}{" "}
+                  <span className="text-[#2563EB] block sm:inline">
+                    {text("Expédiez vos colis en 24h.", "Ship parcels in 24h.")}
                   </span>
                 </h1>
 
-                <p className="bv-hero-lead text-xs sm:text-base text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                <p className="bv-hero-lead text-xs sm:text-[17px] text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
                   {text(
-                    "Voyageurs vérifiés par avion, ferry ou voiture · Séquestre Stripe Connect · Remise en main propre contre code PIN.",
-                    "Verified travelers by plane, ferry or car · Stripe Connect escrow · Hand-to-hand PIN delivery.",
+                    "Des voyageurs vérifiés transportent vos colis ou achètent en boutique sur leur trajet. Paiement bloqué sur Stripe et libéré par code PIN.",
+                    "Verified travelers carry parcels or shop retail along their trip. Payment escrowed on Stripe and released via PIN.",
                   )}
                 </p>
               </div>
 
-              {/* Streamlined Tri-Modal Console Card */}
+              {/* Streamlined Tri-Modal Console */}
               <div className="bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E2E8F0] rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-900/[0.04] overflow-hidden">
                 {/* 3 Sleek Tabs */}
                 <div
@@ -504,7 +498,7 @@ export function AwwwardsLanding({
                           triggerHaptic(8);
                           setHeroMode(id);
                         }}
-                        className={`min-h-[46px] px-2 py-2.5 sm:px-4 sm:py-3.5 flex items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-bold transition-colors cursor-pointer text-center ${
+                        className={`min-h-[44px] px-1.5 py-2 sm:px-4 sm:py-3.5 flex items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold transition-colors cursor-pointer text-center ${
                           isSelected
                             ? "bg-[#FFFFFF] text-[#2563EB]"
                             : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
@@ -517,9 +511,29 @@ export function AwwwardsLanding({
                   })}
                 </div>
 
-                {/* Compact Mobile-First Route + Date Inputs */}
-                <div className="p-4 sm:p-6 space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end">
+                {/* Compact Route Strip (Collapsible summary pill on Mobile < sm, Inline row on Desktop sm+) */}
+                <div className="p-3 sm:p-6 space-y-2.5 sm:space-y-4">
+                  <div className="flex sm:hidden items-center justify-between gap-2 px-3 py-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800 truncate">
+                      <MapPin size={13} className="text-[#2563EB] shrink-0" />
+                      <span className="truncate">{heroOrigin} → {heroDestination}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowMobileRouteEditor(!showMobileRouteEditor)}
+                      className="text-[11px] font-bold text-[#2563EB] bg-transparent border-0 p-0 cursor-pointer shrink-0 whitespace-nowrap"
+                    >
+                      {showMobileRouteEditor
+                        ? text("Fermer", "Done")
+                        : text("Modifier", "Edit")}
+                    </button>
+                  </div>
+
+                  <div
+                    className={`${
+                      showMobileRouteEditor ? "grid" : "hidden sm:grid"
+                    } grid-cols-1 sm:grid-cols-12 gap-2.5 items-end`}
+                  >
                     <div className="sm:col-span-8 grid grid-cols-[1fr_auto_1fr] gap-1.5 sm:gap-2 items-end">
                       <div className="space-y-1 min-w-0">
                         <label className="text-[11px] font-bold text-slate-500 flex items-center gap-1">
@@ -581,10 +595,10 @@ export function AwwwardsLanding({
                     </div>
                   </div>
 
-                  {/* Horizontal Mobile-Friendly Mode Quick Chips */}
+                  {/* Wrapped Mobile-Safe Mode Options Strip */}
                   {heroMode === "voyageur" && (
-                    <div className="pt-3 border-t border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 sm:pb-0">
+                    <div className="pt-2 sm:pt-3 sm:border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5">
                         {(
                           [
                             { id: "avion", label: text("Avion", "Flight"), Icon: Plane },
@@ -596,31 +610,31 @@ export function AwwwardsLanding({
                             key={id}
                             type="button"
                             onClick={() => setHeroTransportType(id)}
-                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
+                            className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold border whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
                               heroTransportType === id
                                 ? "bg-[#0F172A] text-white border-[#0F172A]"
                                 : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
                             }`}
                           >
-                            <Icon size={13} />
+                            <Icon size={12} />
                             <span>{label}</span>
                           </button>
                         ))}
                       </div>
 
-                      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                      <div className="flex items-center gap-1">
                         {[5, 10, 15, 23].map((kg) => (
                           <button
                             key={kg}
                             type="button"
                             onClick={() => setHeroCapacityKg(kg)}
-                            className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer tabular-nums shrink-0 ${
+                            className={`px-2 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold border transition-colors cursor-pointer tabular-nums shrink-0 ${
                               heroCapacityKg === kg
                                 ? "bg-[#2563EB] text-white border-[#2563EB]"
                                 : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
                             }`}
                           >
-                            {kg} kg
+                            {kg}kg
                           </button>
                         ))}
                       </div>
@@ -628,25 +642,25 @@ export function AwwwardsLanding({
                   )}
 
                   {heroMode === "bagandgo" && (
-                    <div className="pt-3 border-t border-[#E2E8F0] space-y-2.5">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span className="text-[11px] font-bold text-slate-500 shrink-0">
+                    <div className="pt-2 sm:pt-3 sm:border-t border-[#E2E8F0] space-y-2">
+                      <div className="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
+                        <span className="text-[11px] font-bold text-slate-500 shrink-0 whitespace-nowrap">
                           {text("Format du colis", "Parcel size")}
                         </span>
-                        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                        <div className="flex items-center gap-1.5 shrink-0">
                           {(
                             [
-                              { id: "pli", label: "Pli (1 kg)" },
-                              { id: "petit", label: "Petit (3 kg)" },
-                              { id: "moyen", label: "Moyen (5 kg)" },
-                              { id: "grand", label: "Valise (15 kg)" },
+                              { id: "pli", label: "Pli 1kg" },
+                              { id: "petit", label: "Petit 3kg" },
+                              { id: "moyen", label: "Moyen 5kg" },
+                              { id: "grand", label: "Valise 15kg" },
                             ] as const
                           ).map(({ id, label }) => (
                             <button
                               key={id}
                               type="button"
                               onClick={() => setHeroParcelPreset(id)}
-                              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer tabular-nums whitespace-nowrap shrink-0 ${
+                              className={`px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold border transition-colors cursor-pointer tabular-nums whitespace-nowrap shrink-0 ${
                                 heroParcelPreset === id
                                   ? "bg-[#0F172A] text-white border-[#0F172A]"
                                   : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
@@ -657,7 +671,7 @@ export function AwwwardsLanding({
                           ))}
                         </div>
                       </div>
-                      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                      <div className="hidden sm:flex items-center gap-1.5 overflow-x-auto no-scrollbar">
                         {(
                           [
                             { id: "express", label: text("Express 24h–48h", "Express 24h–48h") },
@@ -668,7 +682,7 @@ export function AwwwardsLanding({
                             key={id}
                             type="button"
                             onClick={() => setHeroUrgency(id)}
-                            className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                            className={`px-2.5 py-1 rounded-xl text-xs font-bold border transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                               heroUrgency === id
                                 ? "bg-[#2563EB] text-white border-[#2563EB]"
                                 : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
@@ -682,12 +696,12 @@ export function AwwwardsLanding({
                   )}
 
                   {heroMode === "shopandgo" && (
-                    <div className="pt-3 border-t border-[#E2E8F0] space-y-2.5">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span className="text-[11px] font-bold text-slate-500 shrink-0">
+                    <div className="pt-2 sm:pt-3 sm:border-t border-[#E2E8F0] space-y-2">
+                      <div className="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
+                        <span className="text-[11px] font-bold text-slate-500 shrink-0 whitespace-nowrap">
                           {text("Catégorie de produit", "Product category")}
                         </span>
-                        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                        <div className="flex items-center gap-1.5 shrink-0">
                           {[
                             "High-Tech & Duty-Free",
                             "Parfums & Cosmétiques",
@@ -698,7 +712,7 @@ export function AwwwardsLanding({
                               key={cat}
                               type="button"
                               onClick={() => setHeroStoreCategory(cat)}
-                              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                              className={`px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold border transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                                 heroStoreCategory === cat
                                   ? "bg-[#0F172A] text-white border-[#0F172A]"
                                   : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
@@ -716,22 +730,22 @@ export function AwwwardsLanding({
                         value={heroProductName}
                         onChange={(e) => setHeroProductName(e.target.value)}
                         placeholder={text("Article souhaité : Ex. AirPods Pro, Dior Sauvage…", "Desired item: e.g. AirPods Pro, Dior Sauvage…")}
-                        className="w-full h-10 px-3.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-xs sm:text-sm text-slate-900 outline-none focus:border-[#2563EB]"
+                        className="hidden sm:block w-full h-10 px-3.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-xs sm:text-sm text-slate-900 outline-none focus:border-[#2563EB]"
                       />
                     </div>
                   )}
                 </div>
 
                 {/* Crisp Result + CTA Bar */}
-                <div className="bg-[#F8FAFC]/90 border-t border-[#E2E8F0] px-4 py-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
-                  <div>
-                    <div className="flex flex-wrap items-baseline gap-2">
+                <div className="bg-[#F8FAFC]/90 border-t border-[#E2E8F0] px-3.5 py-3 sm:px-6 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+                  <div className="flex items-center justify-between sm:block">
+                    <div className="flex items-baseline gap-1.5">
                       {heroMode === "voyageur" && (
                         <>
-                          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                            {text("Gain net estimé :", "Estimated gain:")}
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">
+                            {text("Gain estimé :", "Est. gain:")}
                           </span>
-                          <strong className="text-xl sm:text-2xl font-black text-[#059669] tabular-nums">
+                          <strong className="text-lg sm:text-2xl font-black text-[#059669] tabular-nums">
                             +{heroEarning} €
                           </strong>
                         </>
@@ -741,36 +755,36 @@ export function AwwwardsLanding({
                           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                             {text("Tarif :", "Rate:")}
                           </span>
-                          <strong className="text-xl sm:text-2xl font-black text-[#059669] tabular-nums">
+                          <strong className="text-lg sm:text-2xl font-black text-[#059669] tabular-nums">
                             {heroParcelPrice} €
                           </strong>
-                          <span className="text-[11px] font-bold text-[#059669] bg-[#ECFDF5] px-2 py-0.5 rounded-full tabular-nums">
-                            −{heroSavingsPercent} % vs DHL
-                          </span>
                         </>
                       )}
                       {heroMode === "shopandgo" && (
                         <>
                           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                            {text("Commission dès", "Fee from")}
+                            {text("Dès", "From")}
                           </span>
-                          <strong className="text-xl sm:text-2xl font-black text-[#059669] tabular-nums">
+                          <strong className="text-lg sm:text-2xl font-black text-[#059669] tabular-nums">
                             20 €
                           </strong>
                         </>
                       )}
                     </div>
-                    <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 mt-0.5">
-                      <ShieldCheck size={13} className="text-[#059669]" />
-                      {heroMode === "voyageur"
-                        ? text("Paiement garanti par séquestre Stripe", "Guaranteed by Stripe escrow")
-                        : heroMode === "bagandgo"
-                          ? text("Double vérification QR & photo scellée", "Dual QR & tamper seal verified")
-                          : text("Fonds bloqués jusqu’à réception conforme", "Funds held until receipt")}
+                    <p className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500 sm:mt-0.5">
+                      <ShieldCheck size={13} className="text-[#059669] shrink-0" />
+                      <span className="sm:hidden">{text("Séquestre Stripe", "Stripe Escrow")}</span>
+                      <span className="hidden sm:inline">
+                        {heroMode === "voyageur"
+                          ? text("Paiement garanti par séquestre Stripe", "Guaranteed by Stripe escrow")
+                          : heroMode === "bagandgo"
+                            ? text("Double vérification QR & photo scellée", "Dual QR & tamper seal verified")
+                            : text("Fonds bloqués jusqu’à réception conforme", "Funds held until receipt")}
+                      </span>
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2 sm:gap-2.5">
+                  <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
                     {heroMode === "voyageur" && (
                       <>
                         <a
@@ -778,7 +792,7 @@ export function AwwwardsLanding({
                           className="bv-hero-action-cta flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs sm:text-sm font-bold transition-colors no-underline whitespace-nowrap"
                         >
                           <span>{text("Rentabiliser mon voyage", "Monetize my trip")}</span>
-                          <ArrowRight size={15} />
+                          <ArrowRight size={14} />
                         </a>
                         <a
                           href="/#publish/trips"
@@ -795,7 +809,7 @@ export function AwwwardsLanding({
                           className="bv-hero-action-cta flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs sm:text-sm font-bold transition-colors no-underline whitespace-nowrap"
                         >
                           <span>{text("Trouver un convoyeur", "Find a carrier")}</span>
-                          <ArrowRight size={15} />
+                          <ArrowRight size={14} />
                         </a>
                         <a
                           href="/#publish/parcel"
@@ -812,7 +826,7 @@ export function AwwwardsLanding({
                           className="bv-hero-action-cta flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs sm:text-sm font-bold transition-colors no-underline whitespace-nowrap"
                         >
                           <span>{text("Commander avec un voyageur", "Order with a traveler")}</span>
-                          <ArrowRight size={15} />
+                          <ArrowRight size={14} />
                         </a>
                         <a
                           href="/#publish/requests"
@@ -827,8 +841,8 @@ export function AwwwardsLanding({
               </div>
             </div>
 
-            {/* Right Column: Bespoke Autonomous Live Mobile Showcase */}
-            <div className="lg:col-span-5 flex flex-col items-center justify-center lg:pt-2">
+            {/* Right Column / Mobile Showcase Above-the-Fold (clear horizon corridor gap on mobile) */}
+            <div className="lg:col-span-5 flex flex-col items-center justify-center pt-10 lg:pt-2">
               <BagVoyageLiveShowcase
                 activeScenario={heroMode}
                 onScenarioChange={setHeroMode}
@@ -890,7 +904,7 @@ export function AwwwardsLanding({
         </div>
       </section>
 
-      {/* Section 01 : Corridors Actifs + Comparateur Direct (Fusionné, Épuré) */}
+      {/* Corridors Actifs + Comparateur Direct */}
       <section
         id="simulator"
         className="bv-reveal-section bg-[#FFFFFF] border-y border-[#E2E8F0] py-12 sm:py-16 px-4 sm:px-6"
@@ -898,8 +912,8 @@ export function AwwwardsLanding({
         <div className="max-w-6xl mx-auto space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div>
-              <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-                01 / {text("CORRIDORS & TARIFS", "CORRIDORS & PRICING")}
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                {text("Corridors & Tarifs", "Corridors & Pricing")}
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mt-1">
                 {c.compare}
@@ -1064,12 +1078,12 @@ export function AwwwardsLanding({
         </div>
       </section>
 
-      {/* Section 02 : 3 Univers en Ruban Éditorial Sans Bruit */}
+      {/* 3 Univers en Ruban Éditorial */}
       <section id="features" className="bv-reveal-section py-12 sm:py-16 px-4 sm:px-6 bg-[#F8FAFC]">
         <div className="max-w-6xl mx-auto space-y-6">
           <div>
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-              02 / {text("TROIS MODES INTÉGRÉS", "THREE INTEGRATED MODES")}
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">
+              {text("Trois modes intégrés", "Three integrated modes")}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mt-1">
               {c.universes}
@@ -1139,7 +1153,7 @@ export function AwwwardsLanding({
         </div>
       </section>
 
-      {/* Section 03 : Protocole Sécurité 4 Étapes & App Mobile */}
+      {/* Protocole Sécurité 4 Étapes & App Mobile */}
       <section
         id="mobile"
         className="bv-reveal-section bg-[#FFFFFF] text-slate-900 py-12 sm:py-16 px-4 sm:px-6 border-t border-[#E2E8F0]"
@@ -1148,8 +1162,8 @@ export function AwwwardsLanding({
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-7 space-y-6">
             <div>
-              <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-                03 / {text("PROTOCOLE & APPLICATION", "PROTOCOL & MOBILE APP")}
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                {text("Protocole & Application", "Protocol & Mobile App")}
               </span>
               <h2
                 id="mobile-title"
@@ -1290,8 +1304,8 @@ export function AwwwardsLanding({
           {/* FAQ */}
           <div className="space-y-4">
             <div>
-              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
-                04 / FAQ
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                FAQ
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mt-1">
                 {c.faq}
