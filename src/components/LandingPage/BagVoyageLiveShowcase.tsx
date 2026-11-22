@@ -337,7 +337,7 @@ export function BagVoyageLiveShowcase({
             </span>
           </div>
 
-          {/* 3-Step Interactive Progress Pills */}
+          {/* 3-Step Interactive Progress Pills with Autonomous Timer Sweep */}
           <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-slate-200/70">
             {[
               { idx: 0, label: text("1. Match", "1. Match") },
@@ -351,7 +351,7 @@ export function BagVoyageLiveShowcase({
                   key={step.idx}
                   type="button"
                   onClick={() => setBeatIndex(step.idx)}
-                  className={`py-1.5 px-1 rounded-lg text-[10px] font-bold transition-colors cursor-pointer whitespace-nowrap ${
+                  className={`relative overflow-hidden py-1.5 px-1 rounded-lg text-[10px] font-bold transition-colors cursor-pointer whitespace-nowrap ${
                     isActive
                       ? "bg-[#FFFFFF] text-[#2563EB] shadow-2xs"
                       : isDone
@@ -359,7 +359,16 @@ export function BagVoyageLiveShowcase({
                         : "text-slate-500 hover:text-slate-800"
                   }`}
                 >
-                  {step.label}
+                  <span>{step.label}</span>
+                  {isActive && (
+                    <span
+                      key={`timer-${activeScenario}-${beatIndex}-${isPlaying}`}
+                      data-playing={isPlaying ? "true" : "false"}
+                      data-paused={isHovered ? "true" : "false"}
+                      className="bv-showcase-timer-fill absolute inset-x-1.5 bottom-0.5 h-[2px] rounded-full bg-[#2563EB]"
+                      aria-hidden="true"
+                    />
+                  )}
                 </button>
               );
             })}
@@ -368,7 +377,7 @@ export function BagVoyageLiveShowcase({
           {/* Animated Morphing Card Scene (compositor-only transform & opacity) */}
           <div
             key={`${activeScenario}-${beatIndex}`}
-            className="bv-showcase-stage rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-3.5 shadow-sm space-y-3"
+            className="bv-showcase-stage rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-3.5 shadow-sm space-y-2.5"
           >
             <div className="flex items-center justify-between gap-2">
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-[#2563EB] text-[10px] font-extrabold uppercase tracking-wider">
@@ -430,10 +439,13 @@ export function BagVoyageLiveShowcase({
                     {beat.amountValue}
                   </strong>
                 </div>
-                <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#2563EB] text-white text-[11px] font-bold">
-                  <span>{text("Accepter", "Accept")}</span>
+                <a
+                  href={`/#${activeScenario}`}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-[11px] font-bold no-underline transition-colors"
+                >
+                  <span>{text("GO · Accepter", "GO · Accept")}</span>
                   <ArrowRight size={12} aria-hidden="true" />
-                </span>
+                </a>
               </div>
             )}
 
@@ -465,26 +477,33 @@ export function BagVoyageLiveShowcase({
             )}
 
             {beatIndex === 2 && (
-              <div className="flex items-center justify-between gap-2 pt-1 border-t border-[#E2E8F0]">
-                <div className="flex items-center gap-1">
-                  <KeyRound size={13} className="text-[#059669] mr-0.5 shrink-0" aria-hidden="true" />
-                  {(beat.pinDigits || ["4", "8", "2", "1"]).map((digit, i) => (
-                    <span
-                      key={i}
-                      className="w-6 h-7 rounded-lg bg-[#ECFDF5] border border-[#059669]/30 text-[#059669] font-mono font-black text-xs flex items-center justify-center tabular-nums"
-                    >
-                      {digit}
+              <div className="space-y-2 pt-1 border-t border-[#E2E8F0]">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1">
+                    <KeyRound size={13} className="text-[#059669] mr-0.5 shrink-0" aria-hidden="true" />
+                    {(beat.pinDigits || ["4", "8", "2", "1"]).map((digit, i) => (
+                      <span
+                        key={i}
+                        style={{ animationDelay: `${i * 55}ms` }}
+                        className="bv-pin-digit w-6 h-7 rounded-lg bg-[#ECFDF5] border border-[#059669]/30 text-[#059669] font-mono font-black text-xs flex items-center justify-center tabular-nums"
+                      >
+                        {digit}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block">
+                      {beat.amountLabel}
                     </span>
-                  ))}
+                    <strong className="text-sm font-black text-[#059669] inline-flex items-center gap-1 tabular-nums">
+                      <Wallet size={12} aria-hidden="true" />
+                      {beat.amountValue}
+                    </strong>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block">
-                    {beat.amountLabel}
-                  </span>
-                  <strong className="text-sm font-black text-[#059669] inline-flex items-center gap-1 tabular-nums">
-                    <Wallet size={12} aria-hidden="true" />
-                    {beat.amountValue}
-                  </strong>
+                <div className="flex items-center justify-between px-2.5 py-1 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-[10px] font-bold text-slate-700">
+                  <span>{text("4 critères · Super Voyageur", "4 criteria · Super Traveler")}</span>
+                  <span className="text-[#059669] tabular-nums">5.0 / 5</span>
                 </div>
               </div>
             )}
@@ -492,10 +511,13 @@ export function BagVoyageLiveShowcase({
 
           {/* Interactive Home Bar Footer inside Phone */}
           <div className="flex items-center justify-between text-[10px] font-semibold text-slate-500 px-1 pt-0.5">
-            <span className="inline-flex items-center gap-1 text-[#059669] font-bold">
+            <a
+              href={`/#${activeScenario}`}
+              className="inline-flex items-center gap-1 text-[#059669] hover:underline font-bold no-underline"
+            >
               <CheckCircle2 size={12} aria-hidden="true" />
-              {text("Synchronisé en direct", "Synced live")}
-            </span>
+              {text("Tester ce parcours en direct", "Try this flow live")}
+            </a>
             <span className="tabular-nums">
               {beatIndex + 1} / 3
             </span>

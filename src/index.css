@@ -339,14 +339,55 @@ h1, h2, h3 {
   }
 }
 
+@keyframes bv-beat-timer {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes bv-pin-pop {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Forced-colors & WCAG 1.4.1 non-color active tab shape indicator (modern-web-guidance: tabs) */
+[role="tab"],
+.explore-unified-nav [role="radio"] {
+  position: relative;
+}
+
+[role="tab"][aria-selected="true"]::after,
+.explore-unified-nav [role="radio"][aria-checked="true"]::after {
+  content: "";
+  position: absolute;
+  inset: auto 10px 0;
+  border-block-end: 3px solid currentColor;
+  border-radius: 999px;
+}
+
 .bv-showcase-stage {
   opacity: 1;
   transform: none;
 }
 
 .bv-showcase-progress-bar,
-.bv-showcase-plane {
+.bv-showcase-plane,
+.bv-showcase-timer-fill {
   will-change: transform;
+}
+
+.bv-showcase-timer-fill {
+  transform-origin: left center;
+  transform: scaleX(1);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -358,6 +399,15 @@ h1, h2, h3 {
   }
   .bv-showcase-plane {
     transition: transform 650ms var(--ease-apple-spring);
+  }
+  .bv-showcase-timer-fill[data-playing="true"] {
+    animation: bv-beat-timer 3400ms linear both;
+  }
+  .bv-showcase-timer-fill[data-paused="true"] {
+    animation-play-state: paused;
+  }
+  .bv-pin-digit {
+    animation: bv-pin-pop 280ms var(--ease-apple-spring) both;
   }
 }
 
