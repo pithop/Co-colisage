@@ -5,26 +5,22 @@ import {
   ArrowUpRight,
   Calendar,
   Car,
-  Check,
   CheckCircle2,
   CircleCheck,
   CircleMinus,
   Coins,
   FileText,
-  Globe2,
   LockKeyhole,
   MapPin,
   Menu,
   Package,
   Plane,
-  Receipt,
   ScanLine,
   ShieldCheck,
   Ship,
   ShoppingBag,
   Smartphone,
   Ticket,
-  Video,
   WifiOff,
   X,
 } from "lucide-react";
@@ -37,6 +33,7 @@ import { ThemeToggle } from "../common/ThemeToggle";
 import { CityAutocomplete } from "../common/CityAutocomplete";
 import { LandingMobileMenu } from "../Navigation/LandingMobileMenu";
 import { BagVoyageLiveShowcase } from "./BagVoyageLiveShowcase";
+import { TransportBackdrop } from "./TransportBackdrop";
 
 const copy = {
   fr: {
@@ -337,38 +334,35 @@ export function AwwwardsLanding({
         }}
       />
 
-      {/* Sticky Header — 5 liens max + CTA principal */}
-      <header className="sticky top-0 z-40 bg-[#FFFFFF]/90 backdrop-blur-md border-b border-[#E2E8F0]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      {/* Sticky Header — Minimaliste 2027 */}
+      <header className="sticky top-0 z-40 bg-[#FFFFFF]/85 backdrop-blur-xl border-b border-[#E2E8F0]/90">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-3">
           <a
             href="/#landing"
-            className="text-xl font-extrabold tracking-tight text-slate-900 shrink-0 no-underline"
+            className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 shrink-0 no-underline"
           >
             BagVoyage<span className="text-[#2563EB]">.</span>
           </a>
 
           <nav
-            className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600"
+            className="hidden md:flex items-center gap-7 text-[13px] font-semibold text-slate-600"
             aria-label={text("Présentation de BagVoyage", "About BagVoyage")}
           >
             <a href="/#voyageur" className="hover:text-slate-900 transition-colors no-underline">
-              {text("Voyageur", "Traveler")}
-            </a>
-            <a href="/#bagandgo" className="hover:text-slate-900 transition-colors no-underline">
-              Bag &amp; Go
-            </a>
-            <a href="/#shopandgo" className="hover:text-slate-900 transition-colors no-underline">
-              Shop &amp; Go
+              {text("Explorer", "Explore")}
             </a>
             <a href="#simulator" className="hover:text-slate-900 transition-colors no-underline">
               {text("Tarifs", "Pricing")}
             </a>
-            <a href="/#trust" className="hover:text-slate-900 transition-colors no-underline">
+            <a href="#features" className="hover:text-slate-900 transition-colors no-underline">
+              {text("3 Modes", "3 Modes")}
+            </a>
+            <a href="#mobile" className="hover:text-slate-900 transition-colors no-underline">
               {text("Sécurité", "Security")}
             </a>
           </nav>
 
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <ThemeToggle />
             <div
               className="hidden sm:inline-flex p-0.5 rounded-xl bg-slate-100 border border-[#E2E8F0]"
@@ -404,7 +398,7 @@ export function AwwwardsLanding({
             <a
               href="/#explore"
               aria-label={c.cta}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white text-xs sm:text-sm font-bold transition-colors no-underline whitespace-nowrap"
+              className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs sm:text-sm font-bold transition-colors no-underline whitespace-nowrap shadow-xs"
             >
               <span>{text("Lancer l’app", "Open app")}</span>
               <ArrowUpRight size={15} aria-hidden="true" />
@@ -435,24 +429,29 @@ export function AwwwardsLanding({
         currentRoute="landing"
       />
 
-      {/* Hero + Simulateur Tri-Modal + Animation Interactive Autonome */}
-      <section className="pt-8 pb-14 sm:pt-12 sm:pb-16 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-            {/* Left Column: Outcome Headline + Interactive Mode Simulator */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="text-center lg:text-left space-y-3.5">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-xs font-bold text-slate-700 shadow-sm">
-                  <span className="w-2 h-2 rounded-full bg-[#059669]" />
+      {/* Hero Éditorial 2027 + Trajectoires Avion / Bateau / Voiture en Arrière-Plan */}
+      <section className="relative overflow-hidden pt-6 pb-10 sm:pt-12 sm:pb-16 px-4 sm:px-6">
+        <TransportBackdrop
+          activeMode={heroMode}
+          activeTransport={heroTransportType}
+        />
+
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 items-center">
+            {/* Left Column: Sculptural Typography + Streamlined Console */}
+            <div className="lg:col-span-7 space-y-5 sm:space-y-6">
+              <div className="text-center lg:text-left space-y-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF]/90 backdrop-blur-sm border border-[#E2E8F0] text-[11px] font-bold text-slate-700 shadow-2xs whitespace-nowrap">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
                   <span>
                     {text(
-                      "Plateforme Officielle · Co-colisage & Shopping France–Algérie",
-                      "Official Platform · Crowdsourced Shipping & Shopping France–Algeria",
+                      "France · Méditerranée · Corridors Internationaux",
+                      "France · Mediterranean · Global Corridors",
                     )}
                   </span>
                 </div>
 
-                <h1 className="bv-hero-headline text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.08]">
+                <h1 className="bv-hero-headline text-[27px] sm:text-5xl xl:text-[52px] font-extrabold tracking-[-0.035em] text-slate-900 leading-[1.07]">
                   {text("Rentabilisez vos voyages.", "Fund your travels.")}
                   <br />
                   <span className="text-[#2563EB]">
@@ -460,441 +459,372 @@ export function AwwwardsLanding({
                   </span>
                 </h1>
 
-                <p className="bv-hero-lead text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                <p className="bv-hero-lead text-xs sm:text-base text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
                   {text(
-                    "Mettez en relation voyageurs vérifiés et expéditeurs en temps réel. Remise en main propre express, 100 % sécurisée par séquestre Stripe Connect.",
-                    "Connect verified travelers and shippers in real time. Express hand-to-hand delivery, 100% secured by Stripe Connect escrow.",
+                    "Voyageurs vérifiés par avion, ferry ou voiture · Séquestre Stripe Connect · Remise en main propre contre code PIN.",
+                    "Verified travelers by plane, ferry or car · Stripe Connect escrow · Hand-to-hand PIN delivery.",
                   )}
                 </p>
               </div>
 
-              {/* Simulateur Hero intégré dans une carte #FFFFFF propre */}
-              <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-lg shadow-slate-900/5 overflow-hidden">
-            {/* 3 onglets avec icônes proprement intégrées à l'intérieur */}
-            <div
-              className="bv-hero-mode-tabs grid grid-cols-3 border-b border-[#E2E8F0] bg-[#F8FAFC]"
-              role="tablist"
-            >
-              <button
-                type="button"
-                role="tab"
-                aria-selected={heroMode === "voyageur"}
-                onClick={() => {
-                  triggerHaptic(8);
-                  setHeroMode("voyageur");
-                }}
-                className={`p-3 sm:p-5 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold border-b-2 transition-colors cursor-pointer text-center ${
-                  heroMode === "voyageur"
-                    ? "bg-[#FFFFFF] text-slate-900 border-[#2563EB]"
-                    : "text-slate-600 border-transparent hover:text-slate-900 hover:bg-white/60"
-                }`}
-              >
-                <span
-                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                    heroMode === "voyageur"
-                      ? "bg-blue-50 text-[#2563EB]"
-                      : "bg-slate-200/70 text-slate-600"
-                  }`}
-                  aria-hidden="true"
+              {/* Streamlined Tri-Modal Console Card */}
+              <div className="bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E2E8F0] rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-900/[0.04] overflow-hidden">
+                {/* 3 Sleek Tabs */}
+                <div
+                  className="bv-hero-mode-tabs grid grid-cols-3 border-b border-[#E2E8F0] bg-[#F8FAFC]/80"
+                  role="tablist"
                 >
-                  <Plane size={17} />
-                </span>
-                <span>{text("Voyageur (Convoyeur)", "Traveler (Carrier)")}</span>
-              </button>
-
-              <button
-                type="button"
-                role="tab"
-                aria-selected={heroMode === "bagandgo"}
-                onClick={() => {
-                  triggerHaptic(8);
-                  setHeroMode("bagandgo");
-                }}
-                className={`p-3 sm:p-5 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold border-b-2 transition-colors cursor-pointer text-center ${
-                  heroMode === "bagandgo"
-                    ? "bg-[#FFFFFF] text-slate-900 border-[#2563EB]"
-                    : "text-slate-600 border-transparent hover:text-slate-900 hover:bg-white/60"
-                }`}
-              >
-                <span
-                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                    heroMode === "bagandgo"
-                      ? "bg-blue-50 text-[#2563EB]"
-                      : "bg-slate-200/70 text-slate-600"
-                  }`}
-                  aria-hidden="true"
-                >
-                  <Package size={17} />
-                </span>
-                <span>{text("Bag & Go (Expéditeur)", "Bag & Go (Shipper)")}</span>
-              </button>
-
-              <button
-                type="button"
-                role="tab"
-                aria-selected={heroMode === "shopandgo"}
-                onClick={() => {
-                  triggerHaptic(8);
-                  setHeroMode("shopandgo");
-                }}
-                className={`p-3 sm:p-5 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold border-b-2 transition-colors cursor-pointer text-center ${
-                  heroMode === "shopandgo"
-                    ? "bg-[#FFFFFF] text-slate-900 border-[#2563EB]"
-                    : "text-slate-600 border-transparent hover:text-slate-900 hover:bg-white/60"
-                }`}
-              >
-                <span
-                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                    heroMode === "shopandgo"
-                      ? "bg-blue-50 text-[#2563EB]"
-                      : "bg-slate-200/70 text-slate-600"
-                  }`}
-                  aria-hidden="true"
-                >
-                  <ShoppingBag size={17} />
-                </span>
-                <span>{text("Shop & Go (Acheteur)", "Shop & Go (Buyer)")}</span>
-              </button>
-            </div>
-
-            {/* Champs Trajet & Date */}
-            <div className="p-6 sm:p-8 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-                <div className="md:col-span-4 space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
-                    <MapPin size={14} className="text-slate-400" />
-                    {text("Départ", "Departure")}
-                  </label>
-                  <CityAutocomplete
-                    id="hero-origin-input"
-                    name="heroOrigin"
-                    value={heroOrigin}
-                    onChange={setHeroOrigin}
-                    placeholder="Paris, Marseille, Lyon…"
-                  />
+                  {(
+                    [
+                      {
+                        id: "voyageur",
+                        Icon: Plane,
+                        label: text("Voyageur (Convoyeur)", "Traveler (Carrier)"),
+                      },
+                      {
+                        id: "bagandgo",
+                        Icon: Package,
+                        label: text("Bag & Go (Expéditeur)", "Bag & Go (Shipper)"),
+                      },
+                      {
+                        id: "shopandgo",
+                        Icon: ShoppingBag,
+                        label: text("Shop & Go (Acheteur)", "Shop & Go (Buyer)"),
+                      },
+                    ] as const
+                  ).map(({ id, Icon, label }) => {
+                    const isSelected = heroMode === id;
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        role="tab"
+                        aria-selected={isSelected}
+                        onClick={() => {
+                          triggerHaptic(8);
+                          setHeroMode(id);
+                        }}
+                        className={`min-h-[46px] px-2 py-2.5 sm:px-4 sm:py-3.5 flex items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-bold transition-colors cursor-pointer text-center ${
+                          isSelected
+                            ? "bg-[#FFFFFF] text-[#2563EB]"
+                            : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                        }`}
+                      >
+                        <Icon size={14} className="shrink-0 hidden sm:block" aria-hidden="true" />
+                        <span className="leading-tight">{label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
 
-                <div className="md:col-span-1 flex justify-center">
-                  <button
-                    type="button"
-                    aria-label={text("Inverser les villes", "Swap cities")}
-                    onClick={() => {
-                      const prev = heroOrigin;
-                      setHeroOrigin(heroDestination);
-                      setHeroDestination(prev);
-                    }}
-                    className="w-11 h-11 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
-                  >
-                    <ArrowLeftRight size={16} />
-                  </button>
-                </div>
+                {/* Compact Mobile-First Route + Date Inputs */}
+                <div className="p-4 sm:p-6 space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end">
+                    <div className="sm:col-span-8 grid grid-cols-[1fr_auto_1fr] gap-1.5 sm:gap-2 items-end">
+                      <div className="space-y-1 min-w-0">
+                        <label className="text-[11px] font-bold text-slate-500 flex items-center gap-1">
+                          <MapPin size={12} className="text-slate-400 shrink-0" />
+                          <span>{text("Départ", "From")}</span>
+                        </label>
+                        <CityAutocomplete
+                          id="hero-origin-input"
+                          name="heroOrigin"
+                          value={heroOrigin}
+                          onChange={setHeroOrigin}
+                          placeholder="Paris (CDG)"
+                        />
+                      </div>
 
-                <div className="md:col-span-4 space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
-                    <MapPin size={14} className="text-slate-400" />
-                    {text("Destination", "Destination")}
-                  </label>
-                  <CityAutocomplete
-                    id="hero-destination-input"
-                    name="heroDestination"
-                    value={heroDestination}
-                    onChange={setHeroDestination}
-                    placeholder="Alger, Oran, Montréal…"
-                  />
-                </div>
+                      <button
+                        type="button"
+                        aria-label={text("Inverser les villes", "Swap cities")}
+                        onClick={() => {
+                          const prev = heroOrigin;
+                          setHeroOrigin(heroDestination);
+                          setHeroDestination(prev);
+                        }}
+                        className="w-10 h-11 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 text-slate-600 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                      >
+                        <ArrowLeftRight size={14} />
+                      </button>
 
-                <div className="md:col-span-3 space-y-1.5">
-                  <label
-                    htmlFor="hero-date-input"
-                    className="text-xs font-bold text-slate-600 flex items-center gap-1.5"
-                  >
-                    <Calendar size={14} className="text-slate-400" />
-                    {text("Date prévue", "Target date")}
-                  </label>
-                  <input
-                    id="hero-date-input"
-                    type="date"
-                    value={heroDate}
-                    onChange={(e) => setHeroDate(e.target.value)}
-                    className="w-full h-11 px-3 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-sm font-medium text-slate-900 outline-none focus:border-[#2563EB] tabular-nums"
-                  />
-                </div>
-              </div>
+                      <div className="space-y-1 min-w-0">
+                        <label className="text-[11px] font-bold text-slate-500 flex items-center gap-1">
+                          <MapPin size={12} className="text-slate-400 shrink-0" />
+                          <span>{text("Arrivée", "To")}</span>
+                        </label>
+                        <CityAutocomplete
+                          id="hero-destination-input"
+                          name="heroDestination"
+                          value={heroDestination}
+                          onChange={setHeroDestination}
+                          placeholder="Alger (ALG)"
+                        />
+                      </div>
+                    </div>
 
-              {/* Options spécifiques au mode */}
-              {heroMode === "voyageur" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-[#E2E8F0]">
-                  <div className="space-y-2">
-                    <span className="text-xs font-bold text-slate-600 block">
-                      {text("Mode de transport", "Transport mode")}
-                    </span>
-                    <div className="flex flex-wrap gap-2">
-                      {(
-                        [
-                          { id: "avion", label: text("Avion", "Flight"), Icon: Plane },
-                          { id: "bateau", label: text("Bateau / Ferry", "Ferry"), Icon: Ship },
-                          { id: "voiture", label: text("Voiture / Van", "Car / Van"), Icon: Car },
-                        ] as const
-                      ).map(({ id, label, Icon }) => (
-                        <button
-                          key={id}
-                          type="button"
-                          onClick={() => setHeroTransportType(id)}
-                          className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
-                            heroTransportType === id
-                              ? "bg-[#0F172A] text-white border-[#0F172A]"
-                              : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
-                          }`}
-                        >
-                          <Icon size={14} />
-                          {label}
-                        </button>
-                      ))}
+                    <div className="sm:col-span-4 space-y-1">
+                      <label
+                        htmlFor="hero-date-input"
+                        className="text-[11px] font-bold text-slate-500 flex items-center gap-1"
+                      >
+                        <Calendar size={12} className="text-slate-400 shrink-0" />
+                        <span>{text("Date prévue", "Target date")}</span>
+                      </label>
+                      <input
+                        id="hero-date-input"
+                        type="date"
+                        value={heroDate}
+                        onChange={(e) => setHeroDate(e.target.value)}
+                        className="w-full h-11 px-3 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-xs sm:text-sm font-medium text-slate-900 outline-none focus:border-[#2563EB] tabular-nums"
+                      />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <span className="text-xs font-bold text-slate-600 block">
-                      {text("Capacité disponible (kg)", "Available capacity (kg)")}
-                    </span>
-                    <div className="flex flex-wrap gap-2">
-                      {[5, 10, 15, 23].map((kg) => (
-                        <button
-                          key={kg}
-                          type="button"
-                          onClick={() => setHeroCapacityKg(kg)}
-                          className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer tabular-nums ${
-                            heroCapacityKg === kg
-                              ? "bg-[#0F172A] text-white border-[#0F172A]"
-                              : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
-                          }`}
-                        >
-                          {kg} kg
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {heroMode === "bagandgo" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-[#E2E8F0]">
-                  <div className="space-y-2">
-                    <span className="text-xs font-bold text-slate-600 block">
-                      {text("Format du colis", "Parcel size")}
-                    </span>
-                    <div className="flex flex-wrap gap-2">
-                      {(
-                        [
-                          { id: "pli", label: "Pli / Docs (1 kg)" },
-                          { id: "petit", label: "Petit (3 kg)" },
-                          { id: "moyen", label: "Moyen (5 kg)" },
-                          { id: "grand", label: "Valise (15 kg)" },
-                        ] as const
-                      ).map(({ id, label }) => (
-                        <button
-                          key={id}
-                          type="button"
-                          onClick={() => setHeroParcelPreset(id)}
-                          className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer tabular-nums ${
-                            heroParcelPreset === id
-                              ? "bg-[#0F172A] text-white border-[#0F172A]"
-                              : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
-                          }`}
-                        >
-                          {label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <span className="text-xs font-bold text-slate-600 block">
-                      {text("Délai souhaité", "Delivery speed")}
-                    </span>
-                    <div className="flex flex-wrap gap-2">
-                      {(
-                        [
-                          { id: "express", label: text("Express 24h–48h", "Express 24h–48h") },
-                          { id: "standard", label: text("Flexible (3–7 j)", "Flexible (3–7 d)") },
-                        ] as const
-                      ).map(({ id, label }) => (
-                        <button
-                          key={id}
-                          type="button"
-                          onClick={() => setHeroUrgency(id)}
-                          className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
-                            heroUrgency === id
-                              ? "bg-[#0F172A] text-white border-[#0F172A]"
-                              : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
-                          }`}
-                        >
-                          {label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {heroMode === "shopandgo" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-[#E2E8F0]">
-                  <div className="space-y-2">
-                    <span className="text-xs font-bold text-slate-600 block">
-                      {text("Catégorie de produit", "Product category")}
-                    </span>
-                    <div className="flex flex-wrap gap-2">
-                      {[
-                        "High-Tech & Duty-Free",
-                        "Parfums & Cosmétiques",
-                        "Mode & Luxe",
-                        "Parapharmacie",
-                      ].map((cat) => (
-                        <button
-                          key={cat}
-                          type="button"
-                          onClick={() => setHeroStoreCategory(cat)}
-                          className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
-                            heroStoreCategory === cat
-                              ? "bg-[#0F172A] text-white border-[#0F172A]"
-                              : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
-                          }`}
-                        >
-                          {cat}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="hero-product-name"
-                      className="text-xs font-bold text-slate-600 block"
-                    >
-                      {text("Article recherché (facultatif)", "Desired item (optional)")}
-                    </label>
-                    <input
-                      id="hero-product-name"
-                      type="text"
-                      value={heroProductName}
-                      onChange={(e) => setHeroProductName(e.target.value)}
-                      placeholder={text("Ex: AirPods Pro, Dior Sauvage…", "e.g. AirPods Pro, Dior Sauvage…")}
-                      className="w-full h-10 px-3.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-sm text-slate-900 outline-none focus:border-[#2563EB]"
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Live Result Ribbon */}
-            <div className="bg-[#F8FAFC] border-t border-[#E2E8F0] p-6 sm:px-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <div className="flex flex-wrap items-baseline gap-2.5">
+                  {/* Horizontal Mobile-Friendly Mode Quick Chips */}
                   {heroMode === "voyageur" && (
-                    <>
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                        {text("Gain net estimé :", "Estimated net gain:")}
-                      </span>
-                      <strong className="text-2xl font-black text-[#059669] tabular-nums">
-                        +{heroEarning} €
-                      </strong>
-                      <span className="text-xs text-slate-500">
-                        ({heroCapacityKg} kg · {heroTransportType})
-                      </span>
-                    </>
+                    <div className="pt-3 border-t border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 sm:pb-0">
+                        {(
+                          [
+                            { id: "avion", label: text("Avion", "Flight"), Icon: Plane },
+                            { id: "bateau", label: text("Bateau", "Ferry"), Icon: Ship },
+                            { id: "voiture", label: text("Voiture", "Car"), Icon: Car },
+                          ] as const
+                        ).map(({ id, label, Icon }) => (
+                          <button
+                            key={id}
+                            type="button"
+                            onClick={() => setHeroTransportType(id)}
+                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
+                              heroTransportType === id
+                                ? "bg-[#0F172A] text-white border-[#0F172A]"
+                                : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
+                            }`}
+                          >
+                            <Icon size={13} />
+                            <span>{label}</span>
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                        {[5, 10, 15, 23].map((kg) => (
+                          <button
+                            key={kg}
+                            type="button"
+                            onClick={() => setHeroCapacityKg(kg)}
+                            className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer tabular-nums shrink-0 ${
+                              heroCapacityKg === kg
+                                ? "bg-[#2563EB] text-white border-[#2563EB]"
+                                : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
+                            }`}
+                          >
+                            {kg} kg
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   )}
+
                   {heroMode === "bagandgo" && (
-                    <>
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                        {text("Tarif estimé :", "Estimated rate:")}
-                      </span>
-                      <strong className="text-2xl font-black text-[#059669] tabular-nums">
-                        {heroParcelPrice} €
-                      </strong>
-                      <span className="text-xs font-bold text-[#059669] bg-[#059669]/10 px-2 py-0.5 rounded-full tabular-nums">
-                        −{heroSavingsPercent} % vs DHL ({heroCompetitorPrice} €)
-                      </span>
-                    </>
+                    <div className="pt-3 border-t border-[#E2E8F0] space-y-2.5">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <span className="text-[11px] font-bold text-slate-500 shrink-0">
+                          {text("Format du colis", "Parcel size")}
+                        </span>
+                        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                          {(
+                            [
+                              { id: "pli", label: "Pli (1 kg)" },
+                              { id: "petit", label: "Petit (3 kg)" },
+                              { id: "moyen", label: "Moyen (5 kg)" },
+                              { id: "grand", label: "Valise (15 kg)" },
+                            ] as const
+                          ).map(({ id, label }) => (
+                            <button
+                              key={id}
+                              type="button"
+                              onClick={() => setHeroParcelPreset(id)}
+                              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer tabular-nums whitespace-nowrap shrink-0 ${
+                                heroParcelPreset === id
+                                  ? "bg-[#0F172A] text-white border-[#0F172A]"
+                                  : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
+                              }`}
+                            >
+                              {label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                        {(
+                          [
+                            { id: "express", label: text("Express 24h–48h", "Express 24h–48h") },
+                            { id: "standard", label: text("Flexible (3–7 j)", "Flexible (3–7 d)") },
+                          ] as const
+                        ).map(({ id, label }) => (
+                          <button
+                            key={id}
+                            type="button"
+                            onClick={() => setHeroUrgency(id)}
+                            className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                              heroUrgency === id
+                                ? "bg-[#2563EB] text-white border-[#2563EB]"
+                                : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
+                            }`}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   )}
+
                   {heroMode === "shopandgo" && (
-                    <>
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                        {text("Commission voyageur dès", "Traveler fee from")}
-                      </span>
-                      <strong className="text-2xl font-black text-[#059669] tabular-nums">
-                        20 €
-                      </strong>
-                      <span className="text-xs text-slate-500">
-                        · {heroStoreCategory}
-                      </span>
-                    </>
+                    <div className="pt-3 border-t border-[#E2E8F0] space-y-2.5">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <span className="text-[11px] font-bold text-slate-500 shrink-0">
+                          {text("Catégorie de produit", "Product category")}
+                        </span>
+                        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                          {[
+                            "High-Tech & Duty-Free",
+                            "Parfums & Cosmétiques",
+                            "Mode & Luxe",
+                            "Parapharmacie",
+                          ].map((cat) => (
+                            <button
+                              key={cat}
+                              type="button"
+                              onClick={() => setHeroStoreCategory(cat)}
+                              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                                heroStoreCategory === cat
+                                  ? "bg-[#0F172A] text-white border-[#0F172A]"
+                                  : "bg-[#F8FAFC] text-slate-700 border-[#E2E8F0] hover:bg-slate-100"
+                              }`}
+                            >
+                              {cat}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <input
+                        id="hero-product-name"
+                        type="text"
+                        aria-label={text("Article recherché (facultatif)", "Desired item (optional)")}
+                        value={heroProductName}
+                        onChange={(e) => setHeroProductName(e.target.value)}
+                        placeholder={text("Article souhaité : Ex. AirPods Pro, Dior Sauvage…", "Desired item: e.g. AirPods Pro, Dior Sauvage…")}
+                        className="w-full h-10 px-3.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-xs sm:text-sm text-slate-900 outline-none focus:border-[#2563EB]"
+                      />
+                    </div>
                   )}
                 </div>
-                <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600">
-                  <ShieldCheck size={14} className="text-[#059669]" />
-                  {heroMode === "voyageur"
-                    ? text("Paiement garanti par séquestre Stripe", "Payment guaranteed by Stripe escrow")
-                    : heroMode === "bagandgo"
-                      ? text("Double vérification QR & photo scellée", "Dual QR & tamper seal verified")
-                      : text("Fonds bloqués jusqu’à réception conforme", "Funds held until compliant receipt")}
-                </p>
-              </div>
 
-              <div className="flex flex-wrap items-center gap-3">
-                {heroMode === "voyageur" && (
-                  <>
-                    <a
-                      href="/#voyageur"
-                      className="bv-hero-action-cta inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold transition-colors no-underline"
-                    >
-                      <span>{text("Rentabiliser mon voyage", "Monetize my trip")}</span>
-                      <ArrowRight size={16} />
-                    </a>
-                    <a
-                      href="/#publish/trips"
-                      className="bv-hero-secondary-cta inline-flex items-center px-4 py-3 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-sm font-bold transition-colors no-underline"
-                    >
-                      <span>{text("Publier mon trajet", "Post a trip")}</span>
-                    </a>
-                  </>
-                )}
-                {heroMode === "bagandgo" && (
-                  <>
-                    <a
-                      href="/#bagandgo"
-                      className="bv-hero-action-cta inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold transition-colors no-underline"
-                    >
-                      <span>{text("Trouver un convoyeur", "Find a carrier")}</span>
-                      <ArrowRight size={16} />
-                    </a>
-                    <a
-                      href="/#publish/parcel"
-                      className="bv-hero-secondary-cta inline-flex items-center px-4 py-3 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-sm font-bold transition-colors no-underline"
-                    >
-                      <span>{text("Expédier un colis", "Ship a parcel")}</span>
-                    </a>
-                  </>
-                )}
-                {heroMode === "shopandgo" && (
-                  <>
-                    <a
-                      href="/#shopandgo"
-                      className="bv-hero-action-cta inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold transition-colors no-underline"
-                    >
-                      <span>{text("Commander avec un voyageur", "Order with a traveler")}</span>
-                      <ArrowRight size={16} />
-                    </a>
-                    <a
-                      href="/#publish/requests"
-                      className="bv-hero-secondary-cta inline-flex items-center px-4 py-3 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-sm font-bold transition-colors no-underline"
-                    >
-                      <span>{text("Créer une demande d'achat", "Post a shopping request")}</span>
-                    </a>
-                  </>
-                )}
+                {/* Crisp Result + CTA Bar */}
+                <div className="bg-[#F8FAFC]/90 border-t border-[#E2E8F0] px-4 py-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
+                  <div>
+                    <div className="flex flex-wrap items-baseline gap-2">
+                      {heroMode === "voyageur" && (
+                        <>
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                            {text("Gain net estimé :", "Estimated gain:")}
+                          </span>
+                          <strong className="text-xl sm:text-2xl font-black text-[#059669] tabular-nums">
+                            +{heroEarning} €
+                          </strong>
+                        </>
+                      )}
+                      {heroMode === "bagandgo" && (
+                        <>
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                            {text("Tarif :", "Rate:")}
+                          </span>
+                          <strong className="text-xl sm:text-2xl font-black text-[#059669] tabular-nums">
+                            {heroParcelPrice} €
+                          </strong>
+                          <span className="text-[11px] font-bold text-[#059669] bg-[#ECFDF5] px-2 py-0.5 rounded-full tabular-nums">
+                            −{heroSavingsPercent} % vs DHL
+                          </span>
+                        </>
+                      )}
+                      {heroMode === "shopandgo" && (
+                        <>
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                            {text("Commission dès", "Fee from")}
+                          </span>
+                          <strong className="text-xl sm:text-2xl font-black text-[#059669] tabular-nums">
+                            20 €
+                          </strong>
+                        </>
+                      )}
+                    </div>
+                    <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 mt-0.5">
+                      <ShieldCheck size={13} className="text-[#059669]" />
+                      {heroMode === "voyageur"
+                        ? text("Paiement garanti par séquestre Stripe", "Guaranteed by Stripe escrow")
+                        : heroMode === "bagandgo"
+                          ? text("Double vérification QR & photo scellée", "Dual QR & tamper seal verified")
+                          : text("Fonds bloqués jusqu’à réception conforme", "Funds held until receipt")}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 sm:gap-2.5">
+                    {heroMode === "voyageur" && (
+                      <>
+                        <a
+                          href="/#voyageur"
+                          className="bv-hero-action-cta flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs sm:text-sm font-bold transition-colors no-underline whitespace-nowrap"
+                        >
+                          <span>{text("Rentabiliser mon voyage", "Monetize my trip")}</span>
+                          <ArrowRight size={15} />
+                        </a>
+                        <a
+                          href="/#publish/trips"
+                          className="bv-hero-secondary-cta inline-flex items-center justify-center px-3.5 py-2.5 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold transition-colors no-underline whitespace-nowrap"
+                        >
+                          <span>{text("Publier", "Publish")}</span>
+                        </a>
+                      </>
+                    )}
+                    {heroMode === "bagandgo" && (
+                      <>
+                        <a
+                          href="/#bagandgo"
+                          className="bv-hero-action-cta flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs sm:text-sm font-bold transition-colors no-underline whitespace-nowrap"
+                        >
+                          <span>{text("Trouver un convoyeur", "Find a carrier")}</span>
+                          <ArrowRight size={15} />
+                        </a>
+                        <a
+                          href="/#publish/parcel"
+                          className="bv-hero-secondary-cta inline-flex items-center justify-center px-3.5 py-2.5 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold transition-colors no-underline whitespace-nowrap"
+                        >
+                          <span>{text("Publier", "Publish")}</span>
+                        </a>
+                      </>
+                    )}
+                    {heroMode === "shopandgo" && (
+                      <>
+                        <a
+                          href="/#shopandgo"
+                          className="bv-hero-action-cta flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs sm:text-sm font-bold transition-colors no-underline whitespace-nowrap"
+                        >
+                          <span>{text("Commander avec un voyageur", "Order with a traveler")}</span>
+                          <ArrowRight size={15} />
+                        </a>
+                        <a
+                          href="/#publish/requests"
+                          className="bv-hero-secondary-cta inline-flex items-center justify-center px-3.5 py-2.5 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold transition-colors no-underline whitespace-nowrap"
+                        >
+                          <span>{text("Demander", "Request")}</span>
+                        </a>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
             </div>
 
             {/* Right Column: Bespoke Autonomous Live Mobile Showcase */}
@@ -902,69 +832,55 @@ export function AwwwardsLanding({
               <BagVoyageLiveShowcase
                 activeScenario={heroMode}
                 onScenarioChange={setHeroMode}
+                transportType={heroTransportType}
+                originLabel={heroOrigin}
+                destinationLabel={heroDestination}
                 language={language}
               />
             </div>
           </div>
 
-          {/* Trust Bar 4 Pillars */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+          {/* Minimalist Architectural Trust Strip (Hairline Dividers, Zero Box Clutter) */}
+          <div className="mt-8 sm:mt-10 bg-[#FFFFFF]/85 backdrop-blur-sm border border-[#E2E8F0] rounded-2xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0] overflow-hidden shadow-2xs">
             {[
               {
                 Icon: ShieldCheck,
                 title: text("Séquestre Stripe Connect", "Stripe Connect Escrow"),
-                desc: text(
-                  "Fonds sécurisés à 100 %. Déblocage uniquement après validation QR à l'arrivée.",
-                  "100% escrowed funds. Payout only released upon arrival QR scan.",
-                ),
+                desc: text("Déblocage uniquement à la remise.", "Released only upon handover."),
                 green: false,
               },
               {
                 Icon: ScanLine,
                 title: text("Double Remise QR & Photo", "Dual QR & Photo Check"),
-                desc: text(
-                  "Photo du scellé au départ et scan QR bilatéral inviolable à la remise.",
-                  "Seal photo at departure and bilateral QR validation at handover.",
-                ),
+                desc: text("Photo au départ + scan QR à l'arrivée.", "Departure photo + arrival QR."),
                 green: true,
               },
               {
                 Icon: Plane,
                 title: text("Express Vol Direct 24h–48h", "Direct Flights 24h–48h"),
-                desc: text(
-                  "Vos colis voyagent avec de vrais passagers vérifiés sur des vols quotidiens.",
-                  "Your parcels travel with verified passengers on daily direct flights.",
-                ),
+                desc: text("Passagers vérifiés sur trajets directs.", "Verified travelers on direct routes."),
                 green: false,
               },
               {
                 Icon: Coins,
                 title: text("Jusqu'à -70 % d'économie", "Up to -70% Savings"),
-                desc: text(
-                  "Sans surtaxes carburant ni douanes opaques. Gagnant pour chacun.",
-                  "No fuel surcharges or opaque customs. Win-win for everyone.",
-                ),
+                desc: text("Sans surtaxes ni frais cachés.", "No surcharges or hidden fees."),
                 green: true,
               },
             ].map(({ Icon, title, desc, green }) => (
               <div
                 key={title}
-                className="bv-trust-bar-item bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-5 flex items-start gap-3.5"
+                className="bv-trust-bar-item px-5 py-4 flex items-center gap-3"
               >
-                <span
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                    green
-                      ? "bg-[#059669]/10 text-[#059669]"
-                      : "bg-slate-100 text-slate-900"
-                  }`}
-                >
-                  <Icon size={18} />
-                </span>
-                <div>
-                  <strong className="block text-sm font-extrabold text-slate-900">
+                <Icon
+                  size={18}
+                  className={green ? "text-[#059669] shrink-0" : "text-[#2563EB] shrink-0"}
+                />
+                <div className="min-w-0">
+                  <strong className="block text-xs sm:text-sm font-extrabold text-slate-900 truncate">
                     {title}
                   </strong>
-                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                  <p className="text-[11px] sm:text-xs text-slate-500 truncate mt-0.5">
                     {desc}
                   </p>
                 </div>
@@ -974,103 +890,115 @@ export function AwwwardsLanding({
         </div>
       </section>
 
-      {/* Section Corridors + Comparateur DHL/FedEx (Fond #FFFFFF) */}
+      {/* Section 01 : Corridors Actifs + Comparateur Direct (Fusionné, Épuré) */}
       <section
         id="simulator"
-        className="bg-[#FFFFFF] border-y border-[#E2E8F0] py-14 sm:py-16 px-4 sm:px-6"
+        className="bv-reveal-section bg-[#FFFFFF] border-y border-[#E2E8F0] py-12 sm:py-16 px-4 sm:px-6"
       >
-        <div className="max-w-6xl mx-auto space-y-10">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div className="max-w-6xl mx-auto space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div>
-              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
                 01 / {text("CORRIDORS & TARIFS", "CORRIDORS & PRICING")}
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mt-1">
                 {c.compare}
               </h2>
             </div>
-            <p className="text-sm text-slate-600 max-w-md">{c.compareText}</p>
+            <p className="text-xs sm:text-sm text-slate-500 max-w-md">{c.compareText}</p>
           </div>
 
-          {/* 4 Cartes Corridors */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {corridors.map((item) => (
-              <article
-                key={item.code}
-                className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5 flex flex-col justify-between gap-4"
-              >
-                <div className="space-y-2.5">
-                  <span className="inline-block px-2.5 py-1 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-[11px] font-extrabold text-slate-700 whitespace-nowrap">
-                    {item.badge}
-                  </span>
-                  <h3 className="text-base font-extrabold text-slate-900">
-                    {item.from} → {item.to}
-                  </h3>
-                  <p className="text-xs text-slate-500">
-                    {item.code} · {item.carrier}
-                  </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Clickable Hairline Corridors List */}
+            <div className="lg:col-span-6 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl divide-y divide-[#E2E8F0] overflow-hidden">
+              {corridors.map((item) => {
+                const isActive = origin === item.from && destination === item.to;
+                return (
+                  <button
+                    key={item.code}
+                    type="button"
+                    onClick={() => {
+                      setOrigin(item.from);
+                      setDestination(item.to);
+                      setHasCustomQuote(false);
+                    }}
+                    className={`w-full px-5 py-4 flex items-center justify-between gap-4 text-left transition-colors cursor-pointer ${
+                      isActive
+                        ? "bg-[#FFFFFF] ring-1 ring-inset ring-[#2563EB]/30"
+                        : "hover:bg-[#FFFFFF]/70"
+                    }`}
+                  >
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <strong className="text-sm sm:text-base font-extrabold text-slate-900">
+                          {item.from} → {item.to}
+                        </strong>
+                        <span className="px-2 py-0.5 rounded-md bg-white border border-[#E2E8F0] text-[10px] font-bold text-slate-600 tabular-nums">
+                          {item.code}
+                        </span>
+                      </div>
+                      <span className="text-xs text-slate-500 block mt-0.5">
+                        {item.carrier} · {item.delay}
+                      </span>
+                    </div>
+                    <strong className="text-base sm:text-lg font-black text-[#059669] tabular-nums shrink-0">
+                      {item.price}
+                    </strong>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Streamlined Benchmark Comparator */}
+            <div className="lg:col-span-6 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5 sm:p-6 space-y-5 tabular-nums">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
+                  {origin} → {destination}
+                </span>
+                <div className="flex gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setNeed("parcel")}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold border cursor-pointer ${
+                      need === "parcel"
+                        ? "bg-[#0F172A] text-white border-[#0F172A]"
+                        : "bg-[#FFFFFF] text-slate-700 border-[#E2E8F0]"
+                    }`}
+                  >
+                    {text("Colis", "Parcel")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNeed("shop")}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold border cursor-pointer ${
+                      need === "shop"
+                        ? "bg-[#0F172A] text-white border-[#0F172A]"
+                        : "bg-[#FFFFFF] text-slate-700 border-[#E2E8F0]"
+                    }`}
+                  >
+                    Shop &amp; Go
+                  </button>
                 </div>
+              </div>
 
-                <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between gap-2 tabular-nums">
-                  <strong className="text-lg font-black text-[#059669] whitespace-nowrap">
-                    {item.price}
-                  </strong>
-                  <span className="text-xs font-semibold text-slate-600 whitespace-nowrap">
-                    {item.delay}
-                  </span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold text-slate-600">
+                  <span>{text("Poids du colis", "Parcel weight")}</span>
+                  <strong className="text-sm font-black text-slate-900">{weight} kg</strong>
                 </div>
-              </article>
-            ))}
-          </div>
-
-          {/* Comparateur Interactif BagVoyage vs DHL / FedEx (zéro vide blanc) */}
-          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-600 block">
-                  {text("Origine", "Origin")}
-                </label>
-                <CityAutocomplete
-                  id="sim-origin"
-                  name="simOrigin"
-                  value={origin}
-                  onChange={setOrigin}
-                  placeholder="Paris"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-600 block">
-                  {text("Destination", "Destination")}
-                </label>
-                <CityAutocomplete
-                  id="sim-dest"
-                  name="simDestination"
-                  value={destination}
-                  onChange={setDestination}
-                  placeholder="Alger"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-600 block">
-                  {text("Poids (kg)", "Weight (kg)")} :{" "}
-                  <strong className="text-slate-900 tabular-nums">{weight} kg</strong>
-                </label>
                 <input
                   type="range"
                   min={1}
                   max={23}
+                  aria-label={text("Poids (kg)", "Weight (kg)")}
                   value={weight}
                   onChange={(e) => setWeight(Number(e.target.value))}
                   className="w-full accent-[#2563EB]"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-600 block">
-                  {c.competitor}
-                </label>
-                <div className="flex gap-2">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex gap-1.5">
                   {(["DHL", "FedEx", "Chronopost"] as const).map((comp) => (
                     <button
                       key={comp}
@@ -1079,7 +1007,7 @@ export function AwwwardsLanding({
                         setCompetitor(comp);
                         setHasCustomQuote(false);
                       }}
-                      className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
                         competitor === comp
                           ? "bg-[#0F172A] text-white border-[#0F172A]"
                           : "bg-[#FFFFFF] text-slate-700 border-[#E2E8F0]"
@@ -1089,36 +1017,8 @@ export function AwwwardsLanding({
                     </button>
                   ))}
                 </div>
-              </div>
-
-              <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-3 pt-1">
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setNeed("parcel")}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border cursor-pointer ${
-                      need === "parcel"
-                        ? "bg-[#0F172A] text-white border-[#0F172A]"
-                        : "bg-[#FFFFFF] text-slate-700 border-[#E2E8F0]"
-                    }`}
-                  >
-                    {text("Envoi de colis", "Parcel")}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNeed("shop")}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border cursor-pointer ${
-                      need === "shop"
-                        ? "bg-[#0F172A] text-white border-[#0F172A]"
-                        : "bg-[#FFFFFF] text-slate-700 border-[#E2E8F0]"
-                    }`}
-                  >
-                    Shop &amp; Go
-                  </button>
-                </div>
-
                 <label className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600">
-                  <span>{c.quote} :</span>
+                  <span>{c.quote}</span>
                   <input
                     type="number"
                     min={1}
@@ -1127,38 +1027,34 @@ export function AwwwardsLanding({
                       setHasCustomQuote(true);
                       setCustomQuote(Math.max(1, Number(e.target.value) || 0));
                     }}
-                    className="w-24 px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] bg-[#FFFFFF] text-slate-900 font-bold tabular-nums"
+                    className="w-20 px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] bg-[#FFFFFF] text-slate-900 font-bold"
                   />
                 </label>
               </div>
-            </div>
 
-            <div className="lg:col-span-5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 space-y-4 tabular-nums">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">
-                  {competitor} ({weight} kg)
-                </span>
-                <strong className="line-through text-slate-400 font-bold">
-                  {quote} €
-                </strong>
+              <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4 space-y-2.5">
+                <div className="flex items-center justify-between text-xs sm:text-sm">
+                  <span className="text-slate-500">
+                    {competitor} ({weight} kg)
+                  </span>
+                  <strong className="line-through text-slate-400 font-bold">
+                    {quote} €
+                  </strong>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold text-slate-900">BagVoyage</span>
+                  <div className="flex items-center gap-2">
+                    <strong className="text-2xl font-black text-[#059669]">{gross} €</strong>
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] text-xs font-black">
+                      −{percent} %
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-bold text-slate-900">BagVoyage</span>
-                <strong className="text-2xl font-black text-[#059669]">
-                  {gross} €
-                </strong>
-              </div>
-              <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-600">
-                  {c.saving}
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#059669]/10 text-[#059669] text-sm font-black">
-                  −{saving} € ({percent} %)
-                </span>
-              </div>
+
               <a
                 href="/#explore"
-                className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold transition-colors no-underline"
+                className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-sm font-bold transition-colors no-underline"
               >
                 <span>{text("Voir les voyageurs disponibles", "Browse available travelers")}</span>
                 <ArrowRight size={16} />
@@ -1168,11 +1064,11 @@ export function AwwwardsLanding({
         </div>
       </section>
 
-      {/* Section 3 Univers (#F8FAFC) */}
-      <section id="features" className="py-14 sm:py-16 px-4 sm:px-6 bg-[#F8FAFC]">
-        <div className="max-w-6xl mx-auto space-y-8">
+      {/* Section 02 : 3 Univers en Ruban Éditorial Sans Bruit */}
+      <section id="features" className="bv-reveal-section py-12 sm:py-16 px-4 sm:px-6 bg-[#F8FAFC]">
+        <div className="max-w-6xl mx-auto space-y-6">
           <div>
-            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
               02 / {text("TROIS MODES INTÉGRÉS", "THREE INTEGRATED MODES")}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mt-1">
@@ -1180,7 +1076,7 @@ export function AwwwardsLanding({
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#E2E8F0] overflow-hidden shadow-2xs">
             {[
               {
                 href: "/#voyageur",
@@ -1188,8 +1084,8 @@ export function AwwwardsLanding({
                 badge: "Voyageur",
                 title: text("Rentabilisez vos kilos libres", "Monetize unused luggage"),
                 desc: text(
-                  "Avion, voiture, train, ferry ou utilitaire : publiez votre trajet ou scannez votre billet pour amortir votre voyage.",
-                  "Flight, car, train, ferry or van: post your trip or scan your ticket to offset travel costs.",
+                  "Avion, ferry, voiture ou utilitaire : publiez votre trajet ou scannez votre billet.",
+                  "Flight, ferry, car or van: publish your trip or scan your boarding pass.",
                 ),
                 cta: text("Ouvrir mode Voyageur", "Open Traveler mode"),
               },
@@ -1199,8 +1095,8 @@ export function AwwwardsLanding({
                 badge: "Bag & Go",
                 title: text("Expédiez vos colis en 24h–48h", "Ship parcels in 24h–48h"),
                 desc: text(
-                  "Choisissez un gabarit précis, confiez votre colis à un passager vérifié et suivez la remise avec scellé et code PIN.",
-                  "Pick an exact parcel preset, hand off to a verified traveler and track delivery with seal and PIN.",
+                  "Confiez vos plis ou bagages à un passager vérifié avec suivi photo et code PIN.",
+                  "Send parcels with verified travelers tracked via photo proof and PIN.",
                 ),
                 cta: text("Ouvrir Bag & Go", "Open Bag & Go"),
               },
@@ -1208,38 +1104,34 @@ export function AwwwardsLanding({
                 href: "/#shopandgo",
                 Icon: ShoppingBag,
                 badge: "Shop & Go",
-                title: text("Achetez à l’étranger sans frontières", "Shop abroad without borders"),
+                title: text("Achetez à l’étranger", "Shop across borders"),
                 desc: text(
-                  "Commandez parfums, high-tech ou articles introuvables avec ticket de caisse officiel remis en main propre.",
-                  "Order fragrances, electronics or hard-to-find items with an official receipt delivered hand-to-hand.",
+                  "Parfums, high-tech ou articles introuvables avec ticket de caisse officiel.",
+                  "Fragrances, tech or local goods bought with an official store receipt.",
                 ),
                 cta: text("Ouvrir Shop & Go", "Open Shop & Go"),
               },
             ].map(({ href, Icon, badge, title, desc, cta }) => (
               <article
                 key={badge}
-                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-6 flex flex-col justify-between gap-5"
+                className="p-6 flex flex-col justify-between gap-4 hover:bg-[#F8FAFC]/60 transition-colors"
               >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="w-11 h-11 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center">
-                      <Icon size={20} />
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-[#F8FAFC] border border-[#E2E8F0] text-xs font-bold text-slate-700">
-                      {badge}
-                    </span>
+                <div className="space-y-2.5">
+                  <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#2563EB]">
+                    <Icon size={15} />
+                    <span>{badge}</span>
                   </div>
-                  <h3 className="text-lg font-extrabold text-slate-900">
+                  <h3 className="text-base sm:text-lg font-extrabold text-slate-900">
                     {title}
                   </h3>
-                  <p className="text-sm text-slate-600 leading-relaxed">{desc}</p>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{desc}</p>
                 </div>
                 <a
                   href={href}
-                  className="inline-flex items-center gap-1.5 text-sm font-bold text-[#2563EB] hover:underline no-underline"
+                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#2563EB] hover:underline no-underline"
                 >
                   <span>{cta}</span>
-                  <ArrowRight size={15} />
+                  <ArrowRight size={14} />
                 </a>
               </article>
             ))}
@@ -1247,81 +1139,50 @@ export function AwwwardsLanding({
         </div>
       </section>
 
-      {/* Section Claire #F8FAFC : Preuve Technologique & Application Mobile */}
+      {/* Section 03 : Protocole Sécurité 4 Étapes & App Mobile */}
       <section
         id="mobile"
-        className="bg-[#F8FAFC] text-slate-900 py-16 px-4 sm:px-6 border-t border-[#E2E8F0]"
+        className="bv-reveal-section bg-[#FFFFFF] text-slate-900 py-12 sm:py-16 px-4 sm:px-6 border-t border-[#E2E8F0]"
         aria-labelledby="mobile-title"
       >
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-7 space-y-6">
             <div>
-              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
-                03 / {text("SÉCURITÉ & EXPÉRIENCE MOBILE", "SECURITY & MOBILE EXPERIENCE")}
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+                03 / {text("PROTOCOLE & APPLICATION", "PROTOCOL & MOBILE APP")}
               </span>
               <h2
                 id="mobile-title"
-                className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 mt-1"
+                className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mt-1"
               >
                 {c.trust}
               </h2>
-              <p className="text-sm sm:text-base text-slate-600 mt-2 max-w-xl leading-relaxed">
-                {text(
-                  "Votre billet, vos preuves photo/vidéo et votre passe de fret hors-ligne réunis au même endroit, protégés de bout en bout.",
-                  "Your boarding pass, photo/video proofs and offline cargo pass in one place, protected end-to-end.",
-                )}
-              </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* 4-Step Compact Protocol Row (Zero repetitive big cards) */}
+            <ol className="grid grid-cols-2 sm:grid-cols-4 gap-3 list-none p-0 m-0">
               {[
-                {
-                  Icon: ShieldCheck,
-                  title: "Stripe Connect",
-                  desc: text(
-                    "Séquestre bancaire : fonds bloqués puis libérés uniquement à la remise.",
-                    "Escrow hold: funds locked and released only on delivery confirmation.",
-                  ),
-                },
-                {
-                  Icon: ScanLine,
-                  title: text("Double QR & PIN", "Dual QR & PIN"),
-                  desc: text(
-                    "Contrôle à la prise en charge et code PIN à 4 chiffres à l'arrivée.",
-                    "Collection verification and 4-digit PIN confirmation on arrival.",
-                  ),
-                },
-                {
-                  Icon: Video,
-                  title: text("Preuve horodatée", "Timestamped proof"),
-                  desc: text(
-                    "État du colis documenté par photo et scellé numéroté.",
-                    "Parcel condition documented by photo and numbered tamper seal.",
-                  ),
-                },
-                {
-                  Icon: WifiOff,
-                  title: text("Passe hors-ligne", "Offline pass"),
-                  desc: text(
-                    "Enregistrez la remise même en zone blanche aéroportuaire.",
-                    "Record handover even without mobile data at the terminal.",
-                  ),
-                },
-              ].map(({ Icon, title, desc }) => (
-                <article
-                  key={title}
-                  className="p-4 rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] shadow-xs space-y-1.5"
+                { n: "01", title: "KYC Vérifié", sub: text("Identité contrôlée", "Verified ID") },
+                { n: "02", title: "Séquestre Stripe", sub: text("Fonds cantonnés", "Escrow held") },
+                { n: "03", title: "Photo & QR", sub: text("Preuve départ", "Departure check") },
+                { n: "04", title: "Code PIN", sub: text("Déblocage net", "Instant payout") },
+              ].map((step) => (
+                <li
+                  key={step.n}
+                  className="p-3.5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1"
                 >
-                  <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
-                    <Icon size={16} className="text-[#059669]" />
-                    <span>{title}</span>
-                  </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">{desc}</p>
-                </article>
+                  <span className="text-[10px] font-extrabold text-[#059669] tabular-nums">
+                    {step.n}
+                  </span>
+                  <strong className="block text-xs sm:text-sm font-bold text-slate-900">
+                    {step.title}
+                  </strong>
+                  <span className="block text-[11px] text-slate-500">{step.sub}</span>
+                </li>
               ))}
-            </div>
+            </ol>
 
-            <div className="pt-2 space-y-4">
+            <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-4">
                 <AppStoreBadges language={language} onClick={openMobileLaunch} />
                 <a
@@ -1339,8 +1200,8 @@ export function AwwwardsLanding({
 
           {/* Carte Tactile Passe Fret Hors-Ligne & Protocole PIN */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="w-full max-w-[360px] space-y-4">
-              <div className="rounded-3xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 space-y-3 shadow-md text-slate-900">
+            <div className="w-full max-w-[350px] space-y-3.5">
+              <div className="rounded-3xl bg-[#F8FAFC] border border-[#E2E8F0] p-5 space-y-3 shadow-sm text-slate-900">
                 <div className="flex items-center justify-between">
                   <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-600">
                     <Plane size={13} className="text-[#2563EB]" />
@@ -1365,9 +1226,9 @@ export function AwwwardsLanding({
                 <div className="flex items-center justify-between text-xs font-bold">
                   <span className="inline-flex items-center gap-1.5">
                     <Ticket size={15} className="text-[#2563EB]" />
-                    {text("Passe de fret hors-ligne", "Offline cargo pass")}
+                    {text("Passe hors-ligne", "Offline cargo pass")}
                   </span>
-                  <span className="px-2 py-0.5 rounded-md bg-[#ECFDF5] text-[#059669] font-extrabold">STEB-447B</span>
+                  <span className="px-2 py-0.5 rounded-md bg-[#ECFDF5] text-[#059669] font-extrabold">BV-447B</span>
                 </div>
                 <PassBarcode />
                 <div className="flex items-center justify-between text-[11px] text-slate-600 font-semibold pt-1">
@@ -1382,8 +1243,8 @@ export function AwwwardsLanding({
         </div>
       </section>
 
-      {/* Comparatif Groupes Informels vs BagVoyage + FAQ (#FFFFFF) */}
-      <section id="faq" className="bg-[#FFFFFF] py-14 sm:py-16 px-4 sm:px-6">
+      {/* Comparatif Groupes Informels vs BagVoyage + FAQ (#F8FAFC) */}
+      <section id="faq" className="bv-reveal-section bg-[#F8FAFC] border-t border-[#E2E8F0] py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto space-y-12">
           {/* Comparatif Confiance */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

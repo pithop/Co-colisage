@@ -3,6 +3,7 @@ import {
   ArrowRight,
   BatteryFull,
   Camera,
+  Car,
   CheckCircle2,
   KeyRound,
   LockKeyhole,
@@ -12,6 +13,7 @@ import {
   Play,
   QrCode,
   ShieldCheck,
+  Ship,
   ShoppingBag,
   Signal,
   Sparkles,
@@ -19,6 +21,15 @@ import {
 } from "lucide-react";
 
 export type ShowcaseScenario = "voyageur" | "bagandgo" | "shopandgo";
+export type ShowcaseTransport = "avion" | "bateau" | "voiture";
+
+function toRouteCode(value?: string, fallback = "CDG"): string {
+  if (!value || !value.trim()) return fallback;
+  const iata = value.match(/\(([A-Z]{3})\)/);
+  if (iata) return iata[1];
+  const letters = value.replace(/[^a-zA-ZÀ-ÿ]/g, "").slice(0, 3).toUpperCase();
+  return letters.length >= 2 ? letters : fallback;
+}
 
 interface BeatContent {
   stepTag: string;
@@ -115,7 +126,7 @@ const SCENARIO_DATA: Record<
       {
         stepTag: "02 · Prise en charge QR",
         title: "Colis scellé & assuré 1 500 €",
-        subtitle: "Suivi télémétrique temps réel jusqu'à Oran",
+        subtitle: "Preuve photo & suivi d'étape jusqu'à Oran",
         islandLabel: "En acheminement",
         badgeText: "QR Départ Scanné",
         amountLabel: "Garantie séquestre",
@@ -194,10 +205,16 @@ const SCENARIO_DATA: Record<
 export function BagVoyageLiveShowcase({
   activeScenario,
   onScenarioChange,
+  transportType = "avion",
+  originLabel,
+  destinationLabel,
   language = "fr",
 }: {
   activeScenario: ShowcaseScenario;
   onScenarioChange?: (scenario: ShowcaseScenario) => void;
+  transportType?: ShowcaseTransport;
+  originLabel?: string;
+  destinationLabel?: string;
   language?: "fr" | "en";
 }) {
   const [beatIndex, setBeatIndex] = useState<number>(0);
@@ -225,7 +242,38 @@ export function BagVoyageLiveShowcase({
 
   const scenario = SCENARIO_DATA[activeScenario];
   const beat = scenario.beats[beatIndex];
-  const ScenarioIcon = scenario.icon;
+  const ScenarioIcon =
+    activeScenario === "voyageur"
+      ? transportType === "bateau"
+        ? Ship
+        : transportType === "voiture"
+          ? Car
+          : Plane
+      : scenario.icon;
+  const CraftIcon =
+    activeScenario === "voyageur"
+      ? transportType === "bateau"
+        ? Ship
+        : transportType === "voiture"
+          ? Car
+          : Plane
+      : activeScenario === "bagandgo"
+        ? Package
+        : Plane;
+  const displayFrom = toRouteCode(originLabel, beat.routeFrom);
+  const displayTo = toRouteCode(destinationLabel, beat.routeTo);
+  const displayTitle =
+    activeScenario === "voyageur" && beatIndex === 0 && transportType === "bateau"
+      ? "Traversée ferry vérifiée en 2 sec"
+      : activeScenario === "voyageur" && beatIndex === 0 && transportType === "voiture"
+        ? "Trajet véhicule vérifié en 2 sec"
+        : beat.title;
+  const displaySubtitle =
+    activeScenario === "voyageur" && beatIndex === 0 && transportType === "bateau"
+      ? "Ferry Méditerranée · Espace cabine & soute disponible"
+      : activeScenario === "voyageur" && beatIndex === 0 && transportType === "voiture"
+        ? "Liaison express porte-à-porte · Coffre sécurisé"
+        : beat.subtitle;
   const text = (fr: string, en: string) => (language === "fr" ? fr : en);
 
   const progressRatio = beatIndex === 0 ? 0.14 : beatIndex === 1 ? 0.58 : 1;
@@ -391,17 +439,17 @@ export function BagVoyageLiveShowcase({
 
             <div>
               <h3 className="text-sm font-extrabold text-slate-900 leading-snug">
-                {beat.title}
+                {displayTitle}
               </h3>
               <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
-                {beat.subtitle}
+                {displaySubtitle}
               </p>
             </div>
 
-            {/* Live Corridor Arc & GPU-Composited Plane Tracker */}
+            {/* Live Corridor Arc & GPU-Composited Craft Tracker */}
             <div className="rounded-xl bg-[#0F172A] text-white p-3 space-y-2">
               <div className="flex items-center justify-between text-sm font-black tracking-tight tabular-nums">
-                <span>{beat.routeFrom}</span>
+                <span>{displayFrom}</span>
                 <div className="relative flex-1 mx-3 h-5 flex items-center">
                   <div className="w-full h-[2px] rounded-full bg-white/15 overflow-hidden">
                     <div
@@ -416,10 +464,10 @@ export function BagVoyageLiveShowcase({
                     }}
                     aria-hidden="true"
                   >
-                    <Plane size={10} className="text-white" />
+                    <CraftIcon size={10} className="text-white" />
                   </div>
                 </div>
-                <span>{beat.routeTo}</span>
+                <span>{displayTo}</span>
               </div>
 
               <div className="flex items-center justify-between text-[10px] text-slate-300 font-medium tabular-nums">

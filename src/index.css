@@ -411,4 +411,192 @@ h1, h2, h3 {
   }
 }
 
+/* ==========================================================================
+   2027 AMBIENT KINETIC TRANSPORT BACKDROP (Avion, Bateau, Voiture)
+   100% GPU-composited (transform + opacity only), responsive via container units
+   ========================================================================== */
+.bv-transport-backdrop {
+  container-type: inline-size;
+}
+
+.bv-hero-mesh {
+  background:
+    radial-gradient(62% 52% at 82% 18%, rgba(37, 99, 235, 0.085) 0%, rgba(37, 99, 235, 0) 70%),
+    radial-gradient(48% 44% at 14% 78%, rgba(5, 150, 105, 0.07) 0%, rgba(5, 150, 105, 0) 72%),
+    linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 55%, #F8FAFC 100%);
+}
+
+html[data-theme="dark"] .bv-hero-mesh,
+.dark .bv-hero-mesh {
+  background:
+    radial-gradient(62% 52% at 82% 18%, rgba(37, 99, 235, 0.16) 0%, rgba(37, 99, 235, 0) 70%),
+    radial-gradient(48% 44% at 14% 78%, rgba(5, 150, 105, 0.12) 0%, rgba(5, 150, 105, 0) 72%),
+    linear-gradient(180deg, #0b0f19 0%, #111827 55%, #0b0f19 100%);
+}
+
+.bv-craft {
+  position: absolute;
+  left: 0;
+  display: flex;
+  align-items: center;
+  will-change: transform, opacity;
+  transition: opacity 400ms ease;
+}
+
+/* Static resting positions when prefers-reduced-motion: reduce */
+.bv-craft-air {
+  top: 44px;
+  transform: translate3d(72cqw, -14px, 0) rotate(5deg);
+}
+
+.bv-craft-air-return {
+  top: 76px;
+  transform: translate3d(26cqw, 8px, 0) rotate(-6deg);
+}
+
+.bv-craft-sea {
+  top: 75%;
+  transform: translate3d(24cqw, 0, 0);
+}
+
+.bv-craft-road {
+  top: 90%;
+  transform: translate3d(68cqw, 0, 0);
+}
+
+@media (max-width: 639px) {
+  .bv-craft-air {
+    top: 12px;
+    opacity: 0.48;
+  }
+  .bv-craft-sea {
+    top: 48%;
+    opacity: 0.45;
+  }
+  .bv-craft-road {
+    top: 86%;
+    opacity: 0.42;
+  }
+}
+
+.bv-craft-contrail {
+  width: 72px;
+  height: 2px;
+  margin-right: -4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0) 0%, rgba(37, 99, 235, 0.45) 100%);
+}
+
+.bv-craft-wake {
+  width: 44px;
+  height: 3px;
+  margin-right: -6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(13, 148, 136, 0) 0%, rgba(13, 148, 136, 0.45) 100%);
+}
+
+.bv-craft-headlight {
+  order: 2;
+  width: 34px;
+  height: 6px;
+  margin-left: -4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.34) 0%, rgba(37, 99, 235, 0) 100%);
+}
+
+@keyframes bv-air-cruise {
+  0% {
+    transform: translate3d(-12cqw, 44px, 0) rotate(-9deg);
+  }
+  25% {
+    transform: translate3d(18cqw, -6px, 0) rotate(-5deg);
+  }
+  50% {
+    transform: translate3d(49cqw, -26px, 0) rotate(0deg);
+  }
+  75% {
+    transform: translate3d(79cqw, -6px, 0) rotate(6deg);
+  }
+  100% {
+    transform: translate3d(108cqw, 36px, 0) rotate(9deg);
+  }
+}
+
+@keyframes bv-air-return-cruise {
+  0% {
+    transform: translate3d(108cqw, 28px, 0) rotate(7deg);
+  }
+  50% {
+    transform: translate3d(48cqw, -18px, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(-10cqw, 26px, 0) rotate(-7deg);
+  }
+}
+
+@keyframes bv-sea-glide {
+  0% {
+    transform: translate3d(-10cqw, 6px, 0) rotate(-1.5deg);
+  }
+  25% {
+    transform: translate3d(20cqw, -10px, 0) rotate(1deg);
+  }
+  50% {
+    transform: translate3d(50cqw, 8px, 0) rotate(-1deg);
+  }
+  75% {
+    transform: translate3d(80cqw, -8px, 0) rotate(1.5deg);
+  }
+  100% {
+    transform: translate3d(108cqw, 4px, 0) rotate(0deg);
+  }
+}
+
+@keyframes bv-road-drive {
+  0% {
+    transform: translate3d(-10cqw, 4px, 0) rotate(-1deg);
+  }
+  50% {
+    transform: translate3d(48cqw, -10px, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(108cqw, 2px, 0) rotate(1deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bv-craft-air {
+    animation: bv-air-cruise 22s linear infinite;
+  }
+  .bv-craft-air-return {
+    animation: bv-air-return-cruise 28s linear infinite;
+    animation-delay: -11s;
+  }
+  .bv-craft-sea {
+    animation: bv-sea-glide 32s linear infinite;
+    animation-delay: -8s;
+  }
+  .bv-craft-road {
+    animation: bv-road-drive 19s linear infinite;
+    animation-delay: -5s;
+  }
+
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    @keyframes bv-section-rise {
+      from {
+        opacity: 0.35;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .bv-reveal-section {
+      animation: bv-section-rise auto var(--ease-apple-spring) both;
+      animation-timeline: view(block);
+      animation-range: entry 0% entry 28%;
+    }
+  }
+}
 
