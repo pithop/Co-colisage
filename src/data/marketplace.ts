@@ -344,11 +344,15 @@ export const trips: Trip[] = [
 
 export const euro = (value: number) =>
   `${new Intl.NumberFormat("fr-FR").format(value)} €`;
-export const dateLabel = (value: string, long = false) =>
-  new Date(`${value}T12:00:00`).toLocaleDateString("fr-FR", {
+export const dateLabel = (value: string, long = false) => {
+  if (!value) return "Flexible";
+  const parsed = new Date(value.includes("T") ? value : `${value}T12:00:00`);
+  if (Number.isNaN(parsed.getTime())) return value;
+  return parsed.toLocaleDateString("fr-FR", {
     day: "numeric",
     month: long ? "long" : "short",
   });
+};
 export const timeLabel = (value = "") =>
   value.replace(":00", " h").replace(":", " h ");
 export const vehicleLabel = (trip: Trip) =>

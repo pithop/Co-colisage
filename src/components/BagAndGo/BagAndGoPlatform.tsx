@@ -252,8 +252,8 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
   };
 
   return (
-    <div className="bagandgo-platform-container max-w-5xl mx-auto px-4 py-4 space-y-6 pb-36 text-left">
-      {/* Unified Navigation: Segmented Control (Colis | Trajets | Shopping) + Quick Corridors */}
+    <div className="bagandgo-platform-container max-w-5xl mx-auto px-3.5 sm:px-4 py-3 sm:py-4 space-y-4 sm:space-y-6 pb-40 text-left">
+      {/* Unified Navigation: Compact 3-Mode Switcher + Single-Row Corridor Rail */}
       <ExploreUnifiedNavigation
         activeSegment={activePlatform}
         onSelectSegment={(seg) => setActivePlatform(seg)}
@@ -267,8 +267,8 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         }}
       />
 
-      {/* 1. Photographic Human Handover Hero Header */}
-      <section className="relative overflow-hidden rounded-2xl bg-[#071024] text-white shadow-md border border-slate-800/40 p-5 sm:p-7">
+      {/* 1. Compact Photographic Human Handover Hero Banner */}
+      <section className="relative overflow-hidden rounded-2xl bg-[#071024] text-white shadow-sm border border-slate-800/40 p-3.5 sm:p-6">
         <div className="absolute inset-0 z-0" aria-hidden="true">
           <img
             src="/images/scene-handover-people.jpg"
@@ -283,24 +283,24 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
             }}
           />
         </div>
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-          <div className="space-y-2.5 max-w-2xl">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-sky-200 text-[11px] font-bold">
-                <Package size={12} />
-                <span>Bag &amp; Go · Expédition Multi-Modale</span>
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-5">
+          <div className="space-y-1.5 sm:space-y-2.5 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-sky-200 text-[10px] sm:text-[11px] font-bold">
+                <Package size={11} />
+                <span>Bag &amp; Go · Expédition Express</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-200 font-medium">
+              <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] text-slate-200 font-medium">
                 <ShieldCheck size={13} className="text-emerald-400" />
                 <span>Séquestre Stripe · Validation PIN &amp; QR · Poids IATA</span>
               </span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
+            <h1 className="text-[17px] sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
               Expédiez vos colis au millimètre près en toute confiance
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-200/95 leading-relaxed font-normal max-w-xl">
+            <p className="hidden sm:block text-xs sm:text-sm text-slate-200/95 leading-relaxed font-normal max-w-xl">
               Renseignez les dimensions précises, le poids exact et vos exigences de sécurité. Séquestre bancaire Stripe et validation par code PIN unique.
             </p>
           </div>
@@ -1195,23 +1195,23 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         )}
       </section>
 
-      {/* 5. Mobile Sticky CTA Dock (active on parcel creation view) */}
+      {/* 5. Floating Native-Style Mobile Action Capsule */}
       {activeView === 'send' && (
-        <div className="fixed bottom-[calc(63px+env(safe-area-inset-bottom,0px))] inset-x-0 z-30 px-4 py-2.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 sm:hidden shadow-lg">
+        <div className="fixed bottom-[calc(70px+env(safe-area-inset-bottom,0px))] inset-x-3 z-30 px-3.5 py-2 rounded-2xl bg-slate-900/95 dark:bg-slate-800/95 backdrop-blur-xl text-white border border-white/10 flex items-center justify-between gap-2.5 sm:hidden shadow-xl">
           <div className="min-w-0 flex-1">
-            <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider tabular-nums">
+            <span className="block text-[10px] font-bold text-slate-300 uppercase tracking-wider tabular-nums">
               {weightKg} kg · {category.split("&")[0].trim()}
             </span>
-            <span className="text-sm font-extrabold text-slate-900 dark:text-white truncate block">
+            <span className="text-xs font-extrabold text-white truncate block">
               {departureCity} → {destination}
             </span>
           </div>
           <button
             type="button"
             onClick={handleSubmit}
-            className="min-h-[44px] px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all shrink-0 cursor-pointer whitespace-nowrap tabular-nums"
+            className="min-h-[40px] px-3.5 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer whitespace-nowrap tabular-nums"
           >
-            <Send size={14} />
+            <Send size={13} />
             <span>Publier ({proposedPrice} €)</span>
           </button>
         </div>

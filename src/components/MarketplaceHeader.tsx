@@ -102,7 +102,7 @@ export function MarketplaceHeader(props: Props) {
 
   return (
     <header className="site-header unified-header relative z-40 bg-[#FFFFFF]/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-[#E2E8F0] dark:border-slate-800 transition-colors">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-3">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-3">
         {/* Left: Brand Logo & Back Button */}
         <div className="flex items-center gap-1 sm:gap-2 min-w-0 flex-1 lg:flex-initial">
           {route !== "explore" && !route.startsWith("publish/") && (

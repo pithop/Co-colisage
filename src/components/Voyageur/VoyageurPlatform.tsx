@@ -431,12 +431,12 @@ export function VoyageurPlatform({
         }}
       />
 
-      {/* 1. Multi-Modal Transport Mode Selector Bar (5 Transport Modes) */}
+      {/* 1. Sleek Single-Row Multi-Modal Transport Bar (Airbnb Category Rail on Mobile, 5-Col on Desktop) */}
       <nav
         aria-label="Modes de transport pour voyageurs"
-        className="rounded-2xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-5 shadow-xs"
+        className="rounded-2xl bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-1.5 shadow-2xs"
       >
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5" role="tablist">
+        <div className="flex overflow-x-auto no-scrollbar sm:grid sm:grid-cols-5 gap-1.5" role="tablist">
           {(Object.keys(MODE_CONFIGS) as TransportMode[]).map((modeKey) => {
             const config = MODE_CONFIGS[modeKey];
             const Icon = config.icon;
@@ -448,22 +448,22 @@ export function VoyageurPlatform({
                 role="tab"
                 aria-selected={isSelected}
                 onClick={() => handleModeChange(modeKey)}
-                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all duration-150 cursor-pointer ${
+                className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all duration-150 whitespace-nowrap shrink-0 cursor-pointer ${
                   isSelected
                     ? "bg-[#2563EB] text-white shadow-xs"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-[#F8FAFC] dark:hover:bg-slate-800/60"
                 }`}
               >
-                <Icon size={18} className="shrink-0" />
-                <span className="truncate">{config.shortLabel}</span>
+                <Icon size={16} className="shrink-0" />
+                <span>{config.shortLabel}</span>
               </button>
             );
           })}
         </div>
       </nav>
 
-      {/* 2. Photographic Editorial Action Hero Header */}
-      <section className="relative overflow-hidden rounded-2xl bg-[#071024] text-white shadow-md border border-slate-800/40 p-5 sm:p-7">
+      {/* 2. Compact Photographic Action Hero Banner (Mobile-First Above-the-Fold) */}
+      <section className="relative overflow-hidden rounded-2xl bg-[#071024] text-white shadow-sm border border-slate-800/40 p-3.5 sm:p-6">
         <div className="absolute inset-0 z-0" aria-hidden="true">
           <img
             key={selectedMode}
@@ -479,36 +479,36 @@ export function VoyageurPlatform({
             }}
           />
         </div>
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-          <div className="space-y-2.5 max-w-2xl">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-emerald-300 text-[11px] font-bold">
-                <Sparkles size={12} className="shrink-0" />
-                <span>Espace Voyageur · {currentConfig.label}</span>
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-5">
+          <div className="space-y-1.5 sm:space-y-2.5 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-emerald-300 text-[10px] sm:text-[11px] font-bold">
+                <Sparkles size={11} className="shrink-0" />
+                <span>Espace Voyageur · {currentConfig.shortLabel}</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-200 font-medium">
+              <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] text-slate-200 font-medium">
                 <ShieldCheck size={13} className="text-emerald-400" />
                 <span>Séquestre Stripe · Identité &amp; Billets vérifiés · PIN livraison</span>
               </span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
+            <h1 className="text-[17px] sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
               {currentConfig.heroHeadline}
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-200/95 leading-relaxed font-normal max-w-xl">
+            <p className="hidden sm:block text-xs sm:text-sm text-slate-200/95 leading-relaxed font-normal max-w-xl">
               {currentConfig.heroSubtitle}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             {onPublishTrip && (
               <button
                 type="button"
                 onClick={onPublishTrip}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer"
               >
-                <Plus size={15} strokeWidth={2.5} />
+                <Plus size={14} strokeWidth={2.5} />
                 <span>Proposer un trajet {currentConfig.shortLabel}</span>
               </button>
             )}
@@ -516,9 +516,9 @@ export function VoyageurPlatform({
               <button
                 type="button"
                 onClick={onScanBoardingPass}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/95 hover:bg-white text-slate-900 border border-white/60 font-semibold text-xs sm:text-sm shadow-sm transition-all active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full bg-white/95 hover:bg-white text-slate-900 border border-white/60 font-semibold text-xs sm:text-sm shadow-sm transition-all active:scale-95 cursor-pointer"
               >
-                <Scan size={15} className="text-[#2563EB]" />
+                <Scan size={14} className="text-[#2563EB]" />
                 <span>Scanner billet IATA</span>
               </button>
             )}

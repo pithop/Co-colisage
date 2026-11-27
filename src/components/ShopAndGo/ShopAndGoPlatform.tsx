@@ -252,8 +252,8 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
   };
 
   return (
-    <div className="shopandgo-platform-container max-w-5xl mx-auto px-4 py-3 space-y-6 pb-36 text-left">
-      {/* 0. Unified Segmented Control (Colis | Trajets | Shopping) + Quick Corridors */}
+    <div className="shopandgo-platform-container max-w-5xl mx-auto px-3.5 sm:px-4 py-3 sm:py-4 space-y-4 sm:space-y-6 pb-40 text-left">
+      {/* 0. Compact 3-Mode Switcher + Single-Row Corridor Rail */}
       <ExploreUnifiedNavigation
         activeSegment={activePlatform}
         onSelectSegment={(seg) => setActivePlatform(seg)}
@@ -271,8 +271,8 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
         }}
       />
 
-      {/* 1. Photographic Parisian Boutique Hero Header */}
-      <section className="relative overflow-hidden rounded-2xl bg-[#071024] text-white shadow-md border border-slate-800/40 p-5 sm:p-7">
+      {/* 1. Compact Photographic Parisian Boutique Hero Banner */}
+      <section className="relative overflow-hidden rounded-2xl bg-[#071024] text-white shadow-sm border border-slate-800/40 p-3.5 sm:p-6">
         <div className="absolute inset-0 z-0" aria-hidden="true">
           <img
             src="/images/scene-boutique-paris.jpg"
@@ -287,24 +287,24 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
             }}
           />
         </div>
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-          <div className="space-y-2.5 max-w-2xl">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-emerald-300 text-[11px] font-bold">
-                <ShoppingCart size={12} className="text-emerald-300" />
-                <span>Shop &amp; Go · Achat en Boutique &amp; Duty-Free</span>
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-5">
+          <div className="space-y-1.5 sm:space-y-2.5 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-emerald-300 text-[10px] sm:text-[11px] font-bold">
+                <ShoppingCart size={11} className="text-emerald-300" />
+                <span>Shop &amp; Go · Boutique &amp; Duty-Free</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-200 font-medium">
+              <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] text-slate-200 font-medium">
                 <ShieldCheck size={13} className="text-emerald-400" />
                 <span>Ticket de caisse obligatoire · Séquestre Stripe · Remise main propre</span>
               </span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
+            <h1 className="text-[17px] sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
               Commandez en boutique &amp; Duty-Free dans le monde entier
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-200/95 leading-relaxed font-normal max-w-xl">
+            <p className="hidden sm:block text-xs sm:text-sm text-slate-200/95 leading-relaxed font-normal max-w-xl">
               Ajoutez vos articles au panier (duty-free, high-tech, parfumerie, pharmacie). Les voyageurs certifiés achètent avec ticket de caisse obligatoire sous séquestre Stripe.
             </p>
           </div>
@@ -330,10 +330,10 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
       )}
 
       {/* Mandatory Proof of Purchase & Receipt Policy Notice Banner */}
-      <section className="rounded-2xl border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-850 p-5 shadow-xs">
-        <div className="flex items-start gap-3.5">
-          <div className="w-9 h-9 rounded-xl bg-[#ECFDF5] text-[#059669] flex items-center justify-center shrink-0">
-            <FileCheck2 size={20} />
+      <section className="rounded-2xl border border-[#E2E8F0] dark:border-slate-800 bg-[#FFFFFF] dark:bg-slate-850 p-3.5 sm:p-5 shadow-2xs">
+        <div className="flex items-start gap-3">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#ECFDF5] text-[#059669] flex items-center justify-center shrink-0">
+            <FileCheck2 size={18} />
           </div>
           <div className="space-y-1">
             <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white flex flex-wrap items-center gap-2">
@@ -342,7 +342,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
                 Contrôle Anti-Fraude
               </span>
             </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="hidden sm:block text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
               Le voyageur avance le paiement en magasin certifié et photographie le ticket de caisse officiel dans l'application. Le montant réel déboursé est remboursé à l'euro près depuis votre séquestre Stripe, accompagné de sa commission de transport.
             </p>
           </div>
@@ -954,14 +954,14 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
         )}
       </section>
 
-      {/* 5. Mobile Sticky Shopping Dock (active on order creation view) */}
+      {/* 5. Floating Native-Style Mobile Shopping Capsule */}
       {activeView === 'order' && (
-        <div className="fixed bottom-[calc(63px+env(safe-area-inset-bottom,0px))] inset-x-0 z-30 px-4 py-2.5 bg-[#FFFFFF]/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between gap-3 sm:hidden shadow-lg tabular-nums">
+        <div className="fixed bottom-[calc(70px+env(safe-area-inset-bottom,0px))] inset-x-3 z-30 px-3.5 py-2 rounded-2xl bg-slate-900/95 dark:bg-slate-800/95 backdrop-blur-xl text-white border border-white/10 flex items-center justify-between gap-2.5 sm:hidden shadow-xl tabular-nums">
           <div className="min-w-0 flex-1">
-            <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+            <span className="block text-[10px] font-bold text-slate-300 uppercase tracking-wider">
               {basket.length} article(s) · {itemsSubtotal} €
             </span>
-            <span className="text-xs font-extrabold text-[#059669] truncate block">
+            <span className="text-xs font-extrabold text-emerald-400 truncate block">
               Gain voyageur : +{commNum} €
             </span>
           </div>
@@ -969,9 +969,9 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
             type="button"
             onClick={handleSubmit}
             disabled={basket.length === 0}
-            className="min-h-[44px] px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all shrink-0 cursor-pointer whitespace-nowrap"
+            className="min-h-[40px] px-3.5 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer whitespace-nowrap"
           >
-            <ShoppingCart size={14} />
+            <ShoppingCart size={13} />
             <span>Commander ({totalBudget} €)</span>
           </button>
         </div>
