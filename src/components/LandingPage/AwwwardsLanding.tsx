@@ -296,6 +296,7 @@ export function AwwwardsLanding({
       price: "8 € / kg",
       delay: "24h – 48h",
       carrier: text("Vol direct quotidien", "Daily direct flight"),
+      image: "/images/dest-algiers.jpg",
     },
     {
       badge: text("EXPRESS MÉDITERRANÉE", "MEDITERRANEAN EXPRESS"),
@@ -305,6 +306,7 @@ export function AwwwardsLanding({
       price: "7 € / kg",
       delay: "24h",
       carrier: text("Vol & Ferry", "Flight & Ferry"),
+      image: "/images/scene-med-ferry.jpg",
     },
     {
       badge: text("FORTE DEMANDE", "HIGH DEMAND"),
@@ -314,6 +316,7 @@ export function AwwwardsLanding({
       price: "8 € / kg",
       delay: "24h – 48h",
       carrier: text("Vol direct", "Direct flight"),
+      image: "/images/dest-paris.jpg",
     },
     {
       badge: text("TRANSATLANTIQUE", "TRANSATLANTIC"),
@@ -323,8 +326,116 @@ export function AwwwardsLanding({
       price: "12 € / kg",
       delay: "24h – 48h",
       carrier: text("Long-courrier", "Long-haul"),
+      image: "/images/dest-montreal.jpg",
     },
   ];
+
+  const visualCategories = [
+    {
+      id: "parfums",
+      label: text("Parfums & Beauté", "Fragrance & Beauty"),
+      sub: text("Duty-Free & Sephora", "Duty-Free & Sephora"),
+      image: "/images/perfume.jpg",
+      href: "/#shopandgo",
+    },
+    {
+      id: "hightech",
+      label: text("High-Tech", "High-Tech"),
+      sub: text("Audio & Smartphones", "Audio & Smartphones"),
+      image: "/images/cat-headphones-tech.jpg",
+      href: "/#shopandgo",
+    },
+    {
+      id: "luxe",
+      label: text("Sacs & Mode", "Bags & Fashion"),
+      sub: text("Boutiques Paris", "Paris Boutiques"),
+      image: "/images/cat-luxury-bag.jpg",
+      href: "/#shopandgo",
+    },
+    {
+      id: "chaussures",
+      label: text("Sneakers", "Sneakers"),
+      sub: text("Éditions limitées", "Limited editions"),
+      image: "/images/nike.jpg",
+      href: "/#shopandgo",
+    },
+    {
+      id: "colis",
+      label: text("Colis Express", "Express Parcels"),
+      sub: text("Remise main propre", "Hand-to-hand"),
+      image: "/images/scene-handover-people.jpg",
+      href: "/#bagandgo",
+    },
+    {
+      id: "ferry",
+      label: text("Ferry & Route", "Ferry & Road"),
+      sub: text("Gros volumes", "Large volumes"),
+      image: "/images/scene-med-ferry.jpg",
+      href: "/#voyageur",
+    },
+  ];
+
+  const popularCommunityOffers = [
+    {
+      id: "offer-dior",
+      title: "Dior Sauvage Eau de Parfum (100 ml)",
+      route: "Paris → Alger",
+      destination: "Alger",
+      price: "110 €",
+      gain: "+25 €",
+      traveler: "Inès B.",
+      avatar: "/images/portraits/photo-1534528741775-53994a69daeb.jpg",
+      image: "/images/perfume.jpg",
+      href: "/#shopandgo",
+    },
+    {
+      id: "offer-tech",
+      title: text("Casque Studio & Accessoires", "Studio Headphones & Gear"),
+      route: "Paris → Oran",
+      destination: "Oran",
+      price: "320 €",
+      gain: "+40 €",
+      traveler: "Karim M.",
+      avatar: "/images/portraits/photo-1507003211169-0a1dd7228f2d.jpg",
+      image: "/images/cat-headphones-tech.jpg",
+      href: "/#shopandgo",
+    },
+    {
+      id: "offer-bag",
+      title: text("Maroquinerie & Lunettes Paris", "Paris Leather Bag & Shades"),
+      route: "Paris → Dakar",
+      destination: "Dakar",
+      price: "280 €",
+      gain: "+35 €",
+      traveler: "Sarah L.",
+      avatar: "/images/portraits/photo-1544005313-94ddf0286df2.jpg",
+      image: "/images/cat-luxury-bag.jpg",
+      href: "/#shopandgo",
+    },
+    {
+      id: "offer-nike",
+      title: "Nike Air Max Limited (42 EU)",
+      route: "Marseille → Alger",
+      destination: "Alger",
+      price: "145 €",
+      gain: "+28 €",
+      traveler: "Yanis D.",
+      avatar: "/images/portraits/photo-1500648767791-00dcc994a43e.jpg",
+      image: "/images/nike.jpg",
+      href: "/#shopandgo",
+    },
+  ];
+
+  const heroBackdropImage =
+    heroMode === "bagandgo"
+      ? "/images/scene-handover-people.jpg"
+      : heroMode === "shopandgo"
+        ? "/images/scene-boutique-paris.jpg"
+        : heroTransportType === "bateau"
+          ? "/images/scene-med-ferry.jpg"
+          : heroTransportType === "voiture"
+            ? "/images/scene-roadtrip-trunk.jpg"
+            : "/images/hero-airport-traveler.jpg";
 
   return (
     <div className="bv-landing-v2 min-h-screen bg-[#F8FAFC] text-slate-900 antialiased" lang={language}>
@@ -430,39 +541,80 @@ export function AwwwardsLanding({
         currentRoute="landing"
       />
 
-      {/* Hero Éditorial 2027 + Trajectoires Avion / Bateau / Voiture en Arrière-Plan */}
-      <section className="relative overflow-hidden pt-11 pb-12 sm:pt-14 sm:pb-16 px-4 sm:px-6">
+      {/* Hero Photographique Humain + Trajectoires Avion / Bateau / Voiture */}
+      <section className="relative overflow-hidden bg-[#071024] pt-10 pb-12 sm:pt-14 sm:pb-16 px-4 sm:px-6">
+        {/* Full-bleed editorial background photo reacting live to mode & transport */}
+        <div className="absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+          <img
+            key={heroBackdropImage}
+            src={heroBackdropImage}
+            alt=""
+            className="bv-hero-photo-kenburns w-full h-full object-cover object-center transition-opacity duration-700"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(105deg, rgba(7,16,36,0.90) 0%, rgba(10,22,51,0.76) 52%, rgba(7,16,36,0.50) 100%)",
+            }}
+          />
+        </div>
+
         <TransportBackdrop
           activeMode={heroMode}
           activeTransport={heroTransportType}
+          variant="photo"
         />
 
         <div className="relative z-10 max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-10 items-center pb-8 sm:pb-16">
-            {/* Left Column: Instant 3-Second Clarity + Streamlined Console */}
-            <div className="lg:col-span-7 space-y-3.5 sm:space-y-6">
-              <div className="text-center lg:text-left space-y-2.5 sm:space-y-3">
-                <p className="text-[10px] sm:text-[11px] font-bold tracking-[0.16em] uppercase text-slate-400">
-                  {text("France · Méditerranée · Monde", "France · Mediterranean · Global")}
-                </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-10 items-center pb-8 sm:pb-14">
+            {/* Left Column: Instant Human Clarity + Streamlined Console */}
+            <div className="lg:col-span-7 space-y-4 sm:space-y-6">
+              <div className="text-center lg:text-left space-y-2.5 sm:space-y-3.5">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[10px] sm:text-[11px] font-bold tracking-[0.14em] uppercase text-sky-100">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span>{text("Communauté de voyageurs · France · Maghreb · Monde", "Traveler community · France · Maghreb · Global")}</span>
+                </div>
 
-                <h1 className="bv-hero-headline text-[25px] sm:text-5xl xl:text-[52px] font-extrabold tracking-[-0.035em] text-slate-900 leading-[1.08]">
+                <h1 className="bv-hero-headline text-[26px] sm:text-5xl xl:text-[52px] font-extrabold tracking-[-0.035em] text-white leading-[1.08] drop-shadow-xs">
                   {text("Rentabilisez vos voyages.", "Fund your travels.")}{" "}
-                  <span className="text-[#2563EB] block sm:inline">
+                  <span className="text-sky-300 block sm:inline">
                     {text("Expédiez vos colis en 24h.", "Ship parcels in 24h.")}
                   </span>
                 </h1>
 
-                <p className="bv-hero-lead text-xs sm:text-[17px] text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                <p className="bv-hero-lead text-xs sm:text-[17px] text-slate-100 leading-relaxed max-w-xl mx-auto lg:mx-0">
                   {text(
                     "Des voyageurs vérifiés transportent vos colis ou achètent en boutique sur leur trajet. Paiement bloqué sur Stripe et libéré par code PIN.",
                     "Verified travelers carry parcels or shop retail along their trip. Payment escrowed on Stripe and released via PIN.",
                   )}
                 </p>
+
+                {/* Human community social proof strip */}
+                <div className="hidden sm:flex items-center gap-3 pt-0.5 justify-center lg:justify-start">
+                  <div className="flex -space-x-2">
+                    {[
+                      "/images/portraits/photo-1507003211169-0a1dd7228f2d.jpg",
+                      "/images/portraits/photo-1534528741775-53994a69daeb.jpg",
+                      "/images/portraits/photo-1500648767791-00dcc994a43e.jpg",
+                      "/images/portraits/photo-1544005313-94ddf0286df2.jpg",
+                    ].map((src) => (
+                      <img
+                        key={src}
+                        src={src}
+                        alt=""
+                        className="w-7 h-7 rounded-full object-cover ring-2 ring-[#071024]"
+                      />
+                    ))}
+                  </div>
+                  <p className="text-xs font-semibold text-slate-200">
+                    {text("Voyageurs & expéditeurs vérifiés · Remise main propre", "Verified travelers & senders · Hand-to-hand delivery")}
+                  </p>
+                </div>
               </div>
 
               {/* Streamlined Tri-Modal Console */}
-              <div className="bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E2E8F0] rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-900/[0.04] overflow-hidden">
+              <div className="bg-white border border-white/80 rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/30 overflow-hidden text-slate-900">
                 {/* 3 Sleek Tabs */}
                 <div
                   className="bv-hero-mode-tabs grid grid-cols-3 border-b border-[#E2E8F0] bg-[#F8FAFC]/80"
@@ -854,8 +1006,8 @@ export function AwwwardsLanding({
             </div>
           </div>
 
-          {/* Minimalist Architectural Trust Strip (Hairline Dividers, Zero Box Clutter) */}
-          <div className="mt-8 sm:mt-10 bg-[#FFFFFF]/85 backdrop-blur-sm border border-[#E2E8F0] rounded-2xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0] overflow-hidden shadow-2xs">
+          {/* Architectural Trust Strip Floating on Photographic Hero */}
+          <div className="mt-8 sm:mt-10 bg-[#FFFFFF]/95 backdrop-blur-xl border border-white/60 rounded-2xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0] overflow-hidden shadow-2xl shadow-black/20">
             {[
               {
                 Icon: ShieldCheck,
@@ -904,6 +1056,133 @@ export function AwwwardsLanding({
         </div>
       </section>
 
+      {/* Catégories Visuelles & Demandes Populaires de la Communauté */}
+      <section className="bv-reveal-section bg-[#F8FAFC] py-12 sm:py-16 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto space-y-10">
+          {/* Strip Catégories Photos */}
+          <div className="space-y-4">
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#2563EB]">
+                  {text("Explorer par univers", "Browse by category")}
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mt-1">
+                  {text("Ce que les voyageurs rapportent chaque jour", "What travelers bring back every day")}
+                </h2>
+              </div>
+              <a
+                href="/#shopandgo"
+                className="hidden sm:inline-flex items-center gap-1.5 text-sm font-bold text-[#2563EB] hover:underline no-underline shrink-0"
+              >
+                <span>{text("Tout explorer", "Explore all")}</span>
+                <ArrowRight size={15} />
+              </a>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+              {visualCategories.map((cat) => (
+                <a
+                  key={cat.id}
+                  href={cat.href}
+                  className="group relative rounded-2xl overflow-hidden bg-slate-900 aspect-[4/3] sm:aspect-[5/4] shadow-sm border border-[#E2E8F0] no-underline block"
+                >
+                  <img
+                    src={cat.image}
+                    alt={cat.label}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/25 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-3">
+                    <strong className="block text-xs sm:text-sm font-extrabold text-white leading-tight">
+                      {cat.label}
+                    </strong>
+                    <span className="block text-[10px] sm:text-[11px] text-slate-200/90 mt-0.5 truncate">
+                      {cat.sub}
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Demandes & Colis Populaires (Style Dossier Client) */}
+          <div className="space-y-4">
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#059669]">
+                  {text("Communauté active", "Active community")}
+                </span>
+                <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 mt-1">
+                  {text("Demandes populaires à rentabiliser", "Popular requests to fulfill")}
+                </h2>
+              </div>
+              <a
+                href="/#explore"
+                className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#2563EB] hover:underline no-underline shrink-0"
+              >
+                <span>{text("Voir tout", "See all")}</span>
+                <ArrowRight size={14} />
+              </a>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {popularCommunityOffers.map((offer) => (
+                <a
+                  key={offer.id}
+                  href={offer.href}
+                  className="group bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between no-underline"
+                >
+                  <div>
+                    <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                      <img
+                        src={offer.image}
+                        alt={offer.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                      />
+                      <span className="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[11px] font-bold">
+                        <MapPin size={11} className="text-emerald-400" />
+                        {offer.destination}
+                      </span>
+                      <span className="absolute bottom-3 right-3 px-2.5 py-1 rounded-full bg-[#059669] text-white text-xs font-extrabold shadow-sm tabular-nums">
+                        {text("Gain :", "Earn:")} {offer.gain}
+                      </span>
+                    </div>
+
+                    <div className="p-4 space-y-2">
+                      <span className="text-[11px] font-bold text-slate-500 block">
+                        {offer.route}
+                      </span>
+                      <h3 className="text-sm font-extrabold text-slate-900 leading-snug line-clamp-2 group-hover:text-[#2563EB] transition-colors">
+                        {offer.title}
+                      </h3>
+                    </div>
+                  </div>
+
+                  <div className="px-4 pb-4 pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <img
+                        src={offer.avatar}
+                        alt={offer.traveler}
+                        loading="lazy"
+                        className="w-6 h-6 rounded-full object-cover ring-1 ring-slate-200 shrink-0"
+                      />
+                      <span className="text-xs font-semibold text-slate-600 truncate">
+                        {offer.traveler}
+                      </span>
+                    </div>
+                    <strong className="text-sm font-black text-slate-900 tabular-nums shrink-0">
+                      {offer.price}
+                    </strong>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Corridors Actifs + Comparateur Direct */}
       <section
         id="simulator"
@@ -923,7 +1202,7 @@ export function AwwwardsLanding({
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Clickable Hairline Corridors List */}
+            {/* Clickable Photographic Corridors List */}
             <div className="lg:col-span-6 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl divide-y divide-[#E2E8F0] overflow-hidden">
               {corridors.map((item) => {
                 const isActive = origin === item.from && destination === item.to;
@@ -936,24 +1215,32 @@ export function AwwwardsLanding({
                       setDestination(item.to);
                       setHasCustomQuote(false);
                     }}
-                    className={`w-full px-5 py-4 flex items-center justify-between gap-4 text-left transition-colors cursor-pointer ${
+                    className={`w-full px-4 py-3.5 flex items-center justify-between gap-3.5 text-left transition-colors cursor-pointer ${
                       isActive
                         ? "bg-[#FFFFFF] ring-1 ring-inset ring-[#2563EB]/30"
                         : "hover:bg-[#FFFFFF]/70"
                     }`}
                   >
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <strong className="text-sm sm:text-base font-extrabold text-slate-900">
-                          {item.from} → {item.to}
-                        </strong>
-                        <span className="px-2 py-0.5 rounded-md bg-white border border-[#E2E8F0] text-[10px] font-bold text-slate-600 tabular-nums">
-                          {item.code}
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <img
+                        src={item.image}
+                        alt={`${item.from} - ${item.to}`}
+                        loading="lazy"
+                        className="w-14 h-14 rounded-xl object-cover shrink-0 border border-[#E2E8F0]"
+                      />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <strong className="text-sm sm:text-base font-extrabold text-slate-900">
+                            {item.from} → {item.to}
+                          </strong>
+                          <span className="px-2 py-0.5 rounded-md bg-white border border-[#E2E8F0] text-[10px] font-bold text-slate-600 tabular-nums">
+                            {item.code}
+                          </span>
+                        </div>
+                        <span className="text-xs text-slate-500 block mt-0.5">
+                          {item.carrier} · {item.delay}
                         </span>
                       </div>
-                      <span className="text-xs text-slate-500 block mt-0.5">
-                        {item.carrier} · {item.delay}
-                      </span>
                     </div>
                     <strong className="text-base sm:text-lg font-black text-[#059669] tabular-nums shrink-0">
                       {item.price}
@@ -1078,11 +1365,11 @@ export function AwwwardsLanding({
         </div>
       </section>
 
-      {/* 3 Univers en Ruban Éditorial */}
+      {/* 3 Univers Humains & Photographiques */}
       <section id="features" className="bv-reveal-section py-12 sm:py-16 px-4 sm:px-6 bg-[#F8FAFC]">
         <div className="max-w-6xl mx-auto space-y-6">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#2563EB]">
               {text("Trois modes intégrés", "Three integrated modes")}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mt-1">
@@ -1090,12 +1377,14 @@ export function AwwwardsLanding({
             </h2>
           </div>
 
-          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#E2E8F0] overflow-hidden shadow-2xs">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
               {
                 href: "/#voyageur",
                 Icon: Plane,
                 badge: "Voyageur",
+                image: "/images/hero-airport-traveler.jpg",
+                stat: text("Jusqu'à +180 € / trajet", "Up to +€180 / trip"),
                 title: text("Rentabilisez vos kilos libres", "Monetize unused luggage"),
                 desc: text(
                   "Avion, ferry, voiture ou utilitaire : publiez votre trajet ou scannez votre billet.",
@@ -1107,6 +1396,8 @@ export function AwwwardsLanding({
                 href: "/#bagandgo",
                 Icon: Package,
                 badge: "Bag & Go",
+                image: "/images/scene-handover-people.jpg",
+                stat: text("Livraison 24h–48h", "24h–48h delivery"),
                 title: text("Expédiez vos colis en 24h–48h", "Ship parcels in 24h–48h"),
                 desc: text(
                   "Confiez vos plis ou bagages à un passager vérifié avec suivi photo et code PIN.",
@@ -1118,6 +1409,8 @@ export function AwwwardsLanding({
                 href: "/#shopandgo",
                 Icon: ShoppingBag,
                 badge: "Shop & Go",
+                image: "/images/scene-boutique-paris.jpg",
+                stat: text("Ticket officiel garanti", "Official receipt guaranteed"),
                 title: text("Achetez à l’étranger", "Shop across borders"),
                 desc: text(
                   "Parfums, high-tech ou articles introuvables avec ticket de caisse officiel.",
@@ -1125,45 +1418,63 @@ export function AwwwardsLanding({
                 ),
                 cta: text("Ouvrir Shop & Go", "Open Shop & Go"),
               },
-            ].map(({ href, Icon, badge, title, desc, cta }) => (
+            ].map(({ href, Icon, badge, image, stat, title, desc, cta }) => (
               <article
                 key={badge}
-                className="p-6 flex flex-col justify-between gap-4 hover:bg-[#F8FAFC]/60 transition-colors"
+                className="group bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
               >
-                <div className="space-y-2.5">
-                  <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#2563EB]">
-                    <Icon size={15} />
-                    <span>{badge}</span>
+                <div>
+                  <div className="relative aspect-[16/10] overflow-hidden bg-slate-900">
+                    <img
+                      src={image}
+                      alt={title}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/65 via-transparent to-transparent" />
+                    <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-md text-[11px] font-extrabold text-[#2563EB] shadow-xs">
+                      <Icon size={13} />
+                      <span>{badge}</span>
+                    </span>
+                    <span className="absolute bottom-3 left-3 px-2.5 py-0.5 rounded-full bg-slate-950/75 backdrop-blur-md text-[11px] font-bold text-white">
+                      {stat}
+                    </span>
                   </div>
-                  <h3 className="text-base sm:text-lg font-extrabold text-slate-900">
-                    {title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{desc}</p>
+
+                  <div className="p-5 sm:p-6 space-y-2">
+                    <h3 className="text-base sm:text-lg font-extrabold text-slate-900">
+                      {title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{desc}</p>
+                  </div>
                 </div>
-                <a
-                  href={href}
-                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#2563EB] hover:underline no-underline"
-                >
-                  <span>{cta}</span>
-                  <ArrowRight size={14} />
-                </a>
+
+                <div className="px-5 sm:px-6 pb-5 sm:pb-6">
+                  <a
+                    href={href}
+                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#2563EB] hover:underline no-underline"
+                  >
+                    <span>{cta}</span>
+                    <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
+                  </a>
+                </div>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Protocole Sécurité 4 Étapes & App Mobile */}
+      {/* Protocole Sécurité 4 Étapes, Photographie Confiance & App Mobile */}
       <section
         id="mobile"
         className="bv-reveal-section bg-[#FFFFFF] text-slate-900 py-12 sm:py-16 px-4 sm:px-6 border-t border-[#E2E8F0]"
         aria-labelledby="mobile-title"
       >
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <div className="lg:col-span-7 space-y-6">
+          <div className="lg:col-span-6 space-y-6">
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">
-                {text("Protocole & Application", "Protocol & Mobile App")}
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#059669]">
+                {text("Confiance & Sécurité", "Trust & Security")}
               </span>
               <h2
                 id="mobile-title"
@@ -1173,7 +1484,7 @@ export function AwwwardsLanding({
               </h2>
             </div>
 
-            {/* 4-Step Compact Protocol Row (Zero repetitive big cards) */}
+            {/* 4-Step Compact Protocol Row */}
             <ol className="grid grid-cols-2 sm:grid-cols-4 gap-3 list-none p-0 m-0">
               {[
                 { n: "01", title: "KYC Vérifié", sub: text("Identité contrôlée", "Verified ID") },
@@ -1212,45 +1523,49 @@ export function AwwwardsLanding({
             </div>
           </div>
 
-          {/* Carte Tactile Passe Fret Hors-Ligne & Protocole PIN */}
-          <div className="lg:col-span-5 flex justify-center">
-            <div className="w-full max-w-[350px] space-y-3.5">
-              <div className="rounded-3xl bg-[#F8FAFC] border border-[#E2E8F0] p-5 space-y-3 shadow-sm text-slate-900">
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-600">
-                    <Plane size={13} className="text-[#2563EB]" />
-                    {text("TRAJET CERTIFIÉ", "CERTIFIED ROUTE")}
-                  </span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#ECFDF5] border border-[#A7F3D0] text-[#059669] text-[11px] font-bold">
-                    {text("Séquestre actif", "Escrow active")}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-2xl font-black text-slate-900 tabular-nums">
-                  <span>CDG</span>
-                  <ArrowRight size={20} className="text-[#2563EB]" />
-                  <span>ALG</span>
-                </div>
-                <div className="flex items-center justify-between text-xs text-slate-500 tabular-nums pt-2 border-t border-[#E2E8F0]">
-                  <span>Vol AH1021 · 14:30</span>
-                  <span className="text-[#059669] font-extrabold">15 kg · +140 €</span>
-                </div>
+          {/* Photographie Confiance Humaine + Passe Fret Hors-Ligne */}
+          <div className="lg:col-span-6 space-y-4">
+            <div className="relative rounded-3xl overflow-hidden border border-[#E2E8F0] shadow-xl aspect-[16/10] bg-slate-900">
+              <img
+                src="/images/scene-trust-passport.jpg"
+                alt={text("Vérification identité et paiement sécurisé Stripe", "Identity verification and Stripe escrow handover")}
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent" />
+              <div className="absolute top-3.5 right-3.5 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md text-slate-900 text-[11px] font-extrabold shadow-sm inline-flex items-center gap-1.5">
+                <ShieldCheck size={14} className="text-[#059669]" />
+                <span>Powered by Stripe Connect</span>
               </div>
+              <div className="absolute inset-x-4 bottom-4 flex flex-wrap items-end justify-between gap-3">
+                <div className="space-y-0.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300">
+                    {text("TRAJET CERTIFIÉ · CDG → ALG", "CERTIFIED ROUTE · CDG → ALG")}
+                  </span>
+                  <strong className="block text-sm sm:text-base font-extrabold text-white">
+                    {text("Remise validée par code PIN & photo scellée", "Handover verified via PIN & sealed photo")}
+                  </strong>
+                </div>
+                <span className="px-2.5 py-1 rounded-full bg-[#059669] text-white text-xs font-extrabold tabular-nums shrink-0">
+                  15 kg · +140 €
+                </span>
+              </div>
+            </div>
 
-              <div className="rounded-3xl bg-[#FFFFFF] border border-[#E2E8F0] text-slate-900 p-5 space-y-3 shadow-md tabular-nums">
-                <div className="flex items-center justify-between text-xs font-bold">
-                  <span className="inline-flex items-center gap-1.5">
-                    <Ticket size={15} className="text-[#2563EB]" />
-                    {text("Passe hors-ligne", "Offline cargo pass")}
-                  </span>
-                  <span className="px-2 py-0.5 rounded-md bg-[#ECFDF5] text-[#059669] font-extrabold">BV-447B</span>
-                </div>
-                <PassBarcode />
-                <div className="flex items-center justify-between text-[11px] text-slate-600 font-semibold pt-1">
-                  <span>5 kg · Porte K34</span>
-                  <span className="inline-flex items-center gap-1 text-slate-700">
-                    <WifiOff size={12} /> {text("Mode aéroport", "Offline ready")}
-                  </span>
-                </div>
+            <div className="rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] text-slate-900 p-4 sm:p-5 space-y-2.5 shadow-xs tabular-nums">
+              <div className="flex items-center justify-between text-xs font-bold">
+                <span className="inline-flex items-center gap-1.5">
+                  <Ticket size={15} className="text-[#2563EB]" />
+                  {text("Passe hors-ligne aéroport", "Offline airport cargo pass")}
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-[#ECFDF5] text-[#059669] font-extrabold">BV-447B</span>
+              </div>
+              <PassBarcode />
+              <div className="flex items-center justify-between text-[11px] text-slate-600 font-semibold pt-0.5">
+                <span>Vol AH1021 · 5 kg · Porte K34</span>
+                <span className="inline-flex items-center gap-1 text-slate-700">
+                  <WifiOff size={12} /> {text("Mode aéroport", "Offline ready")}
+                </span>
               </div>
             </div>
           </div>

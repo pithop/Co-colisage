@@ -267,37 +267,51 @@ export const BagAndGoPlatform: React.FC<BagAndGoPlatformProps> = ({
         }}
       />
 
-      {/* 1. Light Premium Action Hero Header */}
-      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#FFFFFF] via-[#F8FAFC] to-[#EFF6FF] dark:from-slate-900 dark:via-slate-900 dark:to-slate-850 text-slate-900 dark:text-white shadow-xs border border-[#E2E8F0] dark:border-slate-800 p-5 sm:p-6">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+      {/* 1. Photographic Human Handover Hero Header */}
+      <section className="relative overflow-hidden rounded-2xl bg-[#071024] text-white shadow-md border border-slate-800/40 p-5 sm:p-7">
+        <div className="absolute inset-0 z-0" aria-hidden="true">
+          <img
+            src="/images/scene-handover-people.jpg"
+            alt=""
+            className="w-full h-full object-cover object-center"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(95deg, rgba(7,16,36,0.92) 0%, rgba(10,22,51,0.78) 54%, rgba(7,16,36,0.34) 100%)",
+            }}
+          />
+        </div>
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           <div className="space-y-2.5 max-w-2xl">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-[#2563EB] text-[11px] font-bold">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-sky-200 text-[11px] font-bold">
                 <Package size={12} />
                 <span>Bag &amp; Go · Expédition Multi-Modale</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                <ShieldCheck size={13} className="text-[#059669]" />
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-200 font-medium">
+                <ShieldCheck size={13} className="text-emerald-400" />
                 <span>Séquestre Stripe · Validation PIN &amp; QR · Poids IATA</span>
               </span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-slate-900 dark:text-white leading-snug">
+            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
               Expédiez vos colis au millimètre près en toute confiance
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal max-w-xl">
+            <p className="text-xs sm:text-sm text-slate-200/95 leading-relaxed font-normal max-w-xl">
               Renseignez les dimensions précises, le poids exact et vos exigences de sécurité. Séquestre bancaire Stripe et validation par code PIN unique.
             </p>
           </div>
 
-          <div className="hidden lg:flex items-center gap-3 px-4 py-3 rounded-xl bg-[#FFFFFF] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 shrink-0 shadow-2xs">
+          <div className="hidden lg:flex items-center gap-3 px-4 py-3 rounded-xl bg-white/95 backdrop-blur-md border border-white/60 shrink-0 shadow-md text-slate-900">
             <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center">
               <Package size={20} className="text-[#2563EB]" />
             </div>
             <div>
-              <div className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wide">Colisage Garanti</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400">Avion · Voiture · Train · Bateau</div>
+              <div className="text-xs font-bold text-slate-900 uppercase tracking-wide">Colisage Garanti</div>
+              <div className="text-[11px] text-slate-500">Avion · Voiture · Train · Bateau</div>
             </div>
           </div>
         </div>

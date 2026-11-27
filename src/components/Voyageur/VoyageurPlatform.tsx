@@ -132,20 +132,20 @@ const MODE_CONFIGS: Record<TransportMode, ModeConfig> = {
 };
 
 const MODE_DEFAULT_IMAGES: Record<TransportMode, string> = {
-  avion: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80",
-  voiture: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80",
-  train: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=800&q=80",
-  bateau: "https://images.unsplash.com/photo-1565026057447-bc90a3dceb87?auto=format&fit=crop&w=800&q=80",
-  camion: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=800&q=80",
+  avion: "/images/hero-airport-traveler.jpg",
+  voiture: "/images/scene-roadtrip-trunk.jpg",
+  train: "/images/dest-paris.jpg",
+  bateau: "/images/scene-med-ferry.jpg",
+  camion: "/images/scene-roadtrip-trunk.jpg",
 };
 
 const MODE_DEFAULT_AVATARS: string[] = [
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
-  "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=200&q=80",
-  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80",
-  "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&q=80",
+  "/images/portraits/photo-1507003211169-0a1dd7228f2d.jpg",
+  "/images/portraits/photo-1500648767791-00dcc994a43e.jpg",
+  "/images/portraits/photo-1534528741775-53994a69daeb.jpg",
+  "/images/portraits/photo-1522075469751-3a6694fb2f61.jpg",
+  "/images/portraits/photo-1544005313-94ddf0286df2.jpg",
+  "/images/portraits/photo-1560250097-0b93528c311a.jpg",
 ];
 
 // Helper to instantiate realistic FreightItem trips conforming to Trip interface
@@ -462,26 +462,41 @@ export function VoyageurPlatform({
         </div>
       </nav>
 
-      {/* 2. Light Premium Action Hero Header */}
-      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#FFFFFF] via-[#F8FAFC] to-[#EFF6FF] dark:from-slate-900 dark:via-slate-900 dark:to-slate-850 text-slate-900 dark:text-white shadow-xs border border-[#E2E8F0] dark:border-slate-800 p-5 sm:p-6">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+      {/* 2. Photographic Editorial Action Hero Header */}
+      <section className="relative overflow-hidden rounded-2xl bg-[#071024] text-white shadow-md border border-slate-800/40 p-5 sm:p-7">
+        <div className="absolute inset-0 z-0" aria-hidden="true">
+          <img
+            key={selectedMode}
+            src={MODE_DEFAULT_IMAGES[selectedMode]}
+            alt=""
+            className="w-full h-full object-cover object-center transition-opacity duration-500"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(95deg, rgba(7,16,36,0.92) 0%, rgba(10,22,51,0.78) 54%, rgba(7,16,36,0.32) 100%)",
+            }}
+          />
+        </div>
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           <div className="space-y-2.5 max-w-2xl">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ECFDF5] border border-[#059669]/20 text-[#059669] text-[11px] font-bold">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-emerald-300 text-[11px] font-bold">
                 <Sparkles size={12} className="shrink-0" />
                 <span>Espace Voyageur · {currentConfig.label}</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                <ShieldCheck size={13} className="text-[#059669]" />
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-200 font-medium">
+                <ShieldCheck size={13} className="text-emerald-400" />
                 <span>Séquestre Stripe · Identité &amp; Billets vérifiés · PIN livraison</span>
               </span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-slate-900 dark:text-white leading-snug">
+            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
               {currentConfig.heroHeadline}
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal max-w-xl">
+            <p className="text-xs sm:text-sm text-slate-200/95 leading-relaxed font-normal max-w-xl">
               {currentConfig.heroSubtitle}
             </p>
           </div>
@@ -491,7 +506,7 @@ export function VoyageurPlatform({
               <button
                 type="button"
                 onClick={onPublishTrip}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm shadow-xs transition-all active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer"
               >
                 <Plus size={15} strokeWidth={2.5} />
                 <span>Proposer un trajet {currentConfig.shortLabel}</span>
@@ -501,7 +516,7 @@ export function VoyageurPlatform({
               <button
                 type="button"
                 onClick={onScanBoardingPass}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#FFFFFF] dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-[#E2E8F0] dark:border-slate-700 font-semibold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/95 hover:bg-white text-slate-900 border border-white/60 font-semibold text-xs sm:text-sm shadow-sm transition-all active:scale-95 cursor-pointer"
               >
                 <Scan size={15} className="text-[#2563EB]" />
                 <span>Scanner billet IATA</span>

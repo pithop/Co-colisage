@@ -580,6 +580,36 @@ html[data-theme="dark"] .bv-hero-mesh,
     animation-delay: -5s;
   }
 
+  @keyframes bv-kenburns {
+    0% {
+      transform: scale(1.01) translate3d(0, 0, 0);
+    }
+    50% {
+      transform: scale(1.07) translate3d(-1.2%, -0.8%, 0);
+    }
+    100% {
+      transform: scale(1.01) translate3d(0, 0, 0);
+    }
+  }
+
+  .bv-hero-photo-kenburns {
+    animation: bv-kenburns 28s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @keyframes bv-float-subtle {
+    0%, 100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(0, -5px, 0);
+    }
+  }
+
+  .bv-float-gentle {
+    animation: bv-float-subtle 5.5s ease-in-out infinite;
+  }
+
   @supports ((animation-timeline: view()) and (animation-range: entry)) {
     @keyframes bv-section-rise {
       from {

@@ -164,7 +164,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
     platformFee: 10,
     image: p.image,
     buyer: 'Client Boutique Vérifié',
-    buyerAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    buyerAvatar: '/images/portraits/photo-1534528741775-53994a69daeb.jpg',
     specifications: `Articles: 1x ${p.name} · Boutique: ${p.originStore} · Franchise Duty-Free appliquée · Reçu fiscal garanti`,
     location: `${p.originCity || 'Paris'} → ${p.destination || 'Alger'}`,
     kind: 'shopping',
@@ -229,7 +229,7 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
       date: deadlineDate || new Date().toISOString().slice(0, 10),
       budget: totalBudget,
       reward: commNum,
-      image: photoPreview || '/images/hero-luxury-shopper.jpg',
+      image: photoPreview || '/images/scene-boutique-paris.jpg',
       buyer: user?.name || recipient || 'Acheteur vérifié',
       specifications: `Articles: ${itemsSummary} · Sous-total: ${itemsSubtotal} € · Rémunération voyageur: ${commNum} € · Protection Stripe: ${stripeEscrowFee} € · Négociable: ${acceptNegotiation ? 'Oui' : 'Non'}`,
       location: deliveryLocation || 'Alger, Algérie',
@@ -271,37 +271,51 @@ export const ShopAndGoPlatform: React.FC<ShopAndGoPlatformProps> = ({
         }}
       />
 
-      {/* 1. Compact Light Action Hero Header */}
-      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#FFFFFF] via-[#F8FAFC] to-[#ECFDF5]/60 dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs border border-[#E2E8F0] dark:border-slate-800 p-5 sm:p-6">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+      {/* 1. Photographic Parisian Boutique Hero Header */}
+      <section className="relative overflow-hidden rounded-2xl bg-[#071024] text-white shadow-md border border-slate-800/40 p-5 sm:p-7">
+        <div className="absolute inset-0 z-0" aria-hidden="true">
+          <img
+            src="/images/scene-boutique-paris.jpg"
+            alt=""
+            className="w-full h-full object-cover object-center"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(95deg, rgba(7,16,36,0.92) 0%, rgba(10,22,51,0.78) 54%, rgba(7,16,36,0.34) 100%)",
+            }}
+          />
+        </div>
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           <div className="space-y-2.5 max-w-2xl">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ECFDF5] border border-[#A7F3D0] text-[#059669] text-[11px] font-bold">
-                <ShoppingCart size={12} className="text-[#059669]" />
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-emerald-300 text-[11px] font-bold">
+                <ShoppingCart size={12} className="text-emerald-300" />
                 <span>Shop &amp; Go · Achat en Boutique &amp; Duty-Free</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                <ShieldCheck size={13} className="text-[#059669]" />
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-200 font-medium">
+                <ShieldCheck size={13} className="text-emerald-400" />
                 <span>Ticket de caisse obligatoire · Séquestre Stripe · Remise main propre</span>
               </span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-slate-900 dark:text-white leading-snug">
+            <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight text-white leading-snug">
               Commandez en boutique &amp; Duty-Free dans le monde entier
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal max-w-xl">
+            <p className="text-xs sm:text-sm text-slate-200/95 leading-relaxed font-normal max-w-xl">
               Ajoutez vos articles au panier (duty-free, high-tech, parfumerie, pharmacie). Les voyageurs certifiés achètent avec ticket de caisse obligatoire sous séquestre Stripe.
             </p>
           </div>
 
-          <div className="hidden lg:flex items-center gap-3 px-4 py-3 rounded-xl bg-white dark:bg-slate-800/70 border border-[#E2E8F0] dark:border-slate-700 shadow-xs shrink-0">
+          <div className="hidden lg:flex items-center gap-3 px-4 py-3 rounded-xl bg-white/95 backdrop-blur-md border border-white/60 shadow-md shrink-0 text-slate-900">
             <div className="w-10 h-10 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] flex items-center justify-center">
               <ShoppingBag size={20} className="text-[#059669]" />
             </div>
             <div>
-              <div className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wide">Boutiques &amp; Duty-Free</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400">Paris · Milan · Dubaï · Londres</div>
+              <div className="text-xs font-bold text-slate-900 uppercase tracking-wide">Boutiques &amp; Duty-Free</div>
+              <div className="text-[11px] text-slate-500">Paris · Milan · Dubaï · Londres</div>
             </div>
           </div>
         </div>
